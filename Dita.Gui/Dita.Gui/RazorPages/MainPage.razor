@@ -1,0 +1,21 @@
+﻿@using Avalonia.Interactivity
+@using Avalonia.Layout
+
+@inject INavigation Navigation
+
+<Border Theme="@("CardBorder")">
+    <StackPanel HorizontalAlignment="HorizontalAlignment.Center" VerticalAlignment="VerticalAlignment.Center">
+        <Label FontSize="20" HorizontalAlignment="HorizontalAlignment.Center">Hello Blazonia</Label>
+        <Image Width="100" Height="100" Source="@("avares://Dita.Gui/Assets/avalonia-logo.ico")"></Image>
+        <Button Classes="Primary" Theme="@("SolidButton")" OnClick="OnButtonClick">Go to Next Page</Button>
+    </StackPanel>
+</Border>
+
+@code {
+
+    private async Task OnButtonClick(RoutedEventArgs obj)
+    {
+        await Navigation.NavigateToAsync("/SubPage");
+    }
+
+}

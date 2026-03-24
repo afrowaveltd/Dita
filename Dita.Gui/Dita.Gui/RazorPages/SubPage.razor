@@ -1,0 +1,22 @@
+﻿@using Avalonia.Interactivity
+@using Avalonia.Layout
+
+@inject INavigation Navigation
+
+@page "/SubPage"
+
+
+<Border Theme="@("CardBorder")">
+    <StackPanel HorizontalAlignment="HorizontalAlignment.Center" VerticalAlignment="VerticalAlignment.Center">
+        <Label FontSize="20" HorizontalAlignment="HorizontalAlignment.Center">this is SubPage</Label>
+        <Button Classes="Primary" Theme="@("SolidButton")" OnClick="OnButtonClick">Back</Button>
+    </StackPanel>
+</Border>
+
+@code {
+    private async Task OnButtonClick(RoutedEventArgs obj)
+    {
+        await Navigation.PopAsync();
+    }
+
+}

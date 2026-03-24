@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Dita.DiskAccessor.Windows": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

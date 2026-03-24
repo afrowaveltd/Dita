@@ -1,0 +1,5 @@
+﻿<linker>
+	<assembly fullname="Dita.Gui">
+		<namespace fullname="Dita.Gui.RazorPages" preserve="all" />
+	</assembly>
+</linker>
