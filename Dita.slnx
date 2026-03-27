@@ -5,5 +5,6 @@
   <Project Path="Dita.Gui/Dita.Gui.Desktop/Dita.Gui.Desktop.csproj" />
   <Project Path="Dita.Gui/Dita.Gui/Dita.Gui.csproj" />
   <Project Path="Dita.Server/Dita.Server.csproj" />
+  <Project Path="Dita.Tests/Dita.Tests.csproj" Id="6e0db553-57e1-443f-93e4-3fe5e72187fd" />
   <Project Path="Dita.Tui/Dita.Tui.csproj" />
 </Solution>

@@ -9,15 +9,6 @@
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5678"
     },
-    "https": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:6789;http://localhost:5678"
-    },
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchBrowser": true,
