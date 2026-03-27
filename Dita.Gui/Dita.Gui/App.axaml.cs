@@ -6,13 +6,22 @@ using Dita.Gui.Views;
 
 namespace Dita.Gui;
 
+/// <summary>
+/// The main application class for the Dita GUI application.
+/// </summary>
 public class App : Application
 {
+   /// <summary>
+   /// Initializes the application by loading XAML resources.
+   /// </summary>
    public override void Initialize()
    {
       AvaloniaXamlLoader.Load(this);
    }
 
+   /// <summary>
+   /// Called when the framework initialization is completed. Sets up the main window or view based on the platform.
+   /// </summary>
    public override void OnFrameworkInitializationCompleted()
    {
 

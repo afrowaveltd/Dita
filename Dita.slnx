@@ -1,10 +1,8 @@
 <Solution>
   <Project Path="Dita.DiskAccessor.Linux/Dita.DiskAccessor.Linux.csproj" />
   <Project Path="Dita.DiskAccessor.Windows/Dita.DiskAccessor.Windows.csproj" />
-  <Project Path="Dita.Gui/Dita.Gui.Android/Dita.Gui.Android.csproj" />
   <Project Path="Dita.Gui/Dita.Gui.Browser/Dita.Gui.Browser.csproj" />
   <Project Path="Dita.Gui/Dita.Gui.Desktop/Dita.Gui.Desktop.csproj" />
-  <Project Path="Dita.Gui/Dita.Gui.iOS/Dita.Gui.iOS.csproj" />
   <Project Path="Dita.Gui/Dita.Gui/Dita.Gui.csproj" />
   <Project Path="Dita.Server/Dita.Server.csproj" />
   <Project Path="Dita.Tui/Dita.Tui.csproj" />

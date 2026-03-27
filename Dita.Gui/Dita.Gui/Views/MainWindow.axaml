@@ -6,7 +6,7 @@
         xmlns:views="clr-namespace:Dita.Gui.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Dita.Gui.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Dita.Gui">
+        Icon="/Assets/icon.ico"
+        Title="DITA - Disk Tester Afrowave">
         <views:MainView />
 </Window>
