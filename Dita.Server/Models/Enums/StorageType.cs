@@ -8,36 +8,36 @@ public enum StorageType
    /// <summary>
    /// Uses Ajis file-based storage.
    /// </summary>
-   AjisFiles,
+   AjisFiles = 0,
 
    /// <summary>
    /// Uses generic JSON file-based storage.
    /// </summary>
-   JsonFiles,
+   JsonFiles = 1,
 
    /// <summary>
    /// Uses Entity Framework Core with SQLite provider.
    /// </summary>
-   EFCoreSqlite,
+   EFCoreSqlite = 2,
 
    /// <summary>
    /// Uses Entity Framework Core with SQL Server provider.
    /// </summary>
-   EFCoreSqlServer,
+   EFCoreSqlServer = 3,
 
    /// <summary>
    /// Uses Entity Framework Core with PostgreSQL provider.
    /// </summary>
-   EFCorePostgres,
+   EFCorePostgres = 4,
 
    /// <summary>
    /// Uses Entity Framework Core with MariaDB provider.
    /// </summary>
-   EFCoreMariaDb,
+   EFCoreMariaDb = 5,
 
    /// <summary>
    /// Uses a Mongo DB provider
    /// </summary>
-   MongoDb
+   MongoDb = 6
 
 }
