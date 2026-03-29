@@ -1,10 +1,17 @@
 using Dita.Server.Logging;
 using Serilog;
 using Serilog.Events;
-using Serilog.Formatting.Compact;
 using Serilog.Sinks.SystemConsole.Themes;
 
-const string ConsoleOutputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj} {Properties:j}{NewLine}{Exception}";
+const string ConsoleOutputTemplate = """
+┌──────────────────────────────────────────────────────────────────────────────
+│ {Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}]
+│ Source: {SourceContext}
+│ Message: {Message:lj}
+│ Properties: {Properties:j}
+{Exception}└──────────────────────────────────────────────────────────────────────────────
+
+""";
 
 Log.Logger = new LoggerConfiguration()
    .MinimumLevel.Verbose()
@@ -12,7 +19,7 @@ Log.Logger = new LoggerConfiguration()
 #if DEBUG
    .WriteTo.Console(
       restrictedToMinimumLevel: LogEventLevel.Verbose,
-      theme: AnsiConsoleTheme.Code,
+      theme: AnsiConsoleTheme.Literate,
       outputTemplate: ConsoleOutputTemplate)
 #endif
    .CreateBootstrapLogger();
@@ -28,6 +35,7 @@ try
 
    builder.Logging.ClearProviders();
    builder.Services.AddSingleton(logStoragePaths);
+   builder.Services.AddSingleton<JsonArrayFileSink>();
    builder.Services.AddSingleton<SqliteLogSink>();
    builder.Services.AddHostedService<LogCleanupService>();
    builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfiguration
@@ -41,17 +49,10 @@ try
 #if DEBUG
       .WriteTo.Console(
          restrictedToMinimumLevel: LogEventLevel.Verbose,
-         theme: AnsiConsoleTheme.Code,
+         theme: AnsiConsoleTheme.Literate,
          outputTemplate: ConsoleOutputTemplate)
 #endif
-      .WriteTo.File(
-         formatter: new CompactJsonFormatter(),
-         path: Path.Combine(logStoragePaths.TextDirectory, "server-.json"),
-         restrictedToMinimumLevel: LogEventLevel.Information,
-         rollingInterval: RollingInterval.Day,
-         retainedFileCountLimit: logStoragePaths.RetentionDays,
-         shared: true,
-         flushToDiskInterval: TimeSpan.FromSeconds(1))
+      .WriteTo.Sink(services.GetRequiredService<JsonArrayFileSink>(), restrictedToMinimumLevel: LogEventLevel.Information)
       .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning));
 
    builder.Services.AddRazorPages();

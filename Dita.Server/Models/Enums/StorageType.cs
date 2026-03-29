@@ -39,5 +39,4 @@ public enum StorageType
    /// Uses a Mongo DB provider
    /// </summary>
    MongoDb = 6
-
 }

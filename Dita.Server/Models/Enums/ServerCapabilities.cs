@@ -10,6 +10,7 @@ public enum ServerCapabilities
    /// Server is not having any active roles
    /// </summary>
    None = 0,
+
    /// <summary>
    /// Server provides discovery capabilities for locating other servers and services.
    /// </summary>
@@ -45,4 +46,3 @@ public enum ServerCapabilities
    /// </summary>
    ClusterMember = 64
 }
-

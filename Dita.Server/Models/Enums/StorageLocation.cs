@@ -17,23 +17,24 @@ public enum StorageLocation
    /// protected system directory.
    /// </summary>
    InFolderStorage = 0,
+
    /// <summary>
-   /// Store data in the user's profile directory. This is suitable for data that is specific to the user and should
-   /// not be shared with other users on the same machine. This location typically does not require elevated
-   /// permissions.
+   /// Store data in the user's profile directory. This is suitable for data that is specific to the user and should not
+   /// be shared with other users on the same machine. This location typically does not require elevated permissions.
    /// </summary>
    InUserProfile = 1,
+
    /// <summary>
    /// Store data in the application's data directory. This is suitable for data that needs to be shared across
-   /// different users or instances of the application. This location may require elevated permissions depending on
-   /// the system configuration.
+   /// different users or instances of the application. This location may require elevated permissions depending on the
+   /// system configuration.
    /// </summary>
    InAppData = 2,
+
    /// <summary>
-   /// Store data in a specified path. This is suitable for data that needs to be stored in a custom location defined
-   /// by the user or application. Ensure that the application has the necessary permissions to read and write to
-   /// the specified path.
+   /// Store data in a specified path. This is suitable for data that needs to be stored in a custom location defined by
+   /// the user or application. Ensure that the application has the necessary permissions to read and write to the
+   /// specified path.
    /// </summary>
    InSpecifiedPath = 3
-
 }

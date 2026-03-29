@@ -10,5 +10,4 @@ public class MainSettings
    public ServerCapabilities Capabilities { get; set; } = ServerCapabilities.None;
    public bool MemberOfCluster { get; set; } = false;
    public bool AutoSync { get; set; } = false;
-
 }
