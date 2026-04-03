@@ -1,7 +1,10 @@
 using Dita.Server.Logging;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.AspNetCore.App.SignalR.Extensions;
 using Serilog.Sinks.SystemConsole.Themes;
+
+// Define a custom output template for console logging
 
 const string ConsoleOutputTemplate = """
 ┌──────────────────────────────────────────────────────────────────────────────
@@ -37,6 +40,7 @@ try
    builder.Services.AddSingleton(logStoragePaths);
    builder.Services.AddSingleton<JsonArrayFileSink>();
    builder.Services.AddSingleton<SqliteLogSink>();
+   builder.Services.AddDefaultSerilogHub();
    builder.Services.AddHostedService<LogCleanupService>();
    builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfiguration
       .MinimumLevel.Verbose()
@@ -53,8 +57,8 @@ try
          outputTemplate: ConsoleOutputTemplate)
 #endif
       .WriteTo.Sink(services.GetRequiredService<JsonArrayFileSink>(), restrictedToMinimumLevel: LogEventLevel.Information)
-      .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning));
-
+      .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning)
+      .WriteTo.SignalR(services, "ReceiveEvent"));
    builder.Services.AddRazorPages();
 
    WebApplication app = builder.Build();

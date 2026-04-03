@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA1865: Použít přetížení typu char
+dotnet_diagnostic.CA1865.severity = silent

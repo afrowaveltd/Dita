@@ -1,15 +1,15 @@
-using System.Globalization;
-using System.Text;
 using Serilog.Core;
 using Serilog.Debugging;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
+using System.Globalization;
+using System.Text;
 
 namespace Dita.Server.Logging;
 
 internal sealed class JsonArrayFileSink(LogStoragePaths paths) : ILogEventSink
 {
-   private readonly object syncRoot = new();
+   private readonly Lock syncRoot = new();
    private readonly CompactJsonFormatter formatter = new();
    private DateOnly lastCleanupDate = DateOnly.MinValue;
 

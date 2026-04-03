@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="Dita.DiskAccessor.Linux/Dita.DiskAccessor.Linux.csproj" />
   <Project Path="Dita.DiskAccessor.Windows/Dita.DiskAccessor.Windows.csproj" />
   <Project Path="Dita.Gui/Dita.Gui.Browser/Dita.Gui.Browser.csproj" />
