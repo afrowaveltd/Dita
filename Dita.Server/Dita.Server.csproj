@@ -25,6 +25,7 @@
     <Folder Include="Docs\" />
     <Folder Include="Api\" />
     <Folder Include="Hub\" />
+    <Folder Include="Locales\" />
     <Folder Include="Settings\" />
     <Folder Include="Storage\" />
   </ItemGroup>
