@@ -1,4 +1,5 @@
 using Dita.Server.Logging;
+using Dita.Server.Services;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.AspNetCore.App.SignalR.Extensions;
@@ -60,6 +61,7 @@ try
       .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning)
       .WriteTo.SignalR(services, "ReceiveEvent"));
    builder.Services.AddRazorPages();
+   builder.Services.AddSingleton<SettingsService>();
 
    WebApplication app = builder.Build();
 
