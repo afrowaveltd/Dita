@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="Identity\Models\" />
+    <Folder Include="Mailer\Services\" />
   </ItemGroup>
 
   <ItemGroup>
