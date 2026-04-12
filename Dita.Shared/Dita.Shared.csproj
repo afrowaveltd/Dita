@@ -16,6 +16,9 @@
     <PackageReference Include="Afrowave.SharedTools.Api" Version="0.0.3" />
     <PackageReference Include="Afrowave.SharedTools.Models" Version="1.4.0-alpha" />
     <PackageReference Include="MailKit" Version="4.15.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.9" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.5" />
   </ItemGroup>
 
 </Project>
