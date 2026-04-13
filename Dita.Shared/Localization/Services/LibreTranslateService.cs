@@ -47,4 +47,45 @@ public class LibreTranslateService(AutomaticTranslationSettings settings, ILibre
          };
       }
    }
+
+   public async Task<Response<Detections>> DetectLanguageAsync(string text)
+   {
+      Dictionary<string, string> formFields = new()
+      {
+         { "q", text }
+      };
+
+      if(_settings.NeedsKey && _settings.Key is not null)
+      {
+         formFields.Add("api_key", _settings.Key);
+      }
+      var response = await libreClient.PostAsync(_settings.Address + _settings.DetectLanguageEndpoint, new FormUrlEncodedContent(formFields));
+      if(!response.IsSuccessStatusCode)
+      {
+         _logger.LogError("Failed to detect language. Status code: {StatusCode}", response.StatusCode);
+         return new Response<Detections>
+         {
+            Success = false,
+            Message = "Failed to detect language."
+         };
+      }
+
+      var content = await response.Content.ReadAsStringAsync();
+      var detections = JsonSerializer.Deserialize<Detections>(content, _options);
+      return new Response<Detections>
+      {
+         Success = true,
+         Data = detections ?? new(),
+         Message = "Language detected successfully."
+      };
+   }
+
+   public async Task<Response<string[]>> GetAvailableLanguagesAsync()
+   {
+      int retries = 0;
+      while(retries < 5)
+      {
+
+      }
+   }
 }

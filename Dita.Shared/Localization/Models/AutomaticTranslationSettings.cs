@@ -44,4 +44,21 @@ public class AutomaticTranslationSettings
    /// Gets or sets the checking period in minutes.
    /// </summary>
    public int CheckingPeriod { get; set; } = 30;
+   /// <summary>
+   /// Gets or sets the endpoint URL for the translation service.
+   /// </summary>
+   public string TranslateEndpoint { get; set; } = "/translate";
+
+   /// <summary>
+   /// Gets or sets the endpoint URL used for file translation requests.
+   /// </summary>
+   public string TranslateFileEndpoint { get; set; } = "/translate_file";
+   /// <summary>
+	/// Gets or sets the endpoint URL used to retrieve supported languages.
+	/// </summary>
+	public string LanguagesEndpoint { get; set; } = "/languages";
+   /// <summary>
+	/// Gets or sets the endpoint URL used to detect the language from provided text.
+	/// </summary>
+	public string DetectLanguageEndpoint { get; set; } = "/detect";
 }
