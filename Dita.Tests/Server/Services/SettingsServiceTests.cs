@@ -73,6 +73,77 @@ public class SettingsServiceTests : IDisposable
       Assert.NotEqual("MutatedOutsideService", service.Settings.ServerName);
    }
 
+   [Fact]
+   public async Task WhenSaveNowAsyncCalledThenCurrentSettingsArePersisted()
+   {
+      // Arrange
+      WriteSettings("Initial");
+      var logger = Substitute.For<ILogger<SettingsService>>();
+      var service = new SettingsService(logger);
+      service.UpdateSettings(settings => settings.ServerName = "SavedImmediately");
+
+      // Act
+      await service.SaveNowAsync();
+
+      // Assert
+      var json = await WaitForFileContentAsync(content => content.Contains("\"ServerName\": \"SavedImmediately\""));
+      Assert.Contains("\"ServerName\": \"SavedImmediately\"", json);
+   }
+
+   [Fact]
+   public void WhenSettingsAssignedNullThenThrowsArgumentNullException()
+   {
+      // Arrange
+      WriteSettings("Initial");
+      var service = new SettingsService(Substitute.For<ILogger<SettingsService>>());
+
+      // Act & Assert
+      Assert.Throws<ArgumentNullException>(() => service.Settings = null!);
+   }
+
+   [Fact]
+   public void WhenUpdateSettingsCalledWithNullThenThrowsArgumentNullException()
+   {
+      // Arrange
+      WriteSettings("Initial");
+      var service = new SettingsService(Substitute.For<ILogger<SettingsService>>());
+
+      // Act & Assert
+      Assert.Throws<ArgumentNullException>(() => service.UpdateSettings(null!));
+   }
+
+   [Fact]
+   public async Task WhenSettingsFileDoesNotExistThenDefaultSettingsAreCreatedAndPersisted()
+   {
+      // Arrange
+      if(File.Exists(_settingsFilePath))
+      {
+         File.Delete(_settingsFilePath);
+      }
+
+      var service = new SettingsService(Substitute.For<ILogger<SettingsService>>());
+
+      // Act
+      var serverId = service.Settings.ServerId;
+
+      // Assert
+      Assert.NotNull(service.Settings);
+      Assert.NotEmpty(serverId);
+
+      var json = await WaitForFileContentAsync(static content => content.Contains("\"ServerId\":"));
+      Assert.Contains("\"ServerId\":", json);
+   }
+
+   [Fact]
+   public void WhenSettingsFileContainsInvalidJsonThenConstructorThrowsInvalidOperationException()
+   {
+      // Arrange
+      File.WriteAllText(_settingsFilePath, "{ invalid json }");
+
+      // Act & Assert
+      Assert.Throws<InvalidOperationException>(() => new SettingsService(Substitute.For<ILogger<SettingsService>>()));
+   }
+
    public void Dispose()
    {
       if(_originalExists)

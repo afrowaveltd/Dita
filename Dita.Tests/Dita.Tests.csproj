@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dita.Server\Dita.Server.csproj" />
+    <ProjectReference Include="..\Dita.Shared\Dita.Shared.csproj" />
     <ProjectReference Include="..\Dita.DiskAccessor.Linux\Dita.DiskAccessor.Linux.csproj" />
     <ProjectReference Include="..\Dita.DiskAccessor.Windows\Dita.DiskAccessor.Windows.csproj" />
     <ProjectReference Include="..\Dita.Tui\Dita.Tui.csproj" />

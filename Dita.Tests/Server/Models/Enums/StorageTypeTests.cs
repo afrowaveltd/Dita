@@ -47,11 +47,44 @@ public class StorageTypeTests
       Assert.True(Enum.IsDefined(storageType));
    }
 
+   [Fact]
+   public void WhenEFCorePostgresThenEnumIsDefined()
+   {
+      // Arrange & Act
+      var storageType = StorageType.EFCorePostgres;
+
+      // Assert
+      Assert.True(Enum.IsDefined(storageType));
+   }
+
+   [Fact]
+   public void WhenEFCoreMariaDbThenEnumIsDefined()
+   {
+      // Arrange & Act
+      var storageType = StorageType.EFCoreMariaDb;
+
+      // Assert
+      Assert.True(Enum.IsDefined(storageType));
+   }
+
+   [Fact]
+   public void WhenMongoDbThenEnumIsDefined()
+   {
+      // Arrange & Act
+      var storageType = StorageType.MongoDb;
+
+      // Assert
+      Assert.True(Enum.IsDefined(storageType));
+   }
+
    [Theory]
    [InlineData(StorageType.AjisFiles)]
    [InlineData(StorageType.JsonFiles)]
    [InlineData(StorageType.EFCoreSqlite)]
    [InlineData(StorageType.EFCoreSqlServer)]
+   [InlineData(StorageType.EFCorePostgres)]
+   [InlineData(StorageType.EFCoreMariaDb)]
+   [InlineData(StorageType.MongoDb)]
    public void WhenValidStorageTypeThenToStringReturnsName(StorageType storageType)
    {
       // Arrange & Act
@@ -67,6 +100,9 @@ public class StorageTypeTests
    [InlineData("JsonFiles", StorageType.JsonFiles)]
    [InlineData("EFCoreSqlite", StorageType.EFCoreSqlite)]
    [InlineData("EFCoreSqlServer", StorageType.EFCoreSqlServer)]
+   [InlineData("EFCorePostgres", StorageType.EFCorePostgres)]
+   [InlineData("EFCoreMariaDb", StorageType.EFCoreMariaDb)]
+   [InlineData("MongoDb", StorageType.MongoDb)]
    public void WhenParsingValidStringThenReturnsCorrectEnum(string value, StorageType expected)
    {
       // Arrange & Act

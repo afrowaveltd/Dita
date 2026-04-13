@@ -17,34 +17,18 @@ public class ServerCapabilitiesTests
       Assert.Equal(0, (int)capability);
    }
 
-   [Fact]
-   public void WhenDiscoverThenValueIsOne()
+   [Theory]
+   [InlineData(ServerCapabilities.Discover, 1)]
+   [InlineData(ServerCapabilities.DataStorage, 2)]
+   [InlineData(ServerCapabilities.TranslationService, 4)]
+   [InlineData(ServerCapabilities.IdentityService, 8)]
+   [InlineData(ServerCapabilities.EmailService, 16)]
+   [InlineData(ServerCapabilities.SharedMailer, 32)]
+   [InlineData(ServerCapabilities.ClusterMember, 64)]
+   public void WhenCapabilityReadThenExpectedFlagValueIsReturned(ServerCapabilities capability, int expectedValue)
    {
-      // Arrange & Act
-      var capability = ServerCapabilities.Discover;
-
-      // Assert
-      Assert.Equal(1, (int)capability);
-   }
-
-   [Fact]
-   public void WhenDataStorageThenValueIsTwo()
-   {
-      // Arrange & Act
-      var capability = ServerCapabilities.DataStorage;
-
-      // Assert
-      Assert.Equal(2, (int)capability);
-   }
-
-   [Fact]
-   public void WhenTranslationServiceThenValueIsFour()
-   {
-      // Arrange & Act
-      var capability = ServerCapabilities.TranslationService;
-
-      // Assert
-      Assert.Equal(4, (int)capability);
+      // Act & Assert
+      Assert.Equal(expectedValue, (int)capability);
    }
 
    [Fact]
@@ -65,12 +49,20 @@ public class ServerCapabilitiesTests
       // Arrange
       var all = ServerCapabilities.Discover |
                 ServerCapabilities.DataStorage |
-                ServerCapabilities.TranslationService;
+                ServerCapabilities.TranslationService |
+                ServerCapabilities.IdentityService |
+                ServerCapabilities.EmailService |
+                ServerCapabilities.SharedMailer |
+                ServerCapabilities.ClusterMember;
 
       // Act & Assert
       Assert.True(all.HasFlag(ServerCapabilities.Discover));
       Assert.True(all.HasFlag(ServerCapabilities.DataStorage));
       Assert.True(all.HasFlag(ServerCapabilities.TranslationService));
+      Assert.True(all.HasFlag(ServerCapabilities.IdentityService));
+      Assert.True(all.HasFlag(ServerCapabilities.EmailService));
+      Assert.True(all.HasFlag(ServerCapabilities.SharedMailer));
+      Assert.True(all.HasFlag(ServerCapabilities.ClusterMember));
    }
 
    [Fact]

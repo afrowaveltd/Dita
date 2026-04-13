@@ -5,8 +5,6 @@ using Serilog.Events;
 using Serilog.Sinks.AspNetCore.App.SignalR.Extensions;
 using Serilog.Sinks.SystemConsole.Themes;
 
-// Define a custom output template for console logging
-
 const string ConsoleOutputTemplate = """
 ┌──────────────────────────────────────────────────────────────────────────────
 │ {Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}]
@@ -17,8 +15,96 @@ const string ConsoleOutputTemplate = """
 
 """;
 
+#if DEBUG
+const bool IsDetailedLogging = true;
+const LogEventLevel BootstrapMinimumLevel = LogEventLevel.Verbose;
+const LogEventLevel ApplicationMinimumLevel = LogEventLevel.Verbose;
+const LogEventLevel FrameworkMinimumLevel = LogEventLevel.Debug;
+const LogEventLevel AspNetCoreMinimumLevel = LogEventLevel.Debug;
+const LogEventLevel RequestSuccessLevel = LogEventLevel.Debug;
+const LogEventLevel JsonFileMinimumLevel = LogEventLevel.Debug;
+const double SlowRequestThresholdMs = 500;
+#else
+const bool IsDetailedLogging = false;
+const LogEventLevel BootstrapMinimumLevel = LogEventLevel.Information;
+const LogEventLevel ApplicationMinimumLevel = LogEventLevel.Information;
+const LogEventLevel FrameworkMinimumLevel = LogEventLevel.Warning;
+const LogEventLevel AspNetCoreMinimumLevel = LogEventLevel.Warning;
+const LogEventLevel RequestSuccessLevel = LogEventLevel.Information;
+const LogEventLevel JsonFileMinimumLevel = LogEventLevel.Information;
+const double SlowRequestThresholdMs = 1000;
+#endif
+
+LogEventLevel GetRequestLogLevel(HttpContext httpContext, double elapsedMilliseconds, Exception? exception)
+{
+   if(exception is not null || httpContext.Response.StatusCode >= StatusCodes.Status500InternalServerError)
+   {
+      return LogEventLevel.Error;
+   }
+
+   if(httpContext.Response.StatusCode >= StatusCodes.Status400BadRequest || elapsedMilliseconds >= SlowRequestThresholdMs)
+   {
+      return LogEventLevel.Warning;
+   }
+
+   return RequestSuccessLevel;
+}
+
+void EnrichRequestDiagnosticContext(Serilog.IDiagnosticContext diagnosticContext, HttpContext httpContext)
+{
+   diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+   diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+   diagnosticContext.Set("RequestProtocol", httpContext.Request.Protocol);
+   diagnosticContext.Set("RequestId", httpContext.TraceIdentifier);
+
+   string userAgent = httpContext.Request.Headers.UserAgent.ToString();
+   if(!string.IsNullOrWhiteSpace(userAgent))
+   {
+      diagnosticContext.Set("UserAgent", userAgent);
+   }
+
+   string? clientIp = httpContext.Connection.RemoteIpAddress?.ToString();
+   if(!string.IsNullOrWhiteSpace(clientIp))
+   {
+      diagnosticContext.Set("ClientIp", clientIp);
+   }
+
+   if(!IsDetailedLogging)
+   {
+      return;
+   }
+
+   diagnosticContext.Set("ConnectionId", httpContext.Connection.Id);
+
+   string endpointName = httpContext.GetEndpoint()?.DisplayName ?? string.Empty;
+   if(!string.IsNullOrWhiteSpace(endpointName))
+   {
+      diagnosticContext.Set("EndpointName", endpointName);
+   }
+
+   string queryString = httpContext.Request.QueryString.Value ?? string.Empty;
+   if(!string.IsNullOrWhiteSpace(queryString))
+   {
+      diagnosticContext.Set("RequestQueryString", queryString);
+   }
+
+   string? contentType = httpContext.Request.ContentType;
+   if(!string.IsNullOrWhiteSpace(contentType))
+   {
+      diagnosticContext.Set("RequestContentType", contentType);
+   }
+
+   if(httpContext.Request.ContentLength is long contentLength)
+   {
+      diagnosticContext.Set("RequestContentLength", contentLength);
+   }
+}
+
 Log.Logger = new LoggerConfiguration()
-   .MinimumLevel.Verbose()
+   .MinimumLevel.Is(BootstrapMinimumLevel)
+   .MinimumLevel.Override("Microsoft", FrameworkMinimumLevel)
+   .MinimumLevel.Override("Microsoft.AspNetCore", AspNetCoreMinimumLevel)
+   .MinimumLevel.Override("System", FrameworkMinimumLevel)
    .Enrich.FromLogContext()
 #if DEBUG
    .WriteTo.Console(
@@ -44,10 +130,11 @@ try
    builder.Services.AddDefaultSerilogHub();
    builder.Services.AddHostedService<LogCleanupService>();
    builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfiguration
-      .MinimumLevel.Verbose()
-      .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-      .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+      .MinimumLevel.Is(ApplicationMinimumLevel)
+      .MinimumLevel.Override("Microsoft", FrameworkMinimumLevel)
+      .MinimumLevel.Override("Microsoft.AspNetCore", AspNetCoreMinimumLevel)
       .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+      .MinimumLevel.Override("System", FrameworkMinimumLevel)
       .Enrich.FromLogContext()
       .Enrich.WithProperty("Application", builder.Environment.ApplicationName)
       .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
@@ -57,7 +144,7 @@ try
          theme: AnsiConsoleTheme.Literate,
          outputTemplate: ConsoleOutputTemplate)
 #endif
-      .WriteTo.Sink(services.GetRequiredService<JsonArrayFileSink>(), restrictedToMinimumLevel: LogEventLevel.Information)
+      .WriteTo.Sink(services.GetRequiredService<JsonArrayFileSink>(), restrictedToMinimumLevel: JsonFileMinimumLevel)
       .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning)
       .WriteTo.SignalR(services, "ReceiveEvent"));
    builder.Services.AddRazorPages();
@@ -68,32 +155,13 @@ try
    app.UseSerilogRequestLogging(options =>
    {
       options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
-      options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-      {
-         diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-         diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
-         diagnosticContext.Set("RequestProtocol", httpContext.Request.Protocol);
-         diagnosticContext.Set("RequestId", httpContext.TraceIdentifier);
-
-         string userAgent = httpContext.Request.Headers.UserAgent.ToString();
-         if(!string.IsNullOrWhiteSpace(userAgent))
-         {
-            diagnosticContext.Set("UserAgent", userAgent);
-         }
-
-         string? clientIp = httpContext.Connection.RemoteIpAddress?.ToString();
-         if(!string.IsNullOrWhiteSpace(clientIp))
-         {
-            diagnosticContext.Set("ClientIp", clientIp);
-         }
-      };
+      options.GetLevel = GetRequestLogLevel;
+      options.EnrichDiagnosticContext = EnrichRequestDiagnosticContext;
    });
 
-   // Configure the HTTP request pipeline.
    if(!app.Environment.IsDevelopment())
    {
       app.UseExceptionHandler("/Error");
-      // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
       app.UseHsts();
       app.UseHttpsRedirection();
    }

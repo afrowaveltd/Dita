@@ -9,13 +9,13 @@ namespace Dita.Shared.Localization.Middlewares;
 /// Middleware for managing application localization based on language settings.
 /// </summary>
 /// <remarks>
-/// This middleware reads and writes language preferences from cookies and sets the current culture
-/// for the HTTP context. If no language is explicitly set, the default language "en" is used.
+/// This middleware reads and writes language preferences from cookies and sets the current culture for the HTTP
+/// context. If no language is explicitly set, the default language "en" is used.
 /// </remarks>
 public class LocalizationMiddleware(ILogger<LocalizationMiddleware> logger, ICookieService cookie)
 {
-   ILogger<LocalizationMiddleware> _logger = logger;
-   ICookieService _cookie = cookie;
+   private readonly ILogger<LocalizationMiddleware> _logger = logger;
+   private readonly ICookieService _cookie = cookie;
 
    /// <summary>
    /// Processes an HTTP request and sets the culture based on the preferred language.
@@ -24,11 +24,9 @@ public class LocalizationMiddleware(ILogger<LocalizationMiddleware> logger, ICoo
    /// <param name="next">The delegate for invoking the next middleware in the pipeline.</param>
    /// <returns>An asynchronous task representing the middleware processing.</returns>
    /// <remarks>
-   /// The middleware performs the following steps:
-   /// 1. Attempts to read the language from cookies.
-   /// 2. If not in cookies, reads Accept-Language from the request and saves it to cookies.
-   /// 3. If neither source is available, uses the default language "en".
-   /// 4. Verifies that the given culture exists, and if so, sets it for the current thread.
+   /// The middleware performs the following steps: 1. Attempts to read the language from cookies. 2. If not in cookies,
+   /// reads Accept-Language from the request and saves it to cookies. 3. If neither source is available, uses the
+   /// default language "en". 4. Verifies that the given culture exists, and if so, sets it for the current thread.
    /// </remarks>
    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
    {
@@ -39,7 +37,6 @@ public class LocalizationMiddleware(ILogger<LocalizationMiddleware> logger, ICoo
       {
          cultureKey = _cookie.ReadResponse("Language").Data;
          context.Request.Headers["Accept-Language"] = cultureKey;
-
       }
       else if(context.Request.Headers["Accept-Language"] != string.Empty)
       {
