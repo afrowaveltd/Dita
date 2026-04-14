@@ -1,9 +1,17 @@
+using Afrowave.SharedTools.Api.Services;
 using Dita.Server.Logging;
 using Dita.Server.Services;
+using Dita.Shared.Localization.Middlewares;
+using Dita.Shared.Localization.Models;
+using Dita.Shared.Localization.Services;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Localization;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.AspNetCore.App.SignalR.Extensions;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 const string ConsoleOutputTemplate = """
 ┌──────────────────────────────────────────────────────────────────────────────
@@ -16,7 +24,6 @@ const string ConsoleOutputTemplate = """
 """;
 
 #if DEBUG
-const bool IsDetailedLogging = true;
 const LogEventLevel BootstrapMinimumLevel = LogEventLevel.Verbose;
 const LogEventLevel ApplicationMinimumLevel = LogEventLevel.Verbose;
 const LogEventLevel FrameworkMinimumLevel = LogEventLevel.Debug;
@@ -34,7 +41,7 @@ const LogEventLevel RequestSuccessLevel = LogEventLevel.Information;
 const LogEventLevel JsonFileMinimumLevel = LogEventLevel.Information;
 const double SlowRequestThresholdMs = 1000;
 #endif
-
+// Logging 
 LogEventLevel GetRequestLogLevel(HttpContext httpContext, double elapsedMilliseconds, Exception? exception)
 {
    if(exception is not null || httpContext.Response.StatusCode >= StatusCodes.Status500InternalServerError)
@@ -69,10 +76,6 @@ void EnrichRequestDiagnosticContext(Serilog.IDiagnosticContext diagnosticContext
       diagnosticContext.Set("ClientIp", clientIp);
    }
 
-   if(!IsDetailedLogging)
-   {
-      return;
-   }
 
    diagnosticContext.Set("ConnectionId", httpContext.Connection.Id);
 
@@ -149,6 +152,75 @@ try
       .WriteTo.SignalR(services, "ReceiveEvent"));
    builder.Services.AddRazorPages();
    builder.Services.AddSingleton<SettingsService>();
+
+   builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+   {
+      // Set property naming policy to camelCase
+      options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
+      // Allow complex object types like Lists<T> or other nested members
+      options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
+
+      // Add support for preserving references if needed (useful for circular references)
+      options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+
+      // Customize any other settings as needed (e.g., number or date handling)
+   });
+   builder.Services.Configure<ForwardedHeadersOptions>(options =>
+   {
+      options.ForwardedHeaders =
+      ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+   });
+
+   builder.Services.AddControllers()
+          .AddJsonOptions(options =>
+          {
+             // Set property naming policy to camelCase
+             options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
+             // Allow Lists and nested objects
+             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
+
+             // Handle circular references if applicable
+             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+          })
+          .AddXmlDataContractSerializerFormatters();
+
+   builder.Services.AddSignalR();
+   builder.Services.AddHttpClient();
+
+   builder.Services.AddHttpContextAccessor();
+   builder.Services.AddAntiforgery(options =>
+   {
+      options.HeaderName = "X-XSRF-TOKEN";
+      options.Cookie.Name = "XSRF-TOKEN";
+      options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+      options.Cookie.SameSite = SameSiteMode.Strict;
+      options.Cookie.HttpOnly = true;
+   });
+   builder.Services.AddDistributedMemoryCache();
+   builder.Services.AddLocalization();
+
+   AutomaticTranslationSettings automaticTranslationSettings = builder.Configuration
+      .GetSection(nameof(AutomaticTranslationSettings))
+      .Get<AutomaticTranslationSettings>() ?? new AutomaticTranslationSettings();
+   builder.Services.AddSingleton(automaticTranslationSettings);
+
+   // middlewares
+   builder.Services.AddTransient<LocalizationMiddleware>();
+
+   // Singleton services
+   builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+   builder.Services.AddSingleton<IHttpService, HttpService>();
+   builder.Services.AddSingleton<ILibreTranslateHttpClientFactory, LibreTranslateHttpClientFactory>();
+   builder.Services.AddSingleton<ILibreTranslateService, LibreTranslateService>();
+   builder.Services.AddSingleton<ICookieService, CookieService>();
+
+   // Scoped services
+
+   // Transient services
+   builder.Services.AddTransient<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+
 
    WebApplication app = builder.Build();
 

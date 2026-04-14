@@ -31,4 +31,8 @@
     <Folder Include="Storage\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Dita.Shared\Dita.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

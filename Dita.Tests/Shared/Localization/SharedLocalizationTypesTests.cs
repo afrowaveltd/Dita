@@ -5,6 +5,9 @@ using Dita.Shared.Localization.Models;
 using Dita.Shared.Localization.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using System.Text.Json;
 
 namespace Dita.Tests.Shared.Localization;
@@ -206,14 +209,6 @@ public class SharedLocalizationTypesTests
    }
 
    [Fact]
-   public void WhenJsonStringLocalizerFactoryCreatedThenInstanceIsNotNull()
-   {
-      var factory = new JsonStringLocalizerFactory();
-
-      Assert.NotNull(factory);
-   }
-
-   [Fact]
    public void WhenLibreTranslateHttpClientFactoryCreatedThenClientUsesConfiguredBaseAddress()
    {
       var settings = new AutomaticTranslationSettings { Address = "https://translate.example/" };
@@ -222,5 +217,31 @@ public class SharedLocalizationTypesTests
       using var client = factory.LibreClient;
 
       Assert.Equal(new Uri("https://translate.example/"), client.BaseAddress);
+   }
+
+   [Fact]
+   public void WhenJsonStringLocalizerFactoryCreateWithResourceSourceCalledThenJsonStringLocalizerIsReturned()
+   {
+      var cache = Substitute.For<IDistributedCache>();
+      var libreTranslate = Substitute.For<ILibreTranslateService>();
+      var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
+      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, logger);
+
+      var localizer = factory.Create(typeof(SharedLocalizationTypesTests));
+
+      Assert.IsType<JsonStringLocalizer>(localizer);
+   }
+
+   [Fact]
+   public void WhenJsonStringLocalizerFactoryCreateWithBaseNameCalledThenJsonStringLocalizerIsReturned()
+   {
+      var cache = Substitute.For<IDistributedCache>();
+      var libreTranslate = Substitute.For<ILibreTranslateService>();
+      var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
+      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, logger);
+
+      var localizer = factory.Create("base", "location");
+
+      Assert.IsType<JsonStringLocalizer>(localizer);
    }
 }

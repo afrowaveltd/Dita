@@ -37,7 +37,7 @@ public class LibreTranslateService(AutomaticTranslationSettings settings, ILibre
    /// A <see cref="Response{T}"/> containing the server latency in milliseconds, or a failure response if the
    /// measurement failed.
    /// </returns>
-   private Response<int> ServerLatency()
+   public Response<int> ServerLatency()
    {
       var stopwatch = System.Diagnostics.Stopwatch.StartNew();
       var response = libreClient.GetAsync("/").Result;

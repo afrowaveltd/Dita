@@ -15,7 +15,7 @@ namespace Dita.Server.Services;
 /// performed for key operations and error conditions. This class is intended to be used as a singleton within the
 /// application.
 /// </remarks>
-public class SettingsService
+public class SettingsService : ISettingsService
 {
    private readonly ILogger<SettingsService> _logger;
    private readonly SemaphoreSlim _saveSemaphore = new(1, 1);
