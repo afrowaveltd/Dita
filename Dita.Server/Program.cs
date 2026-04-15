@@ -9,6 +9,7 @@ using Microsoft.Extensions.Localization;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.AspNetCore.App.SignalR.Extensions;
+using Serilog.Sinks.SystemConsole.Themes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -40,7 +41,7 @@ const LogEventLevel RequestSuccessLevel = LogEventLevel.Information;
 const LogEventLevel JsonFileMinimumLevel = LogEventLevel.Information;
 const double SlowRequestThresholdMs = 1000;
 #endif
-// Logging 
+// Logging
 LogEventLevel GetRequestLogLevel(HttpContext httpContext, double elapsedMilliseconds, Exception? exception)
 {
    if(exception is not null || httpContext.Response.StatusCode >= StatusCodes.Status500InternalServerError)
@@ -74,7 +75,6 @@ void EnrichRequestDiagnosticContext(Serilog.IDiagnosticContext diagnosticContext
    {
       diagnosticContext.Set("ClientIp", clientIp);
    }
-
 
    diagnosticContext.Set("ConnectionId", httpContext.Connection.Id);
 
@@ -111,7 +111,7 @@ Log.Logger = new LoggerConfiguration()
 #if DEBUG
    .WriteTo.Console(
       restrictedToMinimumLevel: LogEventLevel.Verbose,
-      theme: AnsiConsoleTheme.Literate,
+      theme: AnsiConsoleTheme.Code,
       outputTemplate: ConsoleOutputTemplate)
 #endif
    .CreateBootstrapLogger();
@@ -149,7 +149,7 @@ try
       .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning)
       .WriteTo.SignalR(services, "ReceiveEvent"));
 
-   // other services 
+   // other services
 
    builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
    {
@@ -183,11 +183,12 @@ try
              options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
           })
           .AddXmlDataContractSerializerFormatters();
-
+   builder.Services.AddOpenApi("Dita");
    builder.Services.AddRazorPages();
    builder.Services.AddSingleton<SettingsService>();
    builder.Services.AddSignalR();
    builder.Services.AddHttpClient();
+   builder.Services.AddHttpContextAccessor();
 
    builder.Services.AddHttpContextAccessor();
    builder.Services.AddAntiforgery(options =>
@@ -204,7 +205,7 @@ try
    AutomaticTranslationSettings automaticTranslationSettings = builder.Configuration
       .GetSection(nameof(AutomaticTranslationSettings))
       .Get<AutomaticTranslationSettings>() ?? new AutomaticTranslationSettings();
-
+   Log.Information("Appsettings.json file loaded: {@AutomaticTranslationSettings}", automaticTranslationSettings);
    // middlewares
    builder.Services.AddTransient<LocalizationMiddleware>();
 
@@ -220,7 +221,6 @@ try
 
    // Transient services
    builder.Services.AddTransient<IStringLocalizerFactory, JsonStringLocalizerFactory>();
-
 
    WebApplication app = builder.Build();
 
@@ -239,8 +239,6 @@ try
    }
 
    string[] supportedCultures = ["en"];
-
-
 
    app.UseRouting();
 
