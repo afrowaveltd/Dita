@@ -14,9 +14,9 @@ namespace Dita.Shared.Localization.Services;
 /// </summary>
 public class JsonStringLocalizer(IDistributedCache cache, ILibreTranslateService translationService, ILogger<JsonStringLocalizer> logger) : IStringLocalizer
 {
-   private IDistributedCache _cache = cache;
-   private ILibreTranslateService _translationService = translationService;
-   private ILogger<JsonStringLocalizer> _logger = logger;
+   private readonly IDistributedCache _cache = cache;
+   private readonly ILibreTranslateService _translationService = translationService;
+   private readonly ILogger<JsonStringLocalizer> _logger = logger;
 
    private static string LocalesPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory
 [..AppDomain.CurrentDomain.BaseDirectory
@@ -98,7 +98,7 @@ public class JsonStringLocalizer(IDistributedCache cache, ILibreTranslateService
       try
       {
          string jsonDictionary = File.ReadAllText(filePath);
-         Dictionary<string, string> pairs = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonDictionary) ?? new();
+         Dictionary<string, string> pairs = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonDictionary) ?? [];
          return pairs[key] ?? "";
       }
       catch(Exception ex)

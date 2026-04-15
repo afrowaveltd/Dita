@@ -9,7 +9,6 @@ using Microsoft.Extensions.Localization;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.AspNetCore.App.SignalR.Extensions;
-using Serilog.Sinks.SystemConsole.Themes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -120,12 +119,11 @@ Log.Logger = new LoggerConfiguration()
 try
 {
    Log.Information("Starting web application");
-
+   // Logging configuration and services
    WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
    LogStoragePaths logStoragePaths = LogStoragePaths.Create(builder.Environment.ContentRootPath);
    logStoragePaths.EnsureDirectories();
    LogStorageMaintenance.CleanupExpiredFiles(logStoragePaths);
-
    builder.Logging.ClearProviders();
    builder.Services.AddSingleton(logStoragePaths);
    builder.Services.AddSingleton<JsonArrayFileSink>();
@@ -150,8 +148,8 @@ try
       .WriteTo.Sink(services.GetRequiredService<JsonArrayFileSink>(), restrictedToMinimumLevel: JsonFileMinimumLevel)
       .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning)
       .WriteTo.SignalR(services, "ReceiveEvent"));
-   builder.Services.AddRazorPages();
-   builder.Services.AddSingleton<SettingsService>();
+
+   // other services 
 
    builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
    {
@@ -186,6 +184,8 @@ try
           })
           .AddXmlDataContractSerializerFormatters();
 
+   builder.Services.AddRazorPages();
+   builder.Services.AddSingleton<SettingsService>();
    builder.Services.AddSignalR();
    builder.Services.AddHttpClient();
 
@@ -204,12 +204,12 @@ try
    AutomaticTranslationSettings automaticTranslationSettings = builder.Configuration
       .GetSection(nameof(AutomaticTranslationSettings))
       .Get<AutomaticTranslationSettings>() ?? new AutomaticTranslationSettings();
-   builder.Services.AddSingleton(automaticTranslationSettings);
 
    // middlewares
    builder.Services.AddTransient<LocalizationMiddleware>();
 
    // Singleton services
+   builder.Services.AddSingleton(automaticTranslationSettings);
    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
    builder.Services.AddSingleton<IHttpService, HttpService>();
    builder.Services.AddSingleton<ILibreTranslateHttpClientFactory, LibreTranslateHttpClientFactory>();
@@ -237,6 +237,10 @@ try
       app.UseHsts();
       app.UseHttpsRedirection();
    }
+
+   string[] supportedCultures = ["en"];
+
+
 
    app.UseRouting();
 

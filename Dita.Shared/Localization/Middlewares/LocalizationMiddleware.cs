@@ -52,9 +52,7 @@ public class LocalizationMiddleware(ILogger<LocalizationMiddleware> logger, ICoo
 
       if(CultureExists(cultureKey ?? "en"))
       {
-#pragma warning disable CS8604 // Může jít o argument s odkazem null.
          CultureInfo culture = new(cultureKey);
-#pragma warning restore CS8604 // Může jít o argument s odkazem null.
          Thread.CurrentThread.CurrentCulture = culture;
          Thread.CurrentThread.CurrentUICulture = culture;
       }

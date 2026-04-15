@@ -191,10 +191,12 @@ public class LibreTranslateService(AutomaticTranslationSettings settings, ILibre
       {
          try
          {
-            var content = new MultipartFormDataContent();
-            content.Add(new StreamContent(fileStream), "file", fileName);
-            content.Add(new StringContent(sourceLanguage), "source");
-            content.Add(new StringContent(targetLanguage), "target");
+            MultipartFormDataContent content = new()
+            {
+               { new StreamContent(fileStream), "file", fileName },
+               { new StringContent(sourceLanguage), "source" },
+               { new StringContent(targetLanguage), "target" }
+            };
             if(_settings.NeedsKey && _settings.Key is not null)
             {
                content.Add(new StringContent(_settings.Key), "api_key");
