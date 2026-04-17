@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace Dita.Shared.Localization.Services;
 
-public class LanguageService
+public class LanguageService : ILanguageService
 {
    private readonly ILogger<LanguageService> _logger;
    private readonly IStringLocalizer<LanguageService> _t;
@@ -208,6 +208,112 @@ public class LanguageService
       }
       return Response<List<SingleTranslation>>.Fail(_t["No files in the folder"].Value);
    }
+   public async Task<Response<bool>> SaveDictionaryAsync(SingleTranslation data)
+   {
+
+      if(data.Language == null)
+      {
+         return Response<bool>.Fail(_t["Code can't be null"].Value);
+      }
+      if(data.Language.Length < 2)
+      {
+         return Response<bool>.Fail(_t["Invalid code"].Value);
+      }
+
+      string json = JsonSerializer.Serialize(data.Translations ?? []);
+      var path = Path.Combine(LocalesPath, data.Language + ".json");
+
+      if(File.Exists(path))
+      {
+         try
+         {
+            string backupPath = Path.Combine(Path.GetTempPath(), "dita", data.Language + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".bak");
+            File.Move(path, backupPath);
+         }
+         catch(Exception ex)
+         {
+            _logger.LogError(ex, "Backup file of the translation {language} could not be made", data.Language);
+            return Response<bool>.Fail($"Error creating backup: {ex.Message}");
+         }
+      }
+      try
+      {
+         await File.WriteAllTextAsync(json, path);
+         return Response<bool>.Ok(true, _t["Successfully stored"].Value);
+      }
+      catch(Exception ex)
+      {
+         return Response<bool>.Fail($"Error storing data: {ex.Message}");
+      }
+
+   }
+
+   public async Task<Response<bool>> SaveOldTranslationAsync(Dictionary<string, string> data)
+   {
+      try
+      {
+         string json = JsonSerializer.Serialize(data ?? []);
+         await File.WriteAllTextAsync(OldTranslationPath, json);
+         return Response<bool>.Ok(true);
+      }
+      catch(Exception ex)
+      {
+         {
+            _logger.LogError(ex, "Couldn't save an old translation");
+            return Response<bool>.Fail("Couldn't save an old translation");
+         }
+      }
+   }
+
+   public async Task<Response<Dictionary<string, bool>>> SaveTranslationsAsync(List<SingleTranslation> tree)
+   {
+      var response = new Response<Dictionary<string, bool>>
+      {
+         Data = []
+      };
+      foreach(SingleTranslation item in tree)
+      {
+         string language = item.Language;
+         Dictionary<string, string> dictionary = item.Translations;
+         var result = await SaveDictionaryAsync(item);
+         response.Data[language] = result.Success;
+      }
+      return response;
+   }
+
+   public async Task<Dictionary<string, bool>> CreateMissingLanguageFilesAsync(List<string> languages)
+   {
+      var result = new Dictionary<string, bool>();
+      foreach(string language in languages)
+      {
+         var res = await CreateEmptyLanguageFile(language);
+         result[language] = res;
+      }
+      return result;
+   }
+
+   private async Task<bool> CreateEmptyLanguageFile(string code)
+   {
+      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      {
+         return false;
+      }
+      var path = Path.Combine(LocalesPath, code + ".json");
+      if(File.Exists(path))
+      {
+         return false;
+      }
+      try
+      {
+         await File.WriteAllTextAsync(path, "{}");
+         return true;
+      }
+      catch
+      {
+         return false;
+      }
+   }
+
 
    private string[] TranslationsPresented()
    {
