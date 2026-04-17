@@ -36,7 +36,7 @@ public enum StorageType
    EFCoreMariaDb = 5,
 
    /// <summary>
-   /// Uses a Mongo DB provider
+   /// Uses a MongoDB provider.
    /// </summary>
    MongoDb = 6
 }

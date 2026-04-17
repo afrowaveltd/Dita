@@ -1,0 +1,2 @@
+# MariaDB migrations
+# Run: dotnet ef migrations add InitialCreate --context MariaDbAppDbContext --output-dir Storage/Migrations/MariaDB

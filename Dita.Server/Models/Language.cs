@@ -20,9 +20,8 @@ public class Language
    public string Name { get; set; } = string.Empty;
 
    /// <summary>
-   /// Gets or sets the native representation of the value.
+   /// Gets or sets the native representation of the language name (e.g., "Čeština" for Czech).
    /// </summary>
-
    public string Native { get; set; } = string.Empty;
 
    /// <summary>

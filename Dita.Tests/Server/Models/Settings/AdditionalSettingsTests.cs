@@ -53,7 +53,7 @@ public class AdditionalSettingsTests
    [Fact]
    public void WhenStorageCreatedThenDefaultValuesAreApplied()
    {
-      var storage = new Storage();
+      var storage = new StorageSettings();
 
       Assert.Equal(StorageType.AjisFiles, storage.StorageType);
       Assert.Equal(StorageLocation.InFolderStorage, storage.StorageLocation);
@@ -64,7 +64,7 @@ public class AdditionalSettingsTests
    [Fact]
    public void WhenStorageConfiguredThenAssignedValuesPersist()
    {
-      var storage = new Storage
+      var storage = new StorageSettings
       {
          StorageType = StorageType.MongoDb,
          StorageLocation = StorageLocation.InSpecifiedPath,

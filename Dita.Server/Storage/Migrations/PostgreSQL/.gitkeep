@@ -1,0 +1,2 @@
+# PostgreSQL migrations
+# Run: dotnet ef migrations add InitialCreate --context PostgreSqlAppDbContext --output-dir Storage/Migrations/PostgreSQL

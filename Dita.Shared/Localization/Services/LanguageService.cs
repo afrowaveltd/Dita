@@ -6,387 +6,636 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace Dita.Shared.Localization.Services;
+
 /// <summary>
-/// A service responsible for managing languages and their translations. It loads language information from a JSON file and provides methods to retrieve language details, check if a language is right-to-left, and manage translation dictionaries. The service also handles saving and retrieving translations, as well as creating missing language files when necessary.
+/// Manages available languages and their translation dictionaries.
+/// Loads language metadata from a JSON file and provides methods to look up languages,
+/// read/write locale files, and manipulate individual translation entries.
+/// All file I/O is serialised through a <see cref="SemaphoreSlim"/> so the service
+/// is safe to use from a background translation service running concurrently.
 /// </summary>
 public class LanguageService : ILanguageService
 {
    private readonly ILogger<LanguageService> _logger;
    private readonly IStringLocalizer<LanguageService> _t;
-/// <summary>
-/// A list of available languages loaded from the JSON file. Each language includes its code, name, native name, and whether it is a right-to-left language. This list is used throughout the service to provide language information and manage translations.
-/// </summary>
+
+   // Ensures that only one file operation runs at a time.
+   private readonly SemaphoreSlim _fileLock = new(1, 1);
+
+   // Path to the languages metadata file (languages.json), resolved outside the bin directory.
+   private static string JsonFilePath
+   {
+      get
+      {
+         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+         int binIndex = baseDir.IndexOf("bin", StringComparison.OrdinalIgnoreCase);
+         string root = binIndex >= 0 ? baseDir[..binIndex] : baseDir;
+         return Path.Combine(root, "Jsons", "languages.json");
+      }
+   }
+
+   // Directory that holds per-language locale files (*.json).
+   private static string LocalesPath
+   {
+      get
+      {
+         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+         int binIndex = baseDir.IndexOf("bin", StringComparison.OrdinalIgnoreCase);
+         string root = binIndex >= 0 ? baseDir[..binIndex] : baseDir;
+         return Path.Combine(root, "Locales");
+      }
+   }
+
+   // Temporary file used to keep a backup of the previous default translation.
+   private static string OldTranslationPath => Path.Combine(Path.GetTempPath(), "old.json");
+
+   /// <summary>
+   /// List of available languages loaded from the JSON metadata file.
+   /// </summary>
    public List<Language> Languages { get; private set; }
+
+   /// <summary>
+   /// Initialises the service and loads the language list from the JSON file.
+   /// If the file is missing or corrupted, <see cref="Languages"/> is initialised as an empty list
+   /// so the service can still operate without crashing.
+   /// </summary>
    public LanguageService(ILogger<LanguageService> logger, IStringLocalizer<LanguageService> t)
    {
       _logger = logger;
       _t = t;
+      Languages = LoadLanguages();
+   }
+
+   private List<Language> LoadLanguages()
+   {
+      if(!File.Exists(JsonFilePath))
+      {
+         _logger.LogWarning("Language metadata file not found: {JsonFilePath}", JsonFilePath);
+         return [];
+      }
       try
       {
-         if(!File.Exists(JsonFilePath))
-         {
-            _logger.LogWarning("Languages JSON file not found at path: {JsonFilePath}", JsonFilePath);
-            Languages = new List<Language>();
-         }
-         var json = File.ReadAllText(JsonFilePath);
-         var languages = System.Text.Json.JsonSerializer.Deserialize<List<Language>>(json);
-         Languages = languages ?? new List<Language>();
+         string json = File.ReadAllText(JsonFilePath);
+         List<Language>? languages = JsonSerializer.Deserialize<List<Language>>(json);
+         _logger.LogDebug("Loaded {Count} languages from {JsonFilePath}", languages?.Count ?? 0, JsonFilePath);
+         return languages ?? [];
       }
       catch(Exception ex)
       {
-         _logger.LogError(ex, "Error loading languages from JSON file at path: {JsonFilePath}", JsonFilePath);
-         Languages = [];
+         _logger.LogError(ex, "Error loading languages from: {JsonFilePath}", JsonFilePath);
+         return [];
       }
    }
 
-/// <summary>
-/// Retrieves a list of language names available in the service. The names are sorted alphabetically for easier access. This method is useful for displaying language options to users or for any functionality that requires a list of language names without needing the full language details.
-/// </summary>
-/// <returns>A list of language names sorted alphabetically.</returns>
-   public List<string> GetLanguageNames() => [.. Languages.Select(l => l.Name).OrderBy(l => l)];
+   /// <summary>
+   /// Returns an alphabetically sorted list of language display names.
+   /// </summary>
+   public List<string> GetLanguageNames()
+      => [.. Languages.Select(l => l.Name).OrderBy(l => l, StringComparer.CurrentCulture)];
 
    /// <summary>
-   /// Checks if a given language code corresponds to a right-to-left (RTL) language. This is determined by looking up the language in the list of available languages and checking its RTL property. This method is important for ensuring that the user interface can adapt appropriately for languages that are read from right to left, such as Arabic or Hebrew.
+   /// Determines whether the specified language code represents a right-to-left language.
    /// </summary>
-   /// <param name="code">The language code to check.</param>
-   /// <returns>True if the language is right-to-left; otherwise, false.</returns>
+   /// <param name="code">The ISO language code (e.g. "ar", "he").</param>
+   /// <returns><c>true</c> if the language is RTL; otherwise <c>false</c>.</returns>
    public bool IsRtl(string code)
    {
       if(string.IsNullOrWhiteSpace(code)) return false;
-
-      var language = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
+      Language? language = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
       return language?.Rtl ?? false;
    }
-/// <summary>
-/// Retrieves a language object based on its code. The method checks if the provided code is valid and then looks up the language in the list of available languages. If the language is found, it returns a successful response with the language data; if not, it returns a failure response indicating that the language code was not found. This method is essential for any functionality that requires detailed information about a specific language based on its code.
-/// </summary>
-/// <param name="code">The language code to look up.</param>
-/// <returns>A response containing the language object if found, or an error message if not.</returns>
+
+   /// <summary>
+   /// Looks up a language by its code.
+   /// </summary>
+   /// <param name="code">The language code to search for.</param>
+   /// <returns>A successful response containing the <see cref="Language"/>, or a failure response.</returns>
    public Response<Language>? GetLanguageByCode(string code)
    {
-      Response<Language> result = new();
       if(string.IsNullOrWhiteSpace(code))
       {
-         Response<Language>.Fail(_t["Language code cannot be null or empty"].Value);
+         _logger.LogDebug("GetLanguageByCode: code is null or whitespace");
+         return Response<Language>.Fail(_t["Language code cannot be null or empty"].Value);
       }
-      var language = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
-      if(language == null)
+
+      Language? language = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
+      if(language is null)
       {
+         _logger.LogDebug("Language with code '{Code}' was not found", code);
          return Response<Language>.Fail($"{_t["Language code"]} {code} {_t["not found"].Value}");
       }
+
       return Response<Language>.Ok(language, _t["Language found successfully"].Value);
    }
-/// <summary>
-/// Retrieves a list of required languages based on the JSON files present in the "Locales" directory. The method checks for the existence of the directory and then looks for JSON files that correspond to language codes. It validates the language codes and matches them against the available languages in the service. The result is a list of languages that are required based on the existing translation files, which can be used to ensure that all necessary translations are available for the application. If any issues arise during this process, such as missing directories or files, appropriate error messages are logged and returned in the response.
-/// </summary>
-/// <returns>A response containing the list of required languages if successful, or an error message if not.</returns>
+
+   /// <summary>
+   /// Returns the set of languages for which a locale file exists in the Locales directory.
+   /// Only 2-letter ISO-named files are considered.
+   /// </summary>
    public Response<List<Language>> GetRequiredLanguagesAsync()
    {
+      if(!Directory.Exists(LocalesPath))
+      {
+         _logger.LogWarning("Locales directory not found: {LocalesPath}", LocalesPath);
+         return Response<List<Language>>.Fail(_t["Locales directory not found"].Value);
+      }
+
       try
       {
-         if(!Directory.Exists(LocalesPath))
-         {
-            _logger.LogWarning("Locales directory not found {directory}", LocalesPath);
-            return Response<List<Language>>.Fail(_t["Locales directory not found"].Value);
-         }
-
-         var files = Directory.GetFiles(LocalesPath, "*.json");
+         string[] files = Directory.GetFiles(LocalesPath, "*.json");
          List<Language> requiredLanguages = [];
 
-         foreach(var file in files)
+         foreach(string file in files)
          {
-            var languageCode = Path.GetFileNameWithoutExtension(file).ToLowerInvariant();
+            string languageCode = Path.GetFileNameWithoutExtension(file).ToLowerInvariant();
+            if(languageCode.Length != 2 || !languageCode.All(char.IsLetter)) continue;
 
-            if(languageCode.Length == 2 && languageCode.All(char.IsLetter))
-            {
-               var language = Languages.FirstOrDefault(l =>
-                    l.Code.Equals(languageCode, StringComparison.OrdinalIgnoreCase));
+            Language? language = Languages.FirstOrDefault(l =>
+               l.Code.Equals(languageCode, StringComparison.OrdinalIgnoreCase));
 
-               if(language != null)
-               {
-                  requiredLanguages.Add(language);
-               }
-            }
+            if(language is not null)
+               requiredLanguages.Add(language);
          }
 
-         return Response<List<Language>>.Ok(requiredLanguages, $"Successfully retrieved {requiredLanguages.Count} languages");
-
+         _logger.LogDebug("GetRequiredLanguagesAsync: found {Count} languages", requiredLanguages.Count);
+         return Response<List<Language>>.Ok(requiredLanguages,
+            $"Loaded {requiredLanguages.Count} languages");
       }
       catch(Exception ex)
       {
-         _logger.LogWarning(ex, "Error retreaving language list");
+         _logger.LogError(ex, "Error reading required language list");
          return Response<List<Language>>.Fail(ex);
       }
    }
-/// <summary>
-/// Retrieves information about a list of selected languages based on their codes. The method iterates through the provided list of language codes, checks if each code corresponds to a valid language in the service, and collects the language information. If a language code is not found in the available languages, it creates a new language object with the code as its name and native name, and assumes it is not a right-to-left language. The result is a list of language objects corresponding to the provided codes, which can be used for various purposes such as displaying selected languages or managing translations. Any errors encountered during this process are logged, and the method ensures that all provided codes are processed even if some are invalid.
-/// </summary>
-/// <param name="languages">A list of language codes to retrieve information for.</param>
-/// <returns>A response containing the list of language objects corresponding to the provided codes.  </returns>
+
+   /// <summary>
+   /// Returns detailed information for the given list of language codes.
+   /// If a code is not found in the known languages list, a synthetic <see cref="Language"/>
+   /// whose <c>Code</c>, <c>Name</c>, and <c>Native</c> are all set to the code is returned.
+   /// </summary>
+   /// <param name="languages">List of language codes to look up.</param>
    public Response<List<Language>> GetSelectedLanguagesInfo(List<string> languages)
    {
-      Response<List<Language>> result = new()
+      List<Language> data = [];
+
+      foreach(string code in languages)
       {
-         Data = []
-      };
-      foreach(var language in languages)
-      {
-         try
+         Language? found = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
+         if(found is not null)
          {
-            if(Languages.Where(s => s.Code == language).First() == null)
-            {
-               result.Data.Add(new Language { Code = language, Name = language, Native = language, Rtl = false });
-            }
-            else
-            {
-               result.Data.Add(Languages.Where(s => s.Code == language).First());
-            }
+            data.Add(found);
          }
-         catch(Exception ex)
+         else
          {
-            _logger.LogWarning(ex, "Error getting language info");
-            result.Data.Add(new Language { Code = language, Name = language, Native = language, Rtl = false });
+            _logger.LogDebug("Language '{Code}' not found; using synthetic record", code);
+            data.Add(new Language { Code = code, Name = code, Native = code, Rtl = false });
          }
       }
-      return result;
+
+      return Response<List<Language>>.Ok(data);
    }
-/// <summary>
-/// Retrieves a dictionary of translations for a specific language code. The method checks if the provided language code is valid and then looks for a corresponding JSON file in the "Locales" directory. If the file exists, it reads the content and deserializes it into a dictionary of key-value pairs representing translation keys and their corresponding translated values. If the file does not exist or if any errors occur during this process, appropriate error messages are logged and returned in the response. This method is essential for loading translations for a specific language, which can then be used to display localized content in the application.
-/// </summary>
-/// <param name="code">The language code for which to retrieve the dictionary.</param>
-/// <returns>A response containing the dictionary of translations for the specified language code.</returns>
+
+   /// <summary>
+   /// Loads the translation dictionary for the specified language code from the Locales directory.
+   /// </summary>
+   /// <param name="code">Language code (minimum 2 characters).</param>
    public async Task<Response<Dictionary<string, string>>> GetDictionaryAsync(string code)
    {
-      if(code == null || code.Length < 2)
+      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
       {
-         _logger.LogDebug("Invalid code {language}", code);
+         _logger.LogDebug("GetDictionaryAsync: invalid code '{Code}'", code);
          return Response<Dictionary<string, string>>.Fail(_t["Invalid code"].Value);
       }
-      var filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
+
+      string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
 
       if(!File.Exists(filePath))
       {
-         _logger.LogDebug("File not found for dictionary {dictionary}", code);
+         _logger.LogDebug("GetDictionaryAsync: locale file for '{Code}' not found at {FilePath}", code, filePath);
          return Response<Dictionary<string, string>>.Fail(_t["Dictionary file not found"].Value);
       }
+
+      await _fileLock.WaitAsync().ConfigureAwait(false);
       try
       {
-         var fileContext = await File.ReadAllTextAsync(filePath);
-         var data = new Dictionary<string, string>();
-         try
+         Dictionary<string, string>? data = await ReadLocaleFileInternalAsync(filePath).ConfigureAwait(false);
+
+         if(data is null)
+            return Response<Dictionary<string, string>>.SuccessWithWarning([], _t["No data in the file"].Value);
+
+         if(data.Count == 0)
          {
-            data = JsonSerializer.Deserialize<Dictionary<string, string>>(JsonDocument.Parse(fileContext));
-            if(data == null)
-            {
-               return Response<Dictionary<string, string>>.SuccessWithWarning(data!, _t["No data in the file"].Value);
-            }
-            if(data?.Count == 0)
-            {
-               return Response<Dictionary<string, string>>.SuccessWithWarning(data!, _t["The list is empty"].Value);
-            }
-            return Response<Dictionary<string, string>>.Ok(data!, code);
+            _logger.LogDebug("Locale file for '{Code}' is empty", code);
+            return Response<Dictionary<string, string>>.SuccessWithWarning(data, _t["The list is empty"].Value);
          }
-         catch(Exception ex)
-         {
-            return Response<Dictionary<string, string>>.Fail(ex);
-         }
+
+         _logger.LogDebug("Loaded {Count} entries for language '{Code}'", data.Count, code);
+         return Response<Dictionary<string, string>>.Ok(data, code);
       }
       catch(Exception ex)
       {
+         _logger.LogError(ex, "Error reading locale file for '{Code}'", code);
          return Response<Dictionary<string, string>>.Fail(ex);
       }
+      finally
+      {
+         _fileLock.Release();
+      }
    }
-/// <summary>
-/// Retrieves the last stored translation dictionary from a temporary file. This method is used to access a backup of the previous version of the default language file, which can be useful for restoring translations or comparing changes. The method checks if the backup file exists and then reads its content, deserializing it into a dictionary of translations. If the file does not exist, is empty, or if any errors occur during this process, appropriate error messages are logged and returned in the response. This functionality is crucial for maintaining translation data integrity and providing a fallback option in case of issues with the current translation files.
-/// </summary>
-/// <returns>A response containing the dictionary of translations from the last stored backup file.</returns>
+
+   /// <summary>
+   /// Loads the last stored backup of the default translation from the temp file.
+   /// </summary>
    public async Task<Response<Dictionary<string, string>>> GetLastStored()
    {
       if(!File.Exists(OldTranslationPath))
       {
-         _logger.LogDebug("Previous version of the default language file was not found");
+         _logger.LogDebug("Backup translation file not found: {OldTranslationPath}", OldTranslationPath);
          return Response<Dictionary<string, string>>.Fail(_t["not found"].Value);
       }
+
       try
       {
-         string oldTranslationJson = await File.ReadAllTextAsync(OldTranslationPath);
-         if(oldTranslationJson == null)
+         string json = await File.ReadAllTextAsync(OldTranslationPath).ConfigureAwait(false);
+         if(json.Length == 0)
+         {
+            _logger.LogWarning("Backup translation file is empty: {OldTranslationPath}", OldTranslationPath);
             return Response<Dictionary<string, string>>.Fail(_t["old Translation File is empty"].Value);
-         if(oldTranslationJson.Length == 0)
-            return Response<Dictionary<string, string>>.Fail(_t["old Translation File is empty"].Value);
-         return new Response<Dictionary<string, string>>() { Data = JsonSerializer.Deserialize<Dictionary<string, string>>(oldTranslationJson) ?? [] };
+         }
+
+         Dictionary<string, string> data = JsonSerializer.Deserialize<Dictionary<string, string>>(json) ?? [];
+         return Response<Dictionary<string, string>>.Ok(data);
       }
       catch(Exception ex)
       {
+         _logger.LogError(ex, "Error reading backup translation file");
          return Response<Dictionary<string, string>>.Fail(ex);
       }
    }
-/// <summary>
-/// Retrieves all available translation dictionaries. This method iterates through the list of languages for which translations are needed, retrieves each dictionary, and compiles them into a list of `SingleTranslation` objects. Each `SingleTranslation` object contains the language code and its corresponding translations. If no languages are found, an appropriate error message is returned.
-/// </summary>
-/// <returns>A response containing a list of all translation dictionaries.</returns>
+
+   /// <summary>
+   /// Loads all available translation dictionaries from the Locales directory.
+   /// Returns a failure response when no locale files are present.
+   /// </summary>
    public async Task<Response<List<SingleTranslation>>> GetAllDictionariesAsync()
    {
-      var languagesNeeded = TranslationsPresented();
-      if(languagesNeeded != null)
+      string[] languages = TranslationsPresented();
+
+      if(languages.Length == 0)
       {
-         var final = new List<SingleTranslation>();
-         foreach(var language in languagesNeeded)
-         {
-            Response<Dictionary<string, string>> response = await GetDictionaryAsync(language);
-            final.Add(new SingleTranslation
-            {
-               Language = language,
-               Translations = response.Data ?? []
-            });
-         }
-         return new Response<List<SingleTranslation>>() { Success = true, Data = final };
+         _logger.LogWarning("GetAllDictionariesAsync: no locale files found in {LocalesPath}", LocalesPath);
+         return Response<List<SingleTranslation>>.Fail(_t["No files in the folder"].Value);
       }
-      return Response<List<SingleTranslation>>.Fail(_t["No files in the folder"].Value);
+
+      List<SingleTranslation> result = [];
+      foreach(string language in languages)
+      {
+         Response<Dictionary<string, string>> response = await GetDictionaryAsync(language).ConfigureAwait(false);
+         result.Add(new SingleTranslation
+         {
+            Language = language,
+            Translations = response.Data ?? []
+         });
+      }
+
+      _logger.LogDebug("GetAllDictionariesAsync: loaded {Count} locale files", result.Count);
+      return Response<List<SingleTranslation>>.Ok(result);
    }
+
    /// <summary>
-   /// Saves a translation dictionary for a specific language. This method validates the language code and then serializes the translation data into a JSON file. If a file already exists for the language, a backup is created before overwriting it. Any errors encountered during this process are logged and returned in the response.
+   /// Saves the full translation dictionary for a language.
+   /// If a file already exists it is moved to a timestamped backup before being overwritten.
    /// </summary>
-   /// <param name="data">The translation data to be saved.</param>
-   /// <returns>A response indicating the success or failure of the save operation.</returns>
+   /// <param name="data">Translation data to save.</param>
    public async Task<Response<bool>> SaveDictionaryAsync(SingleTranslation data)
    {
-
-      if(data.Language == null)
+      if(string.IsNullOrWhiteSpace(data.Language))
       {
+         _logger.LogDebug("SaveDictionaryAsync: language code is null or whitespace");
          return Response<bool>.Fail(_t["Code can't be null"].Value);
       }
+
       if(data.Language.Length < 2)
       {
+         _logger.LogDebug("SaveDictionaryAsync: language code '{Language}' is too short", data.Language);
          return Response<bool>.Fail(_t["Invalid code"].Value);
       }
 
+      string path = Path.Combine(LocalesPath, data.Language + ".json");
       string json = JsonSerializer.Serialize(data.Translations ?? []);
-      var path = Path.Combine(LocalesPath, data.Language + ".json");
 
-      if(File.Exists(path))
-      {
-         try
-         {
-            string backupPath = Path.Combine(Path.GetTempPath(), "dita", data.Language + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".bak");
-            File.Move(path, backupPath);
-         }
-         catch(Exception ex)
-         {
-            _logger.LogError(ex, "Backup file of the translation {language} could not be made", data.Language);
-            return Response<bool>.Fail($"Error creating backup: {ex.Message}");
-         }
-      }
+      await _fileLock.WaitAsync().ConfigureAwait(false);
       try
       {
-         await File.WriteAllTextAsync(json, path);
+         if(File.Exists(path))
+         {
+            string backupDir = Path.Combine(Path.GetTempPath(), "dita");
+            Directory.CreateDirectory(backupDir);
+            string backupPath = Path.Combine(backupDir,
+               $"{data.Language}_{DateTime.Now:yyyyMMddHHmmss}.bak");
+            File.Move(path, backupPath, overwrite: true);
+            _logger.LogDebug("Backup of '{Language}' saved to: {BackupPath}", data.Language, backupPath);
+         }
+
+         await File.WriteAllTextAsync(path, json).ConfigureAwait(false);
+         _logger.LogInformation("Translation for '{Language}' saved: {Path}", data.Language, path);
          return Response<bool>.Ok(true, _t["Successfully stored"].Value);
       }
       catch(Exception ex)
       {
+         _logger.LogError(ex, "Error saving translation for '{Language}'", data.Language);
          return Response<bool>.Fail($"Error storing data: {ex.Message}");
       }
-
+      finally
+      {
+         _fileLock.Release();
+      }
    }
-/// <summary>
-/// Saves the previous version of the default language file as a backup before it gets overwritten. This method takes a dictionary of translations and saves it to a temporary file. This backup can be used to restore the previous translations if needed. The method handles any errors that may occur during the file writing process and logs them accordingly. It returns a response indicating whether the save operation was successful or if it failed due to an error.
-/// </summary>
-/// <param name="data">The dictionary of translations to be saved as a backup.</param>
-/// <returns>A response indicating the success or failure of the backup operation.</returns>
+
+   /// <summary>
+   /// Saves a translation dictionary to the backup temp file before the default language is overwritten.
+   /// </summary>
+   /// <param name="data">Dictionary to back up.</param>
    public async Task<Response<bool>> SaveOldTranslationAsync(Dictionary<string, string> data)
    {
       try
       {
          string json = JsonSerializer.Serialize(data ?? []);
-         await File.WriteAllTextAsync(OldTranslationPath, json);
+         await File.WriteAllTextAsync(OldTranslationPath, json).ConfigureAwait(false);
+         _logger.LogDebug("Previous translation backup saved to: {OldTranslationPath}", OldTranslationPath);
          return Response<bool>.Ok(true);
       }
       catch(Exception ex)
       {
-         {
-            _logger.LogError(ex, "Couldn't save an old translation");
-            return Response<bool>.Fail("Couldn't save an old translation");
-         }
+         _logger.LogError(ex, "Error saving translation backup to: {OldTranslationPath}", OldTranslationPath);
+         return Response<bool>.Fail("Couldn't save an old translation");
       }
    }
-/// <summary>
-/// Saves multiple translation dictionaries at once. This method takes a list of `SingleTranslation` objects, each containing a language code and its corresponding translations, and saves each dictionary using the `SaveDictionaryAsync` method. The result is a response containing a dictionary that indicates the success or failure of saving each language's translations. This method is useful for batch operations where multiple translations need to be updated or added at the same time. Any errors encountered during the saving process are logged and included in the response.
-/// </summary>
-/// <param name="tree">A list of `SingleTranslation` objects representing the translations to be saved.</param>
-/// <returns>A response containing a dictionary that maps each language code to a boolean indicating the success or failure of the save operation.</returns>
+
+   /// <summary>
+   /// Saves multiple translation dictionaries in a single call.
+   /// Returns a per-language success/failure map.
+   /// </summary>
+   /// <param name="tree">List of translations to save.</param>
    public async Task<Response<Dictionary<string, bool>>> SaveTranslationsAsync(List<SingleTranslation> tree)
    {
-      var response = new Response<Dictionary<string, bool>>
-      {
-         Data = []
-      };
+      Dictionary<string, bool> results = [];
+
       foreach(SingleTranslation item in tree)
       {
-         string language = item.Language;
-         Dictionary<string, string> dictionary = item.Translations;
-         var result = await SaveDictionaryAsync(item);
-         response.Data[language] = result.Success;
+         Response<bool> result = await SaveDictionaryAsync(item).ConfigureAwait(false);
+         results[item.Language] = result.Success;
       }
-      return response;
+
+      _logger.LogDebug("SaveTranslationsAsync: saved {Count} language files", results.Count);
+      return Response<Dictionary<string, bool>>.Ok(results);
    }
-/// <summary>
-/// Creates missing language files based on a list of language codes. This method checks if a JSON file exists for each language code in the "Locales" directory, and if not, it creates an empty JSON file for that language. The result is a dictionary that indicates whether a new file was created for each language code. This functionality is important for ensuring that all necessary language files are present in the system, especially when new languages are added or when setting up the application for the first time. Any errors encountered during the file creation process are logged and included in the response.
-/// </summary>
-/// <param name="languages">A list of language codes for which to create missing files.</param>
-/// <returns>A dictionary mapping each language code to a boolean indicating whether a new file was created.</returns>
+
+   /// <summary>
+   /// Creates empty JSON locale files for every language code that does not already have a file.
+   /// Returns <c>false</c> for codes whose file already exists.
+   /// </summary>
+   /// <param name="languages">Language codes to process.</param>
    public async Task<Dictionary<string, bool>> CreateMissingLanguageFilesAsync(List<string> languages)
    {
-      var result = new Dictionary<string, bool>();
+      Dictionary<string, bool> result = [];
       foreach(string language in languages)
-      {
-         var res = await CreateEmptyLanguageFile(language);
-         result[language] = res;
-      }
+         result[language] = await CreateEmptyLanguageFile(language).ConfigureAwait(false);
       return result;
    }
 
+   /// <summary>
+   /// Adds a new key/value entry to the specified language's locale file.
+   /// The operation is atomic: the file is locked for the entire read-modify-write cycle.
+   /// Returns a failure response (without modifying the file) if the key already exists.
+   /// </summary>
+   /// <param name="code">Language code (minimum 2 characters).</param>
+   /// <param name="key">Translation key to add.</param>
+   /// <param name="value">Translation value for the key.</param>
+   public async Task<Response<bool>> AddTranslationEntryAsync(string code, string key, string value)
+   {
+      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      {
+         _logger.LogDebug("AddTranslationEntryAsync: invalid language code '{Code}'", code);
+         return Response<bool>.Fail(_t["Invalid code"].Value);
+      }
+
+      if(string.IsNullOrWhiteSpace(key))
+      {
+         _logger.LogDebug("AddTranslationEntryAsync: key is null or whitespace");
+         return Response<bool>.Fail(_t["Key cannot be null or empty"].Value);
+      }
+
+      string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
+      if(!File.Exists(filePath))
+      {
+         _logger.LogDebug("AddTranslationEntryAsync: locale file for '{Code}' not found", code);
+         return Response<bool>.Fail(_t["Dictionary file not found"].Value);
+      }
+
+      await _fileLock.WaitAsync().ConfigureAwait(false);
+      try
+      {
+         Dictionary<string, string> dict = await ReadLocaleFileInternalAsync(filePath).ConfigureAwait(false) ?? [];
+
+         if(dict.ContainsKey(key))
+         {
+            _logger.LogDebug(
+               "AddTranslationEntryAsync: key '{Key}' already exists in '{Code}' – not overwriting",
+               key, code);
+            return Response<bool>.Fail(
+               $"{_t["Key already exists"].Value}: '{key}'");
+         }
+
+         dict[key] = value;
+         await WriteLocaleFileInternalAsync(filePath, dict).ConfigureAwait(false);
+         _logger.LogInformation("Added entry '{Key}' to '{Code}'", key, code);
+         return Response<bool>.Ok(true, _t["Successfully stored"].Value);
+      }
+      catch(Exception ex)
+      {
+         _logger.LogError(ex, "Error adding entry '{Key}' to '{Code}'", key, code);
+         return Response<bool>.Fail(ex);
+      }
+      finally
+      {
+         _fileLock.Release();
+      }
+   }
+
+   /// <summary>
+   /// Removes the entry with the specified key from the language's locale file.
+   /// The operation is atomic: the file is locked for the entire read-modify-write cycle.
+   /// Returns a failure response if the key does not exist.
+   /// </summary>
+   /// <param name="code">Language code (minimum 2 characters).</param>
+   /// <param name="key">Translation key to remove.</param>
+   public async Task<Response<bool>> RemoveTranslationEntryAsync(string code, string key)
+   {
+      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      {
+         _logger.LogDebug("RemoveTranslationEntryAsync: invalid language code '{Code}'", code);
+         return Response<bool>.Fail(_t["Invalid code"].Value);
+      }
+
+      if(string.IsNullOrWhiteSpace(key))
+      {
+         _logger.LogDebug("RemoveTranslationEntryAsync: key is null or whitespace");
+         return Response<bool>.Fail(_t["Key cannot be null or empty"].Value);
+      }
+
+      string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
+      if(!File.Exists(filePath))
+      {
+         _logger.LogDebug("RemoveTranslationEntryAsync: locale file for '{Code}' not found", code);
+         return Response<bool>.Fail(_t["Dictionary file not found"].Value);
+      }
+
+      await _fileLock.WaitAsync().ConfigureAwait(false);
+      try
+      {
+         Dictionary<string, string> dict = await ReadLocaleFileInternalAsync(filePath).ConfigureAwait(false) ?? [];
+
+         if(!dict.Remove(key))
+         {
+            _logger.LogDebug("RemoveTranslationEntryAsync: key '{Key}' not found in '{Code}'", key, code);
+            return Response<bool>.Fail($"{_t["Key not found"].Value}: '{key}'");
+         }
+
+         await WriteLocaleFileInternalAsync(filePath, dict).ConfigureAwait(false);
+         _logger.LogInformation("Removed entry '{Key}' from '{Code}'", key, code);
+         return Response<bool>.Ok(true, _t["Successfully stored"].Value);
+      }
+      catch(Exception ex)
+      {
+         _logger.LogError(ex, "Error removing entry '{Key}' from '{Code}'", key, code);
+         return Response<bool>.Fail(ex);
+      }
+      finally
+      {
+         _fileLock.Release();
+      }
+   }
+
+   /// <summary>
+   /// Creates or overwrites the entry with the specified key in the language's locale file (upsert).
+   /// The operation is atomic: the file is locked for the entire read-modify-write cycle.
+   /// Unlike <see cref="AddTranslationEntryAsync"/>, this method always writes the value even if
+   /// the key already exists.
+   /// </summary>
+   /// <param name="code">Language code (minimum 2 characters).</param>
+   /// <param name="key">Translation key to create or overwrite.</param>
+   /// <param name="value">New translation value.</param>
+   public async Task<Response<bool>> UpdateTranslationEntryAsync(string code, string key, string value)
+   {
+      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      {
+         _logger.LogDebug("UpdateTranslationEntryAsync: invalid language code '{Code}'", code);
+         return Response<bool>.Fail(_t["Invalid code"].Value);
+      }
+
+      if(string.IsNullOrWhiteSpace(key))
+      {
+         _logger.LogDebug("UpdateTranslationEntryAsync: key is null or whitespace");
+         return Response<bool>.Fail(_t["Key cannot be null or empty"].Value);
+      }
+
+      string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
+      if(!File.Exists(filePath))
+      {
+         _logger.LogDebug("UpdateTranslationEntryAsync: locale file for '{Code}' not found", code);
+         return Response<bool>.Fail(_t["Dictionary file not found"].Value);
+      }
+
+      await _fileLock.WaitAsync().ConfigureAwait(false);
+      try
+      {
+         Dictionary<string, string> dict = await ReadLocaleFileInternalAsync(filePath).ConfigureAwait(false) ?? [];
+         bool isUpdate = dict.ContainsKey(key);
+         dict[key] = value;
+         await WriteLocaleFileInternalAsync(filePath, dict).ConfigureAwait(false);
+
+         _logger.LogInformation(
+            isUpdate
+               ? "Updated entry '{Key}' in '{Code}'"
+               : "Created entry '{Key}' in '{Code}'",
+            key, code);
+
+         return Response<bool>.Ok(true, _t["Successfully stored"].Value);
+      }
+      catch(Exception ex)
+      {
+         _logger.LogError(ex, "Error updating entry '{Key}' in '{Code}'", key, code);
+         return Response<bool>.Fail(ex);
+      }
+      finally
+      {
+         _fileLock.Release();
+      }
+   }
+
+   // ── Private helpers ──────────────────────────────────────────────────────
+
+   // Creates an empty locale JSON file if it does not already exist.
    private async Task<bool> CreateEmptyLanguageFile(string code)
    {
       if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
       {
+         _logger.LogDebug("CreateEmptyLanguageFile: invalid code '{Code}'", code);
          return false;
       }
-      var path = Path.Combine(LocalesPath, code + ".json");
+
+      string path = Path.Combine(LocalesPath, code + ".json");
       if(File.Exists(path))
       {
+         _logger.LogDebug("Locale file for '{Code}' already exists: {Path}", code, path);
          return false;
       }
+
+      await _fileLock.WaitAsync().ConfigureAwait(false);
       try
       {
-         await File.WriteAllTextAsync(path, "{}");
+         // Re-check after acquiring lock (another thread may have created the file).
+         if(File.Exists(path)) return false;
+         await File.WriteAllTextAsync(path, "{}").ConfigureAwait(false);
+         _logger.LogInformation("Created empty locale file for '{Code}': {Path}", code, path);
          return true;
       }
-      catch
+      catch(Exception ex)
       {
+         _logger.LogError(ex, "Error creating locale file for '{Code}'", code);
          return false;
       }
+      finally
+      {
+         _fileLock.Release();
+      }
    }
 
-
+   // Returns the language codes for which locale files exist in the Locales directory.
    private string[] TranslationsPresented()
    {
-      List<string> result = [];
-      var languageFiles = Directory.GetFiles(LocalesPath, "*.json");
-      foreach(var languageFile in languageFiles)
+      if(!Directory.Exists(LocalesPath))
       {
-         result.Add(Path.GetFileNameWithoutExtension(languageFile).ToLowerInvariant());
+         _logger.LogWarning("TranslationsPresented: directory {LocalesPath} does not exist", LocalesPath);
+         return [];
       }
-      return [.. result];
+
+      return [.. Directory.GetFiles(LocalesPath, "*.json")
+         .Select(f => Path.GetFileNameWithoutExtension(f).ToLowerInvariant())];
    }
 
-   private static string JsonFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory
-[..AppDomain.CurrentDomain.BaseDirectory
-      .IndexOf("bin")], "Jsons", "languages.json");
-   private static string LocalesPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory
-[..AppDomain.CurrentDomain.BaseDirectory
-      .IndexOf("bin")], "Locales");
-   private static string OldTranslationPath => Path.Combine(Path.GetTempPath(), "old.json");
+   // Deserialises a locale JSON file. Must be called while holding _fileLock.
+   private static async Task<Dictionary<string, string>?> ReadLocaleFileInternalAsync(string filePath)
+   {
+      string content = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+      return JsonSerializer.Deserialize<Dictionary<string, string>>(content);
+   }
 
-
-
+   // Serialises a dictionary and writes it to a locale JSON file. Must be called while holding _fileLock.
+   private static async Task WriteLocaleFileInternalAsync(string filePath, Dictionary<string, string> dict)
+   {
+      string json = JsonSerializer.Serialize(dict);
+      await File.WriteAllTextAsync(filePath, json).ConfigureAwait(false);
+   }
 }

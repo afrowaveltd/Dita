@@ -7,12 +7,24 @@ using System.Text;
 
 namespace Dita.Server.Logging;
 
+/// <summary>
+/// A Serilog sink that appends log events as objects inside a JSON array file, creating one file per calendar day.
+/// </summary>
+/// <remarks>
+/// Each file is named <c>server-yyyyMMdd.json</c> and stored in the text log directory supplied via
+/// <see cref="LogStoragePaths"/>. The sink is thread-safe and performs daily cleanup of files that exceed the
+/// configured retention period. Legacy NDJSON files are automatically migrated to the JSON-array format on first
+/// write.
+/// </remarks>
+/// <param name="paths">Storage path configuration that determines where log files are written and how long they are kept.</param>
 internal sealed class JsonArrayFileSink(LogStoragePaths paths) : ILogEventSink
 {
    private readonly Lock syncRoot = new();
    private readonly CompactJsonFormatter formatter = new();
    private DateOnly lastCleanupDate = DateOnly.MinValue;
 
+   /// <summary>Formats and persists a single log event to the daily JSON array file.</summary>
+   /// <param name="logEvent">The log event to persist. Must not be <see langword="null"/>.</param>
    public void Emit(LogEvent logEvent)
    {
       ArgumentNullException.ThrowIfNull(logEvent);

@@ -1,0 +1,2 @@
+# SQL Server migrations
+# Run: dotnet ef migrations add InitialCreate --context SqlServerAppDbContext --output-dir Storage/Migrations/SqlServer

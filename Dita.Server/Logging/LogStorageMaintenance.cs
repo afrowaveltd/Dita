@@ -1,7 +1,16 @@
 namespace Dita.Server.Logging;
 
+/// <summary>
+/// Provides static helpers for removing expired log files from the configured storage directories.
+/// </summary>
 internal static class LogStorageMaintenance
 {
+   /// <summary>
+   /// Deletes log files in the text and database directories whose last-write timestamp is older than
+   /// the retention period specified in <paramref name="paths"/>.
+   /// </summary>
+   /// <param name="paths">Storage path configuration containing the directories to clean and the retention period.</param>
+   /// <param name="timeProvider">Optional time provider used to determine the current UTC time; defaults to <see cref="TimeProvider.System"/>.</param>
    public static void CleanupExpiredFiles(LogStoragePaths paths, TimeProvider? timeProvider = null)
    {
       ArgumentNullException.ThrowIfNull(paths);

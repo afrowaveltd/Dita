@@ -1,8 +1,8 @@
 ﻿namespace Dita.Server.Models.Settings;
 
 /// <summary>
-/// Represents the network configuration settings for a server instance, including the IP address, ports for HTTP and
-/// HTTPS,
+/// Represents the network configuration settings for a server instance, including the IP address and ports used for
+/// HTTP and HTTPS communication.
 /// </summary>
 public class NetworkSettings
 {

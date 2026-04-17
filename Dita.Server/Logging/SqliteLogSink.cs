@@ -7,6 +7,15 @@ using System.Globalization;
 
 namespace Dita.Server.Logging;
 
+/// <summary>
+/// A Serilog sink that persists log events to a per-day SQLite database file.
+/// </summary>
+/// <remarks>
+/// Each database is named <c>warnings-yyyyMMdd.db</c> and stored in the database log directory supplied via
+/// <see cref="LogStoragePaths"/>. The sink is thread-safe and performs daily cleanup of databases that exceed the
+/// configured retention period. The schema is created automatically on first use.
+/// </remarks>
+/// <param name="paths">Storage path configuration that determines where database files are written and how long they are kept.</param>
 internal sealed class SqliteLogSink(LogStoragePaths paths) : ILogEventSink
 {
    private readonly Lock syncRoot = new();
@@ -14,6 +23,8 @@ internal sealed class SqliteLogSink(LogStoragePaths paths) : ILogEventSink
    private readonly HashSet<string> initializedDatabases = new(StringComparer.OrdinalIgnoreCase);
    private DateOnly lastCleanupDate = DateOnly.MinValue;
 
+   /// <summary>Formats and persists a single log event to the daily SQLite database file.</summary>
+   /// <param name="logEvent">The log event to persist. Must not be <see langword="null"/>.</param>
    public void Emit(LogEvent logEvent)
    {
       ArgumentNullException.ThrowIfNull(logEvent);

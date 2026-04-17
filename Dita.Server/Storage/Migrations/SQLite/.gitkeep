@@ -1,0 +1,2 @@
+# SQLite migrations
+# Run: dotnet ef migrations add InitialCreate --context SqliteAppDbContext --output-dir Storage/Migrations/SQLite

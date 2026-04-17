@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Dita.Shared.Localization.Enums;
+﻿namespace Dita.Shared.Localization.Enums;
 
 /// <summary>
-/// Gender enumeration represents the different gender
+/// Represents the grammatical or social gender used for localization and text-formatting purposes.
 /// </summary>
 public enum Gender
 {
@@ -15,17 +11,17 @@ public enum Gender
    Male,
 
    /// <summary>
-   /// Represents the female gender value in an enumeration.
+   /// Represents the female gender.
    /// </summary>
    Female,
 
    /// <summary>
-   /// Represents a neutral value or state.
+   /// Represents a gender-neutral value.
    /// </summary>
    Neutral,
 
    /// <summary>
-   /// Represents an unspecified or alternative value in an enumeration or set of options.
+   /// Represents any gender not covered by the other values.
    /// </summary>
    Other
 }

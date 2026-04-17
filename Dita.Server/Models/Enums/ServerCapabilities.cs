@@ -7,7 +7,7 @@
 public enum ServerCapabilities
 {
    /// <summary>
-   /// Server is not having any active roles
+   /// The server has no active roles or capabilities assigned.
    /// </summary>
    None = 0,
 
@@ -42,7 +42,7 @@ public enum ServerCapabilities
    SharedMailer = 32,
 
    /// <summary>
-   /// Server is the member of cluster
+   /// The server is a member of a cluster.
    /// </summary>
    ClusterMember = 64
 }

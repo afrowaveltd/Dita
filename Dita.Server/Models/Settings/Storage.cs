@@ -7,7 +7,7 @@ namespace Dita.Server.Models.Settings;
 /// data should be stored, and any necessary connection details. This class allows for flexible configuration of storage
 /// options to accommodate different deployment scenarios and requirements.
 /// </summary>
-public class Storage
+public class StorageSettings
 {
    /// <summary>
    /// Gets or sets the type of storage to use for data persistence.

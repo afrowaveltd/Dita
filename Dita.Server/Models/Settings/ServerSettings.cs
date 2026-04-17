@@ -3,8 +3,8 @@
 namespace Dita.Server.Models.Settings;
 
 /// <summary>
-/// ServerSettings class represents the configuration settings for a server instance, including its unique identifier,
-/// name,
+/// Represents the configuration settings for a server instance, including its unique identifier, display name,
+/// description, network configuration, declared capabilities, and cluster membership flag.
 /// </summary>
 public class ServerSettings
 {

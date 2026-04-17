@@ -3,18 +3,21 @@
 namespace Dita.Shared.Localization.Services;
 
 /// <summary>
-/// Factory class for creating HttpClient instances configured to communicate with the LibreTranslate service based on
-/// the provided settings.
+/// Factory that creates <see cref="HttpClient"/> instances pre-configured to communicate with the LibreTranslate service.
 /// </summary>
-/// <param name="settings"></param>
+/// <param name="settings">
+/// The automatic translation settings that supply the LibreTranslate service address and related configuration.
+/// </param>
 public class LibreTranslateHttpClientFactory(AutomaticTranslationSettings settings) : ILibreTranslateHttpClientFactory
 {
    /// <summary>
-   /// Creates and configures a new HttpClient instance with the base address set to the LibreTranslate service URL
-   /// specified in the settings. This client can be used to send requests to the translation service for performing
-   /// automatic translations.
+   /// Gets a new <see cref="HttpClient"/> instance with <see cref="HttpClient.BaseAddress"/> set to the LibreTranslate
+   /// service URL from <see cref="AutomaticTranslationSettings.Address"/>.
    /// </summary>
-   /// <returns></returns>
+   /// <remarks>
+   /// A new client is created on every access. Callers should not dispose the instance while it is still in use by the
+   /// translation service.
+   /// </remarks>
    public HttpClient LibreClient
    {
       get

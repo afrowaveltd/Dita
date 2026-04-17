@@ -25,5 +25,5 @@ public class LocalizationSettings
    /// Automatic translation requires LibreTranslate to be set up and configured in the server settings. The property
    /// value should be set to "true" to enable automatic translation, or "false" to disable it.
    /// </remarks>
-   public string UseAutomaticTranslation { get; set; } = "false";  // for messages, smart, etc.. Requires LibreTranslate to be set up and configured in the server settings
+   public string UseAutomaticTranslation { get; set; } = "false";
 }

@@ -1,6 +1,9 @@
 using Afrowave.SharedTools.Api.Services;
 using Dita.Server.Logging;
+using Dita.Server.Models.Enums;
+using Dita.Server.Models.Settings;
 using Dita.Server.Services;
+using Dita.Server.Storage;
 using Dita.Shared.Localization.Middlewares;
 using Dita.Shared.Localization.Models;
 using Dita.Shared.Localization.Services;
@@ -206,21 +209,40 @@ try
       .GetSection(nameof(AutomaticTranslationSettings))
       .Get<AutomaticTranslationSettings>() ?? new AutomaticTranslationSettings();
    Log.Information("Appsettings.json file loaded: {@AutomaticTranslationSettings}", automaticTranslationSettings);
+
    // middlewares
    builder.Services.AddTransient<LocalizationMiddleware>();
 
+   // Transient services
+   builder.Services.AddTransient<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+
+   // Scoped services
+
    // Singleton services
+   StorageSettings? storageSettings = builder.Configuration
+         .GetSection("Storage")
+         .Get<StorageSettings>();
    builder.Services.AddSingleton(automaticTranslationSettings);
    builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
    builder.Services.AddSingleton<IHttpService, HttpService>();
+   builder.Services.AddSingleton<ILanguageService, LanguageService>();
    builder.Services.AddSingleton<ILibreTranslateHttpClientFactory, LibreTranslateHttpClientFactory>();
    builder.Services.AddSingleton<ILibreTranslateService, LibreTranslateService>();
    builder.Services.AddSingleton<ICookieService, CookieService>();
 
-   // Scoped services
+   // Storage: the provider is selected via Storage:StorageType in appsettings.json.
+   // Changing the type and connection string is all that is needed to switch backends.
+   // EF Core providers also apply pending migrations automatically at startup (see UseMigrationsAsync below).
 
-   // Transient services
-   builder.Services.AddTransient<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+   if(storageSettings == null)
+   {
+      Log.Error("Failed to load storage settings from configuration. Please check appsettings.json file.");
+      throw new InvalidOperationException("Storage settings are not configured properly.");
+   }
+
+   Log.Information("Registering storage provider: {StorageType}", storageSettings.StorageType);
+   builder.Services.AddSingleton<StorageSettings>(storageSettings);
+   builder.Services.AddStorage(storageSettings);
 
    WebApplication app = builder.Build();
 
@@ -247,6 +269,10 @@ try
    app.MapStaticAssets();
    app.MapRazorPages()
       .WithStaticAssets();
+
+   // Apply any pending EF Core migrations before accepting traffic.
+   // This is a no-op for file-based and MongoDB storage backends.
+   await app.UseMigrationsAsync(storageSettings.StorageType);
 
    app.Run();
 }
