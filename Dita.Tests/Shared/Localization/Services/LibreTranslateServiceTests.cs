@@ -1,8 +1,6 @@
 using Afrowave.SharedTools.Models.Results;
-using Dita.Shared.Localization.Hubs;
 using Dita.Shared.Localization.Models;
 using Dita.Shared.Localization.Services;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text;
@@ -134,6 +132,34 @@ public class LibreTranslateServiceTests
       Assert.Equal("Failed to deserialize translation result.", response.Message);
    }
 
+   [Fact]
+   public async Task WhenSourceAndTargetLanguageAreSameThenTranslateTextReturnsOriginalTextWithoutHttpCall()
+   {
+      var handler = new QueueHttpMessageHandler();
+      var service = CreateService(handler);
+
+      Response<TranslateResult> response = await service.TranslateTextAsync("Ahoj", "cs", "cs");
+
+      Assert.True(response.Success);
+      Assert.NotNull(response.Data);
+      Assert.Equal("Ahoj", response.Data!.TranslatedText);
+      Assert.Equal(0, handler.CallCount);
+   }
+
+   [Fact]
+   public async Task WhenSourceAndTargetLanguageAreCultureVariantsThenTranslateTextReturnsOriginalTextWithoutHttpCall()
+   {
+      var handler = new QueueHttpMessageHandler();
+      var service = CreateService(handler);
+
+      Response<TranslateResult> response = await service.TranslateTextAsync("Hello", "en-US", "en");
+
+      Assert.True(response.Success);
+      Assert.NotNull(response.Data);
+      Assert.Equal("Hello", response.Data!.TranslatedText);
+      Assert.Equal(0, handler.CallCount);
+   }
+
    private static LibreTranslateService CreateService(QueueHttpMessageHandler handler, AutomaticTranslationSettings? settings = null)
    {
       settings ??= new AutomaticTranslationSettings { Address = "https://translate.example" };
@@ -145,7 +171,6 @@ public class LibreTranslateServiceTests
       return new LibreTranslateService(
          settings,
          new StubLibreTranslateHttpClientFactory(client),
-         Substitute.For<IHubContext<LocalizationHub>>(),
          Substitute.For<ILogger<LibreTranslateService>>());
    }
 

@@ -1,8 +1,7 @@
 ﻿using Afrowave.SharedTools.Models.Results;
-using Dita.Shared.Localization.Hubs;
 using Dita.Shared.Localization.Models;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -13,14 +12,16 @@ namespace Dita.Shared.Localization.Services;
 /// </summary>
 /// <remarks>
 /// This service handles communication with LibreTranslate API for text and file translation operations, language
-/// detection, and retrieval of available languages. It includes retry logic with exponential backoff and intelligent
-/// translation validation for text translations.
+/// detection, and retrieval of available languages. It includes retry logic with exponential backoff and additional
+/// validation for text translations.
 /// </remarks>
-public class LibreTranslateService(AutomaticTranslationSettings settings, ILibreTranslateHttpClientFactory httpClientFactory, IHubContext<LocalizationHub> hub, ILogger<LibreTranslateService> logger) : ILibreTranslateService
+public class LibreTranslateService(
+   AutomaticTranslationSettings settings,
+   ILibreTranslateHttpClientFactory httpClientFactory,
+   ILogger<LibreTranslateService> logger) : ILibreTranslateService
 {
    private readonly AutomaticTranslationSettings _settings = settings;
    private readonly HttpClient libreClient = httpClientFactory.LibreClient;
-   private readonly IHubContext<LocalizationHub> _hub = hub;
    private readonly ILogger<LibreTranslateService> _logger = logger;
 
    private readonly JsonSerializerOptions _options = new()
@@ -274,6 +275,16 @@ public class LibreTranslateService(AutomaticTranslationSettings settings, ILibre
    /// </remarks>
    public async Task<Response<TranslateResult>> TranslateTextAsync(string text, string sourceLanguage, string targetLanguage)
    {
+      if(AreLanguagesEquivalent(sourceLanguage, targetLanguage))
+      {
+         return new Response<TranslateResult>
+         {
+            Success = true,
+            Data = new TranslateResult { TranslatedText = text },
+            Message = "Source and target language are identical. Returning original text."
+         };
+      }
+
       Dictionary<string, string> formFields = new()
       {
          { "q", text },
@@ -404,6 +415,29 @@ public class LibreTranslateService(AutomaticTranslationSettings settings, ILibre
       bool hasUpper = text.Any(char.IsUpper);
       bool hasLower = text.Any(char.IsLower);
       return hasUpper && hasLower;
+   }
+
+   private static bool AreLanguagesEquivalent(string sourceLanguage, string targetLanguage)
+   {
+      if(string.IsNullOrWhiteSpace(sourceLanguage) || string.IsNullOrWhiteSpace(targetLanguage))
+      {
+         return false;
+      }
+
+      static string NormalizeLanguageCode(string languageCode)
+      {
+         string normalized = languageCode.Trim().ToLowerInvariant();
+         try
+         {
+            return CultureInfo.GetCultureInfo(normalized).TwoLetterISOLanguageName.ToLowerInvariant();
+         }
+         catch(CultureNotFoundException)
+         {
+            return normalized;
+         }
+      }
+
+      return NormalizeLanguageCode(sourceLanguage).Equals(NormalizeLanguageCode(targetLanguage), StringComparison.OrdinalIgnoreCase);
    }
 
    /// <summary>

@@ -29,4 +29,6 @@ public class Language
    /// (RTL) direction.
    /// </summary>
    public bool Rtl { get; set; } = false;
+
+
 }

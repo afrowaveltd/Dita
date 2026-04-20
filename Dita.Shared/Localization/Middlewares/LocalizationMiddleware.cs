@@ -1,6 +1,6 @@
 ﻿using Afrowave.SharedTools.Api.Services;
+using Dita.Shared.Localization.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System.Globalization;
 
 namespace Dita.Shared.Localization.Middlewares;
@@ -10,12 +10,13 @@ namespace Dita.Shared.Localization.Middlewares;
 /// </summary>
 /// <remarks>
 /// This middleware reads and writes language preferences from cookies and sets the current culture for the HTTP
-/// context. If no language is explicitly set, the default language "en" is used.
+/// context. If no language is explicitly set, the configured default language from
+/// <see cref="AutomaticTranslationSettings.DefaultLanguage"/> is used.
 /// </remarks>
-public class LocalizationMiddleware(ILogger<LocalizationMiddleware> logger, ICookieService cookie)
+public class LocalizationMiddleware(ICookieService cookie, AutomaticTranslationSettings settings) : IMiddleware
 {
-   private readonly ILogger<LocalizationMiddleware> _logger = logger;
    private readonly ICookieService _cookie = cookie;
+   private readonly AutomaticTranslationSettings _settings = settings;
 
    /// <summary>
    /// Processes an HTTP request and sets the culture based on the preferred language.
@@ -24,33 +25,22 @@ public class LocalizationMiddleware(ILogger<LocalizationMiddleware> logger, ICoo
    /// <param name="next">The delegate for invoking the next middleware in the pipeline.</param>
    /// <returns>An asynchronous task representing the middleware processing.</returns>
    /// <remarks>
-   /// The middleware performs the following steps: 1. Attempts to read the language from cookies. 2. If not in cookies,
-   /// reads Accept-Language from the request and saves it to cookies. 3. If neither source is available, uses the
-   /// default language "en". 4. Verifies that the given culture exists, and if so, sets it for the current thread.
+   /// The middleware performs the following steps: 1. Attempts to read the language from cookies.
+   /// 2. If not present, parses the primary language from the Accept-Language header.
+   /// 3. If neither source is available, uses the configured default language.
+   /// 4. Verifies that the selected culture exists and applies it to the current thread.
    /// </remarks>
    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
    {
-      string? cultureKey;
+      string defaultCulture = ResolveDefaultCulture();
 
-      if(_cookie.ReadResponse("Language").Data != null
-           || _cookie.ReadResponse("Language").Data != string.Empty)
-      {
-         cultureKey = _cookie.ReadResponse("Language").Data;
-         context.Request.Headers["Accept-Language"] = cultureKey;
-      }
-      else if(context.Request.Headers["Accept-Language"] != string.Empty)
-      {
-         cultureKey = context.Request.Headers["Accept-Language"];
-         _cookie.Write("Language", cultureKey ?? "en");
-      }
-      else
-      {
-         cultureKey = "en";
-         context.Request.Headers["Accept-Language"] = cultureKey;
-         _cookie.Write("Language", cultureKey);
-      }
+      string? cultureKey = _cookie.ReadResponse("Language").Data;
+      cultureKey = string.IsNullOrWhiteSpace(cultureKey)
+         ? GetPrimaryLanguageFromHeader(context.Request.Headers["Accept-Language"])
+         : cultureKey;
+      cultureKey = string.IsNullOrWhiteSpace(cultureKey) ? defaultCulture : cultureKey;
 
-      if(CultureExists(cultureKey ?? "en"))
+      if(CultureExists(cultureKey))
       {
          CultureInfo culture = new(cultureKey);
          Thread.CurrentThread.CurrentCulture = culture;
@@ -58,12 +48,51 @@ public class LocalizationMiddleware(ILogger<LocalizationMiddleware> logger, ICoo
       }
       else
       {
-         CultureInfo culture = new("en");
-         Thread.CurrentThread.CurrentCulture = culture;
-         Thread.CurrentThread.CurrentUICulture = culture;
+         CultureInfo fallbackCulture = new(defaultCulture);
+         Thread.CurrentThread.CurrentCulture = fallbackCulture;
+         Thread.CurrentThread.CurrentUICulture = fallbackCulture;
+         cultureKey = fallbackCulture.Name;
       }
 
+      context.Request.Headers["Accept-Language"] = cultureKey;
+      _cookie.Write("Language", cultureKey);
+
       await next(context);
+   }
+
+   private string ResolveDefaultCulture()
+   {
+      string configured = _settings.DefaultLanguage;
+      if(string.IsNullOrWhiteSpace(configured))
+      {
+         return "en";
+      }
+
+      try
+      {
+         return CultureInfo.GetCultureInfo(configured).Name;
+      }
+      catch(CultureNotFoundException)
+      {
+         return "en";
+      }
+   }
+
+   private static string? GetPrimaryLanguageFromHeader(string headerValue)
+   {
+      if(string.IsNullOrWhiteSpace(headerValue))
+      {
+         return null;
+      }
+
+      string firstPart = headerValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault() ?? string.Empty;
+      if(string.IsNullOrWhiteSpace(firstPart))
+      {
+         return null;
+      }
+
+      string culturePart = firstPart.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault() ?? string.Empty;
+      return string.IsNullOrWhiteSpace(culturePart) ? null : culturePart;
    }
 
    /// <summary>

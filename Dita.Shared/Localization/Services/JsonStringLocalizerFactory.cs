@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using Dita.Shared.Localization.Models;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
@@ -10,11 +11,17 @@ namespace Dita.Shared.Localization.Services;
 /// </summary>
 /// <param name="cache">The distributed cache used to store resolved translation strings.</param>
 /// <param name="libreTranslate">The LibreTranslate service used as a fallback when a key is not found in a locale file.</param>
+/// <param name="automaticTranslationSettings">Translation settings used to resolve default source and fallback locale codes.</param>
 /// <param name="logger">The logger used for diagnostic output from created localizer instances.</param>
-public class JsonStringLocalizerFactory(IDistributedCache cache, ILibreTranslateService libreTranslate, ILogger<JsonStringLocalizer> logger) : IStringLocalizerFactory
+public class JsonStringLocalizerFactory(
+   IDistributedCache cache,
+   ILibreTranslateService libreTranslate,
+   AutomaticTranslationSettings automaticTranslationSettings,
+   ILogger<JsonStringLocalizer> logger) : IStringLocalizerFactory
 {
    private readonly IDistributedCache _cache = cache;
    private readonly ILibreTranslateService _libreTranslate = libreTranslate;
+   private readonly AutomaticTranslationSettings _automaticTranslationSettings = automaticTranslationSettings;
    private readonly ILogger<JsonStringLocalizer> _logger = logger;
 
    /// <summary>
@@ -24,7 +31,7 @@ public class JsonStringLocalizerFactory(IDistributedCache cache, ILibreTranslate
    /// <returns>A new <see cref="IStringLocalizer"/> instance backed by JSON locale files.</returns>
    public IStringLocalizer Create(Type resourceSource)
    {
-      return new JsonStringLocalizer(_cache, _libreTranslate, _logger);
+      return new JsonStringLocalizer(_cache, _libreTranslate, _automaticTranslationSettings, _logger);
    }
 
    /// <summary>
@@ -35,6 +42,6 @@ public class JsonStringLocalizerFactory(IDistributedCache cache, ILibreTranslate
    /// <returns>A new <see cref="IStringLocalizer"/> instance backed by JSON locale files.</returns>
    public IStringLocalizer Create(string baseName, string location)
    {
-      return new JsonStringLocalizer(_cache, _libreTranslate, _logger);
+      return new JsonStringLocalizer(_cache, _libreTranslate, _automaticTranslationSettings, _logger);
    }
 }

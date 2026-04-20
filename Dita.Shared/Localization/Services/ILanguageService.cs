@@ -148,4 +148,10 @@ public interface ILanguageService
    /// <param name="value">The translated string to associate with <paramref name="key"/>.</param>
    /// <returns>A <see cref="Response{T}"/> indicating whether the entry was written successfully.</returns>
    Task<Response<bool>> UpdateTranslationEntryAsync(string code, string key, string value);
+
+   /// <summary>
+   /// Returns locale identifiers for all translation files currently present in the Locales directory.
+   /// </summary>
+   /// <returns>An array of locale codes (for example <c>"en"</c> or <c>"en-US"</c>) without file extension.</returns>
+   string[] TranslationsPresented();
 }

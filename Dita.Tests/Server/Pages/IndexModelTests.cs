@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
+using NSubstitute;
 
 namespace Dita.Tests.Server.Pages;
 
@@ -16,7 +18,7 @@ public class IndexModelTests
    public void WhenCreatedThenInstanceIsNotNull()
    {
       // Arrange & Act
-      var model = new IndexModel();
+      var model = new IndexModel(CreateLocalizer());
 
       // Assert
       Assert.NotNull(model);
@@ -26,7 +28,7 @@ public class IndexModelTests
    public void WhenOnGetCalledThenNoExceptionThrown()
    {
       // Arrange
-      var model = new IndexModel();
+      var model = new IndexModel(CreateLocalizer());
       SetupPageContext(model);
 
       // Act
@@ -40,7 +42,7 @@ public class IndexModelTests
    public void WhenOnGetCalledThenModelStateIsValid()
    {
       // Arrange
-      var model = new IndexModel();
+      var model = new IndexModel(CreateLocalizer());
       SetupPageContext(model);
 
       // Act
@@ -48,6 +50,14 @@ public class IndexModelTests
 
       // Assert
       Assert.True(model.ModelState.IsValid);
+   }
+
+   /// <summary>
+   /// Creates a localizer mock for <see cref="IndexModel"/>.
+   /// </summary>
+   private static IStringLocalizer<IndexModel> CreateLocalizer()
+   {
+      return Substitute.For<IStringLocalizer<IndexModel>>();
    }
 
    /// <summary>

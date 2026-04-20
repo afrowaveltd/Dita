@@ -269,6 +269,25 @@ public class LanguageServiceTests : IDisposable
       Assert.DoesNotContain(result.Data!, l => l.Code == "settings");
    }
 
+   [Fact]
+   public void WhenLocalesContainDialectFilesThenGetRequiredLanguagesAsyncMapsThemToBaseLanguage()
+   {
+      EnsureLanguagesJson();
+      EnsureLocalesDir(new Dictionary<string, Dictionary<string, string>>
+      {
+         ["en-US"] = new() { ["hello"] = "Hello" },
+         ["cs-CZ"] = new() { ["hello"] = "Ahoj" }
+      });
+
+      var svc = CreateService();
+      var result = svc.GetRequiredLanguagesAsync();
+
+      Assert.True(result.Success);
+      Assert.NotNull(result.Data);
+      Assert.Contains(result.Data!, language => language.Code == "en");
+      Assert.Contains(result.Data!, language => language.Code == "cs");
+   }
+
    // ─── GetSelectedLanguagesInfo ─────────────────────────────────────────────
 
    [Fact]

@@ -1,14 +1,15 @@
 using Afrowave.SharedTools.Api.Services;
 using Dita.Server.Logging;
-using Dita.Server.Models.Enums;
 using Dita.Server.Models.Settings;
 using Dita.Server.Services;
+using Dita.Server.Startup;
 using Dita.Server.Storage;
 using Dita.Shared.Localization.Middlewares;
 using Dita.Shared.Localization.Models;
 using Dita.Shared.Localization.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Localization;
+using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.AspNetCore.App.SignalR.Extensions;
@@ -35,7 +36,6 @@ const LogEventLevel RequestSuccessLevel = LogEventLevel.Debug;
 const LogEventLevel JsonFileMinimumLevel = LogEventLevel.Debug;
 const double SlowRequestThresholdMs = 500;
 #else
-const bool IsDetailedLogging = false;
 const LogEventLevel BootstrapMinimumLevel = LogEventLevel.Information;
 const LogEventLevel ApplicationMinimumLevel = LogEventLevel.Information;
 const LogEventLevel FrameworkMinimumLevel = LogEventLevel.Warning;
@@ -44,67 +44,8 @@ const LogEventLevel RequestSuccessLevel = LogEventLevel.Information;
 const LogEventLevel JsonFileMinimumLevel = LogEventLevel.Information;
 const double SlowRequestThresholdMs = 1000;
 #endif
-// Logging
-LogEventLevel GetRequestLogLevel(HttpContext httpContext, double elapsedMilliseconds, Exception? exception)
-{
-   if(exception is not null || httpContext.Response.StatusCode >= StatusCodes.Status500InternalServerError)
-   {
-      return LogEventLevel.Error;
-   }
 
-   if(httpContext.Response.StatusCode >= StatusCodes.Status400BadRequest || elapsedMilliseconds >= SlowRequestThresholdMs)
-   {
-      return LogEventLevel.Warning;
-   }
-
-   return RequestSuccessLevel;
-}
-
-void EnrichRequestDiagnosticContext(Serilog.IDiagnosticContext diagnosticContext, HttpContext httpContext)
-{
-   diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-   diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
-   diagnosticContext.Set("RequestProtocol", httpContext.Request.Protocol);
-   diagnosticContext.Set("RequestId", httpContext.TraceIdentifier);
-
-   string userAgent = httpContext.Request.Headers.UserAgent.ToString();
-   if(!string.IsNullOrWhiteSpace(userAgent))
-   {
-      diagnosticContext.Set("UserAgent", userAgent);
-   }
-
-   string? clientIp = httpContext.Connection.RemoteIpAddress?.ToString();
-   if(!string.IsNullOrWhiteSpace(clientIp))
-   {
-      diagnosticContext.Set("ClientIp", clientIp);
-   }
-
-   diagnosticContext.Set("ConnectionId", httpContext.Connection.Id);
-
-   string endpointName = httpContext.GetEndpoint()?.DisplayName ?? string.Empty;
-   if(!string.IsNullOrWhiteSpace(endpointName))
-   {
-      diagnosticContext.Set("EndpointName", endpointName);
-   }
-
-   string queryString = httpContext.Request.QueryString.Value ?? string.Empty;
-   if(!string.IsNullOrWhiteSpace(queryString))
-   {
-      diagnosticContext.Set("RequestQueryString", queryString);
-   }
-
-   string? contentType = httpContext.Request.ContentType;
-   if(!string.IsNullOrWhiteSpace(contentType))
-   {
-      diagnosticContext.Set("RequestContentType", contentType);
-   }
-
-   if(httpContext.Request.ContentLength is long contentLength)
-   {
-      diagnosticContext.Set("RequestContentLength", contentLength);
-   }
-}
-
+// Bootstrap logger used before DI container is fully built.
 Log.Logger = new LoggerConfiguration()
    .MinimumLevel.Is(BootstrapMinimumLevel)
    .MinimumLevel.Override("Microsoft", FrameworkMinimumLevel)
@@ -122,7 +63,8 @@ Log.Logger = new LoggerConfiguration()
 try
 {
    Log.Information("Starting web application");
-   // Logging configuration and services
+
+   // Host + logging setup.
    WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
    LogStoragePaths logStoragePaths = LogStoragePaths.Create(builder.Environment.ContentRootPath);
    logStoragePaths.EnsureDirectories();
@@ -152,8 +94,7 @@ try
       .WriteTo.Sink(services.GetRequiredService<SqliteLogSink>(), restrictedToMinimumLevel: LogEventLevel.Warning)
       .WriteTo.SignalR(services, "ReceiveEvent"));
 
-   // other services
-
+   // Serialization and transport settings.
    builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
    {
       // Set property naming policy to camelCase
@@ -189,10 +130,13 @@ try
    builder.Services.AddOpenApi("Dita");
    builder.Services.AddRazorPages();
    builder.Services.AddSingleton<SettingsService>();
-   builder.Services.AddSignalR();
-   builder.Services.AddHttpClient();
-   builder.Services.AddHttpContextAccessor();
+   builder.Services.AddSignalR()
+      .AddJsonProtocol(o =>
+   {
 
+      o.PayloadSerializerOptions.PropertyNamingPolicy = null;
+   });
+   builder.Services.AddHttpClient();
    builder.Services.AddHttpContextAccessor();
    builder.Services.AddAntiforgery(options =>
    {
@@ -210,25 +154,20 @@ try
       .Get<AutomaticTranslationSettings>() ?? new AutomaticTranslationSettings();
    Log.Information("Appsettings.json file loaded: {@AutomaticTranslationSettings}", automaticTranslationSettings);
 
-   // middlewares
+   builder.Services.AddSingleton<ICookieService, CookieService>();
+   // Middleware + localization services.
    builder.Services.AddTransient<LocalizationMiddleware>();
-
-   // Transient services
    builder.Services.AddTransient<IStringLocalizerFactory, JsonStringLocalizerFactory>();
-
-   // Scoped services
 
    // Singleton services
    StorageSettings? storageSettings = builder.Configuration
          .GetSection("Storage")
          .Get<StorageSettings>();
    builder.Services.AddSingleton(automaticTranslationSettings);
-   builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
    builder.Services.AddSingleton<IHttpService, HttpService>();
    builder.Services.AddSingleton<ILanguageService, LanguageService>();
    builder.Services.AddSingleton<ILibreTranslateHttpClientFactory, LibreTranslateHttpClientFactory>();
    builder.Services.AddSingleton<ILibreTranslateService, LibreTranslateService>();
-   builder.Services.AddSingleton<ICookieService, CookieService>();
 
    // Storage: the provider is selected via Storage:StorageType in appsettings.json.
    // Changing the type and connection string is all that is needed to switch backends.
@@ -249,8 +188,9 @@ try
    app.UseSerilogRequestLogging(options =>
    {
       options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
-      options.GetLevel = GetRequestLogLevel;
-      options.EnrichDiagnosticContext = EnrichRequestDiagnosticContext;
+      options.GetLevel = (httpContext, elapsed, exception) =>
+         ProgramPipelineHelpers.GetRequestLogLevel(httpContext, elapsed, exception, SlowRequestThresholdMs, RequestSuccessLevel);
+      options.EnrichDiagnosticContext = ProgramPipelineHelpers.EnrichRequestDiagnosticContext;
    });
 
    if(!app.Environment.IsDevelopment())
@@ -260,11 +200,57 @@ try
       app.UseHttpsRedirection();
    }
 
-   string[] supportedCultures = ["en"];
+   // Localization culture resolution.
+   string defaultCulture = ProgramPipelineHelpers.NormalizeCultureCode(automaticTranslationSettings.DefaultLanguage);
+   string[] supportedCultures;
+   ILanguageService languageService = app.Services.GetRequiredService<ILanguageService>();
+   ILibreTranslateService libreTranslateService = app.Services.GetRequiredService<ILibreTranslateService>();
+   var languages = await libreTranslateService.GetAvailableLanguagesAsync();
+
+   if(languages.Success && languages.Data.Length > 0)
+   {
+      var createResult = await languageService.CreateMissingLanguageFilesAsync([.. languages.Data]);
+      foreach(var result in createResult)
+      {
+         if(result.Value)
+         {
+            Console.WriteLine($"Created missing language file for '{result.Key}'.");
+         }
+      }
+   }
+
+   supportedCultures = languageService.TranslationsPresented() ?? [defaultCulture];
+   supportedCultures = [.. supportedCultures
+      .Select(ProgramPipelineHelpers.NormalizeCultureCode)
+      .Where(static culture => !string.IsNullOrWhiteSpace(culture))
+      .Distinct(StringComparer.OrdinalIgnoreCase)];
+
+   if(supportedCultures.Length == 0)
+   {
+      supportedCultures = [defaultCulture];
+   }
+
+   app.UseMiddleware<LocalizationMiddleware>();
+   app.UseRequestLocalization(options =>
+   {
+      options.AddSupportedCultures(supportedCultures)
+          .AddSupportedUICultures(supportedCultures)
+          .SetDefaultCulture(defaultCulture)
+          .ApplyCurrentCultureToResponseHeaders = true;
+   });
 
    app.UseRouting();
-
+   app.UseAuthentication();
    app.UseAuthorization();
+   app.MapOpenApi()
+        .CacheOutput();
+   app.MapScalarApiReference(options =>
+   {
+      _ = options
+          .WithTitle("Dita Open API Explorer")
+          .WithTheme(ScalarTheme.Mars)
+          .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+   });
 
    app.MapStaticAssets();
    app.MapRazorPages()

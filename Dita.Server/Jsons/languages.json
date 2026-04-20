@@ -33,7 +33,7 @@
     "code": "ar",
     "name": "Arabic",
     "native": "العربية",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "as",
@@ -164,7 +164,7 @@
     "code": "dv",
     "name": "Divehi",
     "native": "ދިވެހިބަސް",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "dz",
@@ -210,7 +210,7 @@
     "code": "fa",
     "name": "Persian",
     "native": "فارسی",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "ff",
@@ -276,13 +276,13 @@
     "code": "ha",
     "name": "Hausa",
     "native": "هَوُسَ",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "he",
     "name": "Hebrew",
     "native": "עברית",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "hi",
@@ -433,13 +433,13 @@
     "code": "ks",
     "name": "Kashmiri",
     "native": "कश्मीरी / كشميري",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "ku",
     "name": "Kurdish",
     "native": "Kurdî / كوردی",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "kv",
@@ -655,7 +655,7 @@
     "code": "ps",
     "name": "Pashto",
     "native": "پښتو",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "pt",
@@ -871,7 +871,7 @@
     "code": "ur",
     "name": "Urdu",
     "native": "اردو",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "uz",
@@ -912,7 +912,7 @@
     "code": "yi",
     "name": "Yiddish",
     "native": "ייִדיש",
-    "rtl": 1
+    "rtl": true
   },
   {
     "code": "yo",

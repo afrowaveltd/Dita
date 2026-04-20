@@ -224,8 +224,9 @@ public class SharedLocalizationTypesTests
    {
       var cache = Substitute.For<IDistributedCache>();
       var libreTranslate = Substitute.For<ILibreTranslateService>();
+      var settings = new AutomaticTranslationSettings();
       var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
-      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, logger);
+      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, settings, logger);
 
       var localizer = factory.Create(typeof(SharedLocalizationTypesTests));
 
@@ -237,8 +238,9 @@ public class SharedLocalizationTypesTests
    {
       var cache = Substitute.For<IDistributedCache>();
       var libreTranslate = Substitute.For<ILibreTranslateService>();
+      var settings = new AutomaticTranslationSettings();
       var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
-      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, logger);
+      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, settings, logger);
 
       var localizer = factory.Create("base", "location");
 

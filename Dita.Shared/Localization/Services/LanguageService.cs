@@ -3,6 +3,7 @@ using Afrowave.SharedTools.Models.Results;
 using Dita.Shared.Localization.Models;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Text.Json;
 
 namespace Dita.Shared.Localization.Services;
@@ -130,7 +131,7 @@ public class LanguageService : ILanguageService
 
    /// <summary>
    /// Returns the set of languages for which a locale file exists in the Locales directory.
-   /// Only 2-letter ISO-named files are considered.
+   /// Supports both neutral (e.g. "en") and specific cultures (e.g. "en-US") by mapping them to known language codes.
    /// </summary>
    public Response<List<Language>> GetRequiredLanguagesAsync()
    {
@@ -147,14 +148,20 @@ public class LanguageService : ILanguageService
 
          foreach(string file in files)
          {
-            string languageCode = Path.GetFileNameWithoutExtension(file).ToLowerInvariant();
-            if(languageCode.Length != 2 || !languageCode.All(char.IsLetter)) continue;
+            string localeCode = Path.GetFileNameWithoutExtension(file).ToLowerInvariant();
+            if(string.IsNullOrWhiteSpace(localeCode))
+            {
+               continue;
+            }
 
+            string normalizedLanguageCode = NormalizeToLanguageCode(localeCode);
             Language? language = Languages.FirstOrDefault(l =>
-               l.Code.Equals(languageCode, StringComparison.OrdinalIgnoreCase));
+               l.Code.Equals(normalizedLanguageCode, StringComparison.OrdinalIgnoreCase));
 
-            if(language is not null)
+            if(language is not null && requiredLanguages.All(existing => !existing.Code.Equals(language.Code, StringComparison.OrdinalIgnoreCase)))
+            {
                requiredLanguages.Add(language);
+            }
          }
 
          _logger.LogDebug("GetRequiredLanguagesAsync: found {Count} languages", requiredLanguages.Count);
@@ -448,7 +455,11 @@ public class LanguageService : ILanguageService
          }
 
          dict[key] = value;
-         await WriteLocaleFileInternalAsync(filePath, dict).ConfigureAwait(false);
+         Dictionary<string, string> sorted = dict
+            .OrderBy(pair => pair.Key, StringComparer.Ordinal)
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+
+         await WriteLocaleFileInternalAsync(filePath, sorted).ConfigureAwait(false);
          _logger.LogInformation("Added entry '{Key}' to '{Code}'", key, code);
          return Response<bool>.Ok(true, _t["Successfully stored"].Value);
       }
@@ -576,6 +587,27 @@ public class LanguageService : ILanguageService
 
    // ── Private helpers ──────────────────────────────────────────────────────
 
+   private static string NormalizeToLanguageCode(string localeOrLanguageCode)
+   {
+      if(string.IsNullOrWhiteSpace(localeOrLanguageCode))
+      {
+         return string.Empty;
+      }
+
+      string normalized = localeOrLanguageCode.Trim();
+      try
+      {
+         return CultureInfo.GetCultureInfo(normalized).TwoLetterISOLanguageName.ToLowerInvariant();
+      }
+      catch(CultureNotFoundException)
+      {
+         int separatorIndex = normalized.IndexOf('-');
+         return separatorIndex > 0
+            ? normalized[..separatorIndex].ToLowerInvariant()
+            : normalized.ToLowerInvariant();
+      }
+   }
+
    // Creates an empty locale JSON file if it does not already exist.
    private async Task<bool> CreateEmptyLanguageFile(string code)
    {
@@ -612,8 +644,11 @@ public class LanguageService : ILanguageService
       }
    }
 
-   // Returns the language codes for which locale files exist in the Locales directory.
-   private string[] TranslationsPresented()
+   /// <summary>
+   /// Returns locale identifiers for all translation files currently present in the Locales directory.
+   /// </summary>
+   /// <returns>An array of locale codes (for example <c>"en"</c> or <c>"en-US"</c>) without file extension.</returns>
+   public string[] TranslationsPresented()
    {
       if(!Directory.Exists(LocalesPath))
       {
@@ -622,7 +657,7 @@ public class LanguageService : ILanguageService
       }
 
       return [.. Directory.GetFiles(LocalesPath, "*.json")
-         .Select(f => Path.GetFileNameWithoutExtension(f).ToLowerInvariant())];
+         .Select(f => Path.GetFileNameWithoutExtension(f))];
    }
 
    // Deserialises a locale JSON file. Must be called while holding _fileLock.
