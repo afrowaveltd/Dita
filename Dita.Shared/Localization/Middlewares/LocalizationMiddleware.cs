@@ -36,11 +36,11 @@ public class LocalizationMiddleware(ICookieService cookie, AutomaticTranslationS
 
       string? cultureKey = _cookie.ReadResponse("Language").Data;
       cultureKey = string.IsNullOrWhiteSpace(cultureKey)
-         ? GetPrimaryLanguageFromHeader(context.Request.Headers["Accept-Language"])
+         ? GetPrimaryLanguageFromHeader(context.Request.Headers["Accept-Language"].ToString() ?? "en")
          : cultureKey;
       cultureKey = string.IsNullOrWhiteSpace(cultureKey) ? defaultCulture : cultureKey;
 
-      if(CultureExists(cultureKey))
+      if (CultureExists(cultureKey))
       {
          CultureInfo culture = new(cultureKey);
          Thread.CurrentThread.CurrentCulture = culture;
@@ -63,7 +63,7 @@ public class LocalizationMiddleware(ICookieService cookie, AutomaticTranslationS
    private string ResolveDefaultCulture()
    {
       string configured = _settings.DefaultLanguage;
-      if(string.IsNullOrWhiteSpace(configured))
+      if (string.IsNullOrWhiteSpace(configured))
       {
          return "en";
       }
@@ -72,7 +72,7 @@ public class LocalizationMiddleware(ICookieService cookie, AutomaticTranslationS
       {
          return CultureInfo.GetCultureInfo(configured).Name;
       }
-      catch(CultureNotFoundException)
+      catch (CultureNotFoundException)
       {
          return "en";
       }
@@ -80,13 +80,13 @@ public class LocalizationMiddleware(ICookieService cookie, AutomaticTranslationS
 
    private static string? GetPrimaryLanguageFromHeader(string headerValue)
    {
-      if(string.IsNullOrWhiteSpace(headerValue))
+      if (string.IsNullOrWhiteSpace(headerValue))
       {
          return null;
       }
 
       string firstPart = headerValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault() ?? string.Empty;
-      if(string.IsNullOrWhiteSpace(firstPart))
+      if (string.IsNullOrWhiteSpace(firstPart))
       {
          return null;
       }
