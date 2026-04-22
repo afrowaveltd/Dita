@@ -44,6 +44,7 @@
     <Folder Include="Api\" />
     <Folder Include="Hub\" />
     <Folder Include="Locales\" />
+    <Folder Include="Pages\Helps\" />
     <Folder Include="Settings\" />
   </ItemGroup>
 
