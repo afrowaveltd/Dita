@@ -66,7 +66,9 @@ try
 
    // Host + logging setup.
    WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-   LogStoragePaths logStoragePaths = LogStoragePaths.Create(builder.Environment.ContentRootPath);
+   int retentionDaysInfo = builder.Configuration.GetValue<int>("Logging:RetentionDaysInfo", LogStoragePaths.DefaultRetentionDaysInfo);
+   int retentionDaysWarning = builder.Configuration.GetValue<int>("Logging:RetentionDaysWarning", LogStoragePaths.DefaultRetentionDaysWarning);
+   LogStoragePaths logStoragePaths = LogStoragePaths.Create(builder.Environment.ContentRootPath, retentionDaysInfo, retentionDaysWarning);
    logStoragePaths.EnsureDirectories();
    LogStorageMaintenance.CleanupExpiredFiles(logStoragePaths);
    builder.Logging.ClearProviders();
