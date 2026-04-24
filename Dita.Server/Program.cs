@@ -6,6 +6,7 @@ using Dita.Server.Startup;
 using Dita.Server.Storage;
 using Dita.Shared.Localization.Middlewares;
 using Dita.Shared.Localization.Models;
+using Dita.Shared.Localization.ScheduledTranslationService;
 using Dita.Shared.Localization.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Localization;
@@ -171,6 +172,8 @@ try
    builder.Services.AddSingleton<ILibreTranslateHttpClientFactory, LibreTranslateHttpClientFactory>();
    builder.Services.AddSingleton<ILibreTranslateService, LibreTranslateService>();
    builder.Services.AddSingleton<ITranslationQueue, TranslationQueue>();
+   builder.Services.AddSingleton<IBackendTranslationService, BackendTranslationService>();
+   builder.Services.AddHostedService<Scheduller>();
 
    // Markdown translation services
    builder.Services.AddSingleton<IMarkdownParserService, MarkdownParserService>();
@@ -181,7 +184,7 @@ try
    // Changing the type and connection string is all that is needed to switch backends.
    // EF Core providers also apply pending migrations automatically at startup (see UseMigrationsAsync below).
 
-   if(storageSettings == null)
+   if (storageSettings == null)
    {
       Log.Error("Failed to load storage settings from configuration. Please check appsettings.json file.");
       throw new InvalidOperationException("Storage settings are not configured properly.");
@@ -201,7 +204,7 @@ try
       options.EnrichDiagnosticContext = ProgramPipelineHelpers.EnrichRequestDiagnosticContext;
    });
 
-   if(!app.Environment.IsDevelopment())
+   if (!app.Environment.IsDevelopment())
    {
       app.UseExceptionHandler("/Error");
       app.UseHsts();
@@ -215,12 +218,12 @@ try
    ILibreTranslateService libreTranslateService = app.Services.GetRequiredService<ILibreTranslateService>();
    var languages = await libreTranslateService.GetAvailableLanguagesAsync();
 
-   if(languages.Success && languages.Data.Length > 0)
+   if (languages.Success && languages.Data.Length > 0)
    {
       var createResult = await languageService.CreateMissingLanguageFilesAsync([.. languages.Data]);
-      foreach(var result in createResult)
+      foreach (var result in createResult)
       {
-         if(result.Value)
+         if (result.Value)
          {
             Console.WriteLine($"Created missing language file for '{result.Key}'.");
          }
@@ -233,7 +236,7 @@ try
       .Where(static culture => !string.IsNullOrWhiteSpace(culture))
       .Distinct(StringComparer.OrdinalIgnoreCase)];
 
-   if(supportedCultures.Length == 0)
+   if (supportedCultures.Length == 0)
    {
       supportedCultures = [defaultCulture];
    }
@@ -270,7 +273,7 @@ try
 
    app.Run();
 }
-catch(Exception exception)
+catch (Exception exception)
 {
    Log.Fatal(exception, "Application terminated unexpectedly");
    throw;

@@ -1,12 +1,11 @@
 using Dita.Shared.Localization.Models;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
 
 namespace Dita.Shared.Localization.Services;
 
 /// <summary>
 /// Orchestrates Markdown document translation by coordinating parsing, translation, and reconstruction.
-/// Translates all blocks for each target language in parallel while preserving document structure.
+/// Translates all blocks for each target language sequentially while preserving document structure.
 /// </summary>
 /// <param name="parserService">Service for extracting translatable blocks from Markdown.</param>
 /// <param name="reconstructorService">Service for rebuilding Markdown from translated blocks.</param>
@@ -45,7 +44,7 @@ public class MarkdownTranslationService(
       ArgumentException.ThrowIfNullOrWhiteSpace(sourceLanguage);
       ArgumentNullException.ThrowIfNull(targetLanguages);
 
-      if(targetLanguages.Count == 0)
+      if (targetLanguages.Count == 0)
       {
          _logger.LogWarning("No target languages specified for Markdown translation.");
          return [];
@@ -58,7 +57,7 @@ public class MarkdownTranslationService(
       // Step 1: Parse and extract translatable blocks
       List<MarkdownTranslatableBlock> originalBlocks = _parserService.ExtractTranslatableBlocks(markdownContent);
 
-      if(originalBlocks.Count == 0)
+      if (originalBlocks.Count == 0)
       {
          _logger.LogWarning("No translatable blocks found in Markdown content.");
          return targetLanguages.ToDictionary(lang => lang, _ => markdownContent);
@@ -66,27 +65,26 @@ public class MarkdownTranslationService(
 
       _logger.LogDebug("Extracted {Count} translatable blocks from Markdown.", originalBlocks.Count);
 
-      // Step 2: Translate all blocks for each target language in parallel
-      ConcurrentDictionary<string, List<MarkdownTranslatableBlock>> translatedBlocksByLanguage = new();
+      // Step 2: Translate all blocks for each target language sequentially to avoid overloading LibreTranslate.
+      Dictionary<string, List<MarkdownTranslatableBlock>> translatedBlocksByLanguage = [];
 
-      await Parallel.ForEachAsync(
-         targetLanguages,
-         cancellationToken,
-         async (targetLanguage, ct) =>
-         {
-            List<MarkdownTranslatableBlock> translatedBlocks = await TranslateBlocksAsync(
-               originalBlocks,
-               sourceLanguage,
-               targetLanguage,
-               ct);
+      foreach (string targetLanguage in targetLanguages)
+      {
+         cancellationToken.ThrowIfCancellationRequested();
 
-            translatedBlocksByLanguage[targetLanguage] = translatedBlocks;
-         });
+         List<MarkdownTranslatableBlock> translatedBlocks = await TranslateBlocksAsync(
+            originalBlocks,
+            sourceLanguage,
+            targetLanguage,
+            cancellationToken);
+
+         translatedBlocksByLanguage[targetLanguage] = translatedBlocks;
+      }
 
       // Step 3: Reconstruct Markdown for each language
       Dictionary<string, string> results = [];
 
-      foreach((string language, List<MarkdownTranslatableBlock> blocks) in translatedBlocksByLanguage)
+      foreach ((string language, List<MarkdownTranslatableBlock> blocks) in translatedBlocksByLanguage)
       {
          try
          {
@@ -95,7 +93,7 @@ public class MarkdownTranslationService(
 
             _logger.LogDebug("Successfully reconstructed Markdown for language {Language}.", language);
          }
-         catch(Exception ex)
+         catch (Exception ex)
          {
             _logger.LogError(ex, "Failed to reconstruct Markdown for language {Language}.", language);
             results[language] = markdownContent; // Fallback to original
@@ -117,7 +115,7 @@ public class MarkdownTranslationService(
    {
       List<MarkdownTranslatableBlock> translatedBlocks = [];
 
-      foreach(MarkdownTranslatableBlock block in originalBlocks)
+      foreach (MarkdownTranslatableBlock block in originalBlocks)
       {
          cancellationToken.ThrowIfCancellationRequested();
 
@@ -142,14 +140,14 @@ public class MarkdownTranslationService(
 
             translatedBlocks.Add(translatedBlock);
 
-            if(!result.Success)
+            if (!result.Success)
             {
                _logger.LogWarning(
                   "Translation failed for block {Key} (line {Line}) to {Target}: {Message}",
                   block.Key, block.StartLine, targetLanguage, result.Message);
             }
          }
-         catch(Exception ex)
+         catch (Exception ex)
          {
             _logger.LogError(ex, "Exception translating block {Key} to {Target}.", block.Key, targetLanguage);
 
@@ -194,7 +192,7 @@ public class MarkdownTranslationService(
       // Get available languages from LibreTranslate
       var languagesResponse = await _translateService.GetAvailableLanguagesAsync();
 
-      if(!languagesResponse.Success || languagesResponse.Data == null || languagesResponse.Data.Length == 0)
+      if (!languagesResponse.Success || languagesResponse.Data == null || languagesResponse.Data.Length == 0)
       {
          _logger.LogError(
             "Failed to retrieve available languages from LibreTranslate: {Message}",
@@ -208,7 +206,7 @@ public class MarkdownTranslationService(
          .Where(lang => !_settings.IgnoredLanguages.Contains(lang, StringComparer.OrdinalIgnoreCase))
          .ToList();
 
-      if(targetLanguages.Count == 0)
+      if (targetLanguages.Count == 0)
       {
          _logger.LogWarning(
             "No target languages available after excluding default ({Default}) and ignored languages.",

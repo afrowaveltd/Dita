@@ -47,8 +47,19 @@ public class LanguageService : ILanguageService
       }
    }
 
-   // Temporary file used to keep a backup of the previous default translation.
-   private static string OldTranslationPath => Path.Combine(Path.GetTempPath(), "old.json");
+   private static string LocalizationStoragePath
+   {
+      get
+      {
+         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+         int binIndex = baseDir.IndexOf("bin", StringComparison.OrdinalIgnoreCase);
+         string root = binIndex >= 0 ? baseDir[..binIndex] : baseDir;
+         return Path.Combine(root, "Storage", "Localization");
+      }
+   }
+
+   // Persistent file used to keep a backup of the previous default translation.
+   private static string OldTranslationPath => Path.Combine(LocalizationStoragePath, "old.json");
 
    /// <summary>
    /// List of available languages loaded from the JSON metadata file.
@@ -69,7 +80,7 @@ public class LanguageService : ILanguageService
 
    private List<Language> LoadLanguages()
    {
-      if(!File.Exists(JsonFilePath))
+      if (!File.Exists(JsonFilePath))
       {
          _logger.LogWarning("Language metadata file not found: {JsonFilePath}", JsonFilePath);
          return [];
@@ -81,7 +92,7 @@ public class LanguageService : ILanguageService
          _logger.LogDebug("Loaded {Count} languages from {JsonFilePath}", languages?.Count ?? 0, JsonFilePath);
          return languages ?? [];
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error loading languages from: {JsonFilePath}", JsonFilePath);
          return [];
@@ -101,7 +112,7 @@ public class LanguageService : ILanguageService
    /// <returns><c>true</c> if the language is RTL; otherwise <c>false</c>.</returns>
    public bool IsRtl(string code)
    {
-      if(string.IsNullOrWhiteSpace(code)) return false;
+      if (string.IsNullOrWhiteSpace(code)) return false;
       Language? language = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
       return language?.Rtl ?? false;
    }
@@ -113,14 +124,14 @@ public class LanguageService : ILanguageService
    /// <returns>A successful response containing the <see cref="Language"/>, or a failure response.</returns>
    public Response<Language>? GetLanguageByCode(string code)
    {
-      if(string.IsNullOrWhiteSpace(code))
+      if (string.IsNullOrWhiteSpace(code))
       {
          _logger.LogDebug("GetLanguageByCode: code is null or whitespace");
          return Response<Language>.Fail(_t["Language code cannot be null or empty"].Value);
       }
 
       Language? language = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
-      if(language is null)
+      if (language is null)
       {
          _logger.LogDebug("Language with code '{Code}' was not found", code);
          return Response<Language>.Fail($"{_t["Language code"]} {code} {_t["not found"].Value}");
@@ -135,7 +146,7 @@ public class LanguageService : ILanguageService
    /// </summary>
    public Response<List<Language>> GetRequiredLanguagesAsync()
    {
-      if(!Directory.Exists(LocalesPath))
+      if (!Directory.Exists(LocalesPath))
       {
          _logger.LogWarning("Locales directory not found: {LocalesPath}", LocalesPath);
          return Response<List<Language>>.Fail(_t["Locales directory not found"].Value);
@@ -146,10 +157,10 @@ public class LanguageService : ILanguageService
          string[] files = Directory.GetFiles(LocalesPath, "*.json");
          List<Language> requiredLanguages = [];
 
-         foreach(string file in files)
+         foreach (string file in files)
          {
             string localeCode = Path.GetFileNameWithoutExtension(file).ToLowerInvariant();
-            if(string.IsNullOrWhiteSpace(localeCode))
+            if (string.IsNullOrWhiteSpace(localeCode))
             {
                continue;
             }
@@ -158,7 +169,7 @@ public class LanguageService : ILanguageService
             Language? language = Languages.FirstOrDefault(l =>
                l.Code.Equals(normalizedLanguageCode, StringComparison.OrdinalIgnoreCase));
 
-            if(language is not null && requiredLanguages.All(existing => !existing.Code.Equals(language.Code, StringComparison.OrdinalIgnoreCase)))
+            if (language is not null && requiredLanguages.All(existing => !existing.Code.Equals(language.Code, StringComparison.OrdinalIgnoreCase)))
             {
                requiredLanguages.Add(language);
             }
@@ -168,7 +179,7 @@ public class LanguageService : ILanguageService
          return Response<List<Language>>.Ok(requiredLanguages,
             $"Loaded {requiredLanguages.Count} languages");
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error reading required language list");
          return Response<List<Language>>.Fail(ex);
@@ -185,10 +196,10 @@ public class LanguageService : ILanguageService
    {
       List<Language> data = [];
 
-      foreach(string code in languages)
+      foreach (string code in languages)
       {
          Language? found = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
-         if(found is not null)
+         if (found is not null)
          {
             data.Add(found);
          }
@@ -208,7 +219,7 @@ public class LanguageService : ILanguageService
    /// <param name="code">Language code (minimum 2 characters).</param>
    public async Task<Response<Dictionary<string, string>>> GetDictionaryAsync(string code)
    {
-      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      if (string.IsNullOrWhiteSpace(code) || code.Length < 2)
       {
          _logger.LogDebug("GetDictionaryAsync: invalid code '{Code}'", code);
          return Response<Dictionary<string, string>>.Fail(_t["Invalid code"].Value);
@@ -216,7 +227,7 @@ public class LanguageService : ILanguageService
 
       string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
 
-      if(!File.Exists(filePath))
+      if (!File.Exists(filePath))
       {
          _logger.LogDebug("GetDictionaryAsync: locale file for '{Code}' not found at {FilePath}", code, filePath);
          return Response<Dictionary<string, string>>.Fail(_t["Dictionary file not found"].Value);
@@ -227,10 +238,10 @@ public class LanguageService : ILanguageService
       {
          Dictionary<string, string>? data = await ReadLocaleFileInternalAsync(filePath).ConfigureAwait(false);
 
-         if(data is null)
+         if (data is null)
             return Response<Dictionary<string, string>>.SuccessWithWarning([], _t["No data in the file"].Value);
 
-         if(data.Count == 0)
+         if (data.Count == 0)
          {
             _logger.LogDebug("Locale file for '{Code}' is empty", code);
             return Response<Dictionary<string, string>>.SuccessWithWarning(data, _t["The list is empty"].Value);
@@ -239,7 +250,7 @@ public class LanguageService : ILanguageService
          _logger.LogDebug("Loaded {Count} entries for language '{Code}'", data.Count, code);
          return Response<Dictionary<string, string>>.Ok(data, code);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error reading locale file for '{Code}'", code);
          return Response<Dictionary<string, string>>.Fail(ex);
@@ -255,7 +266,7 @@ public class LanguageService : ILanguageService
    /// </summary>
    public async Task<Response<Dictionary<string, string>>> GetLastStored()
    {
-      if(!File.Exists(OldTranslationPath))
+      if (!File.Exists(OldTranslationPath))
       {
          _logger.LogDebug("Backup translation file not found: {OldTranslationPath}", OldTranslationPath);
          return Response<Dictionary<string, string>>.Fail(_t["not found"].Value);
@@ -264,7 +275,7 @@ public class LanguageService : ILanguageService
       try
       {
          string json = await File.ReadAllTextAsync(OldTranslationPath).ConfigureAwait(false);
-         if(json.Length == 0)
+         if (json.Length == 0)
          {
             _logger.LogWarning("Backup translation file is empty: {OldTranslationPath}", OldTranslationPath);
             return Response<Dictionary<string, string>>.Fail(_t["old Translation File is empty"].Value);
@@ -273,7 +284,7 @@ public class LanguageService : ILanguageService
          Dictionary<string, string> data = JsonSerializer.Deserialize<Dictionary<string, string>>(json) ?? [];
          return Response<Dictionary<string, string>>.Ok(data);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error reading backup translation file");
          return Response<Dictionary<string, string>>.Fail(ex);
@@ -288,14 +299,14 @@ public class LanguageService : ILanguageService
    {
       string[] languages = TranslationsPresented();
 
-      if(languages.Length == 0)
+      if (languages.Length == 0)
       {
          _logger.LogWarning("GetAllDictionariesAsync: no locale files found in {LocalesPath}", LocalesPath);
          return Response<List<SingleTranslation>>.Fail(_t["No files in the folder"].Value);
       }
 
       List<SingleTranslation> result = [];
-      foreach(string language in languages)
+      foreach (string language in languages)
       {
          Response<Dictionary<string, string>> response = await GetDictionaryAsync(language).ConfigureAwait(false);
          result.Add(new SingleTranslation
@@ -316,25 +327,28 @@ public class LanguageService : ILanguageService
    /// <param name="data">Translation data to save.</param>
    public async Task<Response<bool>> SaveDictionaryAsync(SingleTranslation data)
    {
-      if(string.IsNullOrWhiteSpace(data.Language))
+      if (string.IsNullOrWhiteSpace(data.Language))
       {
          _logger.LogDebug("SaveDictionaryAsync: language code is null or whitespace");
          return Response<bool>.Fail(_t["Code can't be null"].Value);
       }
 
-      if(data.Language.Length < 2)
+      if (data.Language.Length < 2)
       {
          _logger.LogDebug("SaveDictionaryAsync: language code '{Language}' is too short", data.Language);
          return Response<bool>.Fail(_t["Invalid code"].Value);
       }
 
       string path = Path.Combine(LocalesPath, data.Language + ".json");
-      string json = JsonSerializer.Serialize(data.Translations ?? []);
+      Dictionary<string, string> sortedTranslations = (data.Translations ?? [])
+         .OrderBy(pair => pair.Key, StringComparer.Ordinal)
+         .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+      string json = JsonSerializer.Serialize(sortedTranslations, new JsonSerializerOptions { WriteIndented = true });
 
       await _fileLock.WaitAsync().ConfigureAwait(false);
       try
       {
-         if(File.Exists(path))
+         if (File.Exists(path))
          {
             string backupDir = Path.Combine(Path.GetTempPath(), "dita");
             Directory.CreateDirectory(backupDir);
@@ -348,7 +362,7 @@ public class LanguageService : ILanguageService
          _logger.LogInformation("Translation for '{Language}' saved: {Path}", data.Language, path);
          return Response<bool>.Ok(true, _t["Successfully stored"].Value);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error saving translation for '{Language}'", data.Language);
          return Response<bool>.Fail($"Error storing data: {ex.Message}");
@@ -367,12 +381,13 @@ public class LanguageService : ILanguageService
    {
       try
       {
-         string json = JsonSerializer.Serialize(data ?? []);
+         Directory.CreateDirectory(LocalizationStoragePath);
+         string json = JsonSerializer.Serialize(data ?? [], new JsonSerializerOptions { WriteIndented = true });
          await File.WriteAllTextAsync(OldTranslationPath, json).ConfigureAwait(false);
          _logger.LogDebug("Previous translation backup saved to: {OldTranslationPath}", OldTranslationPath);
          return Response<bool>.Ok(true);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error saving translation backup to: {OldTranslationPath}", OldTranslationPath);
          return Response<bool>.Fail("Couldn't save an old translation");
@@ -388,7 +403,7 @@ public class LanguageService : ILanguageService
    {
       Dictionary<string, bool> results = [];
 
-      foreach(SingleTranslation item in tree)
+      foreach (SingleTranslation item in tree)
       {
          Response<bool> result = await SaveDictionaryAsync(item).ConfigureAwait(false);
          results[item.Language] = result.Success;
@@ -406,7 +421,7 @@ public class LanguageService : ILanguageService
    public async Task<Dictionary<string, bool>> CreateMissingLanguageFilesAsync(List<string> languages)
    {
       Dictionary<string, bool> result = [];
-      foreach(string language in languages)
+      foreach (string language in languages)
          result[language] = await CreateEmptyLanguageFile(language).ConfigureAwait(false);
       return result;
    }
@@ -421,20 +436,20 @@ public class LanguageService : ILanguageService
    /// <param name="value">Translation value for the key.</param>
    public async Task<Response<bool>> AddTranslationEntryAsync(string code, string key, string value)
    {
-      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      if (string.IsNullOrWhiteSpace(code) || code.Length < 2)
       {
          _logger.LogDebug("AddTranslationEntryAsync: invalid language code '{Code}'", code);
          return Response<bool>.Fail(_t["Invalid code"].Value);
       }
 
-      if(string.IsNullOrWhiteSpace(key))
+      if (string.IsNullOrWhiteSpace(key))
       {
          _logger.LogDebug("AddTranslationEntryAsync: key is null or whitespace");
          return Response<bool>.Fail(_t["Key cannot be null or empty"].Value);
       }
 
       string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
-      if(!File.Exists(filePath))
+      if (!File.Exists(filePath))
       {
          _logger.LogDebug("AddTranslationEntryAsync: locale file for '{Code}' not found", code);
          return Response<bool>.Fail(_t["Dictionary file not found"].Value);
@@ -445,7 +460,7 @@ public class LanguageService : ILanguageService
       {
          Dictionary<string, string> dict = await ReadLocaleFileInternalAsync(filePath).ConfigureAwait(false) ?? [];
 
-         if(dict.ContainsKey(key))
+         if (dict.ContainsKey(key))
          {
             _logger.LogDebug(
                "AddTranslationEntryAsync: key '{Key}' already exists in '{Code}' – not overwriting",
@@ -463,7 +478,7 @@ public class LanguageService : ILanguageService
          _logger.LogInformation("Added entry '{Key}' to '{Code}'", key, code);
          return Response<bool>.Ok(true, _t["Successfully stored"].Value);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error adding entry '{Key}' to '{Code}'", key, code);
          return Response<bool>.Fail(ex);
@@ -483,20 +498,20 @@ public class LanguageService : ILanguageService
    /// <param name="key">Translation key to remove.</param>
    public async Task<Response<bool>> RemoveTranslationEntryAsync(string code, string key)
    {
-      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      if (string.IsNullOrWhiteSpace(code) || code.Length < 2)
       {
          _logger.LogDebug("RemoveTranslationEntryAsync: invalid language code '{Code}'", code);
          return Response<bool>.Fail(_t["Invalid code"].Value);
       }
 
-      if(string.IsNullOrWhiteSpace(key))
+      if (string.IsNullOrWhiteSpace(key))
       {
          _logger.LogDebug("RemoveTranslationEntryAsync: key is null or whitespace");
          return Response<bool>.Fail(_t["Key cannot be null or empty"].Value);
       }
 
       string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
-      if(!File.Exists(filePath))
+      if (!File.Exists(filePath))
       {
          _logger.LogDebug("RemoveTranslationEntryAsync: locale file for '{Code}' not found", code);
          return Response<bool>.Fail(_t["Dictionary file not found"].Value);
@@ -507,7 +522,7 @@ public class LanguageService : ILanguageService
       {
          Dictionary<string, string> dict = await ReadLocaleFileInternalAsync(filePath).ConfigureAwait(false) ?? [];
 
-         if(!dict.Remove(key))
+         if (!dict.Remove(key))
          {
             _logger.LogDebug("RemoveTranslationEntryAsync: key '{Key}' not found in '{Code}'", key, code);
             return Response<bool>.Fail($"{_t["Key not found"].Value}: '{key}'");
@@ -517,7 +532,7 @@ public class LanguageService : ILanguageService
          _logger.LogInformation("Removed entry '{Key}' from '{Code}'", key, code);
          return Response<bool>.Ok(true, _t["Successfully stored"].Value);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error removing entry '{Key}' from '{Code}'", key, code);
          return Response<bool>.Fail(ex);
@@ -539,20 +554,20 @@ public class LanguageService : ILanguageService
    /// <param name="value">New translation value.</param>
    public async Task<Response<bool>> UpdateTranslationEntryAsync(string code, string key, string value)
    {
-      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      if (string.IsNullOrWhiteSpace(code) || code.Length < 2)
       {
          _logger.LogDebug("UpdateTranslationEntryAsync: invalid language code '{Code}'", code);
          return Response<bool>.Fail(_t["Invalid code"].Value);
       }
 
-      if(string.IsNullOrWhiteSpace(key))
+      if (string.IsNullOrWhiteSpace(key))
       {
          _logger.LogDebug("UpdateTranslationEntryAsync: key is null or whitespace");
          return Response<bool>.Fail(_t["Key cannot be null or empty"].Value);
       }
 
       string filePath = Path.Combine(LocalesPath, code.ToLowerInvariant() + ".json");
-      if(!File.Exists(filePath))
+      if (!File.Exists(filePath))
       {
          _logger.LogDebug("UpdateTranslationEntryAsync: locale file for '{Code}' not found", code);
          return Response<bool>.Fail(_t["Dictionary file not found"].Value);
@@ -574,7 +589,7 @@ public class LanguageService : ILanguageService
 
          return Response<bool>.Ok(true, _t["Successfully stored"].Value);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error updating entry '{Key}' in '{Code}'", key, code);
          return Response<bool>.Fail(ex);
@@ -589,7 +604,7 @@ public class LanguageService : ILanguageService
 
    private static string NormalizeToLanguageCode(string localeOrLanguageCode)
    {
-      if(string.IsNullOrWhiteSpace(localeOrLanguageCode))
+      if (string.IsNullOrWhiteSpace(localeOrLanguageCode))
       {
          return string.Empty;
       }
@@ -599,7 +614,7 @@ public class LanguageService : ILanguageService
       {
          return CultureInfo.GetCultureInfo(normalized).TwoLetterISOLanguageName.ToLowerInvariant();
       }
-      catch(CultureNotFoundException)
+      catch (CultureNotFoundException)
       {
          int separatorIndex = normalized.IndexOf('-');
          return separatorIndex > 0
@@ -611,14 +626,14 @@ public class LanguageService : ILanguageService
    // Creates an empty locale JSON file if it does not already exist.
    private async Task<bool> CreateEmptyLanguageFile(string code)
    {
-      if(string.IsNullOrWhiteSpace(code) || code.Length < 2)
+      if (string.IsNullOrWhiteSpace(code) || code.Length < 2)
       {
          _logger.LogDebug("CreateEmptyLanguageFile: invalid code '{Code}'", code);
          return false;
       }
 
       string path = Path.Combine(LocalesPath, code + ".json");
-      if(File.Exists(path))
+      if (File.Exists(path))
       {
          _logger.LogDebug("Locale file for '{Code}' already exists: {Path}", code, path);
          return false;
@@ -628,12 +643,12 @@ public class LanguageService : ILanguageService
       try
       {
          // Re-check after acquiring lock (another thread may have created the file).
-         if(File.Exists(path)) return false;
+         if (File.Exists(path)) return false;
          await File.WriteAllTextAsync(path, "{}").ConfigureAwait(false);
          _logger.LogInformation("Created empty locale file for '{Code}': {Path}", code, path);
          return true;
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
          _logger.LogError(ex, "Error creating locale file for '{Code}'", code);
          return false;
@@ -650,7 +665,7 @@ public class LanguageService : ILanguageService
    /// <returns>An array of locale codes (for example <c>"en"</c> or <c>"en-US"</c>) without file extension.</returns>
    public string[] TranslationsPresented()
    {
-      if(!Directory.Exists(LocalesPath))
+      if (!Directory.Exists(LocalesPath))
       {
          _logger.LogWarning("TranslationsPresented: directory {LocalesPath} does not exist", LocalesPath);
          return [];
@@ -670,7 +685,10 @@ public class LanguageService : ILanguageService
    // Serialises a dictionary and writes it to a locale JSON file. Must be called while holding _fileLock.
    private static async Task WriteLocaleFileInternalAsync(string filePath, Dictionary<string, string> dict)
    {
-      string json = JsonSerializer.Serialize(dict);
+      Dictionary<string, string> sorted = dict
+         .OrderBy(pair => pair.Key, StringComparer.Ordinal)
+         .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+      string json = JsonSerializer.Serialize(sorted, new JsonSerializerOptions { WriteIndented = true });
       await File.WriteAllTextAsync(filePath, json).ConfigureAwait(false);
    }
 }

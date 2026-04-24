@@ -9,9 +9,9 @@ namespace Dita.Shared.Localization.Models;
 public class StageReport<T> where T : class
 {
    /// <summary>
-   /// The current stage of the process being reported. Defaults to <see cref="ProcessStage.TranslateLanguages"/>.
+   /// The current stage of the process being reported. Defaults to <see cref="ProcessStage.TranslateCountries"/>.
    /// </summary>
-   public ProcessStage ReportedStage { get; set; } = ProcessStage.TranslateLanguages;
+   public ProcessStage ReportedStage { get; set; } = ProcessStage.TranslateCountries;
    /// <summary>
    /// The data associated with the current stage. This is of type <typeparamref name="T"/>.
    /// </summary>

@@ -66,6 +66,7 @@ public class SharedLocalizationTypesTests
       Assert.Equal(string.Empty, settings.Key);
       Assert.Equal("en", settings.DefaultLanguage);
       Assert.Empty(settings.IgnoredLanguages);
+      Assert.Equal(["/Docs"], settings.MarkdownRoots);
       Assert.False(settings.AutomaticRun);
       Assert.Equal(TimeSpan.Zero, settings.WaitingTime);
       Assert.Equal(30, settings.CheckingPeriod);

@@ -9,6 +9,6 @@ namespace Dita.Shared.Localization.Hubs;
 /// Clients can subscribe to this hub to receive live updates when translation or localization data changes,
 /// such as when new locale files are generated or a translation job completes.
 /// </remarks>
-public class LocalizationHub : Hub
+public class LocalizationHub : Hub<ILocalizationHubClient>
 {
 }

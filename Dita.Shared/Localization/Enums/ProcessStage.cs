@@ -13,9 +13,9 @@ public enum ProcessStage
    /// </summary>
    CheckServers = 1,
    /// <summary>
-   /// Translates between languages.
+   /// Translates between countries.
    /// </summary>
-   TranslateLanguages = 2,
+   TranslateCountries = 2,
    /// <summary>
    /// Translates JSON Localization files.
    /// </summary>

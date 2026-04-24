@@ -31,6 +31,11 @@ public class AutomaticTranslationSettings
    public List<string> IgnoredLanguages { get; set; } = [];
 
    /// <summary>
+   /// Gets or sets the project-root-relative directories that contain Markdown translation trees.
+   /// </summary>
+   public List<string> MarkdownRoots { get; set; } = ["/Docs"];
+
+   /// <summary>
    /// Gets or sets a value indicating whether automatic translation runs automatically.
    /// </summary>
    public bool AutomaticRun { get; set; } = false;
@@ -64,6 +69,12 @@ public class AutomaticTranslationSettings
    /// Gets or sets the endpoint URL used to detect the language from provided text.
    /// </summary>
 	public string DetectLanguageEndpoint { get; set; } = "/detect";
+
+   /// <summary>
+   /// Gets or sets minimal delay between translation requests in milliseconds.
+   /// Helps prevent API bursts that trigger gateway errors under load.
+   /// </summary>
+   public int RequestThrottleMs { get; set; } = 80;
 
    /// <summary>
    /// Gets or sets a value indicating whether application settings have been loaded.
