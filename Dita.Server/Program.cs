@@ -170,6 +170,12 @@ try
    builder.Services.AddSingleton<ILanguageService, LanguageService>();
    builder.Services.AddSingleton<ILibreTranslateHttpClientFactory, LibreTranslateHttpClientFactory>();
    builder.Services.AddSingleton<ILibreTranslateService, LibreTranslateService>();
+   builder.Services.AddSingleton<ITranslationQueue, TranslationQueue>();
+
+   // Markdown translation services
+   builder.Services.AddSingleton<IMarkdownParserService, MarkdownParserService>();
+   builder.Services.AddSingleton<IMarkdownReconstructorService, MarkdownReconstructorService>();
+   builder.Services.AddSingleton<IMarkdownTranslationService, MarkdownTranslationService>();
 
    // Storage: the provider is selected via Storage:StorageType in appsettings.json.
    // Changing the type and connection string is all that is needed to switch backends.

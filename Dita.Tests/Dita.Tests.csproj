@@ -37,4 +37,8 @@
     <ProjectReference Include="..\Dita.Tui\Dita.Tui.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Server\Logging\" />
+  </ItemGroup>
+
 </Project>
