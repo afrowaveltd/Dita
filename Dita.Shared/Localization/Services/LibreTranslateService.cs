@@ -286,9 +286,8 @@ public class LibreTranslateService(
    /// </remarks>
    public async Task<Response<TranslateResult>> TranslateTextAsync(string text, string sourceLanguage, string targetLanguage)
    {
-      sourceLanguage = string.IsNullOrWhiteSpace(sourceLanguage) ? "auto" : sourceLanguage;
-      sourceLanguage = await ResolveSupportedLanguageCodeAsync(sourceLanguage);
-      targetLanguage = await ResolveSupportedLanguageCodeAsync(targetLanguage);
+      sourceLanguage = string.IsNullOrWhiteSpace(sourceLanguage) ? "auto" : NormalizeLanguageCode(sourceLanguage);
+      targetLanguage = NormalizeLanguageCode(targetLanguage);
 
       if (AreLanguagesEquivalent(sourceLanguage, targetLanguage))
       {
@@ -351,29 +350,14 @@ public class LibreTranslateService(
             }
             else
             {
-               var content = await response.Content.ReadAsStringAsync();
-               var translateResult = JsonSerializer.Deserialize<TranslateResult>(content, _options);
-
-               if (translateResult is null)
+               Response<TranslateResult> translatedResponse = await CreateTranslationResponseAsync(response, text, sourceLanguage, targetLanguage);
+               if (!translatedResponse.Success)
                {
-                  return new Response<TranslateResult>
-                  {
-                     Success = false,
-                     Data = new(),
-                     Message = "Failed to deserialize translation result."
-                  };
+                  return translatedResponse;
                }
 
-               // Validate and potentially retry translation
-               var validatedResult = await ValidateAndRetryTranslationAsync(text, translateResult, sourceLanguage, targetLanguage);
-
                OnTranslationSuccess();
-               return new Response<TranslateResult>
-               {
-                  Success = true,
-                  Data = validatedResult,
-                  Message = "Text translated successfully."
-               };
+               return translatedResponse;
             }
          }
          catch (Exception ex)
@@ -391,6 +375,45 @@ public class LibreTranslateService(
       {
          Success = false,
          Message = "Failed to translate text after multiple attempts."
+      };
+   }
+
+   private async Task<Response<TranslateResult>> CreateTranslationResponseAsync(HttpResponseMessage response, string originalText, string sourceLanguage, string targetLanguage)
+   {
+      string content = await response.Content.ReadAsStringAsync();
+      TranslateResult? translateResult;
+
+      try
+      {
+         translateResult = JsonSerializer.Deserialize<TranslateResult>(content, _options);
+      }
+      catch (JsonException ex)
+      {
+         _logger.LogError(ex, "Failed to deserialize translation payload.");
+         return new Response<TranslateResult>
+         {
+            Success = false,
+            Data = new(),
+            Message = "Failed to deserialize translation result."
+         };
+      }
+
+      if (translateResult is null)
+      {
+         return new Response<TranslateResult>
+         {
+            Success = false,
+            Data = new(),
+            Message = "Failed to deserialize translation result."
+         };
+      }
+
+      TranslateResult validatedResult = await ValidateAndRetryTranslationAsync(originalText, translateResult, sourceLanguage, targetLanguage);
+      return new Response<TranslateResult>
+      {
+         Success = true,
+         Data = validatedResult,
+         Message = "Text translated successfully."
       };
    }
 

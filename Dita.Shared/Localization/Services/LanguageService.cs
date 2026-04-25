@@ -47,19 +47,8 @@ public class LanguageService : ILanguageService
       }
    }
 
-   private static string LocalizationStoragePath
-   {
-      get
-      {
-         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-         int binIndex = baseDir.IndexOf("bin", StringComparison.OrdinalIgnoreCase);
-         string root = binIndex >= 0 ? baseDir[..binIndex] : baseDir;
-         return Path.Combine(root, "Storage", "Localization");
-      }
-   }
-
    // Persistent file used to keep a backup of the previous default translation.
-   private static string OldTranslationPath => Path.Combine(LocalizationStoragePath, "old.json");
+   private static string OldTranslationPath => Path.Combine(Path.GetTempPath(), "old.json");
 
    /// <summary>
    /// List of available languages loaded from the JSON metadata file.
@@ -381,7 +370,12 @@ public class LanguageService : ILanguageService
    {
       try
       {
-         Directory.CreateDirectory(LocalizationStoragePath);
+         string? directory = Path.GetDirectoryName(OldTranslationPath);
+         if (!string.IsNullOrWhiteSpace(directory))
+         {
+            Directory.CreateDirectory(directory);
+         }
+
          string json = JsonSerializer.Serialize(data ?? [], new JsonSerializerOptions { WriteIndented = true });
          await File.WriteAllTextAsync(OldTranslationPath, json).ConfigureAwait(false);
          _logger.LogDebug("Previous translation backup saved to: {OldTranslationPath}", OldTranslationPath);

@@ -34,4 +34,4 @@ Localization JSON dictionaries are always stored with alphabetically sorted keys
 
 The previous default dictionary snapshot is stored persistently so a restart of the application does not lose change tracking.
 
-Manual translations always have priority over automatic additions.
+**Manual translations always have priority over automatic additions.**

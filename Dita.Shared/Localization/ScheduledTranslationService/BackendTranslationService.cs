@@ -1,6 +1,6 @@
 ﻿using Afrowave.SharedTools.Models.Results;
-using Dita.Shared.Localization.Hubs;
 using Dita.Shared.Localization.Enums;
+using Dita.Shared.Localization.Hubs;
 using Dita.Shared.Localization.Models;
 using Dita.Shared.Localization.Services;
 using Microsoft.AspNetCore.SignalR;
@@ -38,7 +38,7 @@ public class BackendTranslationService(
    private List<string> IgnoredLanguages => _settings.IgnoredLanguages ?? [];
 
    private string CountriesFilePath => Path.Combine(_hostEnvironment.ContentRootPath, "Jsons", "countries.json");
-   private string TempHashDirectory => Path.Combine(Path.GetTempPath(), "dita", "localization-hashes");
+   private static string TempHashDirectory => Path.Combine(Path.GetTempPath(), "dita", "localization-hashes");
    private Guid _runId;
    private long _messageSequence;
 
@@ -69,7 +69,7 @@ public class BackendTranslationService(
          await PublishStageAsync(ProcessStage.StoringResults, storingReport, LocalizationMessageType.StageCompleted, "Localization artifacts stored.");
          await PublishMessageAsync(LocalizationMessageType.PipelineCompleted, ProcessStage.StoringResults, "Automatic translation pipeline completed successfully.", storingReport);
       }
-      catch (Exception ex)
+      catch(Exception ex)
       {
          _logger.LogError(ex, "Automatic translation pipeline failed.");
          storingReport.Errors.Add(CreateError("pipeline", ErrorCode.InternalError, ex.Message));
@@ -97,19 +97,19 @@ public class BackendTranslationService(
          report.TranslationServerReady = latencyResponse.Success;
 
          var languagesResponse = await _translateService.GetAvailableLanguagesAsync();
-         if (!languagesResponse.Success || languagesResponse.Data is null || languagesResponse.Data.Length == 0)
+         if(!languagesResponse.Success || languagesResponse.Data is null || languagesResponse.Data.Length == 0)
          {
             throw new InvalidOperationException(languagesResponse.Message);
          }
 
          report.AvailableLanguages = languagesResponse.Data;
 
-         if (!_settings.AppsettingsLoaded)
+         if(!_settings.AppsettingsLoaded)
          {
             throw new InvalidOperationException("AutomaticTranslationSettings were not loaded.");
          }
 
-         if (!languagesResponse.Data.Contains(DefaultLanguage, StringComparer.OrdinalIgnoreCase))
+         if(!languagesResponse.Data.Contains(DefaultLanguage, StringComparer.OrdinalIgnoreCase))
          {
             throw new InvalidOperationException($"Default language '{DefaultLanguage}' is not supported by the translation server.");
          }
@@ -124,7 +124,7 @@ public class BackendTranslationService(
          await PublishStageAsync(ProcessStage.CheckServers, report, LocalizationMessageType.StageCompleted, "Translation server and configuration validated.");
          return new CheckContext(report, targetLanguages);
       }
-      catch (Exception ex)
+      catch(Exception ex)
       {
          _logger.LogError(ex, "CheckServers stage failed.");
          await PublishMessageAsync(LocalizationMessageType.StageFailed, ProcessStage.CheckServers, ex.Message, report, true);
@@ -147,17 +147,17 @@ public class BackendTranslationService(
          HashSet<string> countryKeys = [];
          bool defaultChanged = false;
 
-         foreach (CountryDefinition country in countries.OrderBy(country => country.Name, StringComparer.Ordinal))
+         foreach(CountryDefinition country in countries.OrderBy(country => country.Name, StringComparer.Ordinal))
          {
             string? defaultPhrase = await ResolveCountryDefaultPhraseAsync(country, report);
-            if (string.IsNullOrWhiteSpace(defaultPhrase))
+            if(string.IsNullOrWhiteSpace(defaultPhrase))
             {
                continue;
             }
 
             countryKeys.Add(defaultPhrase);
 
-            if (!defaultDictionary.ContainsKey(defaultPhrase))
+            if(!defaultDictionary.ContainsKey(defaultPhrase))
             {
                defaultDictionary[defaultPhrase] = defaultPhrase;
                report.AddedCount++;
@@ -165,7 +165,7 @@ public class BackendTranslationService(
             }
          }
 
-         if (defaultChanged)
+         if(defaultChanged)
          {
             await SaveDictionaryAsync(DefaultLanguage, defaultDictionary, storingReport, report, "countries/default");
          }
@@ -173,12 +173,12 @@ public class BackendTranslationService(
          Dictionary<string, Dictionary<string, string>> targetDictionaries = await LoadTargetDictionariesAsync(targetLanguages);
 
          _translationQueue.Clear();
-         foreach (string targetLanguage in targetLanguages)
+         foreach(string targetLanguage in targetLanguages)
          {
             Dictionary<string, string> dictionary = targetDictionaries[targetLanguage];
-            foreach (string countryKey in countryKeys)
+            foreach(string countryKey in countryKeys)
             {
-               if (!dictionary.ContainsKey(countryKey))
+               if(!dictionary.ContainsKey(countryKey))
                {
                   _translationQueue.Enqueue(new PhraseInQueue
                   {
@@ -197,14 +197,14 @@ public class BackendTranslationService(
          await ProcessQueueAsync(report, targetDictionaries, storingReport);
          report.DefaultDictionaryCount = defaultDictionary.Count;
 
-         foreach ((string language, Dictionary<string, string> dictionary) in targetDictionaries)
+         foreach((string language, Dictionary<string, string> dictionary) in targetDictionaries)
          {
             await SaveDictionaryAsync(language, dictionary, storingReport, report, $"countries/{language}");
          }
 
          await PublishStageAsync(ProcessStage.TranslateCountries, report, LocalizationMessageType.StageCompleted, "Country names synchronised.");
       }
-      catch (Exception ex)
+      catch(Exception ex)
       {
          _logger.LogError(ex, "TranslateCountries stage failed.");
          report.Errors ??= [];
@@ -237,9 +237,9 @@ public class BackendTranslationService(
          Dictionary<string, Dictionary<string, string>> targetDictionaries = await LoadTargetDictionariesAsync(targetLanguages);
          _translationQueue.Clear();
 
-         foreach (string targetLanguage in targetLanguages)
+         foreach(string targetLanguage in targetLanguages)
          {
-            foreach (string removedKey in removedKeys)
+            foreach(string removedKey in removedKeys)
             {
                _translationQueue.Enqueue(new PhraseInQueue
                {
@@ -252,7 +252,7 @@ public class BackendTranslationService(
                });
             }
 
-            foreach (string addedKey in addedKeys)
+            foreach(string addedKey in addedKeys)
             {
                _translationQueue.Enqueue(new PhraseInQueue
                {
@@ -269,7 +269,7 @@ public class BackendTranslationService(
          report.ToTranslateCount = _translationQueue.GetAll().Count;
          await ProcessQueueAsync(report, targetDictionaries, storingReport);
 
-         foreach ((string language, Dictionary<string, string> dictionary) in targetDictionaries)
+         foreach((string language, Dictionary<string, string> dictionary) in targetDictionaries)
          {
             await SaveDictionaryAsync(language, dictionary, storingReport, report, $"json/{language}");
          }
@@ -277,7 +277,7 @@ public class BackendTranslationService(
          await _languageService.SaveOldTranslationAsync(currentDefault);
          await PublishStageAsync(ProcessStage.TranslateJsonFiles, report, LocalizationMessageType.StageCompleted, "JSON localization dictionaries synchronised.");
       }
-      catch (Exception ex)
+      catch(Exception ex)
       {
          _logger.LogError(ex, "TranslateJsonFiles stage failed.");
          report.Errors ??= [];
@@ -294,14 +294,14 @@ public class BackendTranslationService(
 
       try
       {
-         foreach (string markdownRoot in ResolveMarkdownRoots())
+         foreach(string markdownRoot in ResolveMarkdownRoots())
          {
-            if (!Directory.Exists(markdownRoot))
+            if(!Directory.Exists(markdownRoot))
             {
                continue;
             }
 
-            foreach (string sourceFile in Directory.GetFiles(markdownRoot, $"{DefaultLanguage}.md", SearchOption.AllDirectories))
+            foreach(string sourceFile in Directory.GetFiles(markdownRoot, $"{DefaultLanguage}.md", SearchOption.AllDirectories))
             {
                report.SourceFilesDetected++;
                string sourceContent = await File.ReadAllTextAsync(sourceFile);
@@ -314,7 +314,7 @@ public class BackendTranslationService(
                   return !File.Exists(targetFilePath) || !string.Equals(storedHash.Hash, sourceHash, StringComparison.OrdinalIgnoreCase);
                })];
 
-               if (missingOrChangedTargets.Count == 0)
+               if(missingOrChangedTargets.Count == 0)
                {
                   report.SkippedFiles++;
                   continue;
@@ -327,9 +327,9 @@ public class BackendTranslationService(
                   missingOrChangedTargets);
 
                bool allSucceeded = true;
-               foreach (string targetLanguage in missingOrChangedTargets)
+               foreach(string targetLanguage in missingOrChangedTargets)
                {
-                  if (!translatedDocuments.TryGetValue(targetLanguage, out string? translatedContent) || string.IsNullOrWhiteSpace(translatedContent))
+                  if(!translatedDocuments.TryGetValue(targetLanguage, out string? translatedContent) || string.IsNullOrWhiteSpace(translatedContent))
                   {
                      report.Errors.Add(CreateError(sourceFile, ErrorCode.TranslationFailed, $"Markdown translation for '{targetLanguage}' returned no content."));
                      allSucceeded = false;
@@ -342,11 +342,11 @@ public class BackendTranslationService(
                   report.SavedFiles++;
                }
 
-               if (allSucceeded)
+               if(allSucceeded)
                {
                   bool usedFallback = await WriteStoredHashAsync(sourceFile, sourceHash);
                   storingReport.SavedHashFiles++;
-                  if (usedFallback)
+                  if(usedFallback)
                   {
                      storingReport.TempFallbackWrites++;
                      report.TempFallbackWrites++;
@@ -357,7 +357,7 @@ public class BackendTranslationService(
 
          await PublishStageAsync(ProcessStage.TranslateMarkdownFiles, report, LocalizationMessageType.StageCompleted, "Markdown translations synchronised.");
       }
-      catch (Exception ex)
+      catch(Exception ex)
       {
          _logger.LogError(ex, "TranslateMarkdownFiles stage failed.");
          report.Errors.Add(CreateError("markdown", ErrorCode.TranslationFailed, ex.Message));
@@ -369,7 +369,7 @@ public class BackendTranslationService(
    private async Task<Dictionary<string, string>> LoadDictionaryOrEmptyAsync(string language, TranslationsReport report)
    {
       var response = await _languageService.GetDictionaryAsync(language);
-      if (response.Success && response.Data != null)
+      if(response.Success && response.Data != null)
       {
          return response.Data;
       }
@@ -381,7 +381,7 @@ public class BackendTranslationService(
 
    private async Task<List<CountryDefinition>> LoadCountriesAsync()
    {
-      if (!File.Exists(CountriesFilePath))
+      if(!File.Exists(CountriesFilePath))
       {
          throw new FileNotFoundException("countries.json was not found.", CountriesFilePath);
       }
@@ -393,13 +393,13 @@ public class BackendTranslationService(
 
    private async Task<string?> ResolveCountryDefaultPhraseAsync(CountryDefinition country, TranslationsReport report)
    {
-      if (DefaultLanguage.Equals("en", StringComparison.OrdinalIgnoreCase))
+      if(DefaultLanguage.Equals("en", StringComparison.OrdinalIgnoreCase))
       {
          return country.Name;
       }
 
       var response = await _translateService.TranslateTextAsync(country.Name, "en", DefaultLanguage);
-      if (!response.Success || response.Data is null || string.IsNullOrWhiteSpace(response.Data.TranslatedText))
+      if(!response.Success || response.Data is null || string.IsNullOrWhiteSpace(response.Data.TranslatedText))
       {
          report.Errors ??= [];
          report.Errors.Add(CreateError(country.Code, ErrorCode.TranslationFailed, response.Message));
@@ -412,7 +412,7 @@ public class BackendTranslationService(
    private async Task<Dictionary<string, Dictionary<string, string>>> LoadTargetDictionariesAsync(List<string> targetLanguages)
    {
       Dictionary<string, Dictionary<string, string>> dictionaries = [];
-      foreach (string targetLanguage in targetLanguages)
+      foreach(string targetLanguage in targetLanguages)
       {
          var response = await _languageService.GetDictionaryAsync(targetLanguage);
          dictionaries[targetLanguage] = response.Success && response.Data != null ? response.Data : [];
@@ -426,13 +426,13 @@ public class BackendTranslationService(
       Dictionary<string, Dictionary<string, string>> targetDictionaries,
       StoringReport storingReport)
    {
-      foreach (PhraseInQueue item in _translationQueue.GetAll())
+      foreach(PhraseInQueue item in _translationQueue.GetAll())
       {
          Dictionary<string, string> targetDictionary = targetDictionaries[item.TargetLanguage];
 
-         if (item.ChangeRequired == PhraseChange.Removed)
+         if(item.ChangeRequired == PhraseChange.Removed)
          {
-            if (item.Key != null && targetDictionary.Remove(item.Key))
+            if(item.Key != null && targetDictionary.Remove(item.Key))
             {
                report.RemovedCount++;
             }
@@ -440,14 +440,14 @@ public class BackendTranslationService(
             continue;
          }
 
-         if (string.IsNullOrWhiteSpace(item.Key))
+         if(string.IsNullOrWhiteSpace(item.Key))
          {
             report.Errors ??= [];
             report.Errors.Add(CreateError(item.TargetLanguage, ErrorCode.ArgumentInvalid, "Queue item key is missing."));
             continue;
          }
 
-         if (targetDictionary.ContainsKey(item.Key))
+         if(targetDictionary.ContainsKey(item.Key))
          {
             report.SkippedCount++;
             continue;
@@ -456,7 +456,7 @@ public class BackendTranslationService(
          _translationQueue.MarkTranslationStarted(item.Key);
          var response = await _translateService.TranslateTextAsync(item.Phrase, item.SourceLanguage ?? DefaultLanguage, item.TargetLanguage);
 
-         if (!response.Success || response.Data is null || string.IsNullOrWhiteSpace(response.Data.TranslatedText))
+         if(!response.Success || response.Data is null || string.IsNullOrWhiteSpace(response.Data.TranslatedText))
          {
             report.Errors ??= [];
             report.Errors.Add(CreateError($"{item.TargetLanguage}:{item.Key}", ErrorCode.TranslationFailed, response.Message));
@@ -484,7 +484,7 @@ public class BackendTranslationService(
          Translations = dictionary
       });
 
-      if (result.Success)
+      if(result.Success)
       {
          storingReport.SavedDictionaryFiles++;
          return;
@@ -502,9 +502,9 @@ public class BackendTranslationService(
          ? _settings.MarkdownRoots
          : ["/Docs"];
 
-      foreach (string configuredRoot in configuredRoots)
+      foreach(string configuredRoot in configuredRoots)
       {
-         if (string.IsNullOrWhiteSpace(configuredRoot))
+         if(string.IsNullOrWhiteSpace(configuredRoot))
          {
             continue;
          }
@@ -526,9 +526,9 @@ public class BackendTranslationService(
       string primaryPath = GetPrimaryHashPath(sourceFilePath);
       string fallbackPath = GetFallbackHashPath(sourceFilePath);
 
-      foreach (string candidate in new[] { primaryPath, fallbackPath })
+      foreach(string candidate in new[] { primaryPath, fallbackPath })
       {
-         if (!File.Exists(candidate))
+         if(!File.Exists(candidate))
          {
             continue;
          }
@@ -537,12 +537,12 @@ public class BackendTranslationService(
          {
             string json = await File.ReadAllTextAsync(candidate);
             StoredHashEntry? entry = JsonSerializer.Deserialize<StoredHashEntry>(json);
-            if (entry != null)
+            if(entry != null)
             {
                return entry;
             }
          }
-         catch (Exception ex)
+         catch(Exception ex)
          {
             _logger.LogWarning(ex, "Failed to read stored hash from {HashPath}", candidate);
          }
@@ -569,7 +569,7 @@ public class BackendTranslationService(
          await File.WriteAllTextAsync(primaryPath, json, Encoding.UTF8);
          return false;
       }
-      catch (Exception ex)
+      catch(Exception ex)
       {
          _logger.LogWarning(ex, "Primary hash write failed for {SourceFilePath}; using temp fallback.", sourceFilePath);
       }
@@ -587,17 +587,17 @@ public class BackendTranslationService(
       string relativePath = Path.GetRelativePath(_hostEnvironment.ContentRootPath, sourceFilePath);
       StringBuilder builder = new();
 
-      foreach (char character in relativePath)
+      foreach(char character in relativePath)
       {
-         if (character is '/' or '\\')
+         if(character is '/' or '\\')
          {
             builder.Append('.');
          }
-         else if (char.IsWhiteSpace(character))
+         else if(char.IsWhiteSpace(character))
          {
             builder.Append('_');
          }
-         else if (Path.GetInvalidFileNameChars().Contains(character))
+         else if(Path.GetInvalidFileNameChars().Contains(character))
          {
             builder.Append('.');
          }
