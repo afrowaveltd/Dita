@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Dita.Shared.Localization.ScheduledTranslationService;
 
@@ -23,6 +24,7 @@ public class BackendTranslationService(
    IConfiguration configuration,
    IHostEnvironment hostEnvironment,
    IMarkdownTranslationService markdownTranslationService,
+   IMarkdownParserService markdownParserService,
    ILibreTranslateService translateService,
    ILogger<BackendTranslationService> logger) : IBackendTranslationService
 {
@@ -33,11 +35,13 @@ public class BackendTranslationService(
    private readonly IHubContext<LocalizationHub, ILocalizationHubClient> _hubContext = hub;
    private readonly IHostEnvironment _hostEnvironment = hostEnvironment;
    private readonly IMarkdownTranslationService _markdownTranslationService = markdownTranslationService;
+   private readonly IMarkdownParserService _markdownParserService = markdownParserService;
    private readonly ILibreTranslateService _translateService = translateService;
    private string DefaultLanguage => _settings.DefaultLanguage ?? "en";
    private List<string> IgnoredLanguages => _settings.IgnoredLanguages ?? [];
 
    private string CountriesFilePath => Path.Combine(_hostEnvironment.ContentRootPath, "Jsons", "countries.json");
+   private static readonly Regex HtmlTagRegex = new("</?[a-zA-Z][^>]*>", RegexOptions.Compiled);
    private static string TempHashDirectory => Path.Combine(Path.GetTempPath(), "dita", "localization-hashes");
    private Guid _runId;
    private long _messageSequence;
@@ -311,7 +315,19 @@ public class BackendTranslationService(
                List<string> missingOrChangedTargets = [.. targetLanguages.Where(targetLanguage =>
                {
                   string targetFilePath = Path.Combine(Path.GetDirectoryName(sourceFile) ?? string.Empty, $"{targetLanguage}.md");
-                  return !File.Exists(targetFilePath) || !string.Equals(storedHash.Hash, sourceHash, StringComparison.OrdinalIgnoreCase);
+                  if(!File.Exists(targetFilePath))
+                  {
+                     return true;
+                  }
+
+                  if(!string.Equals(storedHash.Hash, sourceHash, StringComparison.OrdinalIgnoreCase))
+                  {
+                     return true;
+                  }
+
+                  string existingTargetContent = File.ReadAllText(targetFilePath);
+                  return !HasMatchingMarkdownStructure(sourceContent, existingTargetContent)
+                     || ContainsKnownUntranslatedSourceSentence(existingTargetContent);
                })];
 
                if(missingOrChangedTargets.Count == 0)
@@ -336,8 +352,17 @@ public class BackendTranslationService(
                      continue;
                   }
 
+                  if(!HasMatchingMarkdownStructure(sourceContent, translatedContent))
+                  {
+                     report.Errors.Add(CreateError(sourceFile, ErrorCode.TranslationFailed, $"Markdown translation for '{targetLanguage}' failed structure validation."));
+                     allSucceeded = false;
+                     _logger.LogWarning("Markdown structure validation failed for {SourceFile} -> {TargetLanguage}.", sourceFile, targetLanguage);
+                     continue;
+                  }
+
                   string targetFilePath = Path.Combine(Path.GetDirectoryName(sourceFile) ?? string.Empty, $"{targetLanguage}.md");
-                  await File.WriteAllTextAsync(targetFilePath, translatedContent, Encoding.UTF8);
+                  string normalizedMarkdown = EnsureEndsWithSingleNewline(translatedContent);
+                  await File.WriteAllTextAsync(targetFilePath, normalizedMarkdown, Encoding.UTF8);
                   storingReport.SavedMarkdownFiles++;
                   report.SavedFiles++;
                }
@@ -351,6 +376,11 @@ public class BackendTranslationService(
                      storingReport.TempFallbackWrites++;
                      report.TempFallbackWrites++;
                   }
+               }
+               else
+               {
+                  // Force re-translation on next run if any target markdown file failed validation or translation.
+                  await WriteStoredHashAsync(sourceFile, string.Empty);
                }
             }
          }
@@ -655,6 +685,68 @@ public class BackendTranslationService(
             ? ErrorCodeText.ErrorText(code)
             : $"{ErrorCodeText.ErrorText(code)}: {details}"
       };
+
+   private bool HasMatchingMarkdownStructure(string sourceContent, string translatedContent)
+   {
+      if (string.IsNullOrWhiteSpace(sourceContent) || string.IsNullOrWhiteSpace(translatedContent))
+      {
+         return false;
+      }
+
+      if (CountPattern(sourceContent, "(?m)^\\s{0,3}#{1,6}\\s") != CountPattern(translatedContent, "(?m)^\\s{0,3}#{1,6}\\s")
+         || CountPattern(sourceContent, "(?m)^\\s*(?:[-+*]|\\d+\\.)\\s+") != CountPattern(translatedContent, "(?m)^\\s*(?:[-+*]|\\d+\\.)\\s+")
+         || CountPattern(sourceContent, "(?m)^\\s*```") != CountPattern(translatedContent, "(?m)^\\s*```")
+         || CountPattern(sourceContent, "(?m)^\\s*>") != CountPattern(translatedContent, "(?m)^\\s*>")
+         || CountPattern(sourceContent, "\\[[^\\]]+\\]\\([^\\)]+\\)") != CountPattern(translatedContent, "\\[[^\\]]+\\]\\([^\\)]+\\)")
+         || CountPattern(sourceContent, "\\*\\*") != CountPattern(translatedContent, "\\*\\*")
+         || CountPattern(sourceContent, "__") != CountPattern(translatedContent, "__")
+         || CountPattern(sourceContent, "(?<!\\*)\\*(?!\\*)") != CountPattern(translatedContent, "(?<!\\*)\\*(?!\\*)")
+         || CountPattern(sourceContent, "(?<!_)_(?!_)") != CountPattern(translatedContent, "(?<!_)_(?!_)")
+         || CountHtmlTags(sourceContent) != CountHtmlTags(translatedContent))
+      {
+         return false;
+      }
+
+      List<MarkdownTranslatableBlock> sourceBlocks = _markdownParserService.ExtractTranslatableBlocks(sourceContent);
+      List<MarkdownTranslatableBlock> translatedBlocks = _markdownParserService.ExtractTranslatableBlocks(translatedContent);
+
+      if (sourceBlocks.Count != translatedBlocks.Count)
+      {
+         return false;
+      }
+
+      for (int i = 0; i < sourceBlocks.Count; i++)
+      {
+         if (!string.Equals(sourceBlocks[i].BlockType, translatedBlocks[i].BlockType, StringComparison.Ordinal)
+            || sourceBlocks[i].StartLine != translatedBlocks[i].StartLine)
+         {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   private static int CountHtmlTags(string content)
+   {
+      return HtmlTagRegex.Matches(content).Count;
+   }
+
+   private static bool ContainsKnownUntranslatedSourceSentence(string content)
+   {
+      return content.Contains("**Manual translations always have priority over automatic additions.**", StringComparison.Ordinal);
+   }
+
+   private static int CountPattern(string content, string pattern)
+   {
+      return Regex.Matches(content, pattern).Count;
+   }
+
+   private static string EnsureEndsWithSingleNewline(string content)
+   {
+      string normalized = content.Replace("\r\n", "\n").TrimEnd('\n');
+      return normalized + "\n";
+   }
 
    private sealed record CheckContext(CheckingReport Report, List<string> TargetLanguages);
 

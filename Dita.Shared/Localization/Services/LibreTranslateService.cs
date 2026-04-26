@@ -1,8 +1,8 @@
 ﻿using Afrowave.SharedTools.Models.Results;
 using Dita.Shared.Localization.Models;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -54,8 +54,9 @@ public class LibreTranslateService(
       var stopwatch = System.Diagnostics.Stopwatch.StartNew();
       var response = libreClient.GetAsync("/").Result;
       stopwatch.Stop();
-      if (response.IsSuccessStatusCode)
+      if(response.IsSuccessStatusCode)
       {
+         _logger.LogDebug("Server latency is {Latency}ms", stopwatch.ElapsedMilliseconds);
          return new Response<int>
          {
             Success = true,
@@ -90,12 +91,12 @@ public class LibreTranslateService(
          { "q", text }
       };
 
-      if (_settings.NeedsKey && _settings.Key is not null)
+      if(_settings.NeedsKey && _settings.Key is not null)
       {
          formFields.Add("api_key", _settings.Key);
       }
       var response = await libreClient.PostAsync(_settings.Address + _settings.DetectLanguageEndpoint, new FormUrlEncodedContent(formFields));
-      if (!response.IsSuccessStatusCode)
+      if(!response.IsSuccessStatusCode)
       {
          _logger.LogError("Failed to detect language. Status code: {StatusCode}", response.StatusCode);
          return new Response<Detections>
@@ -107,6 +108,7 @@ public class LibreTranslateService(
 
       var content = await response.Content.ReadAsStringAsync();
       var detections = JsonSerializer.Deserialize<Detections>(content, _options);
+      _logger.LogDebug("Detected language: {Language} with confidence {Confidence}", detections?.Language, detections?.Confidence);
       return new Response<Detections>
       {
          Success = true,
@@ -129,12 +131,12 @@ public class LibreTranslateService(
    public async Task<Response<string[]>> GetAvailableLanguagesAsync()
    {
       int retries = 0;
-      while (retries < 5)
+      while(retries < 10)
       {
          try
          {
             var response = await libreClient.GetAsync(_settings.Address + _settings.LanguagesEndpoint);
-            if (!response.IsSuccessStatusCode)
+            if(!response.IsSuccessStatusCode)
             {
                retries++;
                _logger.LogWarning("Failed to get available languages. Status code: {StatusCode}. Retrying {RetryCount}/5", response.StatusCode, retries);
@@ -145,7 +147,7 @@ public class LibreTranslateService(
             {
                var content = await response.Content.ReadAsStringAsync();
                var languages = JsonSerializer.Deserialize<List<LibreLanguage>>(content, _options);
-               if (languages is null || languages.Count == 0)
+               if(languages is null || languages.Count == 0)
                {
                   _logger.LogWarning("No languages found in the response.");
                   return new Response<string[]>
@@ -163,7 +165,7 @@ public class LibreTranslateService(
                };
             }
          }
-         catch (Exception e)
+         catch(Exception e)
          {
             _logger.LogError(e, "An error occurred while getting available languages.");
             return new Response<string[]>
@@ -173,7 +175,7 @@ public class LibreTranslateService(
             };
          }
       }
-      _logger.LogError("Failed to get available languages after 5 attempts.");
+      _logger.LogError("Failed to get available languages after 10 attempts.");
       return new Response<string[]>
       {
          Success = false,
@@ -199,7 +201,7 @@ public class LibreTranslateService(
    public async Task<Response<TranslateFileResult>> TranslateFileAsync(Stream fileStream, string sourceLanguage, string targetLanguage, string fileName)
    {
       int retries = 0;
-      while (retries < 5)
+      while(retries < 10)
       {
          try
          {
@@ -209,15 +211,15 @@ public class LibreTranslateService(
                { new StringContent(sourceLanguage), "source" },
                { new StringContent(targetLanguage), "target" }
             };
-            if (_settings.NeedsKey && _settings.Key is not null)
+            if(_settings.NeedsKey && _settings.Key is not null)
             {
                content.Add(new StringContent(_settings.Key), "api_key");
             }
             var response = await libreClient.PostAsync(_settings.Address + _settings.TranslateFileEndpoint, content);
-            if (!response.IsSuccessStatusCode)
+            if(!response.IsSuccessStatusCode)
             {
                retries++;
-               _logger.LogWarning("Failed to translate file. Status code: {StatusCode}. Retrying {RetryCount}/5", response.StatusCode, retries);
+               _logger.LogWarning("Failed to translate file. Status code: {StatusCode}. Retrying {RetryCount}/10", response.StatusCode, retries);
                await Task.Delay(1000 * retries);
                continue;
             }
@@ -225,6 +227,7 @@ public class LibreTranslateService(
             {
                var responseContent = await response.Content.ReadAsStringAsync();
                var translateResult = JsonSerializer.Deserialize<TranslateFileResult>(responseContent, _options);
+               _logger.LogDebug("File translated successfully: {FileName}", fileName);
                return new Response<TranslateFileResult>
                {
                   Success = true,
@@ -233,7 +236,7 @@ public class LibreTranslateService(
                };
             }
          }
-         catch (Exception e)
+         catch(Exception e)
          {
             _logger.LogError(e, "An error occurred while translating the file.");
             return new Response<TranslateFileResult>
@@ -243,7 +246,7 @@ public class LibreTranslateService(
             };
          }
       }
-      _logger.LogError("Failed to translate file after 5 attempts.");
+      _logger.LogError("Failed to translate file after 10 attempts.");
       return new Response<TranslateFileResult>
       {
          Success = false,
@@ -289,8 +292,9 @@ public class LibreTranslateService(
       sourceLanguage = string.IsNullOrWhiteSpace(sourceLanguage) ? "auto" : NormalizeLanguageCode(sourceLanguage);
       targetLanguage = NormalizeLanguageCode(targetLanguage);
 
-      if (AreLanguagesEquivalent(sourceLanguage, targetLanguage))
+      if(AreLanguagesEquivalent(sourceLanguage, targetLanguage))
       {
+         _logger.LogDebug("Source and target languages are equivalent ({SourceLanguage}). Skipping translation and returning original text {OriginalText}.", sourceLanguage, text);
          return new Response<TranslateResult>
          {
             Success = true,
@@ -305,23 +309,23 @@ public class LibreTranslateService(
          { "source", sourceLanguage },
          { "target", targetLanguage }
       };
-      if (_settings.NeedsKey && _settings.Key is not null)
+      if(_settings.NeedsKey && _settings.Key is not null)
       {
          formFields.Add("api_key", _settings.Key);
       }
 
       int retries = 0;
-      while (retries < 5)
+      while(retries < 10)
       {
          try
          {
             await ThrottleTranslationRequestAsync();
             var response = await libreClient.PostAsync(_settings.Address + _settings.TranslateEndpoint, new FormUrlEncodedContent(formFields));
-            if (!response.IsSuccessStatusCode)
+            if(!response.IsSuccessStatusCode)
             {
                string responseBody = await ReadResponseSnippetAsync(response);
                bool retryable = IsRetryableStatusCode(response.StatusCode);
-               if (!retryable)
+               if(!retryable)
                {
                   _logger.LogError(
                      "Failed to translate text. Non-retryable status {StatusCode}. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
@@ -339,7 +343,7 @@ public class LibreTranslateService(
                OnTranslationRetryableError();
                retries++;
                _logger.LogWarning(
-                  "Failed to translate text. Status code: {StatusCode}. Retrying {RetryCount}/5. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
+                  "Failed to translate text. Status code: {StatusCode}. Retrying {RetryCount}/10. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
                   response.StatusCode,
                   retries,
                   sourceLanguage,
@@ -351,16 +355,19 @@ public class LibreTranslateService(
             else
             {
                Response<TranslateResult> translatedResponse = await CreateTranslationResponseAsync(response, text, sourceLanguage, targetLanguage);
-               if (!translatedResponse.Success)
+               if(!translatedResponse.Success)
                {
+                  _logger.LogDebug("Translation succeeded but validation failed. Response message: {Message}. Source={SourceLanguage}, Target={TargetLanguage}", translatedResponse.Message, sourceLanguage, targetLanguage);
                   return translatedResponse;
                }
 
                OnTranslationSuccess();
+
+               _logger.LogDebug("Translation succeeded. Source={SourceLanguage}, Target={TargetLanguage}, TranslatedText={TranslatedText}", sourceLanguage, targetLanguage, translatedResponse.Data.TranslatedText);
                return translatedResponse;
             }
          }
-         catch (Exception ex)
+         catch(Exception ex)
          {
             _logger.LogError(ex, "An error occurred while translating text.");
             return new Response<TranslateResult>
@@ -370,7 +377,7 @@ public class LibreTranslateService(
             };
          }
       }
-      _logger.LogError("Failed to translate text after 5 attempts.");
+      _logger.LogError("Failed to translate text after 10 attempts.");
       return new Response<TranslateResult>
       {
          Success = false,
@@ -387,7 +394,7 @@ public class LibreTranslateService(
       {
          translateResult = JsonSerializer.Deserialize<TranslateResult>(content, _options);
       }
-      catch (JsonException ex)
+      catch(JsonException ex)
       {
          _logger.LogError(ex, "Failed to deserialize translation payload.");
          return new Response<TranslateResult>
@@ -398,8 +405,9 @@ public class LibreTranslateService(
          };
       }
 
-      if (translateResult is null)
+      if(translateResult is null)
       {
+         _logger.LogError("Translation result is null after deserialization.");
          return new Response<TranslateResult>
          {
             Success = false,
@@ -437,31 +445,31 @@ public class LibreTranslateService(
       var translatedText = translationResult.TranslatedText;
 
       // Check 1: If translation is empty or null, retry
-      if (string.IsNullOrWhiteSpace(translatedText))
+      if(string.IsNullOrWhiteSpace(translatedText))
       {
          _logger.LogWarning("Translation resulted in empty text. Retrying translation for text: {OriginalText}", originalText);
          return await RetryTranslationAsync(originalText, sourceLanguage, targetLanguage);
       }
 
       // Check 2: If translation is the same as original (case-insensitive), try lowercase
-      if (translatedText.Equals(originalText, StringComparison.OrdinalIgnoreCase))
+      if(translatedText.Equals(originalText, StringComparison.OrdinalIgnoreCase))
       {
          // Check if text has mixed casing
-         if (HasMixedCasing(originalText))
+         if(HasMixedCasing(originalText))
          {
-            _logger.LogDebug("Translation equals original text (case-insensitive). Retrying with lowercase for: {OriginalText}", originalText);
+            _logger.LogDebug("Translation equals original text (case-insensitive). Retrying with lowercase for: {OriginalText}, translation: {TranslatedText}", originalText, translatedText);
 
             var lowercaseResult = await RetryTranslationAsync(originalText.ToLowerInvariant(), sourceLanguage, targetLanguage);
 
             // If lowercase result is different from original (case-insensitive), use it
-            if (!lowercaseResult.TranslatedText.Equals(originalText, StringComparison.OrdinalIgnoreCase))
+            if(!lowercaseResult.TranslatedText.Equals(originalText, StringComparison.OrdinalIgnoreCase))
             {
                _logger.LogDebug("Lowercase translation differs from original. Using lowercase result: {TranslatedText}", lowercaseResult.TranslatedText);
                return lowercaseResult;
             }
 
             // Otherwise, return original translation with proper casing
-            _logger.LogDebug("Lowercase translation is same as original. Using original translation with proper casing.");
+            _logger.LogDebug("Lowercase translation is same as original. Using original translation with proper casing. TranslatedText={TranslatedText}", translationResult.TranslatedText);
             return translationResult;
          }
       }
@@ -483,30 +491,30 @@ public class LibreTranslateService(
 
    private async Task<string> ResolveSupportedLanguageCodeAsync(string requestedLanguage)
    {
-      if (string.IsNullOrWhiteSpace(requestedLanguage))
+      if(string.IsNullOrWhiteSpace(requestedLanguage))
       {
          return requestedLanguage;
       }
 
       string normalized = NormalizeLanguageCode(requestedLanguage);
-      if (string.Equals(normalized, "auto", StringComparison.OrdinalIgnoreCase))
+      if(string.Equals(normalized, "auto", StringComparison.OrdinalIgnoreCase))
       {
          return "auto";
       }
 
       HashSet<string> availableLanguages = await GetAvailableLanguagesCachedAsync();
-      if (availableLanguages.Count == 0)
+      if(availableLanguages.Count == 0)
       {
          return normalized;
       }
 
       string loweredRequested = requestedLanguage.Trim().ToLowerInvariant();
-      if (availableLanguages.Contains(loweredRequested))
+      if(availableLanguages.Contains(loweredRequested))
       {
          return loweredRequested;
       }
 
-      if (availableLanguages.Contains(normalized))
+      if(availableLanguages.Contains(normalized))
       {
          return normalized;
       }
@@ -520,7 +528,7 @@ public class LibreTranslateService(
 
    private async Task<HashSet<string>> GetAvailableLanguagesCachedAsync()
    {
-      if (_availableLanguagesCache is { Count: > 0 } && DateTime.UtcNow - _availableLanguagesCacheUtc < TimeSpan.FromMinutes(10))
+      if(_availableLanguagesCache is { Count: > 0 } && DateTime.UtcNow - _availableLanguagesCacheUtc < TimeSpan.FromMinutes(10))
       {
          return _availableLanguagesCache;
       }
@@ -528,7 +536,7 @@ public class LibreTranslateService(
       await _languagesCacheLock.WaitAsync();
       try
       {
-         if (_availableLanguagesCache is { Count: > 0 } && DateTime.UtcNow - _availableLanguagesCacheUtc < TimeSpan.FromMinutes(10))
+         if(_availableLanguagesCache is { Count: > 0 } && DateTime.UtcNow - _availableLanguagesCacheUtc < TimeSpan.FromMinutes(10))
          {
             return _availableLanguagesCache;
          }
@@ -536,7 +544,7 @@ public class LibreTranslateService(
          Response<string[]> response = await GetAvailableLanguagesAsync();
          _availableLanguagesCache = response.Success && response.Data is { Length: > 0 }
             ? response.Data.Select(code => code.Trim().ToLowerInvariant()).ToHashSet(StringComparer.OrdinalIgnoreCase)
-            : [];
+            : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
          _availableLanguagesCacheUtc = DateTime.UtcNow;
          return _availableLanguagesCache;
       }
@@ -553,10 +561,10 @@ public class LibreTranslateService(
       {
          return CultureInfo.GetCultureInfo(normalized).TwoLetterISOLanguageName.ToLowerInvariant();
       }
-      catch (CultureNotFoundException)
+      catch(CultureNotFoundException)
       {
          int separatorIndex = normalized.IndexOf('-');
-         if (separatorIndex > 0)
+         if(separatorIndex > 0)
          {
             return normalized[..separatorIndex];
          }
@@ -567,7 +575,7 @@ public class LibreTranslateService(
 
    private static bool AreLanguagesEquivalent(string sourceLanguage, string targetLanguage)
    {
-      if (string.IsNullOrWhiteSpace(sourceLanguage) || string.IsNullOrWhiteSpace(targetLanguage))
+      if(string.IsNullOrWhiteSpace(sourceLanguage) || string.IsNullOrWhiteSpace(targetLanguage))
       {
          return false;
       }
@@ -595,22 +603,22 @@ public class LibreTranslateService(
          { "target", targetLanguage }
       };
 
-      if (_settings.NeedsKey && _settings.Key is not null)
+      if(_settings.NeedsKey && _settings.Key is not null)
       {
          formFields.Add("api_key", _settings.Key);
       }
 
       int retries = 0;
-      while (retries < 3)
+      while(retries < 3)
       {
          try
          {
             await ThrottleTranslationRequestAsync();
             var response = await libreClient.PostAsync(_settings.Address + _settings.TranslateEndpoint, new FormUrlEncodedContent(formFields));
-            if (!response.IsSuccessStatusCode)
+            if(!response.IsSuccessStatusCode)
             {
                string responseBody = await ReadResponseSnippetAsync(response);
-               if (!IsRetryableStatusCode(response.StatusCode))
+               if(!IsRetryableStatusCode(response.StatusCode))
                {
                   _logger.LogWarning(
                      "Retry translation returned non-retryable status {StatusCode}. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
@@ -639,7 +647,7 @@ public class LibreTranslateService(
             OnTranslationSuccess();
             return result ?? new TranslateResult { TranslatedText = text };
          }
-         catch (Exception ex)
+         catch(Exception ex)
          {
             _logger.LogWarning(ex, "Error during retry translation attempt {RetryCount}/3", retries);
             retries++;
@@ -654,7 +662,7 @@ public class LibreTranslateService(
    private async Task ThrottleTranslationRequestAsync()
    {
       int intervalMs = _currentIntervalMs;
-      if (intervalMs <= 0)
+      if(intervalMs <= 0)
       {
          return;
       }
@@ -665,7 +673,7 @@ public class LibreTranslateService(
          DateTime now = DateTime.UtcNow;
          TimeSpan elapsed = now - _lastTranslationRequestUtc;
          TimeSpan delay = TimeSpan.FromMilliseconds(_currentIntervalMs) - elapsed;
-         if (delay > TimeSpan.Zero)
+         if(delay > TimeSpan.Zero)
          {
             await Task.Delay(delay);
             now = DateTime.UtcNow;
@@ -681,19 +689,19 @@ public class LibreTranslateService(
 
    private void OnTranslationSuccess()
    {
-      if (_currentIntervalMs <= _baseIntervalMs)
+      if(_currentIntervalMs <= _baseIntervalMs)
       {
          Interlocked.Exchange(ref _consecutiveSuccesses, 0);
          return;
       }
 
       int successes = Interlocked.Increment(ref _consecutiveSuccesses);
-      if (successes >= 3)
+      if(successes >= 3)
       {
          Interlocked.Exchange(ref _consecutiveSuccesses, 0);
          int current = _currentIntervalMs;
          int reduced = Math.Max(_baseIntervalMs, current / 2);
-         if (reduced < current && Interlocked.CompareExchange(ref _currentIntervalMs, reduced, current) == current)
+         if(reduced < current && Interlocked.CompareExchange(ref _currentIntervalMs, reduced, current) == current)
          {
             _logger.LogDebug(
                "LibreTranslate throttle reduced {OldMs}ms → {NewMs}ms after 3 consecutive successes.",
@@ -707,7 +715,7 @@ public class LibreTranslateService(
       Interlocked.Exchange(ref _consecutiveSuccesses, 0);
       int current = _currentIntervalMs;
       int increased = Math.Min(_maxIntervalMs, current > 0 ? current * 2 : 100);
-      if (increased > current && Interlocked.CompareExchange(ref _currentIntervalMs, increased, current) == current)
+      if(increased > current && Interlocked.CompareExchange(ref _currentIntervalMs, increased, current) == current)
       {
          _logger.LogDebug(
             "LibreTranslate throttle raised {OldMs}ms → {NewMs}ms after retryable error.",
@@ -725,7 +733,7 @@ public class LibreTranslateService(
       try
       {
          string body = await response.Content.ReadAsStringAsync();
-         if (string.IsNullOrWhiteSpace(body))
+         if(string.IsNullOrWhiteSpace(body))
          {
             return "<empty response body>";
          }

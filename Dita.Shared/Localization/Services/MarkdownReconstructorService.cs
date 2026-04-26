@@ -82,7 +82,7 @@ public class MarkdownReconstructorService(ILogger<MarkdownReconstructorService> 
       return block.BlockType switch
       {
          "Heading" => ReconstructHeading(block, translatedText, originalLine),
-         "Paragraph" => translatedText,
+         "Paragraph" => ReconstructParagraph(block, translatedText, originalLine),
          _ => translatedText
       };
    }
@@ -100,18 +100,82 @@ public class MarkdownReconstructorService(ILogger<MarkdownReconstructorService> 
       {
          if(headerChar == '#')
          {
-            // ATX-style heading: ##
-            return $"{new string('#', level)} {translatedText}";
+            int headingPrefixLength = originalLine.TakeWhile(ch => ch == '#').Count();
+            int firstTextIndex = headingPrefixLength;
+
+            while(firstTextIndex < originalLine.Length && char.IsWhiteSpace(originalLine[firstTextIndex]))
+            {
+               firstTextIndex++;
+            }
+
+            string prefix = originalLine[..firstTextIndex];
+            string suffix = string.Empty;
+
+            int trailingHashesStart = originalLine.Length;
+            while(trailingHashesStart > firstTextIndex && originalLine[trailingHashesStart - 1] == '#')
+            {
+               trailingHashesStart--;
+            }
+
+            if(trailingHashesStart < originalLine.Length)
+            {
+               int suffixStart = trailingHashesStart;
+               while(suffixStart > firstTextIndex && char.IsWhiteSpace(originalLine[suffixStart - 1]))
+               {
+                  suffixStart--;
+               }
+
+               suffix = originalLine[suffixStart..];
+            }
+
+            return $"{prefix}{translatedText}{suffix}";
          }
-         else if(headerChar is '=' or '-')
+
+         if(headerChar is '=' or '-')
          {
-            // Setext-style heading (level 1 = '=', level 2 = '-')
-            char underlineChar = level == 1 ? '=' : '-';
-            return $"{translatedText}\n{new string(underlineChar, translatedText.Length)}";
+            // Setext-style heading keeps underline on following line; this line contains only text.
+            return translatedText;
          }
       }
 
-      // Fallback: ATX-style
+      // Fallback: keep prefix level markers.
       return $"{new string('#', level)} {translatedText}";
+   }
+
+   private static string ReconstructParagraph(MarkdownTranslatableBlock block, string translatedText, string originalLine)
+   {
+      if(string.IsNullOrWhiteSpace(originalLine))
+      {
+         return translatedText;
+      }
+
+      int firstContentIndex = 0;
+      while(firstContentIndex < originalLine.Length && char.IsWhiteSpace(originalLine[firstContentIndex]))
+      {
+         firstContentIndex++;
+      }
+
+      string leadingWhitespace = originalLine[..firstContentIndex];
+      string remainder = originalLine[firstContentIndex..];
+
+      if(remainder.StartsWith("- ", StringComparison.Ordinal) || remainder.StartsWith("* ", StringComparison.Ordinal) || remainder.StartsWith("+ ", StringComparison.Ordinal))
+      {
+         string marker = remainder[..2];
+         return $"{leadingWhitespace}{marker}{translatedText}";
+      }
+
+      int orderedIndex = 0;
+      while(orderedIndex < remainder.Length && char.IsDigit(remainder[orderedIndex]))
+      {
+         orderedIndex++;
+      }
+
+      if(orderedIndex > 0 && orderedIndex + 1 < remainder.Length && remainder[orderedIndex] == '.' && remainder[orderedIndex + 1] == ' ')
+      {
+         string marker = remainder[..(orderedIndex + 2)];
+         return $"{leadingWhitespace}{marker}{translatedText}";
+      }
+
+      return $"{leadingWhitespace}{translatedText}";
    }
 }

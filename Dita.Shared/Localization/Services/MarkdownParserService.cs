@@ -32,7 +32,7 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
 
          foreach(Block block in document)
          {
-            ProcessBlock(block, blocks);
+            ProcessBlock(block, markdownContent, blocks);
          }
 
          _logger.LogDebug("Extracted {Count} translatable blocks from Markdown content.", blocks.Count);
@@ -46,20 +46,20 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
       return blocks;
    }
 
-   private void ProcessBlock(Block block, List<MarkdownTranslatableBlock> blocks)
+   private void ProcessBlock(Block block, string markdownContent, List<MarkdownTranslatableBlock> blocks)
    {
       switch(block)
       {
          case HeadingBlock heading:
-            ExtractFromHeading(heading, blocks);
+            ExtractFromHeading(heading, markdownContent, blocks);
             break;
 
          case ParagraphBlock paragraph:
-            ExtractFromParagraph(paragraph, blocks);
+            ExtractFromParagraph(paragraph, markdownContent, blocks);
             break;
 
          case ListBlock list:
-            ExtractFromList(list, blocks);
+            ExtractFromList(list, markdownContent, blocks);
             break;
 
          case QuoteBlock:
@@ -85,7 +85,7 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
             // Recursively process nested blocks (e.g., list items, blockquotes)
             foreach(Block child in container)
             {
-               ProcessBlock(child, blocks);
+               ProcessBlock(child, markdownContent, blocks);
             }
             break;
 
@@ -95,7 +95,7 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
       }
    }
 
-   private void ExtractFromHeading(HeadingBlock heading, List<MarkdownTranslatableBlock> blocks)
+   private void ExtractFromHeading(HeadingBlock heading, string markdownContent, List<MarkdownTranslatableBlock> blocks)
    {
       string text = ExtractTextFromInlines(heading.Inline);
 
@@ -108,7 +108,7 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
       {
          OriginalText = text,
          StartLine = heading.Line,
-         EndLine = heading.Span.End,
+         EndLine = ResolveEndLine(heading, markdownContent),
          BlockType = "Heading",
          Metadata = new Dictionary<string, object>
          {
@@ -120,7 +120,7 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
       _logger.LogTrace("Extracted Heading (level {Level}): \"{Text}\"", heading.Level, text);
    }
 
-   private void ExtractFromParagraph(ParagraphBlock paragraph, List<MarkdownTranslatableBlock> blocks)
+   private void ExtractFromParagraph(ParagraphBlock paragraph, string markdownContent, List<MarkdownTranslatableBlock> blocks)
    {
       string text = ExtractTextFromInlines(paragraph.Inline);
 
@@ -133,14 +133,14 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
       {
          OriginalText = text,
          StartLine = paragraph.Line,
-         EndLine = paragraph.Span.End,
+         EndLine = ResolveEndLine(paragraph, markdownContent),
          BlockType = "Paragraph"
       });
 
       _logger.LogTrace("Extracted Paragraph: \"{Text}\"", text);
    }
 
-   private void ExtractFromList(ListBlock list, List<MarkdownTranslatableBlock> blocks)
+   private void ExtractFromList(ListBlock list, string markdownContent, List<MarkdownTranslatableBlock> blocks)
    {
       foreach(Block item in list)
       {
@@ -148,10 +148,16 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
          {
             foreach(Block child in listItem)
             {
-               ProcessBlock(child, blocks);
+               ProcessBlock(child, markdownContent, blocks);
             }
          }
       }
+   }
+
+   private static int ResolveEndLine(Block block, string markdownContent)
+   {
+      _ = markdownContent;
+      return Math.Max(0, block.Line);
    }
 
    private string ExtractTextFromInlines(ContainerInline? inline)
@@ -186,22 +192,28 @@ public class MarkdownParserService(ILogger<MarkdownParserService> logger) : IMar
                break;
 
             case CodeInline:
-               // Skip inline code – not safe for translation
+               // Skip inline code – not safe for translation.
                _logger.LogTrace("Skipping inline code in text extraction.");
                break;
 
-            case LinkInline link:
-               // Extract link text but preserve link structure
-               string linkText = ExtractTextFromInlines(link);
-               if(!string.IsNullOrWhiteSpace(linkText))
-               {
-                  parts.Add($"[{linkText}]({link.Url})");
-               }
+            case LinkInline link when link.IsImage:
+               string imageAltText = ExtractTextFromInlines(link);
+               string imageUrl = link.GetDynamicUrl != null ? link.GetDynamicUrl() ?? string.Empty : link.Url ?? string.Empty;
+               string imageTitle = string.IsNullOrWhiteSpace(link.Title) ? string.Empty : $" \"{link.Title}\"";
+               parts.Add($"![{imageAltText}]({imageUrl}{imageTitle})");
                break;
 
-            case HtmlInline:
-               // Skip inline HTML
-               _logger.LogTrace("Skipping inline HTML in text extraction.");
+            case LinkInline link:
+               // Extract link text but preserve link structure.
+               string linkText = ExtractTextFromInlines(link);
+               string linkUrl = link.GetDynamicUrl != null ? link.GetDynamicUrl() ?? string.Empty : link.Url ?? string.Empty;
+               string linkTitle = string.IsNullOrWhiteSpace(link.Title) ? string.Empty : $" \"{link.Title}\"";
+               parts.Add($"[{linkText}]({linkUrl}{linkTitle})");
+               break;
+
+            case HtmlInline htmlInline:
+               // Keep inline HTML exactly as-is.
+               parts.Add(htmlInline.Tag);
                break;
 
             case ContainerInline container:

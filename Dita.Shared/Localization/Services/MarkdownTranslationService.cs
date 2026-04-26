@@ -1,5 +1,6 @@
 using Dita.Shared.Localization.Models;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 
 namespace Dita.Shared.Localization.Services;
 
@@ -19,6 +20,8 @@ public class MarkdownTranslationService(
    AutomaticTranslationSettings settings,
    ILogger<MarkdownTranslationService> logger) : IMarkdownTranslationService
 {
+   private static readonly Regex HtmlTagRegex = new("</?[a-zA-Z][^>]*>", RegexOptions.Compiled);
+
    private readonly IMarkdownParserService _parserService = parserService;
    private readonly IMarkdownReconstructorService _reconstructorService = reconstructorService;
    private readonly ILibreTranslateService _translateService = translateService;
@@ -126,16 +129,43 @@ public class MarkdownTranslationService(
                sourceLanguage,
                targetLanguage);
 
+            string translatedText = result.Success && result.Data != null ? result.Data.TranslatedText : block.OriginalText;
+
+            if (result.Success
+               && !string.Equals(sourceLanguage, targetLanguage, StringComparison.OrdinalIgnoreCase)
+               && TryUnwrapSymmetricWrapper(block.OriginalText, out string wrapper, out string wrappedInnerText)
+               && string.Equals(wrappedInnerText, translatedText.Trim(wrapper.ToCharArray()), StringComparison.OrdinalIgnoreCase))
+            {
+               var wrappedResult = await _translateService.TranslateTextAsync(wrappedInnerText, sourceLanguage, targetLanguage);
+               if (wrappedResult.Success && wrappedResult.Data != null && !string.IsNullOrWhiteSpace(wrappedResult.Data.TranslatedText))
+               {
+                  translatedText = $"{wrapper}{wrappedResult.Data.TranslatedText.Trim()}{wrapper}";
+               }
+            }
+
+            translatedText = NormalizeSymmetricWrapper(block.OriginalText, translatedText);
+            bool structureMatches = HasMatchingInlineTagStructure(block.OriginalText, translatedText)
+               || HasEquivalentInlineTagStructure(block.OriginalText, translatedText);
+
+            if(result.Success && !structureMatches)
+            {
+               _logger.LogWarning(
+                  "Translated block {Key} for {Target} failed inline tag structure check. Keeping original text.",
+                  block.Key,
+                  targetLanguage);
+               translatedText = block.OriginalText;
+            }
+
             MarkdownTranslatableBlock translatedBlock = new()
             {
                Key = block.Key,
                OriginalText = block.OriginalText,
-               TranslatedText = result.Success && result.Data != null ? result.Data.TranslatedText : block.OriginalText,
+               TranslatedText = translatedText,
                StartLine = block.StartLine,
                EndLine = block.EndLine,
                BlockType = block.BlockType,
                Metadata = block.Metadata,
-               IsTranslated = result.Success
+               IsTranslated = result.Success && structureMatches
             };
 
             translatedBlocks.Add(translatedBlock);
@@ -220,5 +250,146 @@ public class MarkdownTranslationService(
 
       // Call the main translation method
       return await TranslateMarkdownAsync(markdownContent, sourceLanguage, targetLanguages, cancellationToken);
+   }
+
+   private static bool TryUnwrapSymmetricWrapper(string text, out string wrapper, out string innerText)
+   {
+      wrapper = string.Empty;
+      innerText = text;
+
+      if (string.IsNullOrWhiteSpace(text))
+      {
+         return false;
+      }
+
+      string trimmedText = text.Trim();
+
+      foreach (string candidate in new[] { "**", "__", "~~", "`", "*", "_" })
+      {
+         if (trimmedText.StartsWith(candidate, StringComparison.Ordinal)
+             && trimmedText.EndsWith(candidate, StringComparison.Ordinal)
+             && trimmedText.Length > candidate.Length * 2)
+         {
+            wrapper = candidate;
+            innerText = trimmedText[candidate.Length..(trimmedText.Length - candidate.Length)].Trim();
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   private static string NormalizeSymmetricWrapper(string originalText, string translatedText)
+   {
+      if (string.IsNullOrWhiteSpace(originalText) || string.IsNullOrWhiteSpace(translatedText))
+      {
+         return translatedText;
+      }
+
+      if (TryUnwrapSymmetricWrapper(originalText, out string wrapper, out _) )
+      {
+         string trimmedTranslated = translatedText.Trim();
+
+         if (trimmedTranslated.StartsWith(wrapper, StringComparison.Ordinal)
+            && trimmedTranslated.EndsWith(wrapper, StringComparison.Ordinal))
+         {
+            return translatedText;
+         }
+
+         string innerTranslated = trimmedTranslated.Trim(wrapper.ToCharArray()).Trim();
+         return $"{wrapper}{innerTranslated}{wrapper}";
+      }
+
+      return translatedText;
+   }
+
+   private static bool HasMatchingInlineTagStructure(string originalText, string translatedText)
+   {
+      if (string.IsNullOrEmpty(originalText) || string.IsNullOrEmpty(translatedText))
+      {
+         return true;
+      }
+
+      string[] originalTags = ExtractInlineTags(originalText);
+      string[] translatedTags = ExtractInlineTags(translatedText);
+
+      if (originalTags.Length != translatedTags.Length)
+      {
+         return false;
+      }
+
+      for (int i = 0; i < originalTags.Length; i++)
+      {
+         if (!string.Equals(originalTags[i], translatedTags[i], StringComparison.Ordinal))
+         {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   private static bool HasEquivalentInlineTagStructure(string originalText, string translatedText)
+   {
+      if (TryUnwrapSymmetricWrapper(originalText, out string originalWrapper, out _)
+         && TryUnwrapSymmetricWrapper(translatedText, out string translatedWrapper, out _))
+      {
+         return string.Equals(originalWrapper, translatedWrapper, StringComparison.Ordinal);
+      }
+
+      return false;
+   }
+
+   private static string[] ExtractInlineTags(string text)
+   {
+      List<string> tags = [];
+
+      foreach (Match match in HtmlTagRegex.Matches(text))
+      {
+         tags.Add(match.Value);
+      }
+
+      foreach (string token in new[] { "**", "*", "__", "_", "~~", "`" })
+      {
+         int index = 0;
+         while ((index = text.IndexOf(token, index, StringComparison.Ordinal)) >= 0)
+         {
+            tags.Add(token);
+            index += token.Length;
+         }
+      }
+
+      int searchStart = 0;
+      while (searchStart < text.Length)
+      {
+         int openBracket = text.IndexOf('[', searchStart);
+         if (openBracket < 0)
+         {
+            break;
+         }
+
+         int closeBracket = text.IndexOf(']', openBracket + 1);
+         if (closeBracket < 0)
+         {
+            break;
+         }
+
+         int openParen = text.IndexOf('(', closeBracket + 1);
+         if (openParen == closeBracket + 1)
+         {
+            int closeParen = text.IndexOf(')', openParen + 1);
+            if (closeParen > openParen)
+            {
+               bool isImage = openBracket > 0 && text[openBracket - 1] == '!';
+               tags.Add(isImage ? "![]()" : "[]()");
+               searchStart = closeParen + 1;
+               continue;
+            }
+         }
+
+         searchStart = closeBracket + 1;
+      }
+
+      return [.. tags];
    }
 }
