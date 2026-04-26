@@ -1,37 +1,153 @@
-﻿# रियल टाइम अनुवाद
+﻿# Real-time translations
 
-यह दस्तावेज़ स्वचालित अनुवाद पाइपलाइन के लिए लाइव टेस्ट इनपुट के रूप में मौजूद है।.
+This document exists as a live test input for the automatic translation pipeline. Any change to this file triggers re-translation of all target language files on the next scheduled run.
 
-## क्या सेवा करता है
+## What the service does
 
-सेवा एक अनुसूची पर चलती है और किसी भी अनुवाद कार्य शुरू होने से पहले अनुवाद सर्वर, विन्यास और उपलब्ध भाषाओं को मान्य करती है।.
+The service runs on a schedule and executes a five-stage pipeline: server validation, country synchronisation, JSON dictionary synchronisation, Markdown file translation, and persisting the results. Each stage emits structured real-time progress events over SignalR so that connected clients can follow along as work proceeds.
 
-वैधता चरण के बाद, यह पठनीय देशों के देश के नामों को मानक स्थानीयकरण JSON शब्दकोशों में सूचीबद्ध करता है। यदि एप्लिकेशन डिफ़ॉल्ट भाषा अंग्रेजी है, तो देश प्रविष्टि को कुंजी के बराबर मान के रूप में संग्रहीत किया जाता है। यदि डिफ़ॉल्ट भाषा अलग है, तो अंग्रेजी देश का नाम पहले डिफ़ॉल्ट भाषा में अनुवाद किया जाता है, और उसके बाद डिफ़ॉल्ट शब्दकोश में केवल कुंजी के बराबर मूल्य के रूप में संग्रहीत किया जाता है।.
+## Pipeline stages
 
-इसके बाद, सेवा पिछले रन से संग्रहीत स्नैपशॉट के साथ वर्तमान डिफ़ॉल्ट स्थानीयकरण शब्दकोश की तुलना करती है। हाल ही में जोड़े गए प्रविष्टियों को लक्ष्य भाषाओं में अनुवाद किया जाता है जब कुंजी पहले से ही मौजूद नहीं होती है, इसलिए मैनुअल अनुवाद प्राथमिकता रखते हैं। हटाए गए प्रविष्टियों को सभी लक्ष्य शब्दकोशों से हटा दिया जाता है ताकि पूरे सेट को सुसंगत रखा जा सके।.
+### Stage 1 — CheckServers
 
-अंत में, सर्विस स्कैन ने मार्कडाउन पेड़ों के लिए प्रलेखन जड़ों को कॉन्फ़िगर किया। प्रत्येक विषय फ़ोल्डर में डिफ़ॉल्ट भाषा के नाम पर एक स्रोत फ़ाइल शामिल होने की उम्मीद है, जैसे कि enmd। सेवा है कि स्रोत फ़ाइल, परिवर्तन का पता लगाता है, लापता या पुराने लक्ष्य मार्कडाउन फ़ाइलों का अनुवाद करता है, और स्रोत फ़ाइल के बगल में वर्तमान हैश स्टोर करता है। यदि स्रोत फ़ाइल के बगल में हैश लेखन संभव नहीं है, तो यह अस्थायी भंडारण पर वापस आता है।.
+Before any translation work begins, the service verifies that all preconditions are satisfied:
 
-## कैसे सेवा रिपोर्ट प्रगति
+- The `AutomaticTranslationSettings` configuration section must be present and valid.
+- The LibreTranslate server must respond within an acceptable latency.
+- The list of languages available on the translation server is fetched.
+- The configured default language must be present in that list.
+- Missing locale JSON files for any supported language are created automatically.
 
-बैकेंड एक संदेश लिफाफे का उपयोग करके स्थानीयकरण हब के माध्यम से सामान्य सिग्नलआर संदेशों का उत्सर्जन करता है। प्रत्येक संदेश में संदेश प्रकार, वर्तमान प्रक्रिया चरण, एक यूटीसी टाइमस्टैम्प, एक पाठ सारांश और वैकल्पिक चरण-विशिष्ट पेलोड होता है।.
+If any check fails, the pipeline stops immediately and a `StageFailed` message is emitted.
 
-वर्तमान चरण हैं:
+### Stage 2 — TranslateCountries
 
-- चेकसर्वर
-- अनुवादक
-- जेसनफिल
-- MarkdownFiles
-- स्टोरिंगResult
+Country names are kept in sync from a read-only catalog (`countries.json`) into the localization JSON dictionaries.
 
-विशिष्ट संदेश प्रवाह चरण शुरू हो गया है, चरण पूरा हो गया और पाइप लाइन पूरा हो गया। यदि कोई चरण विफल हो जाता है, तो संदेश को त्रुटि के रूप में चिह्नित किया जाता है और इसमें एकीकृत त्रुटि कोड के साथ संरचित त्रुटि जानकारी शामिल है।.
+- If the application default language is English, each country name is stored as `key = value` without translation.
+- If the default language is any other language, the English country name is first translated into that language, and the result becomes the `key = value` entry in the default dictionary.
+- After the default dictionary is updated, each missing country entry in every target language dictionary is queued for translation.
+- Already-translated entries are preserved without modification.
 
-## डिजाइन सिद्धांत
+### Stage 3 — TranslateJsonFiles
 
-अनुवाद को क्रमिक रूप से LibreTranslate सर्वर को ओवरलोड करने से बचने के लिए संसाधित किया जाता है।.
+The service compares the current default localization dictionary with a snapshot stored from the previous run:
 
-स्थानीयकरण JSON शब्दकोश हमेशा वर्णमाला रूप से क्रमबद्ध कुंजी के साथ संग्रहीत होते हैं और आसान रखरखाव के लिए JSON को स्वरूपित करते हैं।.
+- **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
+- **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
+- Manual translations always take priority. If a target dictionary already contains a value for a key, that entry is left unchanged regardless of what the source says.
+- After the run, the current default dictionary is saved as the new snapshot for the next comparison.
 
-पिछले डिफ़ॉल्ट शब्दकोश स्नैपशॉट को लगातार संग्रहीत किया जाता है इसलिए एप्लिकेशन की एक पुनरारंभ में बदलाव ट्रैकिंग नहीं खोती है।.
+All dictionaries are always stored with alphabetically sorted keys and indented JSON for human readability.
 
-**मैनुअल अनुवाद हमेशा स्वचालित परिवर्धन पर प्राथमिकता रखते हैं।**
+### Stage 4 — TranslateMarkdownFiles
+
+The service walks the configured documentation roots (default: `/Docs`) and processes every `{defaultLanguage}.md` source file recursively:
+
+1. The source file content is read and a SHA-256 hash is computed.
+2. The stored hash from the previous run (kept in a `.hash.json` file next to the source file, or in a temporary fallback location) is compared with the current hash.
+3. For each target language, the corresponding `{targetLanguage}.md` file is also checked for structural integrity and for the presence of known untranslated sentinel phrases.
+4. Any target file that is missing, has an outdated hash, fails structure validation, or contains untranslated content is queued for re-translation.
+5. Successfully translated files are validated for structural parity with the source (equal heading counts, list items, code blocks, blockquotes, links, bold/italic markers, and HTML tags) before they are written to disk.
+6. If all target files for a source succeed, the new hash is stored next to the source. If writing next to the source fails (for example in read-only deployments), the hash falls back to the temporary directory.
+7. If any target translation fails validation, the stored hash is deliberately cleared so that the source is unconditionally re-translated on the next run.
+
+### Stage 5 — StoringResults
+
+A consolidated `StoringReport` is assembled and published. It includes:
+
+- UTC run start and completion timestamps.
+- Counts of saved locale JSON files, saved Markdown files, saved hash files, and fallback hash writes.
+- Any storage errors collected during the run.
+
+## SignalR message envelope
+
+Every progress event is delivered as a `LocalizationHubMessage` with the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `RunId` | `Guid` | Correlation identifier for the current pipeline run |
+| `Sequence` | `long` | Monotonic counter within a run, starting at 1 |
+| `Type` | `LocalizationMessageType` | Semantic type of the message |
+| `Stage` | `ProcessStage` | Pipeline stage the message belongs to |
+| `TimestampUtc` | `DateTime` | UTC time when the message was emitted |
+| `IsError` | `bool` | Whether the message represents an error condition |
+| `Message` | `string` | Human-readable summary |
+| `Data` | `object?` | Stage-specific payload (report object or null) |
+
+### Message types
+
+| Value | Name | Meaning |
+|-------|------|---------|
+| 0 | `StageStarted` | A pipeline stage began execution |
+| 1 | `StageCompleted` | A pipeline stage finished successfully |
+| 2 | `StageFailed` | A pipeline stage encountered a fatal error |
+| 3 | `PipelineCompleted` | All stages completed successfully |
+| 4 | `PipelineFailed` | The pipeline encountered an unrecoverable error |
+| 5 | `Progress` | An informational progress update |
+| 6 | `Warning` | A non-fatal warning |
+
+### Pipeline stages
+
+| Value | Name | Description |
+|-------|------|-------------|
+| 0 | `Iddle` | No active processing |
+| 1 | `CheckServers` | Environment and translation server validation |
+| 2 | `TranslateCountries` | Country name synchronisation |
+| 3 | `TranslateJsonFiles` | JSON localization dictionary synchronisation |
+| 4 | `TranslateMarkdownFiles` | Markdown documentation translation |
+| 5 | `StoringResults` | Final result aggregation and persistence |
+
+### Typical message flow
+
+```text
+StageStarted  / CheckServers
+StageCompleted / CheckServers
+StageStarted  / TranslateCountries
+StageCompleted / TranslateCountries
+StageStarted  / TranslateJsonFiles
+StageCompleted / TranslateJsonFiles
+StageStarted  / TranslateMarkdownFiles
+StageCompleted / TranslateMarkdownFiles
+StageCompleted / StoringResults
+PipelineCompleted / StoringResults
+```
+
+If any stage fails, the remaining stages are skipped, a `StageFailed` message is emitted, and finally a `PipelineFailed` message closes the run.
+
+## Translation validation and retry logic
+
+Text translations go through intelligent validation before being accepted:
+
+1. If the translated text is empty or whitespace, the translation is retried automatically.
+2. If the translated text equals the source text (case-insensitive comparison) and the source contains mixed casing, the translation is retried using a fully lowercase version of the source.
+3. If the lowercase retry produces a result that differs from the original source (case-insensitive), that result is accepted.
+4. If the lowercase retry still matches the source, the original translation with correct casing is returned as-is.
+
+All text translation calls use exponential backoff (up to five attempts, with delays of 1 s, 2 s, 3 s, 4 s, 5 s). Retry translations use up to three additional attempts.
+
+File translations do not go through translation validation because the output is a file URL rather than a text value.
+
+## Error codes
+
+Errors are reported using a unified `ErrorCode` enum grouped into ranges:
+
+| Range | Category |
+|-------|----------|
+| 1000–1999 | Network errors |
+| 2000–2999 | Storage errors |
+| 3000–3999 | Translation errors |
+| 4000–4999 | Configuration and argument errors |
+| 5000–5999 | Internal errors |
+
+Each error in a report carries the source identifier (language code, file path, or stage name), the error code, and a human-readable message.
+
+## Design principles
+
+- Translations are processed sequentially to avoid overloading the LibreTranslate server.
+- Localization JSON dictionaries are always stored with alphabetically sorted keys and indented JSON for easier maintenance.
+- The previous default dictionary snapshot is stored persistently so that a restart of the application does not lose change tracking.
+- Hash files are stored next to the source Markdown file; if that location is not writable, a sanitised path in the system temporary directory is used as a fallback.
+- Structure validation for translated Markdown files compares heading counts, list item counts, code fence pairs, blockquote markers, hyperlink counts, bold and italic markers, and HTML tag counts between the source and translated output.
+
+**Manual translations always have priority over automatic additions.**
