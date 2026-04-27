@@ -92,6 +92,7 @@
   "Guyana": "Gaj\u0101na",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Sv\u0113tais Kr\u0113sls (Vatik\u0101na)",
+  "Home page": "M\u0101jas lapa",
   "Honduras": "Honkonga",
   "Hong Kong": "Honkonga",
   "Hungary": "Ung\u0101rija",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgizst\u0101na",
   "Laos": "Laosa",
   "Latvia": "Latvija",
+  "Learn about building Web apps with ASP.NET Core.": "Uzziniet par m\u0101jas Web progr ar ASP. NET Core.",
   "Lebanon": "Lib\u0101na",
   "Lesotho": "Lesoto",
   "Liberia": "Lib\u0113rija",
@@ -204,6 +206,7 @@
   "South Sudan": "Dienvidsud\u0101na",
   "Spain": "Sp\u0101nija",
   "Sri Lanka": "\u0160rilanka",
+  "Successfully stored": "Veiksm\u012Bgi glab\u0101ts",
   "Sudan": "Sud\u0101na",
   "Suriname": "Surinama",
   "Svalbard and Jan Mayen": "Svalb\u0101ra un Jan Majena",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tad\u017Eikist\u0101na",
   "Tanzania, United Republic of Tanzania": "Tanz\u0101nija, Tanz\u0101nijas Savienot\u0101 Republika",
   "Thailand": "Taizeme",
+  "The list is empty": "Saraksts ir tuk\u0161s",
   "Timor-Leste": "Austrumtimora",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Britu Vird\u017E\u012Bnu salas",
   "Virgin Islands, U.S.": "ASV Vird\u017E\u012Bnu salas.",
   "Wallis and Futuna": "Volisa un Futuna",
+  "Welcome": "Ofici\u0101la sveik\u0161ana",
   "Yemen": "Jemena",
   "Zambia": "Zambija",
-  "Zimbabwe": "Zimbabve"
+  "Zimbabwe": "Zimbabve",
+  "not found": "nav atrasts"
 }

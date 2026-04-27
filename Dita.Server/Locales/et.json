@@ -92,6 +92,7 @@
   "Guyana": "Guyana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "P\u00FCha Tool (Vatikani Linnriik)",
+  "Home page": "Koduleht",
   "Honduras": "Honduras",
   "Hong Kong": "Hongkong",
   "Hungary": "Ungari",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "K\u00F5rg\u00F5zstanist",
   "Laos": "Laos",
   "Latvia": "L\u00E4ti",
+  "Learn about building Web apps with ASP.NET Core.": "Lugege veebirakenduste loomise kohta ASP-ga. NET Core.",
   "Lebanon": "Liibanoni",
   "Lesotho": "Lesotho",
   "Liberia": "Libeeria",
@@ -204,6 +206,7 @@
   "South Sudan": "L\u00F5una-Sudaani",
   "Spain": "Hispaania",
   "Sri Lanka": "lanka",
+  "Successfully stored": "Salvestatud edukalt",
   "Sudan": "Sudaani",
   "Suriname": "perekonnanime",
   "Svalbard and Jan Mayen": "Svalbard ja Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tad\u017Eikistan",
   "Tanzania, United Republic of Tanzania": "Tansaania \u00DChendvabariik",
   "Thailand": "Tai",
+  "The list is empty": "Nimekiri on t\u00FChi",
   "Timor-Leste": "Timor-Leste",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Neitsisaared, Briti",
   "Virgin Islands, U.S.": "Neitsisaared, USA.",
   "Wallis and Futuna": "Wallis ja Futuna",
+  "Welcome": "Tere tulemast",
   "Yemen": "Jeemenisse",
   "Zambia": "Sambia",
-  "Zimbabwe": "zmbabwe"
+  "Zimbabwe": "zmbabwe",
+  "not found": "ei leitud"
 }

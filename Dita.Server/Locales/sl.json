@@ -92,6 +92,7 @@
   "Guyana": "Gvajana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Sveti sede\u017E (Vatikanska mestna dr\u017Eava)",
+  "Home page": "Doma\u010Da stran",
   "Honduras": "Honduras",
   "Hong Kong": "Hongkong",
   "Hungary": "Mad\u017Earska",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgizistan",
   "Laos": "Laos",
   "Latvia": "Litva",
+  "Learn about building Web apps with ASP.NET Core.": "Preberite ve\u010D o gradnji spletnih aplikacij z ASP. NET Core.",
   "Lebanon": "Libanon",
   "Lesotho": "Lesotho",
   "Liberia": "Liberija",
@@ -204,6 +206,7 @@
   "South Sudan": "Ju\u017Eni Sudan",
   "Spain": "\u0160panija",
   "Sri Lanka": "\u0160rilanka",
+  "Successfully stored": "Uspe\u0161no shranjen",
   "Sudan": "Sudan",
   "Suriname": "Surinam",
   "Svalbard and Jan Mayen": "Svalbard in Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tad\u017Eikistan",
   "Tanzania, United Republic of Tanzania": "Tanzanija, Zdru\u017Eena republika Tanzanija",
   "Thailand": "Tajska",
+  "The list is empty": "Seznam je prazen",
   "Timor-Leste": "Vzhodni Timor",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Devi\u0161ki otoki, Britanci",
   "Virgin Islands, U.S.": "Devi\u0161ki otoki, ZDA.",
   "Wallis and Futuna": "Wallis in Futuna",
+  "Welcome": "Dobrodo\u0161li",
   "Yemen": "Jemen",
   "Zambia": "Zambija",
-  "Zimbabwe": "Zimbabve"
+  "Zimbabwe": "Zimbabve",
+  "not found": "ni najdeno"
 }

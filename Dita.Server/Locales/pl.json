@@ -92,6 +92,7 @@
   "Guyana": "Gujana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Stolica Apostolska (Pa\u0144stwo Watyka\u0144skie)",
+  "Home page": "Strona g\u0142\u00F3wna",
   "Honduras": "Honduras",
   "Hong Kong": "Hongkong",
   "Hungary": "W\u0119gry",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgistan",
   "Laos": "Laos",
   "Latvia": "\u0141otwa",
+  "Learn about building Web apps with ASP.NET Core.": "Dowiedz si\u0119 wi\u0119cej o budowaniu aplikacji internetowych z ASP. NET Core.",
   "Lebanon": "Liban",
   "Lesotho": "lezotho",
   "Liberia": "Liberia",
@@ -204,6 +206,7 @@
   "South Sudan": "Sudan Po\u0142udniowy",
   "Spain": "Hiszpania",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Udane przechowywanie",
   "Sudan": "Sudan",
   "Suriname": "Surinam",
   "Svalbard and Jan Mayen": "Svalbard i Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tad\u017Cykistan",
   "Tanzania, United Republic of Tanzania": "Tanzania, Wielka Republika Tanzanii",
   "Thailand": "Tajlandia",
+  "The list is empty": "Lista jest pusta",
   "Timor-Leste": "Timor Wschodni",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Wyspy Dziewicze, Brytyjskie",
   "Virgin Islands, U.S.": "Wyspy Dziewicze, USA.",
   "Wallis and Futuna": "Wallis i Futuna",
+  "Welcome": "Powitanie",
   "Yemen": "Jemen",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "nie znaleziono"
 }

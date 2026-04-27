@@ -92,6 +92,7 @@
   "Guyana": "Guyana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Sf\u00E2ntul Scaun (Statul Vaticanului)",
+  "Home page": "Pagina de start",
   "Honduras": "Honduras",
   "Hong Kong": "Hong Kong",
   "Hungary": "Ungaria",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "K\u00E2rg\u00E2zstan",
   "Laos": "Laos",
   "Latvia": "Letonia",
+  "Learn about building Web apps with ASP.NET Core.": "Afla\u021Bi despre construirea de aplica\u021Bii Web cu ASP. NET Core.",
   "Lebanon": "Liban",
   "Lesotho": "Lesotho",
   "Liberia": "liberie",
@@ -204,6 +206,7 @@
   "South Sudan": "Sudanul de Sud",
   "Spain": "Spania",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Stocate cu succes",
   "Sudan": "Sudan",
   "Suriname": "Surinam",
   "Svalbard and Jan Mayen": "Svalbard \u0219i Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tadjikistan",
   "Tanzania, United Republic of Tanzania": "Tanzania, Republica Unit\u0103 Tanzania",
   "Thailand": "Thailanda",
+  "The list is empty": "Lista e goal\u0103",
   "Timor-Leste": "Timorul de Est",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Insulele Virgine Britanice",
   "Virgin Islands, U.S.": "Insulele Virgine, SUA.",
   "Wallis and Futuna": "Wallis \u015Fi Futuna",
+  "Welcome": "Bun venit",
   "Yemen": "Yemen",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "neg\u0103sit"
 }

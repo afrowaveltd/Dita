@@ -1,12 +1,12 @@
-﻿# Real-time translations
+﻿# Real-am aistriúcháin
 
-This document exists as a live test input for the automatic translation pipeline. Any change to this file triggers re-translation of all target language files on the next scheduled run.
+Tá an doiciméad seo mar ionchur tástála beo don phíblíne aistriúcháin uathoibríoch. Spreagann aon athrú ar an gcomhad seo ath-aistriú de gach comhad teanga sprioc ar an chéad reáchtáil sceidealta eile.
 
-## What the service does
+## Cad a dhéanann an tseirbhís
 
-The service runs on a schedule and executes a five-stage pipeline: server validation, country synchronisation, JSON dictionary synchronisation, Markdown file translation, and persisting the results. Each stage emits structured real-time progress events over SignalR so that connected clients can follow along as work proceeds.
+Ritheann an tseirbhís ar sceideal agus forghníomhaíonn píblíne cúig chéim: bailíochtú freastalaí, sioncrónaithe tír, sioncrónaithe foclóir JSON, aistriúchán comhad Markdown, agus fós na torthaí. Gach céim astaíonn struchtúrtha imeachtaí dul chun cinn fíor-ama thar Signal R ionas gur féidir le cliaint nasctha a leanúint chomh maith le fáltais oibre.
 
-## Pipeline stages
+## Céimeanna Pipeline
 
 ### Stage 1 — CheckServers
 

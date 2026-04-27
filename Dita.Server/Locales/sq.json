@@ -92,6 +92,7 @@
   "Guyana": "Guajan\u00EB",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Selia e Shenjt\u00EB (shteti i Vatikanit)",
+  "Home page": "Faqja e nisjes",
   "Honduras": "fouduras",
   "Hong Kong": "Hong Kong",
   "Hungary": "Hungarisht",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgizistan",
   "Laos": "Laos",
   "Latvia": "Letoni",
+  "Learn about building Web apps with ASP.NET Core.": "M\u00EBsoni rreth nd\u00EBrtimit t\u00EB aplikacioneve Web me ASP. NET Core.",
   "Lebanon": "Liban",
   "Lesotho": "Lezoto",
   "Liberia": "Liberi",
@@ -204,6 +206,7 @@
   "South Sudan": "Sudani Jugor",
   "Spain": "Spanj\u00EB",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Me sukses",
   "Sudan": "Sudan",
   "Suriname": "Surinami",
   "Svalbard and Jan Mayen": "Svalbardi dhe Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Taxhikistan",
   "Tanzania, United Republic of Tanzania": "Tanzani, Republika e Bashkuar e Tanzanis\u00EB",
   "Thailand": "Tajland\u00EB",
+  "The list is empty": "Lista \u00EBsht\u00EB bosh",
   "Timor-Leste": "Timor-Leste",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Ishujt Virxhin, Britanik",
   "Virgin Islands, U.S.": "Ishujt Virxhin, SHBA.",
   "Wallis and Futuna": "Uollis dhe Futuna",
+  "Welcome": "Mir\u00EBsevini",
   "Yemen": "Jemen",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabve"
+  "Zimbabwe": "Zimbabve",
+  "not found": "nuk u gjet"
 }

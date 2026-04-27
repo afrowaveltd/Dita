@@ -92,6 +92,7 @@
   "Guyana": "\u30AC\u30A4\u30A2\u30CA",
   "Haiti": "\u30CF\u30A4\u30C1",
   "Holy See (Vatican City State)": "\u8056\u306A\u308B\u53C2\u7167(\u30D0\u30C1\u30AB\u30F3\u5DDE)",
+  "Home page": "\u30B5\u30A4\u30C8\u30DE\u30C3\u30D7",
   "Honduras": "\u30DB\u30F3\u30B8\u30E5\u30E9\u30B9",
   "Hong Kong": "\u9999\u6E2F",
   "Hungary": "\u30CF\u30F3\u30AC\u30EA\u30FC",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "\u30AD\u30EB\u30AE\u30B9\u30B9\u30BF\u30F3",
   "Laos": "\u30E9\u30AA\u30B9",
   "Latvia": "\u30E9\u30C8\u30D3\u30A2",
+  "Learn about building Web apps with ASP.NET Core.": "ASP \u3067 Web \u30A2\u30D7\u30EA\u306E\u69CB\u7BC9\u306B\u3064\u3044\u3066 NET\u30B3\u30A2.",
   "Lebanon": "\u30EC\u30D0\u30CE\u30F3",
   "Lesotho": "\u30EC\u30BD\u30C8",
   "Liberia": "\u30EA\u30D9\u30EA\u30A2",
@@ -204,6 +206,7 @@
   "South Sudan": "\u5357\u30B9\u30FC\u30C0\u30F3",
   "Spain": "\u30B9\u30DA\u30A4\u30F3",
   "Sri Lanka": "\u30B9\u30EA\u30E9\u30F3\u30AB",
+  "Successfully stored": "\u5FB9\u5E95\u7684\u306B\u4FDD\u5B58",
   "Sudan": "\u30B9\u30FC\u30C0\u30F3",
   "Suriname": "\u30B9\u30EA\u30CA\u30E0",
   "Svalbard and Jan Mayen": "Svalbard\u30681\u6708\u30DE\u30EC\u30F3",
@@ -215,6 +218,7 @@
   "Tajikistan": "\u30BF\u30B8\u30AD\u30B9\u30BF\u30F3",
   "Tanzania, United Republic of Tanzania": "\u30BF\u30F3\u30B6\u30CB\u30A2, United Kingdom",
   "Thailand": "\u30BF\u30A4",
+  "The list is empty": "\u30EA\u30B9\u30C8\u306F\u7A7A\u3067\u3059",
   "Timor-Leste": "\u30C6\u30A3\u30E2\u30FC\u30EB\u30FB\u30EC\u30B9\u30C6",
   "Togo": "\u30C8\u30FC\u30B4",
   "Tokelau": "\u30C8\u30B1\u30E9\u30A6",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "\u30D0\u30FC\u30B8\u30F3\u8AF8\u5CF6\u3001\u30A4\u30AE\u30EA\u30B9",
   "Virgin Islands, U.S.": "\u30D0\u30FC\u30B8\u30F3\u8AF8\u5CF6\u3001\u7C73\u56FD.",
   "Wallis and Futuna": "\u30A6\u30A9\u30EA\u30B9\u3068\u30D5\u30C4\u30CA",
+  "Welcome": "\u304A\u554F\u3044\u5408\u308F\u305B",
   "Yemen": "\u30A4\u30A8\u30E1\u30F3",
   "Zambia": "\u30B6\u30F3\u30D3\u30A2",
-  "Zimbabwe": "\u30B8\u30F3\u30D0\u30D6\u30A8"
+  "Zimbabwe": "\u30B8\u30F3\u30D0\u30D6\u30A8",
+  "not found": "\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F"
 }

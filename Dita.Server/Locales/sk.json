@@ -92,6 +92,7 @@
   "Guyana": "Guyana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Sv\u00E4t\u00E1 stolica (Vatik\u00E1nsky mestsk\u00FD \u0161t\u00E1t)",
+  "Home page": "\u00DAvodn\u00E1 str\u00E1nka",
   "Honduras": "Honduras",
   "Hong Kong": "Hongkong",
   "Hungary": "Ma\u010Farsko",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgizsko",
   "Laos": "Laos",
   "Latvia": "Loty\u0161sko",
+  "Learn about building Web apps with ASP.NET Core.": "Pre\u010D\u00EDtajte si o budovan\u00ED webov\u00FDch aplik\u00E1ci\u00ED s ASP. NET Core.",
   "Lebanon": "Libanon",
   "Lesotho": "lesoto",
   "Liberia": "Lib\u00E9ria",
@@ -204,6 +206,7 @@
   "South Sudan": "Ju\u017En\u00FD Sud\u00E1n",
   "Spain": "\u0160panielsko",
   "Sri Lanka": "Sr\u00ED Lanka",
+  "Successfully stored": "\u00DAspe\u0161ne ulo\u017Een\u00E9",
   "Sudan": "Sud\u00E1n",
   "Suriname": "Surinam",
   "Svalbard and Jan Mayen": "Svalbard a Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tad\u017Eikistan",
   "Tanzania, United Republic of Tanzania": "Tanz\u00E1nijsk\u00E1 zjednoten\u00E1 republika",
   "Thailand": "Thajsko",
+  "The list is empty": "Zoznam je pr\u00E1zdny",
   "Timor-Leste": "V\u00FDchodn\u00FD Timor",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Britsk\u00E9 Panensk\u00E9 ostrovy",
   "Virgin Islands, U.S.": "Americk\u00E9 Panensk\u00E9 ostrovy.",
   "Wallis and Futuna": "Wallis a Futuna",
+  "Welcome": "Priv\u00EDtanie",
   "Yemen": "Jemen",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "nen\u00E1jden\u00FD"
 }

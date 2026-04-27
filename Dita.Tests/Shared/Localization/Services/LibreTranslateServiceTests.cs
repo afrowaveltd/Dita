@@ -160,6 +160,52 @@ public class LibreTranslateServiceTests
       Assert.Equal(0, handler.CallCount);
    }
 
+   [Fact]
+   public async Task WhenTranslateTextGetsBadGatewayThenRetryAndSucceed()
+   {
+      var handler = new QueueHttpMessageHandler();
+      handler.Enqueue(_ => Task.FromResult(CreateResponse(HttpStatusCode.BadGateway, "<html>502 Bad Gateway</html>")));
+      handler.Enqueue(_ => Task.FromResult(CreateJsonResponse("{" + "\"translatedText\":\"Ahoj\"" + "}")));
+      var service = CreateService(handler);
+
+      Response<TranslateResult> response = await service.TranslateTextAsync("Hello", "en", "cs");
+
+      Assert.True(response.Success);
+      Assert.NotNull(response.Data);
+      Assert.Equal("Ahoj", response.Data!.TranslatedText);
+      Assert.Equal(2, handler.CallCount);
+   }
+
+   [Fact]
+   public async Task WhenTranslateTextGetsNonRetryableStatusThenFailWithoutRetry()
+   {
+      var handler = new QueueHttpMessageHandler();
+      handler.Enqueue(_ => Task.FromResult(CreateResponse(HttpStatusCode.BadRequest, "bad request")));
+      var service = CreateService(handler);
+
+      Response<TranslateResult> response = await service.TranslateTextAsync("Hello", "en", "cs");
+
+      Assert.False(response.Success);
+      Assert.Contains("400", response.Message);
+      Assert.Equal(1, handler.CallCount);
+   }
+
+   [Fact]
+   public async Task WhenTranslateTextThrowsTransientExceptionThenRetryAndSucceed()
+   {
+      var handler = new QueueHttpMessageHandler();
+      handler.Enqueue(_ => throw new HttpRequestException("network glitch"));
+      handler.Enqueue(_ => Task.FromResult(CreateJsonResponse("{" + "\"translatedText\":\"Ahoj\"" + "}")));
+      var service = CreateService(handler);
+
+      Response<TranslateResult> response = await service.TranslateTextAsync("Hello", "en", "cs");
+
+      Assert.True(response.Success);
+      Assert.NotNull(response.Data);
+      Assert.Equal("Ahoj", response.Data!.TranslatedText);
+      Assert.Equal(2, handler.CallCount);
+   }
+
    private static LibreTranslateService CreateService(QueueHttpMessageHandler handler, AutomaticTranslationSettings? settings = null)
    {
       settings ??= new AutomaticTranslationSettings { Address = "https://translate.example" };
@@ -179,6 +225,14 @@ public class LibreTranslateServiceTests
       return new HttpResponseMessage(HttpStatusCode.OK)
       {
          Content = new StringContent(content, Encoding.UTF8, "application/json")
+      };
+   }
+
+   private static HttpResponseMessage CreateResponse(HttpStatusCode statusCode, string content)
+   {
+      return new HttpResponseMessage(statusCode)
+      {
+         Content = new StringContent(content, Encoding.UTF8, "text/plain")
       };
    }
 

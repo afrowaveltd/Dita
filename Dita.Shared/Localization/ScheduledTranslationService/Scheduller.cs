@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Dita.Shared.Localization.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Dita.Shared.Localization.Models;
+using System.Globalization;
 
 namespace Dita.Shared.Localization.ScheduledTranslationService;
 
@@ -12,24 +14,29 @@ namespace Dita.Shared.Localization.ScheduledTranslationService;
 /// </summary>
 /// <param name="logger">Logger used by this service.</param>
 /// <param name="settings">Loaded automatic translation settings.</param>
+/// <param name="configuration">Application configuration used for robust schedule parsing.</param>
 /// <param name="service">Root service provider used to create per-run DI scopes.</param>
-public class Scheduller(ILogger<Scheduller> logger, AutomaticTranslationSettings settings, IServiceProvider service) : IHostedService, IDisposable
+public class Scheduller(
+   ILogger<Scheduller> logger,
+   AutomaticTranslationSettings settings,
+   IConfiguration configuration,
+   IServiceProvider service) : IHostedService, IDisposable
 {
    private readonly ILogger<Scheduller> _logger = logger;
    private readonly IServiceProvider _service = service;
    private readonly AutomaticTranslationSettings _settings = settings;
 
-   /// <summary>Minutes to wait before the first translation run after startup.</summary>
-   private readonly int _waitingTime = (int)settings.WaitingTime.TotalMinutes;
+   /// <summary>Delay before the first translation run after startup.</summary>
+   private readonly TimeSpan _waitingTime = ResolveWaitingTime(configuration, settings);
 
-   /// <summary>Minutes between subsequent translation runs.</summary>
-   private readonly int _checkingPeriod = settings.CheckingPeriod;
+   /// <summary>Delay between subsequent translation runs.</summary>
+   private readonly TimeSpan _checkingPeriod = ResolveCheckingPeriod(settings);
 
    /// <summary>Whether the periodic timer should be started automatically.</summary>
    private readonly bool _automaticRun = settings.AutomaticRun;
 
    /// <summary>Guards against overlapping runs triggered by the timer.</summary>
-   private volatile bool _isProcessing;
+   private int _isProcessing;
 
    private Timer? _timer;
 
@@ -40,20 +47,23 @@ public class Scheduller(ILogger<Scheduller> logger, AutomaticTranslationSettings
    public Task StartAsync(CancellationToken cancellationToken)
    {
       _logger.LogInformation(
-         "Scheduled Translation Service is starting. AutomaticRun={AutomaticRun}, WaitingTime={WaitingTime} min, CheckingPeriod={CheckingPeriod} min.",
-         _automaticRun, _waitingTime, _checkingPeriod);
+         "Scheduled Translation Service is starting. AutomaticRun={AutomaticRun}, WaitingTime={WaitingTime}, CheckingPeriod={CheckingPeriod}.",
+         _automaticRun,
+         _waitingTime,
+         _checkingPeriod);
 
-      if (_automaticRun)
+      if(_automaticRun)
       {
          _timer = new Timer(
             async _ => await DoWorkAsync(),
             state: null,
-            dueTime: TimeSpan.FromMinutes(_waitingTime),
-            period: TimeSpan.FromMinutes(_checkingPeriod));
+            dueTime: _waitingTime,
+            period: _checkingPeriod);
 
          _logger.LogDebug(
-            "Translation timer scheduled: first run in {WaitingTime} min, then every {CheckingPeriod} min.",
-            _waitingTime, _checkingPeriod);
+            "Translation timer scheduled: first run in {WaitingTime}, then every {CheckingPeriod}.",
+            _waitingTime,
+            _checkingPeriod);
       }
       else
       {
@@ -87,13 +97,12 @@ public class Scheduller(ILogger<Scheduller> logger, AutomaticTranslationSettings
    /// </summary>
    private async Task DoWorkAsync()
    {
-      if (_isProcessing)
+      if(Interlocked.CompareExchange(ref _isProcessing, 1, 0) != 0)
       {
          _logger.LogWarning("Scheduled Translation Service is already processing – skipping this run.");
          return;
       }
 
-      _isProcessing = true;
       _logger.LogDebug("Scheduled translation run started.");
 
       try
@@ -103,13 +112,40 @@ public class Scheduller(ILogger<Scheduller> logger, AutomaticTranslationSettings
          await translationService.RunAsync();
          _logger.LogInformation("Scheduled translation run completed successfully.");
       }
-      catch (Exception ex)
+      catch(Exception ex)
       {
          _logger.LogError(ex, "An error occurred during the scheduled translation run.");
       }
       finally
       {
-         _isProcessing = false;
+         Interlocked.Exchange(ref _isProcessing, 0);
       }
+   }
+
+   private static TimeSpan ResolveWaitingTime(IConfiguration configuration, AutomaticTranslationSettings settings)
+   {
+      string? rawWaitingTime = configuration["AutomaticTranslationSettings:WaitingTime"];
+      if(string.IsNullOrWhiteSpace(rawWaitingTime))
+      {
+         return TimeSpan.Zero;
+      }
+
+      if(int.TryParse(rawWaitingTime, NumberStyles.Integer, CultureInfo.InvariantCulture, out int waitingMinutes))
+      {
+         return waitingMinutes <= 0 ? TimeSpan.Zero : TimeSpan.FromMinutes(waitingMinutes);
+      }
+
+      return settings.WaitingTime < TimeSpan.Zero ? TimeSpan.Zero : settings.WaitingTime;
+   }
+
+   private static TimeSpan ResolveCheckingPeriod(AutomaticTranslationSettings settings)
+   {
+      int periodMinutes = settings.CheckingPeriod;
+      if(periodMinutes <= 0)
+      {
+         return TimeSpan.FromMinutes(30);
+      }
+
+      return TimeSpan.FromMinutes(periodMinutes);
    }
 }

@@ -32,6 +32,10 @@ public class LibreTranslateService(
       ReferenceHandler = ReferenceHandler.IgnoreCycles
    };
 
+   private const int MaxRetryAttempts = 10;
+   private const int DefaultRequestTimeoutSeconds = 10;
+   private static readonly TimeSpan InitialRetryDelay = TimeSpan.FromMilliseconds(500);
+
    private readonly SemaphoreSlim _languagesCacheLock = new(1, 1);
    private readonly SemaphoreSlim _requestThrottleLock = new(1, 1);
    private readonly int _baseIntervalMs = Math.Max(0, settings.RequestThrottleMs);
@@ -131,51 +135,66 @@ public class LibreTranslateService(
    public async Task<Response<string[]>> GetAvailableLanguagesAsync()
    {
       int retries = 0;
-      while(retries < 10)
+      while(retries < MaxRetryAttempts)
       {
          try
          {
-            var response = await libreClient.GetAsync(_settings.Address + _settings.LanguagesEndpoint);
+            _logger.LogDebug("GetAvailableLanguages attempt {Attempt}/{MaxRetryAttempts}.", retries + 1, MaxRetryAttempts);
+            var response = await GetWithTimeoutAsync(_settings.Address + _settings.LanguagesEndpoint);
             if(!response.IsSuccessStatusCode)
             {
                retries++;
-               _logger.LogWarning("Failed to get available languages. Status code: {StatusCode}. Retrying {RetryCount}/5", response.StatusCode, retries);
-               await Task.Delay(1000 * retries);
+               _logger.LogWarning("Failed to get available languages. Status code: {StatusCode}. Retrying {RetryCount}/{MaxRetryAttempts}", response.StatusCode, retries, MaxRetryAttempts);
+               if(!await DelayBeforeNextRetryAsync(retries, "GetAvailableLanguages"))
+               {
+                  break;
+               }
+
                continue;
             }
-            else
+
+            var content = await response.Content.ReadAsStringAsync();
+            var languages = JsonSerializer.Deserialize<List<LibreLanguage>>(content, _options);
+            if(languages is null || languages.Count == 0)
             {
-               var content = await response.Content.ReadAsStringAsync();
-               var languages = JsonSerializer.Deserialize<List<LibreLanguage>>(content, _options);
-               if(languages is null || languages.Count == 0)
-               {
-                  _logger.LogWarning("No languages found in the response.");
-                  return new Response<string[]>
-                  {
-                     Success = false,
-                     Message = "No languages found."
-                  };
-               }
-               _logger.LogDebug("Found {LanguageCount} languages", languages.Count);
+               _logger.LogWarning("No languages found in the response.");
                return new Response<string[]>
                {
-                  Success = true,
-                  Data = [.. languages.Select(l => l.Code)],
-                  Message = "Available languages retrieved successfully."
+                  Success = false,
+                  Message = "No languages found."
                };
             }
-         }
-         catch(Exception e)
-         {
-            _logger.LogError(e, "An error occurred while getting available languages.");
+
+            _logger.LogDebug("Found {LanguageCount} languages", languages.Count);
             return new Response<string[]>
             {
-               Success = false,
-               Message = "An error occurred while getting available languages."
+               Success = true,
+               Data = [.. languages.Select(l => l.Code)],
+               Message = "Available languages retrieved successfully."
             };
          }
+         catch(TimeoutException ex)
+         {
+            retries++;
+            _logger.LogWarning("GetAvailableLanguages request timeout: {Error}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.Message, retries, MaxRetryAttempts);
+            if(!await DelayBeforeNextRetryAsync(retries, "GetAvailableLanguages"))
+            {
+               break;
+            }
+         }
+         catch(Exception ex)
+         {
+            retries++;
+            _logger.LogWarning("GetAvailableLanguages transient error ({ErrorType}): {ErrorMessage}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.GetType().Name, ex.Message, retries, MaxRetryAttempts);
+            _logger.LogDebug(ex, "GetAvailableLanguages exception details.");
+            if(!await DelayBeforeNextRetryAsync(retries, "GetAvailableLanguages"))
+            {
+               break;
+            }
+         }
       }
-      _logger.LogError("Failed to get available languages after 10 attempts.");
+
+      _logger.LogError("Failed to get available languages after {MaxRetryAttempts} attempts.", MaxRetryAttempts);
       return new Response<string[]>
       {
          Success = false,
@@ -201,7 +220,7 @@ public class LibreTranslateService(
    public async Task<Response<TranslateFileResult>> TranslateFileAsync(Stream fileStream, string sourceLanguage, string targetLanguage, string fileName)
    {
       int retries = 0;
-      while(retries < 10)
+      while(retries < MaxRetryAttempts)
       {
          try
          {
@@ -215,38 +234,52 @@ public class LibreTranslateService(
             {
                content.Add(new StringContent(_settings.Key), "api_key");
             }
-            var response = await libreClient.PostAsync(_settings.Address + _settings.TranslateFileEndpoint, content);
+            _logger.LogDebug("TranslateFile attempt {Attempt}/{MaxRetryAttempts}. Source={SourceLanguage}, Target={TargetLanguage}, File={FileName}", retries + 1, MaxRetryAttempts, sourceLanguage, targetLanguage, fileName);
+            var response = await PostWithTimeoutAsync(_settings.Address + _settings.TranslateFileEndpoint, content);
             if(!response.IsSuccessStatusCode)
             {
                retries++;
-               _logger.LogWarning("Failed to translate file. Status code: {StatusCode}. Retrying {RetryCount}/10", response.StatusCode, retries);
-               await Task.Delay(1000 * retries);
+               _logger.LogWarning("Failed to translate file. Status code: {StatusCode}. Retrying {RetryCount}/{MaxRetryAttempts}", response.StatusCode, retries, MaxRetryAttempts);
+               if(!await DelayBeforeNextRetryAsync(retries, "TranslateFile"))
+               {
+                  break;
+               }
+
                continue;
             }
-            else
-            {
-               var responseContent = await response.Content.ReadAsStringAsync();
-               var translateResult = JsonSerializer.Deserialize<TranslateFileResult>(responseContent, _options);
-               _logger.LogDebug("File translated successfully: {FileName}", fileName);
-               return new Response<TranslateFileResult>
-               {
-                  Success = true,
-                  Data = translateResult ?? new(),
-                  Message = "File translated successfully."
-               };
-            }
-         }
-         catch(Exception e)
-         {
-            _logger.LogError(e, "An error occurred while translating the file.");
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var translateResult = JsonSerializer.Deserialize<TranslateFileResult>(responseContent, _options);
+            _logger.LogDebug("File translated successfully: {FileName}", fileName);
             return new Response<TranslateFileResult>
             {
-               Success = false,
-               Message = "An error occurred while translating the file."
+               Success = true,
+               Data = translateResult ?? new(),
+               Message = "File translated successfully."
             };
          }
+         catch(TimeoutException ex)
+         {
+            retries++;
+            _logger.LogWarning("TranslateFile request timeout: {Error}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.Message, retries, MaxRetryAttempts);
+            if(!await DelayBeforeNextRetryAsync(retries, "TranslateFile"))
+            {
+               break;
+            }
+         }
+         catch(Exception ex)
+         {
+            retries++;
+            _logger.LogWarning("TranslateFile transient error ({ErrorType}): {ErrorMessage}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.GetType().Name, ex.Message, retries, MaxRetryAttempts);
+            _logger.LogDebug(ex, "TranslateFile exception details.");
+            if(!await DelayBeforeNextRetryAsync(retries, "TranslateFile"))
+            {
+               break;
+            }
+         }
       }
-      _logger.LogError("Failed to translate file after 10 attempts.");
+
+      _logger.LogError("Failed to translate file after {MaxRetryAttempts} attempts.", MaxRetryAttempts);
       return new Response<TranslateFileResult>
       {
          Success = false,
@@ -315,12 +348,13 @@ public class LibreTranslateService(
       }
 
       int retries = 0;
-      while(retries < 10)
+      while(retries < MaxRetryAttempts)
       {
          try
          {
+            _logger.LogDebug("TranslateText attempt {Attempt}/{MaxRetryAttempts}. Source={SourceLanguage}, Target={TargetLanguage}", retries + 1, MaxRetryAttempts, sourceLanguage, targetLanguage);
             await ThrottleTranslationRequestAsync();
-            var response = await libreClient.PostAsync(_settings.Address + _settings.TranslateEndpoint, new FormUrlEncodedContent(formFields));
+            var response = await PostWithTimeoutAsync(_settings.Address + _settings.TranslateEndpoint, new FormUrlEncodedContent(formFields));
             if(!response.IsSuccessStatusCode)
             {
                string responseBody = await ReadResponseSnippetAsync(response);
@@ -343,41 +377,57 @@ public class LibreTranslateService(
                OnTranslationRetryableError();
                retries++;
                _logger.LogWarning(
-                  "Failed to translate text. Status code: {StatusCode}. Retrying {RetryCount}/10. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
+                  "Failed to translate text. Status code: {StatusCode}. Retrying {RetryCount}/{MaxRetryAttempts}. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
                   response.StatusCode,
                   retries,
+                  MaxRetryAttempts,
                   sourceLanguage,
                   targetLanguage,
                   responseBody);
-               await Task.Delay(1000 * retries);
-               continue;
-            }
-            else
-            {
-               Response<TranslateResult> translatedResponse = await CreateTranslationResponseAsync(response, text, sourceLanguage, targetLanguage);
-               if(!translatedResponse.Success)
+               if(!await DelayBeforeNextRetryAsync(retries, "TranslateText"))
                {
-                  _logger.LogDebug("Translation succeeded but validation failed. Response message: {Message}. Source={SourceLanguage}, Target={TargetLanguage}", translatedResponse.Message, sourceLanguage, targetLanguage);
-                  return translatedResponse;
+                  break;
                }
 
-               OnTranslationSuccess();
+               continue;
+            }
 
-               _logger.LogDebug("Translation succeeded. Source={SourceLanguage}, Target={TargetLanguage}, TranslatedText={TranslatedText}", sourceLanguage, targetLanguage, translatedResponse.Data.TranslatedText);
+            Response<TranslateResult> translatedResponse = await CreateTranslationResponseAsync(response, text, sourceLanguage, targetLanguage);
+            if(!translatedResponse.Success)
+            {
+               _logger.LogDebug("Translation succeeded but validation failed. Response message: {Message}. Source={SourceLanguage}, Target={TargetLanguage}", translatedResponse.Message, sourceLanguage, targetLanguage);
                return translatedResponse;
+            }
+
+            OnTranslationSuccess();
+
+            _logger.LogDebug("Translation succeeded. Source={SourceLanguage}, Target={TargetLanguage}, TranslatedText={TranslatedText}", sourceLanguage, targetLanguage, translatedResponse.Data.TranslatedText);
+            return translatedResponse;
+         }
+         catch(TimeoutException ex)
+         {
+            retries++;
+            OnTranslationRetryableError();
+            _logger.LogWarning("TranslateText request timeout: {Error}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.Message, retries, MaxRetryAttempts);
+            if(!await DelayBeforeNextRetryAsync(retries, "TranslateText"))
+            {
+               break;
             }
          }
          catch(Exception ex)
          {
-            _logger.LogError(ex, "An error occurred while translating text.");
-            return new Response<TranslateResult>
+            retries++;
+            OnTranslationRetryableError();
+            _logger.LogWarning("TranslateText transient error ({ErrorType}): {ErrorMessage}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.GetType().Name, ex.Message, retries, MaxRetryAttempts);
+            _logger.LogDebug(ex, "TranslateText exception details.");
+            if(!await DelayBeforeNextRetryAsync(retries, "TranslateText"))
             {
-               Success = false,
-               Message = "An error occurred while translating text."
-            };
+               break;
+            }
          }
       }
-      _logger.LogError("Failed to translate text after 10 attempts.");
+
+      _logger.LogError("Failed to translate text after {MaxRetryAttempts} attempts.", MaxRetryAttempts);
       return new Response<TranslateResult>
       {
          Success = false,
@@ -591,8 +641,8 @@ public class LibreTranslateService(
    /// <param name="targetLanguage">The target language code.</param>
    /// <returns>The <see cref="TranslateResult"/> from the retry attempt.</returns>
    /// <remarks>
-   /// This method performs up to 3 retry attempts with exponential backoff (1s, 2s, 3s). If all attempts fail, returns
-   /// an empty TranslateResult.
+   /// This method performs up to 10 retry attempts with exponential backoff (0.5s, 1s, 2s, ...).
+   /// If all attempts fail, returns the original text.
    /// </remarks>
    private async Task<TranslateResult> RetryTranslationAsync(string text, string sourceLanguage, string targetLanguage)
    {
@@ -609,12 +659,13 @@ public class LibreTranslateService(
       }
 
       int retries = 0;
-      while(retries < 3)
+      while(retries < MaxRetryAttempts)
       {
          try
          {
+            _logger.LogDebug("RetryTranslation attempt {Attempt}/{MaxRetryAttempts}. Source={SourceLanguage}, Target={TargetLanguage}", retries + 1, MaxRetryAttempts, sourceLanguage, targetLanguage);
             await ThrottleTranslationRequestAsync();
-            var response = await libreClient.PostAsync(_settings.Address + _settings.TranslateEndpoint, new FormUrlEncodedContent(formFields));
+            var response = await PostWithTimeoutAsync(_settings.Address + _settings.TranslateEndpoint, new FormUrlEncodedContent(formFields));
             if(!response.IsSuccessStatusCode)
             {
                string responseBody = await ReadResponseSnippetAsync(response);
@@ -632,13 +683,18 @@ public class LibreTranslateService(
                OnTranslationRetryableError();
                retries++;
                _logger.LogWarning(
-                  "Retry translation failed. Status code: {StatusCode}. Retry attempt {RetryCount}/3. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
+                  "Retry translation failed. Status code: {StatusCode}. Retry attempt {RetryCount}/{MaxRetryAttempts}. Source={SourceLanguage}, Target={TargetLanguage}, Body={ResponseBody}",
                   response.StatusCode,
                   retries,
+                  MaxRetryAttempts,
                   sourceLanguage,
                   targetLanguage,
                   responseBody);
-               await Task.Delay(1000 * retries);
+               if(!await DelayBeforeNextRetryAsync(retries, "RetryTranslation"))
+               {
+                  break;
+               }
+
                continue;
             }
 
@@ -647,15 +703,30 @@ public class LibreTranslateService(
             OnTranslationSuccess();
             return result ?? new TranslateResult { TranslatedText = text };
          }
+         catch(TimeoutException ex)
+         {
+            retries++;
+            OnTranslationRetryableError();
+            _logger.LogWarning("RetryTranslation request timeout: {Error}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.Message, retries, MaxRetryAttempts);
+            if(!await DelayBeforeNextRetryAsync(retries, "RetryTranslation"))
+            {
+               break;
+            }
+         }
          catch(Exception ex)
          {
-            _logger.LogWarning(ex, "Error during retry translation attempt {RetryCount}/3", retries);
             retries++;
-            await Task.Delay(1000 * retries);
+            OnTranslationRetryableError();
+            _logger.LogWarning("RetryTranslation transient error ({ErrorType}): {ErrorMessage}. Retrying {RetryCount}/{MaxRetryAttempts}", ex.GetType().Name, ex.Message, retries, MaxRetryAttempts);
+            _logger.LogDebug(ex, "RetryTranslation exception details.");
+            if(!await DelayBeforeNextRetryAsync(retries, "RetryTranslation"))
+            {
+               break;
+            }
          }
       }
 
-      _logger.LogError("Failed to retry translation after 3 attempts for text: {Text}", text);
+      _logger.LogError("Failed to retry translation after {MaxRetryAttempts} attempts for text: {Text}", MaxRetryAttempts, text);
       return new TranslateResult { TranslatedText = text };
    }
 
@@ -727,6 +798,61 @@ public class LibreTranslateService(
       => statusCode == HttpStatusCode.RequestTimeout
          || statusCode == (HttpStatusCode)429
          || ((int)statusCode >= 500 && (int)statusCode <= 599);
+
+   private static TimeSpan GetRetryDelay(int retryCount)
+   {
+      int boundedRetryCount = Math.Clamp(retryCount, 1, MaxRetryAttempts);
+      double multiplier = Math.Pow(2, boundedRetryCount - 1);
+      return TimeSpan.FromMilliseconds(InitialRetryDelay.TotalMilliseconds * multiplier);
+   }
+
+   private async Task<bool> DelayBeforeNextRetryAsync(int retryCount, string operationName)
+   {
+      if(retryCount >= MaxRetryAttempts)
+      {
+         return false;
+      }
+
+      TimeSpan delay = GetRetryDelay(retryCount);
+      _logger.LogDebug(
+         "{OperationName}: waiting {DelayMs}ms before retry attempt {NextAttempt}/{MaxRetryAttempts}.",
+         operationName,
+         (int)delay.TotalMilliseconds,
+         retryCount + 1,
+         MaxRetryAttempts);
+
+      await Task.Delay(delay);
+      return true;
+   }
+
+   private int GetRequestTimeoutSeconds()
+      => _settings.RequestTimeoutSeconds > 0 ? _settings.RequestTimeoutSeconds : DefaultRequestTimeoutSeconds;
+
+   private async Task<HttpResponseMessage> GetWithTimeoutAsync(string requestUri)
+   {
+      using CancellationTokenSource cts = new(TimeSpan.FromSeconds(GetRequestTimeoutSeconds()));
+      try
+      {
+         return await libreClient.GetAsync(requestUri, cts.Token);
+      }
+      catch(OperationCanceledException ex) when(cts.IsCancellationRequested)
+      {
+         throw new TimeoutException($"Request timed out after {GetRequestTimeoutSeconds()}s.", ex);
+      }
+   }
+
+   private async Task<HttpResponseMessage> PostWithTimeoutAsync(string requestUri, HttpContent content)
+   {
+      using CancellationTokenSource cts = new(TimeSpan.FromSeconds(GetRequestTimeoutSeconds()));
+      try
+      {
+         return await libreClient.PostAsync(requestUri, content, cts.Token);
+      }
+      catch(OperationCanceledException ex) when(cts.IsCancellationRequested)
+      {
+         throw new TimeoutException($"Request timed out after {GetRequestTimeoutSeconds()}s.", ex);
+      }
+   }
 
    private static async Task<string> ReadResponseSnippetAsync(HttpResponseMessage response)
    {

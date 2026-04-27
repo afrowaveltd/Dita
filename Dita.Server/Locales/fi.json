@@ -92,6 +92,7 @@
   "Guyana": "Guyana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Pyh\u00E4 istuin (Vatikaanivaltio)",
+  "Home page": "Etusivu",
   "Honduras": "Honduras",
   "Hong Kong": "Hongkong",
   "Hungary": "Unkari",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgisia",
   "Laos": "Laos",
   "Latvia": "Latvia",
+  "Learn about building Web apps with ASP.NET Core.": "Opi rakentaa Web-sovelluksia ASP. NET Core.",
   "Lebanon": "Libanon",
   "Lesotho": "Lesotho",
   "Liberia": "deferia",
@@ -204,6 +206,7 @@
   "South Sudan": "Etel\u00E4-Sudan",
   "Spain": "Espanja",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Onnistunut tallennus",
   "Sudan": "Sudan",
   "Suriname": "Suriname",
   "Svalbard and Jan Mayen": "Svalbard ja Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tad\u017Eikistan",
   "Tanzania, United Republic of Tanzania": "Tansania, Tansania",
   "Thailand": "Thaimaa",
+  "The list is empty": "Luettelo on tyhj\u00E4",
   "Timor-Leste": "It\u00E4-Timor",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Brittil\u00E4iset Neitsytsaaret",
   "Virgin Islands, U.S.": "Neitsytsaaret, Yhdysvallat.",
   "Wallis and Futuna": "Wallis ja Futuna",
+  "Welcome": "Tervetulotoivotukset",
   "Yemen": "Jemen",
   "Zambia": "Sambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "ei l\u00F6ytynyt"
 }

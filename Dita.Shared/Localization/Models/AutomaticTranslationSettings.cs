@@ -77,6 +77,11 @@ public class AutomaticTranslationSettings
    public int RequestThrottleMs { get; set; } = 80;
 
    /// <summary>
+   /// Gets or sets timeout in seconds for a single HTTP request attempt to LibreTranslate.
+   /// </summary>
+   public int RequestTimeoutSeconds { get; set; } = 10;
+
+   /// <summary>
    /// Gets or sets a value indicating whether application settings have been loaded.
    /// </summary>
    public bool AppsettingsLoaded { get; set; } = false;

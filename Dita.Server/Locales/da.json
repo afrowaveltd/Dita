@@ -92,6 +92,7 @@
   "Guyana": "Guyana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Pavestolen (Vatikanstaten)",
+  "Home page": "Hjemmeside",
   "Honduras": "Honduras",
   "Hong Kong": "Hongkong",
   "Hungary": "Ungarn",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgisistan",
   "Laos": "Laos",
   "Latvia": "Letland",
+  "Learn about building Web apps with ASP.NET Core.": "L\u00E6r om opbygning af webapps med ASP. NET Core.",
   "Lebanon": "Libanon",
   "Lesotho": "Lesotho",
   "Liberia": "libera",
@@ -204,6 +206,7 @@
   "South Sudan": "Sydsudan",
   "Spain": "Spanien",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Opbevaring med succes",
   "Sudan": "Sudan",
   "Suriname": "Surinam",
   "Svalbard and Jan Mayen": "Svalbard og Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tadsjikistan",
   "Tanzania, United Republic of Tanzania": "Tanzania, Den Forenede Republik Tanzania",
   "Thailand": "thiopharm",
+  "The list is empty": "Listen er tom",
   "Timor-Leste": "Timor- Leste",
   "Togo": "Togo",
   "Tokelau": "TokelauCity in Italy",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "De Britiske Jomfru\u00F8er",
   "Virgin Islands, U.S.": "Jomfru\u00F8erne, USA.",
   "Wallis and Futuna": "Wallis og Futuna",
+  "Welcome": "Velkommen",
   "Yemen": "Yemen",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "ikke fundet"
 }

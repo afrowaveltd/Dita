@@ -92,6 +92,7 @@
   "Guyana": "\uC778\uAE30 \uC788\uB294",
   "Haiti": "\uC544\uC774\uD2F0",
   "Holy See (Vatican City State)": "\uC131 (Vatican City State)",
+  "Home page": "\uD648 \uD398\uC774\uC9C0",
   "Honduras": "\uCC44\uC6A9\uC815\uBCF4",
   "Hong Kong": "\uD64D\uCF69",
   "Hungary": "(\uC8FC)",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "\uD0A4\uB974\uAE30\uC2A4\uC2A4\uD0C4",
   "Laos": "\uB77C\uC624\uC2A4",
   "Latvia": "\uB77C\uD2B8\uBE44\uC544",
+  "Learn about building Web apps with ASP.NET Core.": "ASP\uB85C \uC6F9 \uC571 \uAD6C\uCD95\uC5D0 \uB300\uD574 \uC54C\uC544\uBCF4\uAE30. NET \uD575\uC2EC.",
   "Lebanon": "\uD31F\uCE90\uC2A4\uD2B8",
   "Lesotho": "\uB808\uD37C\uB7F0\uC2A4",
   "Liberia": "\uD31F\uCE90\uC2A4\uD2B8",
@@ -204,6 +206,7 @@
   "South Sudan": "\uB0A8 \uC218\uB2E8",
   "Spain": "\uB2F4\uB2F9\uC790: Ms",
   "Sri Lanka": "\uC2A4\uB9AC\uB791\uCE74",
+  "Successfully stored": "\uC131\uACF5\uC801\uC73C\uB85C \uC800\uC7A5",
   "Sudan": "\uC774\uB984 *",
   "Suriname": "\uC774\uB984 *",
   "Svalbard and Jan Mayen": "Svalbard \uACFC Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "\uD0C0\uC9C0\uD0A4\uC2A4\uD0C4",
   "Tanzania, United Republic of Tanzania": "Tanzania, \uB300\uD55C\uBBFC\uAD6D",
   "Thailand": "\uB2F4\uB2F9\uC790: Mr. Li",
+  "The list is empty": "\uBAA9\uB85D\uC740 \uBE44\uC5B4 \uC788\uC2B5\uB2C8\uB2E4",
   "Timor-Leste": "Timor-\uB9AC\uC2A4\uD14C",
   "Togo": "\uD1A0\uD1A0\uC0AC\uC774\uD2B8",
   "Tokelau": "\uD1A0\uCF08\uB77C\uC6B0",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Virgin Islands, \uC601\uAD6D",
   "Virgin Islands, U.S.": "\uBC84\uC9C4 \uC544\uC77C\uB79C\uB4DC, \uBBF8\uAD6D.",
   "Wallis and Futuna": "Wallis\uC640 Futuna",
+  "Welcome": "\uC81C\uD488 \uC815\uBCF4",
   "Yemen": "\uC608\uBA58",
   "Zambia": "\uC5B8\uC5B4 \uC120\uD0DD",
-  "Zimbabwe": "\uC9D0\uBC14\uBE0C\uC6E8"
+  "Zimbabwe": "\uC9D0\uBC14\uBE0C\uC6E8",
+  "not found": "\uCC3E\uC744 \uC218 \uC5C6\uC74C"
 }

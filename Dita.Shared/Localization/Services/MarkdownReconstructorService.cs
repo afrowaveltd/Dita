@@ -30,41 +30,49 @@ public class MarkdownReconstructorService(ILogger<MarkdownReconstructorService> 
          string[] lines = originalMarkdown.Split(["\r\n", "\n"], StringSplitOptions.None);
          StringBuilder result = new(originalMarkdown.Length);
 
-         // Build a lookup for translated blocks by line range
-         Dictionary<int, MarkdownTranslatableBlock> blocksByStartLine = translatableBlocks
+         List<MarkdownTranslatableBlock> translatedBlocks = translatableBlocks
             .Where(b => b.IsTranslated && !string.IsNullOrWhiteSpace(b.TranslatedText))
-            .ToDictionary(b => b.StartLine, b => b);
+            .OrderBy(b => b.StartLine)
+            .ThenByDescending(b => b.EndLine)
+            .ToList();
 
          int skipUntilLine = -1;
+         int blockIndex = 0;
 
          for(int i = 0; i < lines.Length; i++)
          {
-            // If we're inside a multi-line block that was replaced, skip until block ends
             if(i <= skipUntilLine)
             {
                continue;
             }
 
-            // Check if this line starts a translatable block
-            if(blocksByStartLine.TryGetValue(i, out MarkdownTranslatableBlock? block))
+            while(blockIndex < translatedBlocks.Count && translatedBlocks[blockIndex].StartLine < i)
             {
-               // Replace the entire block range with translated content
+               blockIndex++;
+            }
+
+            if(blockIndex < translatedBlocks.Count && translatedBlocks[blockIndex].StartLine == i)
+            {
+               MarkdownTranslatableBlock block = translatedBlocks[blockIndex];
                string translatedLine = ReconstructBlock(block, lines[i]);
                result.AppendLine(translatedLine);
 
-               // Skip original lines that were part of this block
-               skipUntilLine = block.EndLine;
+               skipUntilLine = Math.Max(block.EndLine, i);
+
+               while(blockIndex + 1 < translatedBlocks.Count && translatedBlocks[blockIndex + 1].StartLine == i)
+               {
+                  blockIndex++;
+               }
 
                _logger.LogTrace("Replaced block at lines {Start}-{End} with translated content.", block.StartLine, block.EndLine);
             }
             else
             {
-               // Preserve non-translatable line as-is
                result.AppendLine(lines[i]);
             }
          }
 
-         _logger.LogDebug("Reconstructed Markdown document with {Count} translated blocks.", blocksByStartLine.Count);
+         _logger.LogDebug("Reconstructed Markdown document with {Count} translated blocks.", translatedBlocks.Count);
 
          return result.ToString().TrimEnd();
       }

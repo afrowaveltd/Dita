@@ -45,12 +45,19 @@ public class BackendTranslationService(
    private static string TempHashDirectory => Path.Combine(Path.GetTempPath(), "dita", "localization-hashes");
    private Guid _runId;
    private long _messageSequence;
+   private readonly SemaphoreSlim _pipelineRunLock = new(1, 1);
 
    /// <summary>
    /// Executes a full automatic translation pipeline run.
    /// </summary>
    public async Task RunAsync()
    {
+      if(!await _pipelineRunLock.WaitAsync(0))
+      {
+         _logger.LogWarning("Automatic translation pipeline is already running. This cycle will be skipped.");
+         return;
+      }
+
       _runId = Guid.NewGuid();
       _messageSequence = 0;
 
@@ -83,6 +90,7 @@ public class BackendTranslationService(
       finally
       {
          _translationQueue.Clear();
+         _pipelineRunLock.Release();
       }
    }
 
@@ -271,6 +279,15 @@ public class BackendTranslationService(
          }
 
          report.ToTranslateCount = _translationQueue.GetAll().Count;
+         bool hasJsonChanges = addedKeys.Length > 0 || removedKeys.Length > 0;
+
+         if(!hasJsonChanges)
+         {
+            _logger.LogInformation("JSON synchronisation skipped: no added or removed keys detected.");
+            await PublishStageAsync(ProcessStage.TranslateJsonFiles, report, LocalizationMessageType.StageCompleted, "JSON localization dictionaries are up to date.");
+            return;
+         }
+
          await ProcessQueueAsync(report, targetDictionaries, storingReport);
 
          foreach((string language, Dictionary<string, string> dictionary) in targetDictionaries)
@@ -337,14 +354,15 @@ public class BackendTranslationService(
                }
 
                report.SourceFilesChanged++;
-               Dictionary<string, string> translatedDocuments = await _markdownTranslationService.TranslateMarkdownAsync(
-                  sourceContent,
-                  DefaultLanguage,
-                  missingOrChangedTargets);
 
                bool allSucceeded = true;
                foreach(string targetLanguage in missingOrChangedTargets)
                {
+                  Dictionary<string, string> translatedDocuments = await _markdownTranslationService.TranslateMarkdownAsync(
+                     sourceContent,
+                     DefaultLanguage,
+                     [targetLanguage]);
+
                   if(!translatedDocuments.TryGetValue(targetLanguage, out string? translatedContent) || string.IsNullOrWhiteSpace(translatedContent))
                   {
                      report.Errors.Add(CreateError(sourceFile, ErrorCode.TranslationFailed, $"Markdown translation for '{targetLanguage}' returned no content."));
@@ -367,20 +385,19 @@ public class BackendTranslationService(
                   report.SavedFiles++;
                }
 
-               if(allSucceeded)
+               bool storedWithFallback = await WriteStoredHashAsync(sourceFile, sourceHash);
+               storingReport.SavedHashFiles++;
+               if(storedWithFallback)
                {
-                  bool usedFallback = await WriteStoredHashAsync(sourceFile, sourceHash);
-                  storingReport.SavedHashFiles++;
-                  if(usedFallback)
-                  {
-                     storingReport.TempFallbackWrites++;
-                     report.TempFallbackWrites++;
-                  }
+                  storingReport.TempFallbackWrites++;
+                  report.TempFallbackWrites++;
                }
-               else
+
+               if(!allSucceeded)
                {
-                  // Force re-translation on next run if any target markdown file failed validation or translation.
-                  await WriteStoredHashAsync(sourceFile, string.Empty);
+                  _logger.LogWarning(
+                     "Markdown translation for {SourceFile} finished with partial failures. Successful targets were kept; failed targets will be retried next cycle.",
+                     sourceFile);
                }
             }
          }
@@ -715,10 +732,9 @@ public class BackendTranslationService(
          return false;
       }
 
-      for (int i = 0; i < sourceBlocks.Count; i++)
+      for(int i = 0; i < sourceBlocks.Count; i++)
       {
-         if (!string.Equals(sourceBlocks[i].BlockType, translatedBlocks[i].BlockType, StringComparison.Ordinal)
-            || sourceBlocks[i].StartLine != translatedBlocks[i].StartLine)
+         if(!string.Equals(sourceBlocks[i].BlockType, translatedBlocks[i].BlockType, StringComparison.Ordinal))
          {
             return false;
          }

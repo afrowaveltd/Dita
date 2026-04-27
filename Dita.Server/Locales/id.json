@@ -92,6 +92,7 @@
   "Guyana": "guiana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "kudus lihat (keadaan kota vacid)",
+  "Home page": "Laman",
   "Honduras": "Honduras",
   "Hong Kong": "Hong Kong",
   "Hungary": "Hungaria",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kyrgyzstan",
   "Laos": "Laos",
   "Latvia": "Latvia",
+  "Learn about building Web apps with ASP.NET Core.": "Pelajari tentang membangun aplikasi Web dengan ASP. NET Core.",
   "Lebanon": "Lebanon",
   "Lesotho": "Lesotho",
   "Liberia": "Liberia",
@@ -204,6 +206,7 @@
   "South Sudan": "Sudan Selatan",
   "Spain": "Spanyol",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Berhasil disimpan",
   "Sudan": "Sudan",
   "Suriname": "Suriname",
   "Svalbard and Jan Mayen": "Svalbard dan Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tajikistan",
   "Tanzania, United Republic of Tanzania": "Tanzania, Republik Persatuan Tanzania",
   "Thailand": "Thailand",
+  "The list is empty": "Daftar kosong",
   "Timor-Leste": "Timor- Leste",
   "Togo": "Togo",
   "Tokelau": "Tokepau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Kepulauan Virgin, Inggris",
   "Virgin Islands, U.S.": "Kepulauan Virgin, AS.",
   "Wallis and Futuna": "Wallis dan Futuna",
+  "Welcome": "Selamat Datang",
   "Yemen": "Yaman",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "tidak ditemukan"
 }

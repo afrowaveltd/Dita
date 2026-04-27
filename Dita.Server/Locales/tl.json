@@ -92,6 +92,7 @@
   "Guyana": "yana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Banal na Sede (Pangunahing Estado ng Lunsod)",
+  "Home page": "pantahanang pahina",
   "Honduras": "mga hondara",
   "Hong Kong": "hang kong",
   "Hungary": "nagutom",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kyrgyzstan",
   "Laos": "\u0022 laos \u0022",
   "Latvia": "Latvia",
+  "Learn about building Web apps with ASP.NET Core.": "Alamin ang tungkol sa paggawa ng Web apps na may ASP. NET Core.",
   "Lebanon": "Lebanon",
   "Lesotho": "Lesotho",
   "Liberia": "pagkataba",
@@ -204,6 +206,7 @@
   "South Sudan": "Timog Sudan",
   "Spain": "Espanya",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Matagumpay na iniimbak",
   "Sudan": "Sudan",
   "Suriname": "pangalan",
   "Svalbard and Jan Mayen": "Mayen ang Svalbard at Jan",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tajikistan",
   "Tanzania, United Republic of Tanzania": "tanzania, nagkakaisang republika ng tanzania",
   "Thailand": "Thailand",
+  "The list is empty": "Walang laman ang listahan",
   "Timor-Leste": "Timor-Leste",
   "Togo": "Togo",
   "Tokelau": "Kaykelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Virgin Islands, Britano",
   "Virgin Islands, U.S.": "mga basal na isla, u.s.",
   "Wallis and Futuna": "Wallis at Futuna",
+  "Welcome": "Maligayang pagdating",
   "Yemen": "mga lalaki",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "hindi nasumpungan"
 }

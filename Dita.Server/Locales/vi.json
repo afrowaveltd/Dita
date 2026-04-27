@@ -92,6 +92,7 @@
   "Guyana": "Xanh l\u00F4ng m\u00F2ng",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Xem th\u00E1nh (th\u00E0nh ph\u1ED1 Vatican)",
+  "Home page": "Nh\u00E0",
   "Honduras": "Ng\u00E0y ngh\u1EC9",
   "Hong Kong": "H\u1ED3ng K\u00F4ng",
   "Hungary": "Hung- ga- riName",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "korgyzstan",
   "Laos": "L\u00E0o",
   "Latvia": "Latvia",
+  "Learn about building Web apps with ASP.NET Core.": "T\u00ECm hi\u1EC3u v\u1EC1 vi\u1EC7c x\u00E2y d\u1EF1ng c\u00E1c \u1EE9ng d\u1EE5ng web v\u1EDBi AP. C\u00E1i l\u00F5i.",
   "Lebanon": "Lebanon",
   "Lesotho": "Name",
   "Liberia": "name",
@@ -204,6 +206,7 @@
   "South Sudan": "Nam Sudan",
   "Spain": "Co d\u00E3n",
   "Sri Lanka": "Thu nh\u1ECF",
+  "Successfully stored": "\u0110\u01B0\u1EE3c l\u01B0u th\u00E0nh c\u00F4ng",
   "Sudan": "M\u1EB7t tr\u1EDDi",
   "Suriname": "Suriname",
   "Svalbard and Jan Mayen": "Svald v\u00E0 Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tajikistan",
   "Tanzania, United Republic of Tanzania": "Tanzania, C\u1ED9ng h\u00F2a Th\u1ED1ng nh\u1EA5t Tanzania",
   "Thailand": "Th\u00E1i Lan",
+  "The list is empty": "Danh s\u00E1ch tr\u1ED1ng",
   "Timor-Leste": "Name",
   "Togo": "C\u1EA7n l\u00E0m",
   "Tokelau": "Tokekou",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Qu\u1EA7n \u0111\u1EA3o Trinh n\u1EEF, Anh Qu\u1ED1c",
   "Virgin Islands, U.S.": "Qu\u1EA7n \u0111\u1EA3o Trinh n\u1EEF, Hoa K\u1EF3.",
   "Wallis and Futuna": "Wallis v\u00E0 Futuna",
+  "Welcome": "Ch\u00E0o m\u1EEBng",
   "Yemen": "L\u1EE5c",
   "Zambia": "zamba",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "kh\u00F4ng t\u00ECm th\u1EA5y"
 }

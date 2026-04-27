@@ -92,6 +92,7 @@
   "Guyana": "Guyana",
   "Haiti": "Hait\u00ED",
   "Holy See (Vatican City State)": "Santa S\u00E9 (Estado da Cidade do Vaticano)",
+  "Home page": "Home Page",
   "Honduras": "Honduras",
   "Hong Kong": "Hong Kong",
   "Hungary": "Hungr\u00EDa",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirguizist\u00E1n",
   "Laos": "Laos",
   "Latvia": "Letonia",
+  "Learn about building Web apps with ASP.NET Core.": "Aprender a constru\u00EDr aplicaci\u00F3ns web con ASP. Net Core.",
   "Lebanon": "L\u00EDbano",
   "Lesotho": "Lesoto",
   "Liberia": "Liberia",
@@ -204,6 +206,7 @@
   "South Sudan": "Sud\u00E1n do Sur",
   "Spain": "Espa\u00F1a",
   "Sri Lanka": "Sri Lanka",
+  "Successfully stored": "Almacenado con \u00E9xito",
   "Sudan": "Sud\u00E1n",
   "Suriname": "Suriname",
   "Svalbard and Jan Mayen": "Svalbard e Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Taxiquist\u00E1n",
   "Tanzania, United Republic of Tanzania": "Tanzania, Rep\u00FAblica Unida de Tanzania",
   "Thailand": "Tailandia",
+  "The list is empty": "A lista est\u00E1 baleira",
   "Timor-Leste": "Timor Leste",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Illas Virxes, Reino Unido",
   "Virgin Islands, U.S.": "Illas Virxes, Estados Unidos.",
   "Wallis and Futuna": "Wallis e Futuna",
+  "Welcome": "Benvidos",
   "Yemen": "Iemen",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbabwe"
+  "Zimbabwe": "Zimbabwe",
+  "not found": "non atopado"
 }

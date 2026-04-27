@@ -92,6 +92,7 @@
   "Guyana": "Gajana",
   "Haiti": "Haitis",
   "Holy See (Vatican City State)": "\u0160ventasis Sostas (Vatikano Miesto Valstyb\u0117)",
+  "Home page": "Pagrindinis puslapis",
   "Honduras": "Hond\u016Bras",
   "Hong Kong": "Honkongas",
   "Hungary": "Vengrija",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgizija",
   "Laos": "Laosas",
   "Latvia": "Latvija",
+  "Learn about building Web apps with ASP.NET Core.": "Su\u017Einokite, kaip kurti interneto programas su ASP. Net Core.",
   "Lebanon": "Libanas",
   "Lesotho": "Lesotas",
   "Liberia": "Liberija",
@@ -204,6 +206,7 @@
   "South Sudan": "Piet\u0173 Sudanas",
   "Spain": "Ispanija",
   "Sri Lanka": "\u0160ri LankA",
+  "Successfully stored": "S\u0117kmingai i\u0161saugota",
   "Sudan": "Sudanas",
   "Suriname": "Surinamas",
   "Svalbard and Jan Mayen": "Svalbard ir Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Tad\u017Eikistanas",
   "Tanzania, United Republic of Tanzania": "Tanzanija, Tanzanijos Jungtin\u0117 Respublika",
   "Thailand": "Tailandas",
+  "The list is empty": "NAME OF TRANSLATORS",
   "Timor-Leste": "Ryt\u0173 Timoras",
   "Togo": "Togas",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Did\u017Eiosios Britanijos Mergeli\u0173 Salos",
   "Virgin Islands, U.S.": "Mergeli\u0173 salos, JAV.",
   "Wallis and Futuna": "Volis ir Fut\u016Bna",
+  "Welcome": "Sveiki atvyk\u0119",
   "Yemen": "Jemenas",
   "Zambia": "Zambija",
-  "Zimbabwe": "Zimbabv\u0117"
+  "Zimbabwe": "Zimbabv\u0117",
+  "not found": "nerasta"
 }

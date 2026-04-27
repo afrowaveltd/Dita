@@ -92,6 +92,7 @@
   "Guyana": "Gujano",
   "Haiti": "Haitio",
   "Holy See (Vatican City State)": "sankta vidas (vatican urbo\u015Dtato)",
+  "Home page": "Hejme pa\u011Do",
   "Honduras": "Honduro",
   "Hong Kong": "Honkongo",
   "Hungary": "Hungario",
@@ -117,6 +118,7 @@
   "Kyrgyzstan": "Kirgizio",
   "Laos": "laoso",
   "Latvia": "Latvio",
+  "Learn about building Web apps with ASP.NET Core.": "Lernu pri konstruado de retejoj kun ASP. NET Core.",
   "Lebanon": "Libano",
   "Lesotho": "Lesoto",
   "Liberia": "Liberio",
@@ -204,6 +206,7 @@
   "South Sudan": "Suda Sudano",
   "Spain": "Hispanio",
   "Sri Lanka": "Srilanko",
+  "Successfully stored": "Sukcesa stokis",
   "Sudan": "Sudano",
   "Suriname": "Surinamo",
   "Svalbard and Jan Mayen": "Svalbardo kaj Jan Mayen",
@@ -215,6 +218,7 @@
   "Tajikistan": "Ta\u011Dikio",
   "Tanzania, United Republic of Tanzania": "Tanzanio, Unui\u011Dinta Respubliko de Tanzanio",
   "Thailand": "Tajlando",
+  "The list is empty": "La listo estas malplena",
   "Timor-Leste": "Timor-Leste",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -238,7 +242,9 @@
   "Virgin Islands, British": "Virgulinoj, britoj",
   "Virgin Islands, U.S.": "Virgulininsuloj, Usono.",
   "Wallis and Futuna": "Valiso kaj Futuna",
+  "Welcome": "Bonvenon",
   "Yemen": "Jemeno",
   "Zambia": "Zambio",
-  "Zimbabwe": "Zimbabvo"
+  "Zimbabwe": "Zimbabvo",
+  "not found": "ne trovita"
 }

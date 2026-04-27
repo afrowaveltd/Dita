@@ -261,4 +261,178 @@ public class MarkdownReconstructorServiceTests
       Assert.Contains("Hlavní Název", result);
       Assert.Contains("==========", result);
    }
+
+   [Fact]
+   public void Reconstruct_WithTrailingHeadingHashes_PreservesSuffix()
+   {
+      // Arrange
+      string original = "## Main Title ##";
+      List<MarkdownTranslatableBlock> blocks =
+      [
+         new()
+         {
+            StartLine = 0,
+            EndLine = 0,
+            BlockType = "Heading",
+            OriginalText = "Main Title",
+            TranslatedText = "Hlavní Název",
+            IsTranslated = true,
+            Metadata = new Dictionary<string, object>
+            {
+               ["Level"] = 2,
+               ["HeaderChar"] = '#'
+            }
+         }
+      ];
+
+      // Act
+      string result = _reconstructor.Reconstruct(original, blocks);
+
+      // Assert
+      Assert.Equal("## Hlavní Název ##", result);
+   }
+
+   [Fact]
+   public void Reconstruct_WithHeadingMissingMetadata_UsesTranslatedPlainText()
+   {
+      // Arrange
+      string original = "## Main Title";
+      List<MarkdownTranslatableBlock> blocks =
+      [
+         new()
+         {
+            StartLine = 0,
+            EndLine = 0,
+            BlockType = "Heading",
+            OriginalText = "Main Title",
+            TranslatedText = "Hlavní Název",
+            IsTranslated = true,
+            Metadata = new Dictionary<string, object>()
+         }
+      ];
+
+      // Act
+      string result = _reconstructor.Reconstruct(original, blocks);
+
+      // Assert
+      Assert.Equal("Hlavní Název", result);
+   }
+
+   [Fact]
+   public void Reconstruct_WithTranslatedUnorderedListItem_PreservesListMarker()
+   {
+      // Arrange
+      string original = "- Original item";
+      List<MarkdownTranslatableBlock> blocks =
+      [
+         new()
+         {
+            StartLine = 0,
+            EndLine = 0,
+            BlockType = "Paragraph",
+            OriginalText = "Original item",
+            TranslatedText = "Přeložená položka",
+            IsTranslated = true
+         }
+      ];
+
+      // Act
+      string result = _reconstructor.Reconstruct(original, blocks);
+
+      // Assert
+      Assert.Equal("- Přeložená položka", result);
+   }
+
+   [Fact]
+   public void Reconstruct_WithTranslatedOrderedListItem_PreservesListMarker()
+   {
+      // Arrange
+      string original = "12. Original item";
+      List<MarkdownTranslatableBlock> blocks =
+      [
+         new()
+         {
+            StartLine = 0,
+            EndLine = 0,
+            BlockType = "Paragraph",
+            OriginalText = "Original item",
+            TranslatedText = "Přeložená položka",
+            IsTranslated = true
+         }
+      ];
+
+      // Act
+      string result = _reconstructor.Reconstruct(original, blocks);
+
+      // Assert
+      Assert.Equal("12. Přeložená položka", result);
+   }
+
+   [Fact]
+   public void Reconstruct_WithDuplicateStartLineBlocks_DoesNotThrowAndUsesDeterministicBlock()
+   {
+      // Arrange
+      string original = """
+         ## Title
+         Paragraph
+         """;
+
+      List<MarkdownTranslatableBlock> blocks =
+      [
+         new()
+         {
+            StartLine = 0,
+            EndLine = 0,
+            BlockType = "Heading",
+            OriginalText = "Title",
+            TranslatedText = "Nadpis",
+            IsTranslated = true,
+            Metadata = new Dictionary<string, object>
+            {
+               ["Level"] = 2,
+               ["HeaderChar"] = '#'
+            }
+         },
+         new()
+         {
+            StartLine = 0,
+            EndLine = 1,
+            BlockType = "Paragraph",
+            OriginalText = "Title Paragraph",
+            TranslatedText = "Přeložený blok",
+            IsTranslated = true
+         }
+      ];
+
+      // Act
+      string result = _reconstructor.Reconstruct(original, blocks);
+
+      // Assert
+      Assert.Equal("Přeložený blok", result);
+   }
+
+   [Fact]
+   public void Reconstruct_WithOutOfRangeBlockStart_LeavesOriginalTextUnchanged()
+   {
+      // Arrange
+      string original = "Single line";
+      List<MarkdownTranslatableBlock> blocks =
+      [
+         new()
+         {
+            StartLine = 10,
+            EndLine = 10,
+            BlockType = "Paragraph",
+            OriginalText = "Single line",
+            TranslatedText = "Přeložená řádka",
+            IsTranslated = true
+         }
+      ];
+
+      // Act
+      string result = _reconstructor.Reconstruct(original, blocks);
+
+      // Assert
+      Assert.Equal("Single line", result);
+   }
 }
