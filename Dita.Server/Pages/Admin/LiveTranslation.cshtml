@@ -1,0 +1,501 @@
+@page
+@model Dita.Server.Pages.Admin.LiveTranslationModel
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Dita.Server.Pages.Admin.LiveTranslationModel> t
+@{
+    ViewData["Title"] = t["Live Translation Monitor"];
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/translationservice.dashboard.css" asp-append-version="true" />
+    <link id="translationThemeLink" rel="stylesheet" href="~/css/translationservice.dark.css" asp-append-version="true" />
+}
+
+<section class="translation-service-dashboard" data-translation-theme="dark">
+    <header class="translation-dashboard-header">
+        <div>
+            <p class="translation-eyebrow">@t["Automatic localization pipeline"]</p>
+            <h1>@t["Live Translation Monitor"]</h1>
+            <p id="lastMessageText" class="translation-subtitle">@t["Waiting for the localization hub snapshot."]</p>
+        </div>
+        <div class="translation-header-actions">
+            <button class="translation-icon-button" id="themeToggleBtn" type="button" title="@t["Switch theme"]" aria-label="@t["Switch theme"]">
+                <span id="themeToggleLabel">@t["Light"]</span>
+            </button>
+            <button class="translation-button" id="clearBtn" type="button">@t["Clear view"]</button>
+            <button class="translation-button translation-button-primary" id="exportBtn" type="button">@t["Export JSON"]</button>
+        </div>
+    </header>
+
+    <div class="translation-hero-grid">
+        <article class="translation-panel translation-status-panel">
+            <div class="translation-status-line">
+                <span class="translation-status-dot" id="connectionDot"></span>
+                <span id="connectionStatusText">@t["Connecting"]</span>
+            </div>
+            <div class="translation-run-id">
+                <span>@t["Run"]</span>
+                <code id="runIdText">@t["none"]</code>
+            </div>
+            <div class="translation-progress-ring" id="progressRing" style="--translation-progress: 0deg">
+                <div>
+                    <strong id="progressPercentText">0%</strong>
+                    <span>@t["processed"]</span>
+                </div>
+            </div>
+            <dl class="translation-compact-facts">
+                <div>
+                    <dt>@t["Stage"]</dt>
+                    <dd id="currentStageText">@t["Idle"]</dd>
+                </div>
+                <div>
+                    <dt>@t["Latency"]</dt>
+                    <dd id="latencyText">@t["n/a"]</dd>
+                </div>
+                <div>
+                    <dt>@t["Languages"]</dt>
+                    <dd id="languageCountText">0</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="translation-panel translation-metric-card">
+            <span>@t["Total work"]</span>
+            <strong id="totalTranslationsText">0</strong>
+            <small>@t["translation units planned"]</small>
+        </article>
+        <article class="translation-panel translation-metric-card">
+            <span>@t["Completed"]</span>
+            <strong id="completedTranslationsText">0</strong>
+            <small id="skippedTranslationsText">@t["{count} skipped", 0]</small>
+        </article>
+        <article class="translation-panel translation-metric-card translation-danger-card">
+            <span>@t["Errors"]</span>
+            <strong id="errorCountText">0</strong>
+            <small id="warningCountText">@t["{count} warnings", 0]</small>
+        </article>
+        <article class="translation-panel translation-metric-card">
+            <span>@t["Artifacts"]</span>
+            <strong id="savedArtifactsText">0</strong>
+            <small id="artifactDetailsText">@t["{dictionaries} dictionaries, {docs} docs", new { dictionaries = 0, docs = 0 }]</small>
+        </article>
+    </div>
+
+    <section class="translation-dashboard-grid">
+        <article class="translation-panel translation-stage-panel">
+            <div class="translation-panel-heading">
+                <div>
+                    <p class="translation-eyebrow">@t["Pipeline"]</p>
+                    <h2>@t["Stage Overview"]</h2>
+                </div>
+                <span id="messageCountText" class="translation-pill">@t["{count} events", 0]</span>
+            </div>
+            <div id="stageList" class="translation-stage-list"></div>
+        </article>
+
+        <article class="translation-panel translation-activity-panel">
+            <div class="translation-panel-heading">
+                <div>
+                    <p class="translation-eyebrow">@t["Realtime"]</p>
+                    <h2>@t["Event Stream"]</h2>
+                </div>
+                <div class="translation-stream-tools">
+                    <label class="translation-limit-control" for="eventLimitSelect">
+                        <span>@t["Show"]</span>
+                        <select id="eventLimitSelect">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </label>
+                    <div class="translation-filter-group" role="group" aria-label="@t["Event filter"]">
+                        <button type="button" class="translation-filter is-active" data-filter="all">@t["All"]</button>
+                        <button type="button" class="translation-filter" data-filter="errors">@t["Errors"]</button>
+                        <button type="button" class="translation-filter" data-filter="progress">@t["Progress"]</button>
+                    </div>
+                </div>
+            </div>
+            <div id="eventList" class="translation-event-list"></div>
+        </article>
+    </section>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script>
+        const typeNames = ["StageStarted", "StageCompleted", "StageFailed", "PipelineCompleted", "PipelineFailed", "Progress", "Warning"];
+        const stageNames = ["Idle", "CheckServers", "TranslateCountries", "TranslateJsonFiles", "TranslateMarkdownFiles", "StoringResults"];
+        const i18n = {
+            connected: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Connected"].Value)),
+            dark: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Dark"].Value)),
+            disconnected: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Disconnected"].Value)),
+            dictionariesDocs: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["{dictionaries} dictionaries, {docs} docs"].Value)),
+            errorsLower: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["errors"].Value)),
+            events: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["{count} events"].Value)),
+            failed: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Failed"].Value)),
+            idle: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Idle"].Value)),
+            light: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Light"].Value)),
+            noEventsInView: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["No events in this view."].Value)),
+            noEventsReceived: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["No translation events have been received yet."].Value)),
+            noStageData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["No stage data yet."].Value)),
+            none: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["none"].Value)),
+            notAvailable: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["n/a"].Value)),
+            payload: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Payload"].Value)),
+            reconnecting: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Reconnecting"].Value)),
+            saved: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["saved"].Value)),
+            skipped: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["{count} skipped"].Value)),
+            warnings: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["{count} warnings"].Value))
+        };
+        const stageLabels = {
+            CheckServers: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Server check"].Value)),
+            TranslateCountries: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Country names"].Value)),
+            TranslateJsonFiles: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["JSON dictionaries"].Value)),
+            TranslateMarkdownFiles: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Markdown documents"].Value)),
+            StoringResults: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Persist results"].Value))
+        };
+
+        const dashboard = document.querySelector(".translation-service-dashboard");
+        const themeLink = document.getElementById("translationThemeLink");
+        const eventList = document.getElementById("eventList");
+        const stageList = document.getElementById("stageList");
+
+        let snapshot = null;
+        let messages = [];
+        let activeFilter = "all";
+        let eventLimit = 5;
+        let currentTheme = "dark";
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/localization")
+            .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+            .build();
+
+        connection.on("ReceiveLocalizationSnapshot", function (serverSnapshot) {
+            snapshot = normalizeSnapshot(serverSnapshot);
+            messages = snapshot.recentMessages;
+            renderDashboard();
+        });
+
+        connection.on("ReceiveLocalizationMessage", function (serverMessage) {
+            const message = normalizeMessage(serverMessage);
+            messages = [message, ...messages.filter(existing => existing.sequence !== message.sequence)].slice(0, 250);
+            renderEvents();
+        });
+
+        connection.onreconnecting(function () {
+            updateConnection(i18n.reconnecting, "warning");
+        });
+
+        connection.onreconnected(function () {
+            updateConnection(i18n.connected, "success");
+        });
+
+        connection.onclose(function () {
+            updateConnection(i18n.disconnected, "danger");
+        });
+
+        document.getElementById("themeToggleBtn").addEventListener("click", function () {
+            currentTheme = currentTheme === "dark" ? "light" : "dark";
+            dashboard.dataset.translationTheme = currentTheme;
+            themeLink.href = `/css/translationservice.${currentTheme}.css?v=${Date.now()}`;
+            document.getElementById("themeToggleLabel").textContent = currentTheme === "dark" ? i18n.light : i18n.dark;
+        });
+
+        document.getElementById("clearBtn").addEventListener("click", function () {
+            messages = [];
+            renderEvents();
+        });
+
+        document.getElementById("exportBtn").addEventListener("click", function () {
+            const payload = {
+                exportedAtUtc: new Date().toISOString(),
+                snapshot,
+                messages
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `translation-dashboard-${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+
+        document.querySelectorAll("[data-filter]").forEach(button => {
+            button.addEventListener("click", function () {
+                activeFilter = button.dataset.filter;
+                document.querySelectorAll("[data-filter]").forEach(item => item.classList.remove("is-active"));
+                button.classList.add("is-active");
+                renderEvents();
+            });
+        });
+
+        document.getElementById("eventLimitSelect").addEventListener("change", function (event) {
+            eventLimit = number(event.target.value) || 5;
+            renderEvents();
+        });
+
+        connection.start()
+            .then(function () {
+                updateConnection(i18n.connected, "success");
+            })
+            .catch(function (err) {
+                updateConnection(i18n.failed, "danger");
+                console.error(err);
+            });
+
+        function renderDashboard() {
+            if (!snapshot) {
+                return;
+            }
+
+            const summary = snapshot.summary;
+            const savedArtifacts = summary.savedDictionaryFiles + summary.savedMarkdownFiles + summary.savedHashFiles;
+            const progressDegrees = Math.round((summary.progressPercent || 0) * 3.6);
+
+            setText("lastMessageText", summary.lastMessage || i18n.noEventsReceived);
+            setText("runIdText", summary.activeRunId ? summary.activeRunId.substring(0, 8) : i18n.none);
+            setText("progressPercentText", `${summary.progressPercent || 0}%`);
+            setText("currentStageText", friendlyStage(summary.currentStage));
+            setText("latencyText", summary.translationServerLatencyMs > 0 ? `${summary.translationServerLatencyMs} ms` : i18n.notAvailable);
+            setText("languageCountText", summary.availableLanguageCount || 0);
+            setText("totalTranslationsText", formatNumber(summary.totalTranslations));
+            setText("completedTranslationsText", formatNumber(summary.completedTranslations));
+            setText("skippedTranslationsText", formatTemplate(i18n.skipped, { count: formatNumber(summary.skippedTranslations) }));
+            setText("errorCountText", formatNumber(summary.errorCount));
+            setText("warningCountText", formatTemplate(i18n.warnings, { count: formatNumber(summary.warningCount) }));
+            setText("savedArtifactsText", formatNumber(savedArtifacts));
+            setText("artifactDetailsText", formatTemplate(i18n.dictionariesDocs, {
+                dictionaries: formatNumber(summary.savedDictionaryFiles),
+                docs: formatNumber(summary.savedMarkdownFiles)
+            }));
+            setText("messageCountText", formatTemplate(i18n.events, { count: formatNumber(summary.messagesReceived) }));
+            document.getElementById("progressRing").style.setProperty("--translation-progress", `${progressDegrees}deg`);
+
+            renderStages(snapshot.stages);
+            renderEvents();
+        }
+
+        function renderStages(stages) {
+            stageList.innerHTML = "";
+
+            if (!stages.length) {
+                stageList.innerHTML = `<p class="translation-empty">${escapeHtml(i18n.noStageData)}</p>`;
+                return;
+            }
+
+            stages.forEach(stage => {
+                const processed = stage.completedItems + stage.skippedItems + stage.failedItems;
+                const card = document.createElement("div");
+                card.className = `translation-stage-card ${statusClass(stage.status)}`;
+                card.innerHTML = `
+                    <div class="translation-stage-main">
+                        <span class="translation-stage-status"></span>
+                        <div>
+                            <h3>${escapeHtml(friendlyStage(stage.stage))}</h3>
+                            <p>${escapeHtml(stage.lastMessage || stage.status)}</p>
+                        </div>
+                    </div>
+                    <div class="translation-stage-meter" aria-label="${stage.progressPercent}% complete">
+                        <span style="width:${Math.max(0, Math.min(100, stage.progressPercent))}%"></span>
+                    </div>
+                    <div class="translation-stage-stats">
+                        <span>${formatNumber(processed)} / ${formatNumber(stage.totalItems)}</span>
+                        <span>${formatNumber(stage.savedItems)} ${escapeHtml(i18n.saved)}</span>
+                        <span>${formatNumber(stage.errorCount)} ${escapeHtml(i18n.errorsLower)}</span>
+                    </div>
+                `;
+                stageList.appendChild(card);
+            });
+        }
+
+        function renderEvents() {
+            const filtered = messages.filter(message => {
+                if (activeFilter === "errors") {
+                    return message.isError || message.type === "StageFailed" || message.type === "PipelineFailed";
+                }
+                if (activeFilter === "progress") {
+                    return message.type === "Progress" || message.type === "StageStarted" || message.type === "StageCompleted";
+                }
+                return true;
+            });
+
+            eventList.innerHTML = "";
+
+            if (!filtered.length) {
+                eventList.innerHTML = `<p class="translation-empty">${escapeHtml(i18n.noEventsInView)}</p>`;
+                return;
+            }
+
+            filtered.slice(0, eventLimit).forEach(message => {
+                const event = document.createElement("article");
+                event.className = `translation-event ${message.isError ? "is-error" : typeClass(message.type)}`;
+                event.innerHTML = `
+                    <div class="translation-event-meta">
+                        <span>#${message.sequence}</span>
+                        <time>${formatDate(message.timestampUtc)}</time>
+                    </div>
+                    <div class="translation-event-body">
+                        <div class="translation-event-title">
+                            <strong>${escapeHtml(message.message)}</strong>
+                            <span>${escapeHtml(friendlyStage(message.stage))}</span>
+                            <span>${escapeHtml(message.type)}</span>
+                        </div>
+                        <details>
+                            <summary>${escapeHtml(i18n.payload)}</summary>
+                            <pre>${escapeHtml(JSON.stringify(message.data, null, 2))}</pre>
+                        </details>
+                    </div>
+                `;
+                eventList.appendChild(event);
+            });
+        }
+
+        function updateConnection(text, status) {
+            setText("connectionStatusText", text);
+            document.getElementById("connectionDot").className = `translation-status-dot is-${status}`;
+        }
+
+        function normalizeSnapshot(raw) {
+            const summary = normalizeSummary(read(raw, "Summary") || {});
+            const stages = (read(raw, "Stages") || []).map(normalizeStage);
+            const recentMessages = (read(raw, "RecentMessages") || []).map(normalizeMessage);
+            return {
+                snapshotUtc: read(raw, "SnapshotUtc"),
+                summary,
+                stages,
+                recentMessages
+            };
+        }
+
+        function normalizeSummary(raw) {
+            return {
+                activeRunId: read(raw, "ActiveRunId"),
+                isRunning: Boolean(read(raw, "IsRunning")),
+                currentStage: enumName(read(raw, "CurrentStage"), stageNames),
+                lastMessage: read(raw, "LastMessage") || "",
+                runStartedUtc: read(raw, "RunStartedUtc"),
+                runCompletedUtc: read(raw, "RunCompletedUtc"),
+                lastEventUtc: read(raw, "LastEventUtc"),
+                lastSequence: number(read(raw, "LastSequence")),
+                messagesReceived: number(read(raw, "MessagesReceived")),
+                totalTranslations: number(read(raw, "TotalTranslations")),
+                completedTranslations: number(read(raw, "CompletedTranslations")),
+                failedTranslations: number(read(raw, "FailedTranslations")),
+                skippedTranslations: number(read(raw, "SkippedTranslations")),
+                progressPercent: number(read(raw, "ProgressPercent")),
+                errorCount: number(read(raw, "ErrorCount")),
+                warningCount: number(read(raw, "WarningCount")),
+                savedDictionaryFiles: number(read(raw, "SavedDictionaryFiles")),
+                savedMarkdownFiles: number(read(raw, "SavedMarkdownFiles")),
+                savedHashFiles: number(read(raw, "SavedHashFiles")),
+                tempFallbackWrites: number(read(raw, "TempFallbackWrites")),
+                availableLanguageCount: number(read(raw, "AvailableLanguageCount")),
+                defaultLanguage: read(raw, "DefaultLanguage") || "",
+                translationServerLatencyMs: number(read(raw, "TranslationServerLatencyMs")),
+                translationServerReady: Boolean(read(raw, "TranslationServerReady"))
+            };
+        }
+
+        function normalizeStage(raw) {
+            return {
+                stage: enumName(read(raw, "Stage"), stageNames),
+                status: read(raw, "Status") || "Waiting",
+                lastType: enumName(read(raw, "LastType"), typeNames),
+                lastMessage: read(raw, "LastMessage") || "",
+                startedUtc: read(raw, "StartedUtc"),
+                completedUtc: read(raw, "CompletedUtc"),
+                totalItems: number(read(raw, "TotalItems")),
+                completedItems: number(read(raw, "CompletedItems")),
+                failedItems: number(read(raw, "FailedItems")),
+                skippedItems: number(read(raw, "SkippedItems")),
+                savedItems: number(read(raw, "SavedItems")),
+                errorCount: number(read(raw, "ErrorCount")),
+                warningCount: number(read(raw, "WarningCount")),
+                progressPercent: number(read(raw, "ProgressPercent"))
+            };
+        }
+
+        function normalizeMessage(raw) {
+            return {
+                runId: read(raw, "RunId") || "",
+                sequence: number(read(raw, "Sequence")),
+                type: enumName(read(raw, "Type"), typeNames),
+                stage: enumName(read(raw, "Stage"), stageNames),
+                timestampUtc: read(raw, "TimestampUtc"),
+                isError: Boolean(read(raw, "IsError")),
+                message: read(raw, "Message") || "",
+                data: read(raw, "Data")
+            };
+        }
+
+        function read(obj, pascalName) {
+            if (!obj) {
+                return undefined;
+            }
+
+            const camelName = pascalName.charAt(0).toLowerCase() + pascalName.slice(1);
+            return obj[pascalName] ?? obj[camelName];
+        }
+
+        function enumName(value, names) {
+            if (typeof value === "number") {
+                return names[value] || value.toString();
+            }
+
+            if (typeof value === "string") {
+                return value === "Iddle" ? "Idle" : value;
+            }
+
+            return "";
+        }
+
+        function friendlyStage(stage) {
+            const normalized = enumName(stage, stageNames);
+            return stageLabels[normalized] || normalized || i18n.idle;
+        }
+
+        function number(value) {
+            const parsed = Number(value);
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        function formatNumber(value) {
+            return new Intl.NumberFormat().format(number(value));
+        }
+
+        function formatDate(value) {
+            if (!value) {
+                return i18n.notAvailable;
+            }
+
+            return new Date(value).toLocaleString();
+        }
+
+        function statusClass(status) {
+            return `is-${String(status || "waiting").toLowerCase()}`;
+        }
+
+        function typeClass(type) {
+            return `is-${String(type || "progress").toLowerCase()}`;
+        }
+
+        function setText(id, value) {
+            document.getElementById(id).textContent = value;
+        }
+
+        function formatTemplate(template, values) {
+            return Object.entries(values).reduce(
+                (result, [key, value]) => result.replaceAll(`{${key}}`, value),
+                template);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text == null ? "" : String(text);
+            return div.innerHTML;
+        }
+    </script>
+}

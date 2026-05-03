@@ -38,7 +38,8 @@ public sealed class JsonStringLocalizerTests : IDisposable
       cache.SetString("locale_cs-CZ_Hello", "Nazdar");
       var translationService = Substitute.For<ILibreTranslateService>();
       var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
-      var localizer = new JsonStringLocalizer(cache, translationService, new AutomaticTranslationSettings(), logger);
+      var placeholderService = Substitute.For<IPlaceholderService>();
+      var localizer = new JsonStringLocalizer(cache, translationService, new AutomaticTranslationSettings(), placeholderService, logger);
 
       LocalizedString value = localizer["Hello"];
 
@@ -57,12 +58,78 @@ public sealed class JsonStringLocalizerTests : IDisposable
       var cache = new InMemoryDistributedCache();
       var translationService = Substitute.For<ILibreTranslateService>();
       var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
-      var localizer = new JsonStringLocalizer(cache, translationService, new AutomaticTranslationSettings(), logger);
+      var placeholderService = Substitute.For<IPlaceholderService>();
+      var localizer = new JsonStringLocalizer(cache, translationService, new AutomaticTranslationSettings(), placeholderService, logger);
 
       LocalizedString value = localizer["Hello"];
 
       Assert.Equal("Ahoj", value.Value);
       Assert.Equal("Ahoj", cache.GetString("locale_cs-CZ_Hello"));
+   }
+
+   [Fact]
+   public void WhenNamedPlaceholderArgumentProvidedThenItFormatsByPlaceholderOrder()
+   {
+      SetCulture("en");
+      WriteLocale("en.json", "{" + "\"User is {age} years old\":\"User is {age} years old\"" + "}");
+
+      var localizer = new JsonStringLocalizer(
+         new InMemoryDistributedCache(),
+         Substitute.For<ILibreTranslateService>(),
+         new AutomaticTranslationSettings { DefaultLanguage = "en" },
+         new PlaceholderService(Substitute.For<ILogger<PlaceholderService>>()),
+         Substitute.For<ILogger<JsonStringLocalizer>>());
+
+      LocalizedString value = localizer["User is {age} years old", 42];
+
+      Assert.Equal("User is 42 years old", value.Value);
+   }
+
+   [Fact]
+   public void WhenAnonymousPlaceholderArgumentProvidedThenItFormatsByPropertyName()
+   {
+      SetCulture("en");
+      WriteLocale("en.json", "{" + "\"User is {age} years old\":\"User is {age} years old\"" + "}");
+
+      var localizer = new JsonStringLocalizer(
+         new InMemoryDistributedCache(),
+         Substitute.For<ILibreTranslateService>(),
+         new AutomaticTranslationSettings { DefaultLanguage = "en" },
+         new PlaceholderService(Substitute.For<ILogger<PlaceholderService>>()),
+         Substitute.For<ILogger<JsonStringLocalizer>>());
+
+      LocalizedString value = localizer["User is {age} years old", new { age = 37 }];
+
+      Assert.Equal("User is 37 years old", value.Value);
+   }
+
+   [Fact]
+   public void WhenMissingPlaceholderKeyThenFallbackTranslationUsesReferenceValueAndRestoresPlaceholder()
+   {
+      SetCulture("cs-CZ");
+      WriteLocale("cs.json", "{}");
+      WriteLocale("en.json", "{}");
+
+      var cache = new InMemoryDistributedCache();
+      var translationService = Substitute.For<ILibreTranslateService>();
+      translationService.TranslateTextAsync("User is 42 years old", "en", "cs-CZ")
+         .Returns(Task.FromResult(new Response<TranslateResult>
+         {
+            Success = true,
+            Data = new TranslateResult { TranslatedText = "Uživatel má 42 let" }
+         }));
+
+      var localizer = new JsonStringLocalizer(
+         cache,
+         translationService,
+         new AutomaticTranslationSettings { DefaultLanguage = "en" },
+         new PlaceholderService(Substitute.For<ILogger<PlaceholderService>>()),
+         Substitute.For<ILogger<JsonStringLocalizer>>());
+
+      LocalizedString value = localizer["User is {age} years old", new { age = 42 }];
+
+      Assert.Equal("Uživatel má 42 let", value.Value);
+      Assert.Equal("Uživatel má {age} let", cache.GetString("locale_cs-CZ_User is {age} years old"));
    }
 
    [Fact]
@@ -82,7 +149,8 @@ public sealed class JsonStringLocalizerTests : IDisposable
          }));
 
       var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
-      var localizer = new JsonStringLocalizer(cache, translationService, new AutomaticTranslationSettings(), logger);
+      var placeholderService = Substitute.For<IPlaceholderService>();
+      var localizer = new JsonStringLocalizer(cache, translationService, new AutomaticTranslationSettings(), placeholderService, logger);
 
       LocalizedString value = localizer["Missing"];
 
@@ -101,6 +169,7 @@ public sealed class JsonStringLocalizerTests : IDisposable
          new InMemoryDistributedCache(),
          Substitute.For<ILibreTranslateService>(),
          new AutomaticTranslationSettings(),
+         Substitute.For<IPlaceholderService>(),
          Substitute.For<ILogger<JsonStringLocalizer>>());
 
       var values = localizer.GetAllStrings(includeParentCultures: false).ToDictionary(item => item.Name, item => item.Value);
@@ -126,7 +195,8 @@ public sealed class JsonStringLocalizerTests : IDisposable
          }));
 
       var settings = new AutomaticTranslationSettings { DefaultLanguage = "en" };
-      var localizer = new JsonStringLocalizer(cache, translationService, settings, Substitute.For<ILogger<JsonStringLocalizer>>());
+      var placeholderService = Substitute.For<IPlaceholderService>();
+      var localizer = new JsonStringLocalizer(cache, translationService, settings, placeholderService, Substitute.For<ILogger<JsonStringLocalizer>>());
 
       _ = localizer["How are you"];
 
@@ -155,7 +225,8 @@ public sealed class JsonStringLocalizerTests : IDisposable
          }));
 
       var settings = new AutomaticTranslationSettings { DefaultLanguage = "cs" };
-      var localizer = new JsonStringLocalizer(cache, translationService, settings, Substitute.For<ILogger<JsonStringLocalizer>>());
+      var placeholderService = Substitute.For<IPlaceholderService>();
+      var localizer = new JsonStringLocalizer(cache, translationService, settings, placeholderService, Substitute.For<ILogger<JsonStringLocalizer>>());
 
       _ = localizer["Dobrý den"];
 
@@ -184,15 +255,16 @@ public sealed class JsonStringLocalizerTests : IDisposable
          File.Delete(enPath);
       }
 
-      if(Directory.Exists(_localesDirectory))
-      {
-         Directory.Delete(_localesDirectory);
-      }
+       if(Directory.Exists(_localesDirectory))
+       {
+          Directory.Delete(_localesDirectory, recursive: true);
+       }
 
       var localizer = new JsonStringLocalizer(
          new InMemoryDistributedCache(),
          Substitute.For<ILibreTranslateService>(),
          new AutomaticTranslationSettings { DefaultLanguage = "cs" },
+         Substitute.For<IPlaceholderService>(),
          Substitute.For<ILogger<JsonStringLocalizer>>());
 
       _ = localizer.GetAllStrings(includeParentCultures: false).ToList();
@@ -214,6 +286,7 @@ public sealed class JsonStringLocalizerTests : IDisposable
          new InMemoryDistributedCache(),
          Substitute.For<ILibreTranslateService>(),
          new AutomaticTranslationSettings { DefaultLanguage = "cs" },
+         Substitute.For<IPlaceholderService>(),
          Substitute.For<ILogger<JsonStringLocalizer>>());
 
       var values = localizer.GetAllStrings(includeParentCultures: false).ToList();
@@ -223,37 +296,39 @@ public sealed class JsonStringLocalizerTests : IDisposable
    }
 
    [Fact]
-   public void WhenDialectFileExistsThenGetAllStringsPrefersDialectOverLanguage()
-   {
-      SetCulture("en-US");
-      WriteLocale("en-US.json", "{" + "\"Hello\":\"Howdy\"" + "}");
-      WriteLocale("en.json", "{" + "\"Hello\":\"Hello\"" + "}");
+    public void WhenDialectFileExistsThenGetAllStringsPrefersDialectOverLanguage()
+    {
+       SetCulture("en-US");
+       WriteLocale("en-US.json", "{" + "\"Hello\":\"Howdy\"" + "}");
+       WriteLocale("en.json", "{" + "\"Hello\":\"Hello\"" + "}");
 
-      var localizer = new JsonStringLocalizer(
-         new InMemoryDistributedCache(),
-         Substitute.For<ILibreTranslateService>(),
-         new AutomaticTranslationSettings { DefaultLanguage = "en" },
-         Substitute.For<ILogger<JsonStringLocalizer>>());
+       var localizer = new JsonStringLocalizer(
+          new InMemoryDistributedCache(),
+          Substitute.For<ILibreTranslateService>(),
+          new AutomaticTranslationSettings { DefaultLanguage = "en" },
+          Substitute.For<IPlaceholderService>(),
+          Substitute.For<ILogger<JsonStringLocalizer>>());
 
-      var values = localizer.GetAllStrings(includeParentCultures: false).ToDictionary(item => item.Name, item => item.Value);
+       var values = localizer.GetAllStrings(includeParentCultures: false).ToDictionary(item => item.Name, item => item.Value);
 
       Assert.Equal("Howdy", values["Hello"]);
    }
 
    [Fact]
-   public void WhenDialectFileMissingThenGetAllStringsFallsBackToLanguageFile()
-   {
-      SetCulture("zh-CN");
-      DeleteLocale("zh-CN.json");
-      WriteLocale("zh.json", "{" + "\"Hello\":\"你好\"" + "}");
+    public void WhenDialectFileMissingThenGetAllStringsFallsBackToLanguageFile()
+    {
+       SetCulture("zh-CN");
+       DeleteLocale("zh-CN.json");
+       WriteLocale("zh.json", "{" + "\"Hello\":\"你好\"" + "}");
 
-      var localizer = new JsonStringLocalizer(
-         new InMemoryDistributedCache(),
-         Substitute.For<ILibreTranslateService>(),
-         new AutomaticTranslationSettings { DefaultLanguage = "en" },
-         Substitute.For<ILogger<JsonStringLocalizer>>());
+       var localizer = new JsonStringLocalizer(
+          new InMemoryDistributedCache(),
+          Substitute.For<ILibreTranslateService>(),
+          new AutomaticTranslationSettings { DefaultLanguage = "en" },
+          Substitute.For<IPlaceholderService>(),
+          Substitute.For<ILogger<JsonStringLocalizer>>());
 
-      var values = localizer.GetAllStrings(includeParentCultures: false).ToDictionary(item => item.Name, item => item.Value);
+       var values = localizer.GetAllStrings(includeParentCultures: false).ToDictionary(item => item.Name, item => item.Value);
 
       Assert.Equal("你好", values["Hello"]);
    }

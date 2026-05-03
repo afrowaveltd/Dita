@@ -92,7 +92,6 @@
   "Guyana": "Guyana",
   "Haiti": "Haiti",
   "Holy See (Vatican City State)": "Egoitza Santua (Vatican City State)",
-  "Home page": "Etxeko orria",
   "Honduras": "Honduras",
   "Hong Kong": "Hong Kong",
   "Hungary": "Hungaria",
@@ -118,7 +117,6 @@
   "Kyrgyzstan": "Kirgizistan",
   "Laos": "Laos",
   "Latvia": "Letonia",
-  "Learn about building Web apps with ASP.NET Core.": "Ikasi web aplikazioak eraikitzen ASP-rekin. NET Core.",
   "Lebanon": "Libano",
   "Lesotho": "Lesotho",
   "Liberia": "Liberia",
@@ -206,7 +204,6 @@
   "South Sudan": "Hego Sudan",
   "Spain": "Espainia",
   "Sri Lanka": "Sri Lanka",
-  "Successfully stored": "Ongi gordea",
   "Sudan": "Sudan",
   "Suriname": "Surinam",
   "Svalbard and Jan Mayen": "Svalbard eta Jan Mayen",
@@ -218,7 +215,6 @@
   "Tajikistan": "Tadjikistan",
   "Tanzania, United Republic of Tanzania": "Tanzania, Tanzaniako Errepublika Batua",
   "Thailand": "Thailandia",
-  "The list is empty": "Zerrenda hutsik dago",
   "Timor-Leste": "Timor",
   "Togo": "Togo",
   "Tokelau": "Tokelau",
@@ -242,9 +238,7 @@
   "Virgin Islands, British": "Birjina uharteak, britainiarrak",
   "Virgin Islands, U.S.": "Birjina uharteak, AEB.",
   "Wallis and Futuna": "Wallis eta Futuna",
-  "Welcome": "Ongi etorri",
   "Yemen": "Yemen",
   "Zambia": "Zambia",
-  "Zimbabwe": "Zimbawe",
-  "not found": "ez da aurkitu"
+  "Zimbabwe": "Zimbawe"
 }

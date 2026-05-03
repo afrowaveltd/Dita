@@ -221,30 +221,32 @@ public class SharedLocalizationTypesTests
    }
 
    [Fact]
-   public void WhenJsonStringLocalizerFactoryCreateWithResourceSourceCalledThenJsonStringLocalizerIsReturned()
-   {
-      var cache = Substitute.For<IDistributedCache>();
-      var libreTranslate = Substitute.For<ILibreTranslateService>();
-      var settings = new AutomaticTranslationSettings();
-      var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
-      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, settings, logger);
+    public void WhenJsonStringLocalizerFactoryCreateWithResourceSourceCalledThenJsonStringLocalizerIsReturned()
+    {
+       var cache = Substitute.For<IDistributedCache>();
+       var libreTranslate = Substitute.For<ILibreTranslateService>();
+       var settings = new AutomaticTranslationSettings();
+       var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
+       var placeholderService = Substitute.For<IPlaceholderService>();
+       var factory = new JsonStringLocalizerFactory(cache, libreTranslate, settings, placeholderService, logger);
 
-      var localizer = factory.Create(typeof(SharedLocalizationTypesTests));
+       var localizer = factory.Create(typeof(SharedLocalizationTypesTests));
 
-      Assert.IsType<JsonStringLocalizer>(localizer);
-   }
+       Assert.IsType<JsonStringLocalizer>(localizer);
+    }
 
    [Fact]
-   public void WhenJsonStringLocalizerFactoryCreateWithBaseNameCalledThenJsonStringLocalizerIsReturned()
-   {
-      var cache = Substitute.For<IDistributedCache>();
-      var libreTranslate = Substitute.For<ILibreTranslateService>();
-      var settings = new AutomaticTranslationSettings();
-      var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
-      var factory = new JsonStringLocalizerFactory(cache, libreTranslate, settings, logger);
+    public void WhenJsonStringLocalizerFactoryCreateWithBaseNameCalledThenJsonStringLocalizerIsReturned()
+    {
+       var cache = Substitute.For<IDistributedCache>();
+       var libreTranslate = Substitute.For<ILibreTranslateService>();
+       var settings = new AutomaticTranslationSettings();
+       var logger = Substitute.For<ILogger<JsonStringLocalizer>>();
+       var placeholderService = Substitute.For<IPlaceholderService>();
+       var factory = new JsonStringLocalizerFactory(cache, libreTranslate, settings, placeholderService, logger);
 
-      var localizer = factory.Create("base", "location");
+       var localizer = factory.Create("base", "location");
 
-      Assert.IsType<JsonStringLocalizer>(localizer);
-   }
+       Assert.IsType<JsonStringLocalizer>(localizer);
+    }
 }

@@ -8,6 +8,7 @@ using Dita.Shared.Localization.Middlewares;
 using Dita.Shared.Localization.Models;
 using Dita.Shared.Localization.ScheduledTranslationService;
 using Dita.Shared.Localization.Services;
+using Dita.Shared.Localization.Hubs;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Localization;
 using Scalar.AspNetCore;
@@ -160,9 +161,10 @@ try
    builder.Services.AddSingleton<ICookieService, CookieService>();
    // Middleware + localization services.
    builder.Services.AddTransient<LocalizationMiddleware>();
-   builder.Services.AddTransient<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+    builder.Services.AddTransient<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+    builder.Services.AddSingleton<IPlaceholderService, PlaceholderService>();
 
-   // Singleton services
+    // Singleton services
    StorageSettings? storageSettings = builder.Configuration
          .GetSection("Storage")
          .Get<StorageSettings>();
@@ -171,14 +173,23 @@ try
    builder.Services.AddSingleton<ILanguageService, LanguageService>();
    builder.Services.AddSingleton<ILibreTranslateHttpClientFactory, LibreTranslateHttpClientFactory>();
    builder.Services.AddSingleton<ILibreTranslateService, LibreTranslateService>();
-   builder.Services.AddSingleton<ITranslationQueue, TranslationQueue>();
-   builder.Services.AddSingleton<IBackendTranslationService, BackendTranslationService>();
-   builder.Services.AddHostedService<Scheduller>();
+    builder.Services.AddSingleton<ILocalizeService, LocalizeService>();
+    builder.Services.AddSingleton<ITranslateService, TranslateService>();
+    builder.Services.AddSingleton<ITranslationQueue, TranslationQueue>();
+    // Translation services
+    builder.Services.AddSingleton<ILocalizationMonitoringState, LocalizationMonitoringState>();
+    builder.Services.AddSingleton<ISignalRPublisher, SignalRPublisher>();
+    builder.Services.AddSingleton<TranslationRetryService>();
+    builder.Services.AddSingleton<ICountriesTranslationService, CountriesTranslationService>();
+    builder.Services.AddSingleton<ILocalizationTranslationService, LocalizationTranslationService>();
+    builder.Services.AddSingleton<IDocumentsTranslationService, DocumentsTranslationService>();
+    builder.Services.AddSingleton<IBackendTranslationService, BackendTranslationService>();
+    builder.Services.AddHostedService<Scheduller>();
 
-   // Markdown translation services
-   builder.Services.AddSingleton<IMarkdownParserService, MarkdownParserService>();
-   builder.Services.AddSingleton<IMarkdownReconstructorService, MarkdownReconstructorService>();
-   builder.Services.AddSingleton<IMarkdownTranslationService, MarkdownTranslationService>();
+    // Markdown translation services
+    builder.Services.AddSingleton<IMarkdownParserService, MarkdownParserService>();
+    builder.Services.AddSingleton<IMarkdownReconstructorService, MarkdownReconstructorService>();
+    builder.Services.AddSingleton<IMarkdownTranslationService, MarkdownTranslationService>();
 
    // Storage: the provider is selected via Storage:StorageType in appsettings.json.
    // Changing the type and connection string is all that is needed to switch backends.
@@ -263,9 +274,11 @@ try
           .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
    });
 
-   app.MapStaticAssets();
-   app.MapRazorPages()
-      .WithStaticAssets();
+    app.MapStaticAssets();
+    app.MapHub<LocalizationHub>("/hubs/localization");
+    app.MapControllers();
+    app.MapRazorPages()
+       .WithStaticAssets();
 
    // Apply any pending EF Core migrations before accepting traffic.
    // This is a no-op for file-based and MongoDB storage backends.

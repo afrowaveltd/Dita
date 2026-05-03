@@ -14,34 +14,36 @@ namespace Dita.Shared.Localization.Services;
 /// <param name="automaticTranslationSettings">Translation settings used to resolve default source and fallback locale codes.</param>
 /// <param name="logger">The logger used for diagnostic output from created localizer instances.</param>
 public class JsonStringLocalizerFactory(
-   IDistributedCache cache,
-   ILibreTranslateService libreTranslate,
-   AutomaticTranslationSettings automaticTranslationSettings,
-   ILogger<JsonStringLocalizer> logger) : IStringLocalizerFactory
+    IDistributedCache cache,
+    ILibreTranslateService libreTranslate,
+    AutomaticTranslationSettings automaticTranslationSettings,
+    IPlaceholderService placeholderService,
+    ILogger<JsonStringLocalizer> logger) : IStringLocalizerFactory
 {
-   private readonly IDistributedCache _cache = cache;
-   private readonly ILibreTranslateService _libreTranslate = libreTranslate;
-   private readonly AutomaticTranslationSettings _automaticTranslationSettings = automaticTranslationSettings;
-   private readonly ILogger<JsonStringLocalizer> _logger = logger;
+    private readonly IDistributedCache _cache = cache;
+    private readonly ILibreTranslateService _libreTranslate = libreTranslate;
+    private readonly AutomaticTranslationSettings _automaticTranslationSettings = automaticTranslationSettings;
+    private readonly IPlaceholderService _placeholderService = placeholderService;
+    private readonly ILogger<JsonStringLocalizer> _logger = logger;
 
-   /// <summary>
-   /// Creates a <see cref="JsonStringLocalizer"/> for the specified resource source type.
-   /// </summary>
-   /// <param name="resourceSource">The type whose assembly and namespace are used to locate locale files.</param>
-   /// <returns>A new <see cref="IStringLocalizer"/> instance backed by JSON locale files.</returns>
-   public IStringLocalizer Create(Type resourceSource)
-   {
-      return new JsonStringLocalizer(_cache, _libreTranslate, _automaticTranslationSettings, _logger);
-   }
+    /// <summary>
+    /// Creates a <see cref="JsonStringLocalizer"/> for the specified resource source type.
+    /// </summary>
+    /// <param name="resourceSource">The type whose assembly and namespace are used to locate locale files.</param>
+    /// <returns>A new <see cref="IStringLocalizer"/> instance backed by JSON locale files.</returns>
+    public IStringLocalizer Create(Type resourceSource)
+    {
+        return new JsonStringLocalizer(_cache, _libreTranslate, _automaticTranslationSettings, _placeholderService, _logger);
+    }
 
-   /// <summary>
-   /// Creates a <see cref="JsonStringLocalizer"/> for the specified base name and location.
-   /// </summary>
-   /// <param name="baseName">The base name of the resource (not used in the JSON-file strategy).</param>
-   /// <param name="location">The location or assembly name of the resource (not used in the JSON-file strategy).</param>
-   /// <returns>A new <see cref="IStringLocalizer"/> instance backed by JSON locale files.</returns>
-   public IStringLocalizer Create(string baseName, string location)
-   {
-      return new JsonStringLocalizer(_cache, _libreTranslate, _automaticTranslationSettings, _logger);
-   }
+    /// <summary>
+    /// Creates a <see cref="JsonStringLocalizer"/> for the specified base name and location.
+    /// </summary>
+    /// <param name="baseName">The base name of the resource (not used in the JSON-file strategy).</param>
+    /// <param name="location">The location or assembly name of the resource (not used in the JSON-file strategy).</param>
+    /// <returns>A new <see cref="IStringLocalizer"/> instance backed by JSON locale files.</returns>
+    public IStringLocalizer Create(string baseName, string location)
+    {
+        return new JsonStringLocalizer(_cache, _libreTranslate, _automaticTranslationSettings, _placeholderService, _logger);
+    }
 }
