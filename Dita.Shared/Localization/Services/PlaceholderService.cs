@@ -22,14 +22,33 @@ public class PlaceholderService : IPlaceholderService
         @"\{(\w+)\}",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+    /// <summary>
+    /// Strict match for the canonical token format ⟦N⟧ (U+27E6 … U+27E7).
+    /// Used for identity checks only — restore uses the flexible regex below.
+    /// </summary>
     private static readonly Regex TranslationSafePlaceholderRegex = new(
-        @"___PH_\d+___",
+        @"\u27e6\d+\u27e7",
         RegexOptions.Compiled);
+
+    /// <summary>
+    /// Flexible regex that matches placeholder tokens in both the canonical format
+    /// and in forms corrupted by machine-translation engines.
+    /// <para>
+    /// New token format:  ⟦N⟧  (mathematical left/right white lenticular brackets).
+    /// These Unicode characters are outside normal text ranges and are typically
+    /// left intact by translation engines.</para>
+    /// <para>
+    /// Legacy format:  ___PH_N___  — still recognised with tolerance for spaces
+    /// inserted by MT (e.g. "___ PH _ 0 ___", "_ _ _ P H _ 0 _ _ _").</para>
+    /// <para>Capture group 1 = new-token index, group 2 = legacy-token index.</para>
+    /// </summary>
+    private static readonly Regex TokenRestoreRegex = new(
+        @"\u27e6(\d+)\u27e7|(?:_\s*){3,}P\s*H\s*(?:_\s*)*(\d+)(?:\s*_){3,}",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlaceholderService"/> class.
     /// </summary>
-    /// <param name="logger">Logger for diagnostic output.</param>
     public PlaceholderService(ILogger<PlaceholderService> logger)
     {
         _logger = logger;
@@ -72,84 +91,43 @@ public class PlaceholderService : IPlaceholderService
     /// <inheritdoc />
     public string Format(string key, string template, Dictionary<string, string>? values = null)
     {
-        if (string.IsNullOrWhiteSpace(template))
-        {
-            return template;
-        }
+        if (string.IsNullOrWhiteSpace(template)) return template;
 
         EnsureLoaded();
         var mergedValues = new Dictionary<string, string>(StringComparer.Ordinal);
 
-        // 1. Load stored placeholders for the specific key
         if (_placeholders.TryGetValue(key, out var storedPlaceholders))
-        {
             foreach (var (name, val) in storedPlaceholders)
-            {
                 mergedValues[$"{{{name}}}"] = val;
-            }
-        }
 
-        // 2. Runtime values override stored values
         if (values != null)
-        {
             foreach (var (name, val) in values)
-            {
                 mergedValues[$"{{{name}}}"] = val;
-            }
-        }
 
-        // 3. Replace placeholders
-        string result = PlaceholderRegex.Replace(template, match =>
-        {
-            string fullPlaceholder = match.Value; // e.g. "{name}"
-            return mergedValues.TryGetValue(fullPlaceholder, out string? value)
-                ? value
-                : fullPlaceholder; // Leave unchanged if not found
-        });
-
-        return result;
+        return PlaceholderRegex.Replace(template, match =>
+            mergedValues.TryGetValue(match.Value, out string? value) ? value : match.Value);
     }
 
     /// <inheritdoc />
     public string Format(string template, Dictionary<string, string>? values = null)
     {
-        if (string.IsNullOrWhiteSpace(template))
-        {
-            return template;
-        }
+        if (string.IsNullOrWhiteSpace(template)) return template;
 
         EnsureLoaded();
         var mergedValues = new Dictionary<string, string>(StringComparer.Ordinal);
 
-        // 1. Runtime values (no key-based lookup in this overload)
         if (values != null)
-        {
             foreach (var (name, val) in values)
-            {
                 mergedValues[$"{{{name}}}"] = val;
-            }
-        }
 
-        // 2. Replace placeholders
-        string result = PlaceholderRegex.Replace(template, match =>
-        {
-            string fullPlaceholder = match.Value;
-            return mergedValues.TryGetValue(fullPlaceholder, out string? value)
-                ? value
-                : fullPlaceholder;
-        });
-
-        return result;
+        return PlaceholderRegex.Replace(template, match =>
+            mergedValues.TryGetValue(match.Value, out string? value) ? value : match.Value);
     }
 
     /// <inheritdoc />
     public string[] ExtractPlaceholders(string template)
     {
-        if (string.IsNullOrWhiteSpace(template))
-        {
-            return Array.Empty<string>();
-        }
-
+        if (string.IsNullOrWhiteSpace(template)) return Array.Empty<string>();
         return PlaceholderRegex.Matches(template)
             .Select(m => m.Groups[1].Value)
             .Distinct(StringComparer.Ordinal)
@@ -158,17 +136,13 @@ public class PlaceholderService : IPlaceholderService
 
     /// <inheritdoc />
     public bool HasPlaceholders(string template)
-    {
-        return !string.IsNullOrWhiteSpace(template) && PlaceholderRegex.IsMatch(template);
-    }
+        => !string.IsNullOrWhiteSpace(template) && PlaceholderRegex.IsMatch(template);
 
     /// <inheritdoc />
     public (string preparedText, Func<string, string> restore) PrepareForTranslation(string template)
     {
         if (string.IsNullOrWhiteSpace(template) || !HasPlaceholders(template))
-        {
             return (template, translated => translated);
-        }
 
         var placeholders = new List<string>();
         int counter = 0;
@@ -177,22 +151,22 @@ public class PlaceholderService : IPlaceholderService
         {
             string placeholderName = match.Groups[1].Value;
             placeholders.Add(placeholderName);
-            return $"___PH_{counter++}___";
+            return $"\u27e6{counter++}\u27e7"; // ⟦N⟧
         });
+
+        var placeholdersSnapshot = placeholders.ToArray();
 
         Func<string, string> restore = translated =>
         {
-            if (string.IsNullOrWhiteSpace(translated))
-            {
-                return translated;
-            }
+            if (string.IsNullOrWhiteSpace(translated)) return translated;
 
-            string result = translated;
-            for (int i = 0; i < placeholders.Count; i++)
+            return TokenRestoreRegex.Replace(translated, match =>
             {
-                result = result.Replace($"___PH_{i}___", $"{{{placeholders[i]}}}", StringComparison.Ordinal);
-            }
-            return result;
+                string? indexStr = match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value;
+                if (int.TryParse(indexStr, out int index) && index >= 0 && index < placeholdersSnapshot.Length)
+                    return $"{{{placeholdersSnapshot[index]}}}";
+                return match.Value;
+            });
         };
 
         return (prepared, restore);
@@ -204,9 +178,7 @@ public class PlaceholderService : IPlaceholderService
         Dictionary<string, string>? referenceValues)
     {
         if (string.IsNullOrWhiteSpace(template) || !HasPlaceholders(template))
-        {
             return (template, translated => translated);
-        }
 
         var placeholders = new List<(string Name, string Token, string? ReferenceValue)>();
         int counter = 0;
@@ -214,36 +186,84 @@ public class PlaceholderService : IPlaceholderService
         string prepared = PlaceholderRegex.Replace(template, match =>
         {
             string placeholderName = match.Groups[1].Value;
-            string token = $"___PH_{counter++}___";
+            string token = $"\u27e6{counter++}\u27e7"; // ⟦N⟧
             string? referenceValue = ResolveReferenceValue(referenceValues, placeholderName);
-
             placeholders.Add((placeholderName, token, referenceValue));
             return string.IsNullOrWhiteSpace(referenceValue) ? token : referenceValue;
         });
 
+        // Record reference-value positions in the prepared text for positional restore.
+        var referencePositions = new List<(string Token, string ReferenceValue, int PreparedIndex)>();
+        foreach ((string name, string token, string? referenceValue) in placeholders)
+        {
+            if (string.IsNullOrWhiteSpace(referenceValue)) continue;
+            int occurrenceIndex = referencePositions.Count(rv => rv.ReferenceValue.Equals(referenceValue, StringComparison.Ordinal));
+            int pos = FindNthOccurrence(prepared, referenceValue!, occurrenceIndex + 1);
+            if (pos >= 0)
+                referencePositions.Add((token, referenceValue!, pos));
+        }
+
+        var referencePositionsSnapshot = referencePositions.ToArray();
+        var placeholdersSnapshot = placeholders.ToArray();
+
         Func<string, string> restore = translated =>
         {
-            if (string.IsNullOrWhiteSpace(translated))
-            {
-                return translated;
-            }
+            if (string.IsNullOrWhiteSpace(translated)) return translated;
 
             string result = translated;
-            foreach ((string name, string token, string? referenceValue) in placeholders)
-            {
-                string placeholder = $"{{{name}}}";
-                result = result.Replace(token, placeholder, StringComparison.Ordinal);
 
-                if (!string.IsNullOrWhiteSpace(referenceValue))
+            // Phase 1: locate reference values positionally, replace with unique tokens (right-to-left).
+            if (referencePositionsSnapshot.Length > 0)
+            {
+                var locatedReplacements = new List<(int Position, int Length, string Token)>();
+                foreach (var group in referencePositionsSnapshot.GroupBy(rv => rv.ReferenceValue, StringComparer.Ordinal))
                 {
-                    result = result.Replace(referenceValue, placeholder, StringComparison.Ordinal);
+                    string refVal = group.Key;
+                    var members = group.OrderBy(m => m.PreparedIndex).ToList();
+                    var allOccurrences = new List<int>();
+                    int searchFrom = 0;
+                    while (searchFrom < result.Length)
+                    {
+                        int idx = result.IndexOf(refVal, searchFrom, StringComparison.Ordinal);
+                        if (idx < 0) break;
+                        allOccurrences.Add(idx);
+                        searchFrom = idx + refVal.Length;
+                    }
+                    for (int i = 0; i < members.Count && i < allOccurrences.Count; i++)
+                        locatedReplacements.Add((allOccurrences[i], refVal.Length, members[i].Token));
+                }
+                foreach ((int position, int length, string token) in locatedReplacements.OrderByDescending(r => r.Position))
+                {
+                    if (position <= result.Length - length)
+                        result = string.Concat(result.AsSpan(0, position), token, result.AsSpan(position + length));
                 }
             }
+
+            // Phase 2: replace all tokens (new ⟦N⟧ or legacy ___PH_N___) with placeholder names.
+            result = TokenRestoreRegex.Replace(result, match =>
+            {
+                string? indexStr = match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value;
+                if (int.TryParse(indexStr, out int index) && index >= 0 && index < placeholdersSnapshot.Length)
+                    return $"{{{placeholdersSnapshot[index].Name}}}";
+                return match.Value;
+            });
 
             return result;
         };
 
         return (prepared, restore);
+    }
+
+    private static int FindNthOccurrence(string text, string value, int n)
+    {
+        if (n < 1 || string.IsNullOrEmpty(value)) return -1;
+        int index = -1;
+        for (int i = 0; i < n; i++)
+        {
+            index = text.IndexOf(value, index + 1, StringComparison.Ordinal);
+            if (index < 0) return -1;
+        }
+        return index;
     }
 
     /// <inheritdoc />
@@ -254,9 +274,7 @@ public class PlaceholderService : IPlaceholderService
         {
             string? directory = Path.GetDirectoryName(_placeholdersFilePath);
             if (!string.IsNullOrWhiteSpace(directory))
-            {
                 Directory.CreateDirectory(directory);
-            }
 
             string json = JsonSerializer.Serialize(_placeholders, new JsonSerializerOptions
             {
@@ -267,10 +285,7 @@ public class PlaceholderService : IPlaceholderService
             await File.WriteAllTextAsync(_placeholdersFilePath, json).ConfigureAwait(false);
             _logger.LogDebug("Saved {Count} placeholder entries to {Path}", _placeholders.Count, _placeholdersFilePath);
         }
-        finally
-        {
-            _fileLock.Release();
-        }
+        finally { _fileLock.Release(); }
     }
 
     /// <inheritdoc />
@@ -288,12 +303,9 @@ public class PlaceholderService : IPlaceholderService
 
             string json = await File.ReadAllTextAsync(_placeholdersFilePath).ConfigureAwait(false);
             var loaded = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(
-                json,
-                new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
+                json, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             _placeholders = loaded ?? new Dictionary<string, Dictionary<string, string>>(StringComparer.Ordinal);
             _loaded = true;
-
             _logger.LogDebug("Loaded {Count} placeholder entries from {Path}", _placeholders.Count, _placeholdersFilePath);
         }
         catch (Exception ex)
@@ -302,37 +314,18 @@ public class PlaceholderService : IPlaceholderService
             _placeholders = new Dictionary<string, Dictionary<string, string>>(StringComparer.Ordinal);
             _loaded = true;
         }
-        finally
-        {
-            _fileLock.Release();
-        }
+        finally { _fileLock.Release(); }
     }
 
-    /// <summary>
-    /// Ensures placeholder data is loaded from disk.
-    /// </summary>
     private void EnsureLoaded()
     {
-        if (!_loaded)
-        {
-            LoadAsync().GetAwaiter().GetResult();
-        }
+        if (!_loaded) LoadAsync().GetAwaiter().GetResult();
     }
 
     private static string? ResolveReferenceValue(Dictionary<string, string>? referenceValues, string placeholderName)
     {
-        if (referenceValues is null)
-        {
-            return null;
-        }
-
-        if (referenceValues.TryGetValue(placeholderName, out string? value))
-        {
-            return value;
-        }
-
-        return referenceValues.TryGetValue($"{{{placeholderName}}}", out value)
-            ? value
-            : null;
+        if (referenceValues is null) return null;
+        if (referenceValues.TryGetValue(placeholderName, out string? value)) return value;
+        return referenceValues.TryGetValue($"{{{placeholderName}}}", out value) ? value : null;
     }
 }
