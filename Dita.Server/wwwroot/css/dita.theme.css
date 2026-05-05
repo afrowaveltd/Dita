@@ -1,0 +1,110 @@
+/* ═══════════════════════════════════════════════════════════════
+   Dita – Global Theme Variables
+   Shared across all pages including the translation dashboard.
+   Default: dark.  Switch by setting data-dita-theme="light" on <html>.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root,
+:root[data-dita-theme="dark"] {
+  --ts-bg: #111827;
+  --ts-bg-accent: rgba(14, 165, 233, .18);
+  --ts-bg-signal: rgba(245, 158, 11, .16);
+  --ts-text: #dbeafe;
+  --ts-heading: #f8fafc;
+  --ts-muted: #9ca3af;
+  --ts-accent: #38bdf8;
+  --ts-primary: #22c55e;
+  --ts-primary-text: #06220f;
+  --ts-success: #34d399;
+  --ts-success-soft: rgba(52, 211, 153, .16);
+  --ts-complete: #60a5fa;
+  --ts-complete-soft: rgba(96, 165, 250, .16);
+  --ts-warning: #fbbf24;
+  --ts-warning-soft: rgba(251, 191, 36, .18);
+  --ts-danger: #fb7185;
+  --ts-danger-soft: rgba(251, 113, 133, .18);
+  --ts-neutral: #64748b;
+  --ts-neutral-soft: rgba(100, 116, 139, .16);
+  --ts-border: rgba(148, 163, 184, .24);
+  --ts-panel: rgba(15, 23, 42, .78);
+  --ts-soft-panel: rgba(30, 41, 59, .72);
+  --ts-panel-border: rgba(148, 163, 184, .18);
+  --ts-panel-shadow: 0 16px 45px rgba(2, 6, 23, .32);
+  --ts-page-shadow: 0 24px 80px rgba(2, 6, 23, .24);
+  --ts-stage-bg: rgba(15, 23, 42, .52);
+  --ts-event-bg: rgba(17, 24, 39, .72);
+  --ts-event-border: rgba(148, 163, 184, .16);
+  --ts-event-accent: #38bdf8;
+  --ts-control-bg: rgba(15, 23, 42, .76);
+  --ts-control-bg-hover: rgba(30, 41, 59, .92);
+  --ts-control-border: rgba(148, 163, 184, .26);
+  --ts-control-border-hover: rgba(56, 189, 248, .7);
+  --ts-control-text: #e5e7eb;
+  --ts-pill-bg: rgba(56, 189, 248, .13);
+  --ts-pill-text: #bae6fd;
+  --ts-code: #d9f99d;
+  --ts-code-bg: rgba(2, 6, 23, .58);
+  --ts-ring-track: rgba(148, 163, 184, .18);
+  --ts-meter-track: rgba(148, 163, 184, .16);
+  --ts-meter-fill: linear-gradient(90deg, #22c55e, #38bdf8);
+  --ts-scrollbar-thumb: rgba(148, 163, 184, .36);
+
+  /* Navbar-specific tokens */
+  --ts-nav-bg: rgba(15, 23, 42, .85);
+  --ts-nav-border: rgba(148, 163, 184, .12);
+  --ts-nav-link: #cbd5e1;
+  --ts-nav-link-hover: #38bdf8;
+  --ts-footer-bg: rgba(15, 23, 42, .92);
+}
+
+:root[data-dita-theme="light"] {
+  --ts-bg: #f7f9fc;
+  --ts-bg-accent: rgba(14, 165, 233, .16);
+  --ts-bg-signal: rgba(245, 158, 11, .13);
+  --ts-text: #1f2937;
+  --ts-heading: #0f172a;
+  --ts-muted: #667085;
+  --ts-accent: #0369a1;
+  --ts-primary: #15803d;
+  --ts-primary-text: #f8fafc;
+  --ts-success: #16a34a;
+  --ts-success-soft: rgba(22, 163, 74, .12);
+  --ts-complete: #2563eb;
+  --ts-complete-soft: rgba(37, 99, 235, .12);
+  --ts-warning: #b45309;
+  --ts-warning-soft: rgba(180, 83, 9, .13);
+  --ts-danger: #be123c;
+  --ts-danger-soft: rgba(190, 18, 60, .13);
+  --ts-neutral: #94a3b8;
+  --ts-neutral-soft: rgba(148, 163, 184, .18);
+  --ts-border: rgba(15, 23, 42, .12);
+  --ts-panel: rgba(255, 255, 255, .88);
+  --ts-soft-panel: rgba(241, 245, 249, .9);
+  --ts-panel-border: rgba(15, 23, 42, .1);
+  --ts-panel-shadow: 0 18px 48px rgba(15, 23, 42, .09);
+  --ts-page-shadow: 0 24px 80px rgba(15, 23, 42, .08);
+  --ts-stage-bg: rgba(255, 255, 255, .68);
+  --ts-event-bg: rgba(255, 255, 255, .82);
+  --ts-event-border: rgba(15, 23, 42, .09);
+  --ts-event-accent: #0284c7;
+  --ts-control-bg: rgba(255, 255, 255, .86);
+  --ts-control-bg-hover: #eef6ff;
+  --ts-control-border: rgba(15, 23, 42, .14);
+  --ts-control-border-hover: rgba(2, 132, 199, .6);
+  --ts-control-text: #0f172a;
+  --ts-pill-bg: rgba(2, 132, 199, .1);
+  --ts-pill-text: #075985;
+  --ts-code: #365314;
+  --ts-code-bg: rgba(241, 245, 249, .92);
+  --ts-ring-track: rgba(15, 23, 42, .12);
+  --ts-meter-track: rgba(15, 23, 42, .1);
+  --ts-meter-fill: linear-gradient(90deg, #15803d, #0284c7);
+  --ts-scrollbar-thumb: rgba(71, 85, 105, .28);
+
+  /* Navbar-specific tokens (light) */
+  --ts-nav-bg: rgba(255, 255, 255, .88);
+  --ts-nav-border: rgba(15, 23, 42, .08);
+  --ts-nav-link: #334155;
+  --ts-nav-link-hover: #0369a1;
+  --ts-footer-bg: rgba(255, 255, 255, .92);
+}

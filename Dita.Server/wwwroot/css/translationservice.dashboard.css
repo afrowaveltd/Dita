@@ -3,32 +3,6 @@
   box-sizing: border-box;
 }
 
-html:has(.translation-service-dashboard),
-body:has(.translation-service-dashboard) {
-  min-height: 100%;
-}
-
-body:has(.translation-service-dashboard) {
-  margin-bottom: 0;
-  background: var(--ts-bg);
-}
-
-body:has(.translation-service-dashboard) > header,
-body:has(.translation-service-dashboard) > footer {
-  display: none;
-}
-
-body:has(.translation-service-dashboard) .container {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 0;
-}
-
-body:has(.translation-service-dashboard) main {
-  padding: 0 !important;
-}
-
 .translation-service-dashboard {
   display: flex;
   flex-direction: column;

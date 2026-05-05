@@ -1,10 +1,39 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = Model._localizer["Home page"];
 }
 
-<div class="text-center">
-    <h1 class="display-4">@Model._localizer["Welcome"]</h1>
+<section class="dita-page-header">
+    <p class="dita-eyebrow">Dita Server</p>
+    <h1>@Model._localizer["Welcome"]</h1>
     <p>@Model._localizer["Learn about building Web apps with ASP.NET Core."]</p>
+</section>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:14px;">
+
+    <article class="dita-metric-card">
+        <span>Localization</span>
+        <strong>50+</strong>
+        <small>Supported languages</small>
+    </article>
+
+    <article class="dita-metric-card">
+        <span>Translation</span>
+        <strong>Realtime</strong>
+        <small>SignalR pipeline</small>
+    </article>
+
+    <article class="dita-metric-card danger">
+        <span>API</span>
+        <strong>REST</strong>
+        <small>OpenAPI / Scalar docs</small>
+    </article>
+
+    <article class="dita-metric-card">
+        <span>Dashboard</span>
+        <strong>Live</strong>
+        <small><a asp-area="" asp-page="/Admin/LiveTranslation">Open monitor &rarr;</a></small>
+    </article>
+
 </div>

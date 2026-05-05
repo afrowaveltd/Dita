@@ -7,7 +7,6 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/translationservice.dashboard.css" asp-append-version="true" />
-    <link id="translationThemeLink" rel="stylesheet" href="~/css/translationservice.dark.css" asp-append-version="true" />
 }
 
 <section class="translation-service-dashboard" data-translation-theme="dark">
@@ -194,12 +193,8 @@
             updateConnection(i18n.disconnected, "danger");
         });
 
-        document.getElementById("themeToggleBtn").addEventListener("click", function () {
-            currentTheme = currentTheme === "dark" ? "light" : "dark";
-            dashboard.dataset.translationTheme = currentTheme;
-            themeLink.href = `/css/translationservice.${currentTheme}.css?v=${Date.now()}`;
-            document.getElementById("themeToggleLabel").textContent = currentTheme === "dark" ? i18n.light : i18n.dark;
-        });
+        /* Theme toggle is now handled globally by dita.theme.js.
+           The global toggle keeps dashboard UI in sync automatically. */
 
         document.getElementById("clearBtn").addEventListener("click", function () {
             messages = [];

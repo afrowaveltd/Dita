@@ -1,54 +1,55 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-dita-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Dita.Server</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - Dita</title>
+    <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/dita.theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dita.layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Dita.Server.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Dita.Server</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/scalar/Dita" target="_blank" rel="noopener">API Explorer</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <nav class="dita-nav">
+        <a class="dita-nav-brand" asp-area="" asp-page="/Index">
+            <img src="~/resources/Dita1.png" alt="Dita" asp-append-version="true" />
+            <span>Dita</span>
+        </a>
+
+        <button class="dita-nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" id="navToggle">
+            ☰
+        </button>
+
+        <ul class="dita-nav-links" id="navLinks">
+            <li><a asp-area="" asp-page="/Index">Home</a></li>
+            <li><a asp-area="" asp-page="/Privacy">Privacy</a></li>
+            <li><a href="/scalar/Dita" target="_blank" rel="noopener">API Explorer</a></li>
+            <li><a asp-area="" asp-page="/Admin/LiveTranslation">Dashboard</a></li>
+        </ul>
+
+        <div class="dita-nav-actions">
+            <button class="dita-theme-toggle" type="button" title="Switch theme" aria-label="Switch theme" id="globalThemeToggle">
+                <span id="themeToggleIcon">☀</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="dita-main">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Dita.Server - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
+    <footer class="dita-footer">
+        <span>&copy; 2026 Dita</span>
+        <span><a asp-area="" asp-page="/Privacy">Privacy</a></span>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/dita.theme.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

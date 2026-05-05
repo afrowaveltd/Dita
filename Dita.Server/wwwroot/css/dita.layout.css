@@ -1,0 +1,515 @@
+/* ═══════════════════════════════════════════════════════════════
+   Dita – Global Layout & Component Styles
+   Applies the dashboard theme to all pages: navbar, footer, cards,
+   buttons, code blocks, alerts, etc.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Base ────────────────────────────────────────────────────── */
+
+html {
+  position: relative;
+  min-height: 100%;
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html { font-size: 16px; }
+}
+
+body {
+  margin-bottom: 60px;
+  color: var(--ts-text);
+  background:
+    linear-gradient(135deg, var(--ts-bg-accent) 0%, transparent 34%),
+    radial-gradient(circle at 86% 12%, var(--ts-bg-signal) 0%, transparent 28%),
+    var(--ts-bg);
+  background-attachment: fixed;
+  transition: background-color .3s ease, color .3s ease;
+}
+
+::selection {
+  background: var(--ts-accent);
+  color: var(--ts-bg);
+}
+
+/* ── Links ──────────────────────────────────────────────────── */
+
+a {
+  color: var(--ts-accent);
+  text-decoration: none;
+  transition: color .16s ease;
+}
+
+a:hover {
+  color: var(--ts-primary);
+}
+
+/* ── Navbar ─────────────────────────────────────────────────── */
+
+.dita-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 60px;
+  border-bottom: 1px solid var(--ts-nav-border);
+  background: var(--ts-nav-bg);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
+  transition: background-color .3s ease, border-color .3s ease;
+}
+
+.dita-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--ts-heading);
+  text-decoration: none;
+  letter-spacing: .02em;
+}
+
+.dita-nav-brand img {
+  height: 38px;
+  width: auto;
+  border-radius: 6px;
+  transition: opacity .2s ease;
+}
+
+.dita-nav-brand:hover img {
+  opacity: .85;
+}
+
+.dita-nav-brand:hover {
+  color: var(--ts-accent);
+}
+
+.dita-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dita-nav-links a {
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: var(--ts-nav-link);
+  font-weight: 600;
+  font-size: .9rem;
+  transition: color .16s ease, background-color .16s ease;
+}
+
+.dita-nav-links a:hover,
+.dita-nav-links a.active {
+  color: var(--ts-nav-link-hover);
+  background: var(--ts-pill-bg);
+}
+
+.dita-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Theme toggle button */
+.dita-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ts-control-border);
+  border-radius: 10px;
+  background: var(--ts-control-bg);
+  color: var(--ts-control-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: border-color .16s ease, background-color .16s ease, transform .16s ease;
+}
+
+.dita-theme-toggle:hover {
+  border-color: var(--ts-control-border-hover);
+  background: var(--ts-control-bg-hover);
+  transform: translateY(-1px);
+}
+
+/* Mobile toggle */
+.dita-nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ts-control-border);
+  border-radius: 10px;
+  background: var(--ts-control-bg);
+  color: var(--ts-control-text);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .dita-nav-toggle { display: flex; }
+
+  .dita-nav-links {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    padding: 12px 20px;
+    background: var(--ts-nav-bg);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--ts-nav-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .16);
+  }
+
+  .dita-nav-links.show { display: flex; }
+
+  .dita-nav-links a {
+    padding: 12px 14px;
+    width: 100%;
+  }
+}
+
+/* ── Main content wrapper ───────────────────────────────────── */
+
+.dita-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+
+.dita-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-top: 1px solid var(--ts-nav-border);
+  background: var(--ts-footer-bg);
+  backdrop-filter: blur(14px);
+  font-size: .84rem;
+  color: var(--ts-muted);
+  backdrop-filter: blur(14px);
+  transition: background-color .3s ease, border-color .3s ease;
+}
+
+.dita-footer a {
+  color: var(--ts-accent);
+}
+
+.dita-footer a:hover {
+  color: var(--ts-primary);
+}
+
+/* ── Panel (card) ───────────────────────────────────────────── */
+
+.dita-panel {
+  border: 1px solid var(--ts-panel-border);
+  border-radius: 12px;
+  background: var(--ts-panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--ts-panel-shadow);
+  padding: 24px;
+  transition: border-color .2s ease, background-color .3s ease;
+}
+
+.dita-panel:hover {
+  border-color: var(--ts-control-border-hover);
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+
+.dita-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid var(--ts-control-border);
+  border-radius: 8px;
+  background: var(--ts-control-bg);
+  color: var(--ts-control-text);
+  font-weight: 700;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background-color .16s ease;
+}
+
+.dita-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--ts-control-border-hover);
+  background: var(--ts-control-bg-hover);
+}
+
+.dita-btn-primary {
+  color: var(--ts-primary-text);
+  border-color: var(--ts-primary);
+  background: var(--ts-primary);
+}
+
+.dita-btn-primary:hover {
+  border-color: var(--ts-accent);
+  background: var(--ts-accent);
+  color: var(--ts-primary-text);
+}
+
+.dita-btn-danger {
+  color: var(--ts-primary-text);
+  border-color: var(--ts-danger);
+  background: var(--ts-danger);
+}
+
+.dita-btn-danger:hover {
+  border-color: #e11d48;
+  background: #e11d48;
+}
+
+/* ── Headings ───────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ts-heading);
+}
+
+h1 { font-size: 2.25rem; letter-spacing: -.02em; line-height: 1.1; }
+h2 { font-size: 1.55rem; letter-spacing: -.01em; }
+h3 { font-size: 1.25rem; }
+
+/* ── Code ───────────────────────────────────────────────────── */
+
+code {
+  padding: 3px 8px;
+  border: 1px solid var(--ts-panel-border);
+  border-radius: 6px;
+  color: var(--ts-code);
+  background: var(--ts-code-bg);
+  font-size: .88em;
+}
+
+pre {
+  padding: 16px;
+  border: 1px solid var(--ts-panel-border);
+  border-radius: 10px;
+  color: var(--ts-code);
+  background: var(--ts-code-bg);
+  overflow-x: auto;
+}
+
+pre code {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+/* ── Table ──────────────────────────────────────────────────── */
+
+.table, table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--ts-text);
+}
+
+.table th, table th {
+  color: var(--ts-heading);
+  font-weight: 800;
+  border-bottom: 2px solid var(--ts-panel-border);
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.table td, table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--ts-panel-border);
+}
+
+.table tr:hover td, table tbody tr:hover td {
+  background: var(--ts-soft-panel);
+}
+
+/* ── Forms ──────────────────────────────────────────────────── */
+
+.form-control,
+.form-select {
+  border: 1px solid var(--ts-control-border);
+  border-radius: 8px;
+  color: var(--ts-control-text);
+  background: var(--ts-control-bg);
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--ts-control-border-hover);
+  box-shadow: 0 0 0 3px var(--ts-accent-soft, rgba(56, 189, 248, .2));
+  background: var(--ts-control-bg-hover);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, .2);
+}
+
+/* ── Validation ──────────────────────────────────────────────── */
+
+.text-danger { color: var(--ts-danger) !important; }
+.text-success { color: var(--ts-success) !important; }
+.text-warning { color: var(--ts-warning) !important; }
+
+.validation-summary-errors {
+  padding: 16px;
+  border: 1px solid var(--ts-danger);
+  border-radius: 10px;
+  background: var(--ts-danger-soft);
+}
+
+.field-validation-error {
+  color: var(--ts-danger);
+  font-size: .84rem;
+}
+
+/* Override Bootstrap focus for dark theme */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
+.form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 .1rem var(--ts-bg), 0 0 0 .25rem var(--ts-accent);
+}
+
+/* ── Alert overrides ─────────────────────────────────────────── */
+
+.alert {
+  border: 1px solid var(--ts-panel-border);
+  border-radius: 10px;
+  background: var(--ts-panel);
+  color: var(--ts-text);
+}
+
+/* ── Page title area (eyebrow + heading, dashboard-style) ──── */
+
+.dita-page-header {
+  margin-bottom: 28px;
+}
+
+.dita-eyebrow {
+  margin: 0 0 8px;
+  color: var(--ts-accent);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.dita-page-header h1 {
+  margin: 0;
+}
+
+.dita-page-header p {
+  margin: 10px 0 0;
+  color: var(--ts-muted);
+  max-width: 780px;
+}
+
+/* ── Metric cards (dashboard-style) ──────────────────────────── */
+
+.dita-metric-card {
+  display: grid;
+  align-content: space-between;
+  min-height: 140px;
+  padding: 20px;
+  border: 1px solid var(--ts-panel-border);
+  border-radius: 12px;
+  background: var(--ts-panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--ts-panel-shadow);
+  transition: border-color .2s ease, background-color .3s ease;
+}
+
+.dita-metric-card:hover {
+  border-color: var(--ts-control-border-hover);
+}
+
+.dita-metric-card span {
+  color: var(--ts-muted);
+  font-size: .78rem;
+}
+
+.dita-metric-card strong {
+  color: var(--ts-heading);
+  font-size: 2.05rem;
+  line-height: 1;
+}
+
+.dita-metric-card small {
+  color: var(--ts-muted);
+  font-size: .78rem;
+}
+
+.dita-metric-card.danger strong {
+  color: var(--ts-danger);
+}
+
+/* ── Pill badge ─────────────────────────────────────────────── */
+
+.dita-pill {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--ts-pill-text);
+  background: var(--ts-pill-bg);
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+/* ── Scrollbar (dashboard-style) ────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  background: var(--ts-scrollbar-thumb);
+}
+
+* {
+  scrollbar-color: transparent transparent;
+  scrollbar-width: thin;
+}
+
+*:hover {
+  scrollbar-color: var(--ts-scrollbar-thumb) transparent;
+}
+
+/* ── Dashboard page full-viewport overrides ────────────────── */
+/* When the dashboard is active we collapse the global chrome    */
+
+body:has(.translation-service-dashboard) {
+  margin-bottom: 0;
+  background: var(--ts-bg);
+}
+
+body:has(.translation-service-dashboard) .dita-nav,
+body:has(.translation-service-dashboard) .dita-footer {
+  display: none;
+}
+
+body:has(.translation-service-dashboard) .dita-main {
+  max-width: none;
+  padding: 0;
+}
