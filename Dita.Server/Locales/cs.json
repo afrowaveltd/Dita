@@ -362,10 +362,10 @@
   "Vanuatu": "Vanuatu",
   "Venezuela, Bolivarian Republic of Venezuela": "Venezuela, Bol\u00EDvarovsk\u00E1 republika Venezuela",
   "Vietnam": "Vietnam",
-  "Vietnamese": "Vietnam\u0161tina",
-  "Virgin Islands, British": "Panensk\u00E9 ostrovy, Britsk\u00E9 ostrovy",
-  "Virgin Islands, U.S.": "Panensk\u00E9 ostrovy, Spojen\u00E9 st\u00E1ty americk\u00E9.",
-  "Waiting for the localization hub snapshot.": "\u010Cek\u00E1m na sn\u00EDmek z lok\u00E1ln\u00EDho centra.",
+  "Vietnamese": "Vietnamština",
+  "Virgin Islands, British": "Panenské ostrovy, Britské ostrovy",
+  "Virgin Islands, U.S.": "Panenské ostrovy, Spojené státy americké.",
+  "Waiting for the localization hub snapshot.": "Čekám na snímek z lokálního centra.",
   "Wallis and Futuna": "Wallis a Futuna",
   "Welcome": "V\u00EDtejte",
   "Yemen": "Jemen",
@@ -390,5 +390,5 @@
   "{count} skipped": "{count} p\u0159esko\u010Den",
   "{count} warnings": "{count} upozorn\u011Bn\u00ED",
   "{dictionaries} dictionaries, {docs} docs": "{dictionaries} slovn\u00EDk\u016F, {docs} dokument\u016F",
-  "{error}: {details}": "1"
+  "{error}: {details}": "{error}: {details}"
 }
