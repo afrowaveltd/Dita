@@ -132,6 +132,30 @@ public class LanguageServiceTests : IDisposable
       Assert.Empty(svc.GetLanguageNames());
    }
 
+   [Fact]
+   public void WhenLanguageCodeExistsThenGetLanguageDisplayNameReturnsEnglishName()
+   {
+      EnsureLanguagesJson();
+      var svc = CreateService();
+      Assert.Equal("Czech", svc.GetLanguageDisplayName("cs"));
+   }
+
+   [Fact]
+   public void WhenLocaleCodeExistsThenGetLanguageDisplayNameReturnsEnglishName()
+   {
+      EnsureLanguagesJson();
+      var svc = CreateService();
+      Assert.Equal("Czech", svc.GetLanguageDisplayName("cs-CZ"));
+   }
+
+   [Fact]
+   public void WhenLanguageCodeIsUnknownThenGetLanguageDisplayNameReturnsOriginalCode()
+   {
+      EnsureLanguagesJson();
+      var svc = CreateService();
+      Assert.Equal("xx-YY", svc.GetLanguageDisplayName("xx-YY"));
+   }
+
    // ─── IsRtl ────────────────────────────────────────────────────────────────
 
    [Fact]

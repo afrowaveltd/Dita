@@ -133,6 +133,25 @@ public sealed class JsonStringLocalizerTests : IDisposable
    }
 
    [Fact]
+   public void WhenStoredJsonContainsBrokenPlaceholderArtifactsThenValueIsRepairedBeforeFormatting()
+   {
+      SetCulture("cs-CZ");
+      WriteLocale("cs.json", "{" + "\"Saved dictionary for '{language}' ({entryCount} entries).\":\"Uložený slovník pro 'CLAS0' (CLAS1 položek).\"" + "}");
+      WriteLocale("en.json", "{" + "\"Saved dictionary for '{language}' ({entryCount} entries).\":\"Saved dictionary for '{language}' ({entryCount} entries).\"" + "}");
+
+      var localizer = new JsonStringLocalizer(
+         new InMemoryDistributedCache(),
+         Substitute.For<ILibreTranslateService>(),
+         new AutomaticTranslationSettings { DefaultLanguage = "en" },
+         new PlaceholderService(Substitute.For<ILogger<PlaceholderService>>()),
+         Substitute.For<ILogger<JsonStringLocalizer>>());
+
+      LocalizedString value = localizer["Saved dictionary for '{language}' ({entryCount} entries).", new { language = "cs", entryCount = 12 }];
+
+      Assert.Equal("Uložený slovník pro 'cs' (12 položek).", value.Value);
+   }
+
+   [Fact]
    public void WhenValueMissingThenTranslationServiceProvidesFallback()
    {
       SetCulture("cs-CZ");

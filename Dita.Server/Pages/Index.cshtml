@@ -1,4 +1,5 @@
 @page
+@using Microsoft.Extensions.Localization;
 @model IndexModel
 @{
     ViewData["Title"] = Model._localizer["Home page"];
@@ -7,33 +8,33 @@
 <section class="dita-page-header">
     <p class="dita-eyebrow">Dita Server</p>
     <h1>@Model._localizer["Welcome"]</h1>
-    <p>@Model._localizer["Learn about building Web apps with ASP.NET Core."]</p>
+    <p>@Model._localizer["DITA is your"]&nbsp;<b>@Model._localizer["disk testing application."]</p>
 </section>
 
 <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:14px;">
 
     <article class="dita-metric-card">
-        <span>Localization</span>
+        <span>@Model._localizer["Localization"]</span>
         <strong>50+</strong>
-        <small>Supported languages</small>
+        <small>@Model._localizer["supported languages"]</small>
     </article>
 
     <article class="dita-metric-card">
-        <span>Translation</span>
-        <strong>Realtime</strong>
-        <small>SignalR pipeline</small>
+        <span>@Model._localizer["Translation"]</span>
+        <strong>@Model._localizer["Realtime"]</strong>
+        <small>@Model._localizer["SignalR"]</small>
     </article>
 
     <article class="dita-metric-card danger">
-        <span>API</span>
-        <strong>REST</strong>
-        <small>OpenAPI / Scalar docs</small>
+        <span>@Model._localizer["API"]</span>
+        <strong>@Model._localizer["REST"]</strong>
+        <small>@Model._localizer["OpenAPI / Scalar docs"]</small>
     </article>
 
     <article class="dita-metric-card">
-        <span>Dashboard</span>
-        <strong>Live</strong>
-        <small><a asp-area="" asp-page="/Admin/LiveTranslation">Open monitor &rarr;</a></small>
+        <span>@Model._localizer["Translation service"]</span>
+        <strong>@Model._localizer["Live monitor"]</strong>
+        <small><a asp-area="" asp-page="/Admin/LiveTranslation">@Model._localizer["Open monitor"] &rarr;</a></small>
     </article>
 
 </div>

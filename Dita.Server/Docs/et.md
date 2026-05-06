@@ -12,7 +12,7 @@ Monoliit on lagunenud neljaks eriteenistuseks, mida koordineerib kergekaaluline 
 
 - **BackendTranslationService** — torujuhtme orkestraator (serveri valideerimine, lavadelegatsioon, veakäsitlus)
 - **RiigidTranslationService** – Riiginimede sünkroniseerimine (inglise → sihtkeel)
-- **LocalizationTranslationService** — JSON sõnastiku sünkroniseerimine (lisatud/eemaldatud klahvid)
+- **LocalizationTranslationService** – JSON sõnastiku sünkroniseerimine (lisatud/eemaldatud klahvid)
 - **DocumentsTranslationService** – Markdown dokumentatsiooni tõlge koos plokitasandi jälgimisega
 - **SignalRPublisher** – Reaalajaline eduaruandlus SignalR-i kaudu
 - **TranslationRetryService** – etapitaseme proovimine kohahoidja säilitamisega
@@ -32,7 +32,7 @@ Monoliit on lagunenud neljaks eriteenistuseks, mida koordineerib kergekaaluline 
 
 Uus administraatori lehekülg, mis tagab reaalajas nähtavuse tõlketorustikus:
 
-- Näitab kõiki SignalR sündmusi nende toimumise ajal
+- Näitab kõiki signaale R Sündmused esinemisel
 - Värvikoodiga sõnumitüübid (blue=käivitatud, green=lõpetatud, red=viga)
 - Ühenduse oleku bänner automaatse taasühendamisega
 - Sõnumiloendur ja eksport JSON- i
@@ -63,7 +63,7 @@ Märkimisfailid tõlgitakse järk-järgult:
 - **Keelesäästmine**: Iga sihtkeel salvestatakse kohe pärast tõlkimist, vähendades mälurõhku
 - **Plokitaseme jälgimine**: radade tõlkimise olek ploki kohta
 - **Valikproovimine**: Ainult ebaõnnestunud plokid tõlkitakse uuesti järgmisel käivitamisel
-- **Metaandmete püsivus**: Tõlkeolek säilib rakenduse taaskäivitamisel
+- **Metaandmete püsivus**: Tõlkeolek elab üle rakenduse taaskäivitamise
 
 ### Täiustatud katsetamisloogika
 
@@ -71,7 +71,7 @@ Kolm vastupidavuse taset:
 
 1. **HTTP retry** (LibreTranslateService): 5 katset eksponentsiaalse tagasilöögiga (1s–5s)
 2. ** Lava proovimine ** (TranslationRetryService): 3 täiendavat katset 30-ndate viivitustega
-3. **Ploki proovimine ** (DocumentsTranslationService): Failed Markdown plokid uuesti proovitud järgmisel käivitamisel
+3. **Ploki proovimine** (DocumentsTranslationService): Failed Markdown plokid otsitakse uuesti järgmisel käivitamisel
 
 ### SignaaliR aruandlus
 
@@ -112,7 +112,7 @@ Registreeritud :
 - /
 - /
 
-SignalR jaotur on kaardistatud kliendiühenduste jaoks.
+Signaal R hub on kaardistatud kliendiühenduste jaoks.
 
 ## Testimine
 
@@ -120,9 +120,9 @@ SignalR jaotur on kaardistatud kliendiühenduste jaoks.
 
 - **243/244 testide läbimine ** (1 vahele jäetud samaaegse failide juurdepääsu tõttu katsekeskkonnas)
 - Lisatud on uus katseala:
-  - Kohapealse teenuse funktsioonid
-  - BackendTranslationService orkestreerimine
-  - JsonStringLocalizeri kohahoidjate indekseerijad
+  - Kohatäitja Teenuse funktsioonid
+  - BackendTranslation Teenuse orkestreerimine
+  - JsonStringLocalizeri kohaomanike indekseerijad
 
 ### Tuntud piirangud
 
@@ -136,7 +136,7 @@ SignalR jaotur on kaardistatud kliendiühenduste jaoks.
 - — riigi nime tõlge
 - — JSON sõnastiku sünkroniseerimine
 - — Turuväärtuse tõlge
-- — SignalR-sõnumite avaldamine
+- - Signaal R-teate avaldamine
 - – Tagurpidine loogika kohahoidja maskiga
 - — kirjastaja liides
 - — Riigiteenuste liides
@@ -172,7 +172,7 @@ Kõik muudatused on täiendavad:
 - Positsiooni vormindamine () toimib muutmata kujul
 - Olemasolev JSON sõnaraamatu vorming ei muutu
 - Olemasolev allahindluse struktuur ei muutu
-- SignalR-sõnumid kasutavad sama vormingut
+- Signaal R-sõnumid kasutavad sama vormingut
 
 ## Migratsioonirada
 
@@ -185,7 +185,7 @@ Migratsioon ei ole vajalik. Refaktoreerimine on sisemine:
 ## Tulemuslikkuse parandamine
 
 - ** Vähendatud mälukasutus**: Failid salvestatakse keele kohta kohe, selle asemel, et kõik mälus hoida
-- **Kiired juurdekasvud**: Ainult muudetud/ebaõnnestunud Markdowni plokid tõlgitakse uuesti
+- **Kiiremini lisanduv jookseb **: Ainult muudetud/ebaõnnestunud Markdowni plokid tõlgitakse uuesti
 - **Parem nähtavus**: Reaalajas progress aitab diagnoosida aeglaseid etappe
 
 ## Tulevased täiustused
@@ -193,7 +193,7 @@ Migratsioon ei ole vajalik. Refaktoreerimine on sisemine:
 Kavandatud parandused:
 
 1. **AI peenhäälestus** – masinajärgne tõlkeülevaade fraasidele > 5 sõna
-2. **Admin autentimine** – admin-lehtede piiramine volitatud kasutajatele
+2. **Admin autentimine ** – Admin-lehtede piiramine volitatud kasutajatele
 3. ** Sõnastikuredaktor** – veebi kasutajaliides lokaliseerimise võtmete haldamiseks
 4. ** Tõlkestatistika** – diagrammid, mis näitavad tõlkimiste arvu ja veamäära aja jooksul
 5. ** Kohatäitja süntaks ** – toetus alternatiivsete kohatäitja vormingutele

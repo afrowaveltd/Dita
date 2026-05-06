@@ -146,7 +146,9 @@ public class JsonStringLocalizer(
         {
             string jsonDictionary = File.ReadAllText(filePath);
             Dictionary<string, string> pairs = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonDictionary) ?? [];
-            return pairs.TryGetValue(key, out string? value) ? value : string.Empty;
+            return pairs.TryGetValue(key, out string? value)
+                ? _placeholderService.RestorePlaceholdersFromSource(key, value)
+                : string.Empty;
         }
         catch (Exception ex)
         {

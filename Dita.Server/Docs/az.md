@@ -2,7 +2,7 @@
 
 ## Overview
 
-Bu səhifə Dita avtomatlaşdırma xidmət xidmətinin bütün dəyişikliklərini mövcuddur, yeni xüsusiyyətlər, gözəllik inkişafları və yerlileştirme inkişafları daxildir.
+Bu səhifə Dita avtomatlaşdırma xidməti, yeni xüsusiyyətlər, gözəllik inkişafları və yerlileştirme inkişafları daxil olmaqla, Dita avtomatik çeviri xidmət xidməti üçün bütün dəyişikliklərini dəyişdirir.
 
 ## Memarlıq məlumatları
 
@@ -10,19 +10,19 @@ Bu səhifə Dita avtomatlaşdırma xidmət xidmətinin bütün dəyişiklikləri
 
 Monolithic parlaq bir rəsmi rəsmi rəsmi rəsmi xüsusi xidmətlərinə pozulmuşdur:
 
-- **BackendTranslationService ** — Boru sənayesi (server validation, mərkəzi məlumat, səviyyə məlumat)
+- **BackendTranslationService** — Boru sənayesi (server validation, mərkəzi məlumat, səviyyə məlumat)
 - **CountriesTranslationService** — Ümumdünya adı senkronizasyon (İngilis dili →)
 - **LocalizationTranslationService ** — JSON səviyyə sinksiyası (added/removed keys)
 - **DocumentsTranslationService** - Blok-düzlük monitorinq ilə Markdown məlumatları məlumat
 - **SignalRPublisher** - SignalR ilə Real-time təhlükəsizlik hesabatı
-- **TranslationRetryService** - mövcud sazlığı ilə mövcud retry
+- **TranslationRetryService** - mövcud saxlama ilə mövcud retry
 
-### Benefits
+### Axtarış
 
 - ** Şirkətlərin məlumatlaşdırılması**: Hər bir xidmət domen adı transferi
 - **Maintainability**: Kiçik kurslar anlamaq və test daha asandır
 - **Extensibility**: New translation targets can be added via interface implementation
-- **Reliability**: Xüsusi xidmətlər daha yaxşı qurğunluq təmin edir
+- **Reliability**: Xüsusi xidmətlər daha yaxşı quruculuq təmin edir
 
 ## Yeni xüsusiyyətlər
 
@@ -30,16 +30,16 @@ Monolithic parlaq bir rəsmi rəsmi rəsmi rəsmi xüsusi xidmətlərinə pozulm
 
 **Location**: `/Admin/LiveTranslation`
 
-Translation : : :  the  the
+translation : : :  the  the
 
-- Onlar olduğu kimi bütün SignalR hadisələri göstərir
+- Bütün Signal Onlar meydana gətirdiyi hallarda
 - Yadda saxla
 - Auto-reconnect ilə Bağlantı status banner
 - JSON-a qoşulmaq
 
 ### Ad Soyad
 
-Yerlileştirme sistemi hər hansı müxtəlif dillərin inkişaf edilməsi üçün yer tutucuları () dəstəkləyir:
+Yerlileştirme sistemi növbətli dillərin inkişaf etdirilməsi üçün yer sahibləri () adlanır:
 
 ```csharp
 // Usage in code
@@ -53,7 +53,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 Xüsusiyyət:
 - Runtime və ya saxlamaq üçün təhlükəsiz qiymətləri
-- Yolsuzluğu qarşılaşdırmaq üçün çeviri zamanı avtomatik maska/restoration
+- Yolsuzluğu qarşısını almaq üçün çeviri zamanı avtomatik maskalama/restoration
 - Mövcud mövcud mərkəzi ilə uyğun
 
 ### Axtarış
@@ -63,7 +63,7 @@ Markdown faylları inkişaf edir:
 - **Per-dil qəbul**: Müəlliflik hüququqları qorunur
 - **Block-level monitor**: blok başına çeviri statusunu izləyir
 - **Selective retry**: Only failed blocks are re-translated on the next run
-- **Metadata davamlılığı**: İqtisadiyyatdan keçmişdir
+- **Metadata davamlılığı**: Translation dövrü tətbiq edir
 
 ### Retry Logic inkişaf
 
@@ -71,9 +71,9 @@ Markdown faylları inkişaf edir:
 
 1. **HTTP retry** (LibreTranslateService): 5 kateqoriya geri dönüş ilə çalışır (1s–5s)
 2. **Stage retry** (TranslationRetryService): 30s gecikmə ilə 3 əlavə məsləhət
-3. **Block retry** (DocumentsTranslationService): Birbaşa run yenilənmiş Markdown blokları
+3. **Block retry** (DocumentsTranslationService): İndi runda saxla
 
-### Qeydiyyat
+### Saytın xəritəsi
 
 Bütün boru əməliyyatları üçün real-time inkişaf:
 
@@ -112,21 +112,21 @@ Daxil ol:
 - /
 - /
 
-SignalR hub müştəri əlaqələr üçün xüsusiyyət göstərir.
+Qalereya R hub müştəri əməliyyatları üçün xidmət edilir.
 
 ## Test
 
 ### Test statusu
 
 - **243/244 testlər** (1 test texnologiyası daxil olmaqla atladı)
-- Yeni test səhifə:
-  - Qalereya
-  - BackendTranslationService
+- Yeni test məlumatları əlavə edilir:
+  - Qeydiyyat Xidmət funksiyası
+  - Qeydiyyat Xidmət orqasiyası
   - JsonStringLocalizer yerləşdirici indeksers
 
 ### Xüsusiyyətlər
 
-- test paralel çalışır zaman atılır, çünki çox test halları eyni fayl paylaşılır. Soyuqda işləyir.
+- test paralel çalışır zaman atılır, çünki çox test halları eyni fayl paylaşılır. Soyutma zamanı keçirilir.
 
 ## Yeni Dosya strukturu
 
@@ -134,21 +134,21 @@ SignalR hub müştəri əlaqələr üçün xüsusiyyət göstərir.
 
 - - Borular
 - - Ümumi adı
-- — JSON sözlər sinkronizasiyası
+- — JSON sözlər sinkronization
 - — Markdown çevirici
-- - SignalR mesaj yayımı
+- - Signal R mesaj yayımı
 - - Yerləşdirici maska ilə retry mantığı
 - - Publisher interfeys
 - - Country xidmət interfeys
-- - Yerlileştirme xidməti interfeys
+- — Yerlileştirme xidməti interfeys
 - - Document xidmət interfeys
-- — Orkeor interfeys (updated)
+- - Orkestor interfeys (updated)
 - - Per-file çeviri metadata
 
 ### Yeniyetmə xidmətləri
 
 - - mövcudluq əlavə
-- — Yeni parametr üçün yeniləndirilmişdir
+- — Yeni parametr üçün yeni
 - - Add yerləşdirici idarə
 - - Yerləşdirici interfeys
 
@@ -159,7 +159,7 @@ SignalR hub müştəri əlaqələr üçün xüsusiyyət göstərir.
 
 ### Yeni Sertifikatlaşdırma
 
-- — yenilənmiş boru məlumatları
+- — Xüsusi boru məlumatları
 - — - Placeholder system guide
 - - Dashboard istifadəçisi
 - — Texniki memarlıq
@@ -172,7 +172,7 @@ Bütün dəyişikliklər əlavə olunur:
 - Rəsmi format () işlənir
 - Uşaq JSON səviyyə formatı dəyişikliklənir
 - Mövcud Markdown struktursuz
-- SignalR mesajları eyni formatdan istifadə edir
+- Signal R mesajlar eyni formatdan istifadə
 
 ## Miqrasiya yolu
 
@@ -185,14 +185,14 @@ Heç bir göç lazımdır. Refaktoring daxilidir:
 ## Proqramlar
 
 - **İnformasiya istifadəsi**: Fayllar haqqında bütün saxla
-- **Faster inkişafı**: Yalnız dəyişdirilmiş/failed Markdown blokları re-translated
-- **Better görünürlük**: Real-time inkişaf yavaş məhsulları tanıyacaq
+- **Faster inkişaf işıqlar**: Yalnız dəyişdirilmiş/failed Markdown blokları re-translated
+- **Better görünürlük**: Real-time inkişaf yavaş məhsullara kömək edir
 
 ## İnnovasiyalar
 
 Planned inkişaf:
 
-1. **AI fine-tuning** — Post-machine sözlər üçün təsviri baxış > 5 söz
+1. **AI fine-tuning** — məlumatlar üçün Post-machine çeviri baxış > 5 söz
 2. **Admin nəzarət** — Restrict admin səhifəçilərin saytında
 3. **Dictionary istehsalçısı** — Yerlileştirme qorunması üçün Web UI
 4. **Translation statistika** — Müəlliflik sayı və səviyyə faizlərini vasitəsilə göstərir
@@ -200,4 +200,4 @@ Planned inkişaf:
 
 ## Bakı
 
-Komponent xidməti ilə suallar və suallar üçün, hər bir modul nümayişlərini həyata keçirmək və ya inkişaf komandasına əlaqə saxlayın.
+Komponent xidməti ilə suallar və məlumatlar üçün, hər bir modul xidmətlərini həyata keçirmək və ya inkişaf komandasına əlaqə saxlayın.

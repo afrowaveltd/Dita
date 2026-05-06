@@ -30,6 +30,12 @@ public class LocalizationTranslationService(
 
     private string T(string text, object values) => _localizer[text, values].Value;
 
+    private string GetLocalizedLanguageName(string languageCode)
+    {
+        string languageName = _languageService.GetLanguageDisplayName(languageCode);
+        return string.IsNullOrWhiteSpace(languageName) ? languageCode : T(languageName);
+    }
+
     /// <summary>
     /// Synchronizes JSON localization dictionaries for all target languages.
     /// Detects added/removed keys by comparing current default dictionary with previous snapshot.
@@ -111,11 +117,13 @@ public class LocalizationTranslationService(
                     RemovedCount = removedKeys.Length
                 };
 
+                string displayLanguage = GetLocalizedLanguageName(targetLanguage);
+
                 await _signalRPublisher.PublishMessageAsync(
                     runId,
                     LocalizationMessageType.Progress,
                     ProcessStage.TranslateJsonFiles,
-                    T("Starting JSON translations for '{targetLanguage}'.", new { targetLanguage }));
+                    T("Starting JSON translations for '{targetLanguage}'.", new { targetLanguage = displayLanguage }));
 
                 var dictionaryResponse = await _languageService.GetDictionaryAsync(targetLanguage);
                 var dictionary = dictionaryResponse.Success && dictionaryResponse.Data != null
@@ -171,7 +179,7 @@ public class LocalizationTranslationService(
                     ProcessStage.TranslateJsonFiles,
                     T("JSON translations for '{targetLanguage}' completed. Added: {addedCount}, Removed: {removedCount}, Skipped: {skippedCount}, Errors: {errorCount}.", new
                     {
-                        targetLanguage,
+                        targetLanguage = displayLanguage,
                         addedCount = translatedCount,
                         removedCount = languageReport.RemovedCount,
                         skippedCount,
@@ -253,7 +261,11 @@ public class LocalizationTranslationService(
                 runId,
                 LocalizationMessageType.Progress,
                 ProcessStage.TranslateJsonFiles,
-                T("Saved dictionary for '{language}' ({entryCount} entries).", new { language, entryCount = dictionary.Count }));
+                T("Saved dictionary for '{language}' ({entryCount} entries).", new
+                {
+                    language = GetLocalizedLanguageName(language),
+                    entryCount = dictionary.Count
+                }));
 
             return;
         }
@@ -267,7 +279,11 @@ public class LocalizationTranslationService(
             runId,
             LocalizationMessageType.Progress,
             ProcessStage.TranslateJsonFiles,
-            T("Failed to save dictionary for '{language}': {message}", new { language, message = result.Message }),
+            T("Failed to save dictionary for '{language}': {message}", new
+            {
+                language = GetLocalizedLanguageName(language),
+                message = result.Message
+            }),
             isError: true);
     }
 

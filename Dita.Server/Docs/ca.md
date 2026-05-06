@@ -2,7 +2,7 @@
 
 ## Resum
 
-Aquest document resumeix tots els canvis fets al servei de traducció automàtica de la Dita, incloent la refactorització de l' arquitectura, noves característiques, millores obsvència, i millores de la localització.
+Aquest document resumeix tots els canvis fets al servei de traducció automàtica de la Dita, incloent la refactorització de l' arquitectura, noves característiques, millores de l' obsvbilitat, i millores de la localització.
 
 ## Canvis d' arquitectura
 
@@ -32,7 +32,7 @@ El monolitètic s'ha descomposat en quatre serveis especialitzats per un lleuger
 
 Una nova pàgina d' administrador que proporciona visibilitat en temps real a la canonada de traducció:
 
-- Mostra tots els esdeveniments senyalR mentre ocorren
+- Mostra tots els senyals R esdeveniments mentre ocorren
 - Tipus de missatge (blue=engegat, verd=completat, roig=error)
 - Cartell de l' estat de connexió amb autoconnexió
 - Comptador de missatges i exportació a JSON
@@ -63,7 +63,7 @@ Els fitxers de majúscules es tradueixen incrementalment:
 - **Per llengua estalviant ** Cada idioma de destí es desa immediatament després de la traducció, reduint la pressió de la memòria
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
 - **Selective retry**: Only failed blocks are re-translated on the next run
-- **Metadata persisteixence ** L' estat de traducció sobreviu a l' aplicació que reinicia
+- **Metadata persisteixence **: L' estat de traducció sobreviu l' aplicació reinicia
 
 ### Reintenta la lògica millorada
 
@@ -112,7 +112,7 @@ Registrat en:
 - /
 - /
 
-L' espectre senyalR està mapa en les connexions dels clients.
+El senyal El centre està mapa en les connexions dels clients.
 
 ## Proves
 
@@ -120,8 +120,8 @@ L' espectre senyalR està mapa en les connexions dels clients.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Nova cobertura de prova afegida per a:
-  - Funcionalitat del registre de substitució
-  - Dorsal detraducció delService
+  - Lloc de reserva Funcionalitat de servei
+  - Dorsal de reducció Servei d' orquestració
   - Índexs de posicióLocalitzadors JsonString
 
 ### Limitacions conegudes
@@ -136,11 +136,11 @@ L' espectre senyalR està mapa en les connexions dels clients.
 - Traducció al nom del país de l' Amnistia
 - sincronització del diccionari Noruega JSON
 - Traducció a la part de traducció de la sortida
-- Publicació del missatge senyalR de la senyal  favorgenal
+- Senyal  sign Publicació de missatges R
 - Reintenta la lògica amb màscara de posició
 - Interfície de publicació de l'Adjecte
 - Interfície de servei de països de l' eka
-- Interfície de servei per a la localització de l'ization
+- Interfície de servei per a la localització de l'AKIM
 - Interfície de servei de documents Manveen
 - Interfície d' eka Orchestrator (actualitzat)
 - metadades de traducció de l' ekaPer fitxer
@@ -148,7 +148,7 @@ L' espectre senyalR està mapa en les connexions dels clients.
 ### Serveis actualitzats a
 
 - Implementació de substitució Successful message after an user action
-- Actualitzat per un nou paràmetre
+- 1] S' ha actualitzat pel nou paràmetre
 - Gestió de marcadors de posició amb nom XLIFF mark type
 - Interfície de reserva de substitució de substitució
 
@@ -159,7 +159,7 @@ L' espectre senyalR està mapa en les connexions dels clients.
 
 ### Nova documentació en
 
-- document de canonades actualitzat
+- 1] S' ha actualitzat la documentació de canonada
 - Guia del sistema de paràmetres de substitució de substitució de substitució
 - Guia d' ús del tauler de l' Internet
 - Resum d' arquitectura tècnica vertical
@@ -172,7 +172,7 @@ Tots els canvis són additius:
 - El formatat posicional () no canvia
 - El format existent del diccionari JSON no ha canviat
 - L' estructura de majúscules existent no canvia
-- Els missatges senyalR usen el mateix format
+- Senyal Els missatges R usen el mateix format
 
 ## Camí de migració
 
@@ -192,7 +192,7 @@ No es requereix migració. El refactor és intern:
 
 Millores planificades:
 
-1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
+1. **AI fi fi-tating * _BAR_La traducció de la màquina de post-màquina per frases > 5 paraules
 2. **Admin authentication** — Restrict admin pages to authorized users
 3. **Dictionary editor** — Web UI for managing localization keys
 4. **Translation statistics** — Charts showing translation counts and error rates over time
@@ -200,4 +200,4 @@ Millores planificades:
 
 ## Contacte
 
-Per a preguntes o qüestions amb el servei de traducció, si us plau, referiu- vos a la documentació detallada en el directori de cada mòdul o contacteu amb l' equip de desenvolupament.
+Per a preguntes o problemes amb el servei de traducció, si us plau, referiu- vos a la documentació detallada en el directori de cada mòdul o contacteu amb l' equip de desenvolupament.

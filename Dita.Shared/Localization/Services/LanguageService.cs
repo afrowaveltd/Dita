@@ -95,6 +95,23 @@ public class LanguageService : ILanguageService
       => [.. Languages.Select(l => l.Name).OrderBy(l => l, StringComparer.CurrentCulture)];
 
    /// <summary>
+   /// Resolves a locale or language code to the canonical English language name.
+   /// </summary>
+   /// <param name="code">The locale or language code to resolve.</param>
+   /// <returns>The English language name when available; otherwise the original code.</returns>
+   public string GetLanguageDisplayName(string code)
+   {
+      if(string.IsNullOrWhiteSpace(code))
+      {
+         return string.Empty;
+      }
+
+      string normalizedCode = NormalizeToLanguageCode(code);
+      Language? language = Languages.FirstOrDefault(l => l.Code.Equals(normalizedCode, StringComparison.OrdinalIgnoreCase));
+      return string.IsNullOrWhiteSpace(language?.Name) ? code : language.Name;
+   }
+
+   /// <summary>
    /// Determines whether the specified language code represents a right-to-left language.
    /// </summary>
    /// <param name="code">The ISO language code (e.g. "ar", "he").</param>

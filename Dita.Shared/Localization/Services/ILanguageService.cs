@@ -64,6 +64,13 @@ public interface ILanguageService
    List<string> GetLanguageNames();
 
    /// <summary>
+   /// Resolves a locale or language code to the canonical English language name from <c>languages.json</c>.
+   /// </summary>
+   /// <param name="code">The locale or language code such as <c>"cs"</c> or <c>"cs-CZ"</c>.</param>
+   /// <returns>The English language name when known; otherwise the original code.</returns>
+   string GetLanguageDisplayName(string code);
+
+   /// <summary>
    /// Reads the most recently saved translation dictionary from the temporary storage path.
    /// </summary>
    /// <returns>

@@ -32,7 +32,7 @@ O monolítico descomponse en catro servizos especializados coordinados por un or
 
 Unha nova páxina de administración que proporciona visibilidade en tempo real ao proceso de tradución
 
-- Mostra todos os eventos sinal como ocorren
+- Mostrar todos os sinais R como se producen
 - Tipo de mensaxe codificado en cor (azul=estrelado, verde=completo, vermello=error)
 - Marca de estado de conexión con auto-reconexión
 - Exportar e exportar a JSON
@@ -63,7 +63,7 @@ Os ficheiros de marcado son traducidos de forma incremental:
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
 - **Selective retry**: Only failed blocks are re-translated on the next run
-- **Peristencia**: Estado de tradución para reiniciar a aplicación
+- **Metadata persistence**: Translation state survives application restarts
 
 ### Retry Logic
 
@@ -71,7 +71,7 @@ Tres niveis de resistencia:
 
 1. **HTTP retry** (LibreTranslateService): 5 attempts with exponential backoff (1s–5s)
 2. **Stage retry** (TranslationRetryService): 3 additional attempts with 30s delays
-3. **Block retry** (DocumentsTranslationService): Failed Markdown blocks retried on next run
+3. **Block retry** (Documentos de tradución) Bloques de Markdown perdidos na seguinte rolda
 
 ### información de sinal
 
@@ -112,7 +112,7 @@ Rexistrado en:
 - /
 - /
 
-O hub SignalR está mapeado para conexións de clientes.
+O sinal R hub está mapeado para conexións de clientes.
 
 ## Probas
 
@@ -120,8 +120,8 @@ O hub SignalR está mapeado para conexións de clientes.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Nova cobertura de proba engadida para:
-  - Funcionalidade de PlaceholderService
-  - BackendTranslationService Orquestración
+  - Placeholder Funcionalidade do servizo
+  - BackendTranslation Servizo de orquestración
   - JsonStringLocalizer Localholder indexers
 
 ### Limitacións coñecidas
@@ -136,7 +136,7 @@ O hub SignalR está mapeado para conexións de clientes.
 - Nome do país tradución
 - JSON Dictionary Sincronization
 - Tradución Markdown
-- Mensaxe de SignalR publicado
+- - Sinal R Mensaxe de publicación
 - Retry logic with placeholder masking
 - Editor interface
 - Interface de servizo de país
@@ -148,7 +148,7 @@ O hub SignalR está mapeado para conexións de clientes.
 ### Servizos actualizados en
 
 - -Adición do nome do titular
-- Actualizado para novos parámetros
+- - Actualizado para novos parámetros
 - Nomeado Gestión de Titulares
 - Interface de titular
 
@@ -159,7 +159,7 @@ O hub SignalR está mapeado para conexións de clientes.
 
 ### Nova documentación en
 
-- Actualización de documentación sobre pipeline
+- - Actualización de documentación sobre pipeline
 - Guía do sistema de propietarios
 - Guía de uso de Dashboard
 - Arquitectura Técnica Visión
@@ -172,7 +172,7 @@ Todos os cambios son aditivos:
 - O formato posicional () non varía
 - O formato do dicionario JSON non se modifica
 - A estrutura de marcas non cambia
-- As mensaxes de texto usan o mesmo formato
+- Sinal As mensaxes R teñen o mesmo formato
 
 ## Camiño de migración
 
@@ -186,13 +186,13 @@ Non é necesaria a migración. A recuperación é interna:
 
 - ** Uso de memoria**: Ficheiros gardados por idioma inmediatamente en vez de manter todo na memoria
 - **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
-- ** Máis información**: O progreso en tempo real axuda a diagnosticar etapas lentas
+- ** Máis información**: O progreso en tempo real axuda ao diagnóstico de etapas lentas
 
 ## Melloras futuras
 
 Melloras previstas:
 
-1. **AI fine-tuning** - Revisión de tradución post-máquina para frases > 5 palabras
+1. **AI fine-tuning** - Revisión de tradución post-máquina para frases 5 palabras
 2. ** Autenticación da administración** Restrinxir as páxinas de administración a usuarios autorizados
 3. ** Editor Dicionario** – Web UI para xestionar as claves de localización
 4. **Translation statistics** — Charts showing translation counts and error rates over time

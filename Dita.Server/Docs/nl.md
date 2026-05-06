@@ -14,7 +14,7 @@ De monolithische is samengesteld uit vier gespecialiseerde diensten, gecoördine
 - **CountriesTranslationService**
 - **LocalisatieVertalingService**
 - **DocumentsTranslationService**
-- **SignalRbusher**
+- **SignalRpublisher**
 - **VertalingRetryService**
 
 ### Voordelen
@@ -32,7 +32,7 @@ De monolithische is samengesteld uit vier gespecialiseerde diensten, gecoördine
 
 Een nieuwe admin pagina die real-time zichtbaarheid biedt in de vertaalpijplijn:
 
-- Toont alle SignalR-gebeurtenissen als ze optreden
+- Toont alle signalen R gebeurtenissen zoals deze zich voordoen
 - Kleurgecodeerde berichtentypen (blauw=gestart, groen=voltooid, rood=fout)
 - Verbindingsstatusbanner met automatisch opnieuw verbinden
 - Berichten teller en exporteren naar JSON
@@ -63,7 +63,7 @@ Markdown-bestanden worden stapsgewijs vertaald:
 - **Pertaal opslaan**: Elke doeltaal wordt onmiddellijk na vertaling opgeslagen, waardoor de geheugendruk wordt verminderd
 - **Block-level tracking**: tracks vertaalstatus per blok
 - **Selectieve herhaling**: Alleen mislukte blokken worden opnieuw vertaald op de volgende run
-- **Data persistentie**: Translation state overleeft toepassing herstart
+- **Metadata persistentie**: Translation state overleeft toepassing herstart
 
 ### Verbeterde herhalingslogica
 
@@ -71,7 +71,7 @@ Drie niveaus van veerkracht:
 
 1. **HTTP retry** (LibreTranslateService): 5 pogingen met exponentiële backoff (1s
 2. **Stage retry** (TranslationRetryService): 3 extra pogingen met 30s vertraging
-3. **Block retry** (DocumentsTranslationService): mislukt Markdown blokken opnieuw opgehaald op volgende run
+3. **Block retry** (DocumentsTranslationService): Opmaak blokken opnieuw opgehaald bij volgende run mislukt
 
 ### SignalR-rapportage
 
@@ -82,7 +82,7 @@ Voortgangsverslagen in realtime voor alle pijpleidingactiviteiten:
 - Foutmeldingen omvatten gedetailleerde context (bron, foutcode, bericht)
 - Sequentienummers garanderen bestellen binnen elke run
 
-## Wijzigingen in configuratie
+## Configuratiewijzigingen
 
 ### apps.json
 
@@ -112,7 +112,7 @@ Geregistreerd in:
 - '
 - '
 
-De SignalR-hub is in kaart gebracht voor clientverbindingen.
+Het signaal R hub is in kaart gebracht voor client verbindingen.
 
 ## Testen
 
@@ -120,8 +120,8 @@ De SignalR-hub is in kaart gebracht voor clientverbindingen.
 
 - **243/244 tests slagen** (1 overgeslagen vanwege gelijktijdige bestandstoegang in testomgeving)
 - Nieuwe testdekking toegevoegd voor:
-  - PlaatshouderDienstfunctionaliteit
-  - BackendTranslationService orkestation
+  - Plaatshouder Dienstfunctionaliteit
+  - BackendVertaling Dienstorkestratie
   - JsonStringLocalizer plaatshouder indexers
 
 ### Bekende beperkingen
@@ -136,8 +136,8 @@ De SignalR-hub is in kaart gebracht voor clientverbindingen.
 - Landnaam vertaling
 - JSON woordenboeksynchronisatie
 - Vertaling markeren
-- Bericht publiceren
-- Probeer logica met plaatshouder maskering
+- Signaal R bericht publiceren
+- Retry logica met plaatshouder maskering
 - Uitgever
 - Country service interface
 - Lokalisatie service interface
@@ -148,7 +148,7 @@ De SignalR-hub is in kaart gebracht voor clientverbindingen.
 ### Bijgewerkte diensten in
 
 - Toegevoegd naam plaatshouder ondersteuning
-- Bijgewerkt voor nieuwe parameter
+- Wat? Bijgewerkt voor nieuwe parameter
 - Benoemde plaatshouder management
 - Plaatshouder interface
 
@@ -159,7 +159,7 @@ De SignalR-hub is in kaart gebracht voor clientverbindingen.
 
 ### Nieuwe documentatie in
 
-- Bijgewerkte documentatie over pijpleidingen
+- Wat? Bijgewerkte pijpleidingdocumentatie
 - Plaatshouder systeem gids
 - Dashboard gebruikshandleiding
 - Technische architectuur overzicht
@@ -172,7 +172,7 @@ Alle wijzigingen zijn additief:
 - Positional formatting () werkt ongewijzigd
 - Bestaande JSON woordenboekformaat is ongewijzigd
 - Bestaande Markdown structuur is ongewijzigd
-- SignalR-berichten gebruiken hetzelfde formaat
+- Signaal R-berichten gebruiken hetzelfde formaat
 
 ## Migratiepad
 
@@ -185,14 +185,14 @@ Geen migratie vereist. De refactoring is intern:
 ## Prestatieverbeteringen
 
 - **Verminderd geheugengebruik**: Bestanden per taal onmiddellijk opgeslagen in plaats van alles in het geheugen te houden
-- **Faster incremental runs**: Alleen gewijzigde/gefaalde Markdown blokken worden opnieuw vertaald
+- **Faster incremental loopt**: Alleen gewijzigde/gefaalde Markdown blokken worden opnieuw vertaald
 - ** Beter zicht**: Real-time vooruitgang helpt diagnose langzame stadia
 
 ## Toekomstige verbeteringen
 
 Geplande verbeteringen:
 
-1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
+1. **AI fine-tuning**  5 woorden
 2. **Admin authenticatie**
 3. **Dictionary editor**
 4. **Vertaalstatistieken**

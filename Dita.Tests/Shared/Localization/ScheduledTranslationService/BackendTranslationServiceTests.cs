@@ -49,6 +49,76 @@ public class BackendTranslationServiceTests
     }
 
     [Fact]
+    public async Task WhenJsonTranslationContainsPlaceholderArtifactsThenSavedDictionaryKeepsCanonicalPlaceholders()
+    {
+        string rootPath = CreateTempRoot();
+        try
+        {
+            SeedCountries(rootPath, "[]");
+
+            ILanguageService languageService = Substitute.For<ILanguageService>();
+            ILibreTranslateService translateService = Substitute.For<ILibreTranslateService>();
+
+            languageService.Languages.Returns(new List<Language>());
+            languageService.CreateMissingLanguageFilesAsync(Arg.Any<List<string>>())
+                .Returns(Task.FromResult(new Dictionary<string, bool> { ["en"] = false, ["cs"] = false }));
+            languageService.GetDictionaryAsync("en")
+                .Returns(Task.FromResult(Response<Dictionary<string, string>>.Ok(new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["Saved dictionary for '{language}' ({entryCount} entries)."] = "Saved dictionary for '{language}' ({entryCount} entries)."
+                })));
+            languageService.GetDictionaryAsync("cs")
+                .Returns(Task.FromResult(Response<Dictionary<string, string>>.Ok(new Dictionary<string, string>(StringComparer.Ordinal))));
+            languageService.GetLastStored()
+                .Returns(Task.FromResult(Response<Dictionary<string, string>>.Ok(new Dictionary<string, string>(StringComparer.Ordinal))));
+            languageService.SaveOldTranslationAsync(Arg.Any<Dictionary<string, string>>())
+                .Returns(Task.FromResult(Response<bool>.Ok(true)));
+
+            List<SingleTranslation> savedTranslations = [];
+            languageService.SaveDictionaryAsync(Arg.Any<SingleTranslation>())
+                .Returns(call =>
+                {
+                    savedTranslations.Add(call.ArgAt<SingleTranslation>(0));
+                    return Task.FromResult(Response<bool>.Ok(true));
+                });
+
+            translateService.ServerLatency().Returns(Response<int>.Ok(10));
+            translateService.GetAvailableLanguagesAsync().Returns(Task.FromResult(Response<string[]>.Ok(["en", "cs"])));
+            translateService.TranslateTextAsync(Arg.Any<string>(), "en", "cs")
+                .Returns(call =>
+                {
+                    string source = call.ArgAt<string>(0);
+                    return Task.FromResult(Response<TranslateResult>.Ok(new TranslateResult
+                    {
+                        TranslatedText = source.Contains("\u27e60\u27e7", StringComparison.Ordinal)
+                            ? "Uložený slovník pro 'CLAS0' (CLAS1 položek)."
+                            : "Překlad"
+                    }));
+                });
+
+            BackendTranslationService service = CreateService(
+                rootPath,
+                languageService,
+                translateService);
+
+            await service.RunAsync();
+
+            SingleTranslation? savedCsTranslation = savedTranslations.LastOrDefault(translation =>
+                translation.Language == "cs"
+                && translation.Translations.ContainsKey("Saved dictionary for '{language}' ({entryCount} entries)."));
+
+            Assert.NotNull(savedCsTranslation);
+            Assert.Equal(
+                "Uložený slovník pro '{language}' ({entryCount} položek).",
+                savedCsTranslation!.Translations["Saved dictionary for '{language}' ({entryCount} entries)."]);
+        }
+        finally
+        {
+            Directory.Delete(rootPath, true);
+        }
+    }
+
+    [Fact]
     public async Task WhenRunAsyncIsCalledConcurrentlyThenSecondRunIsSkipped()
     {
         string rootPath = CreateTempRoot();
@@ -160,6 +230,42 @@ public class BackendTranslationServiceTests
         }
     }
 
+    [Fact]
+    public async Task WhenAvailableLanguagesAreReportedThenRealtimeMessageUsesLocalizedLanguageNames()
+    {
+        string rootPath = CreateTempRoot();
+        try
+        {
+            SeedCountries(rootPath, "[]");
+
+            ILanguageService languageService = Substitute.For<ILanguageService>();
+            languageService.GetLanguageDisplayName("en").Returns("English");
+            languageService.GetLanguageDisplayName("cs").Returns("Czech");
+            ConfigureDefaultLanguageServiceResponses(languageService);
+
+            ILibreTranslateService translateService = Substitute.For<ILibreTranslateService>();
+            translateService.ServerLatency().Returns(Response<int>.Ok(10));
+            translateService.GetAvailableLanguagesAsync().Returns(Task.FromResult(Response<string[]>.Ok(["en", "cs"])));
+
+            List<string> messages = [];
+            BackendTranslationService service = CreateService(
+                rootPath,
+                languageService,
+                translateService,
+                onMessagePublished: message => messages.Add(message.Message));
+
+            await service.RunAsync();
+
+            Assert.Contains(messages, message =>
+                message.Contains("English", StringComparison.Ordinal)
+                && message.Contains("Czech", StringComparison.Ordinal));
+        }
+        finally
+        {
+            Directory.Delete(rootPath, true);
+        }
+    }
+
     private static async Task<Response<string[]>> WaitAndReturnLanguagesAsync(Task gate)
     {
         await gate;
@@ -194,9 +300,20 @@ public class BackendTranslationServiceTests
     private static BackendTranslationService CreateService(
         string rootPath,
         ILanguageService languageService,
-        ILibreTranslateService translateService)
+        ILibreTranslateService translateService,
+        Action<LocalizationHubMessage>? onMessagePublished = null)
     {
         ILocalizationHubClient client = Substitute.For<ILocalizationHubClient>();
+        if(onMessagePublished is not null)
+        {
+            client.ReceiveLocalizationMessage(Arg.Any<LocalizationHubMessage>())
+                .Returns(call =>
+                {
+                    onMessagePublished(call.ArgAt<LocalizationHubMessage>(0));
+                    return Task.CompletedTask;
+                });
+        }
+
         IHubClients<ILocalizationHubClient> clients = Substitute.For<IHubClients<ILocalizationHubClient>>();
         clients.All.Returns(client);
 
@@ -206,7 +323,7 @@ public class BackendTranslationServiceTests
         ISignalRPublisher signalRPublisher = new SignalRPublisher(hubContext);
         TranslationRetryService retryService = new TranslationRetryService(
             translateService,
-            Substitute.For<IPlaceholderService>(),
+            new PlaceholderService(Substitute.For<ILogger<PlaceholderService>>()),
             Substitute.For<ILogger<TranslationRetryService>>(),
             stageMaxRetries: 1,
             stageRetryDelaySeconds: 0);
@@ -247,12 +364,14 @@ public class BackendTranslationServiceTests
             retryService,
             signalRPublisher,
             hostEnvironment,
+            languageService,
             settings,
             CreatePassThroughLocalizer<DocumentsTranslationService>(),
             Substitute.For<ILogger<DocumentsTranslationService>>());
 
         return new BackendTranslationService(
             configuration,
+            languageService,
             translateService,
             signalRPublisher,
             countriesService,
@@ -275,7 +394,25 @@ public class BackendTranslationServiceTests
         localizer[Arg.Any<string>(), Arg.Any<object[]>()].Returns(call =>
         {
             string key = call.ArgAt<string>(0);
-            return new LocalizedString(key, key, resourceNotFound: false);
+            object[] values = call.ArgAt<object[]>(1);
+            string formatted = key;
+
+            foreach(object? value in values)
+            {
+                int start = formatted.IndexOf('{', StringComparison.Ordinal);
+                int end = start < 0 ? -1 : formatted.IndexOf('}', start + 1);
+                if(start < 0 || end < 0)
+                {
+                    break;
+                }
+
+                formatted = string.Concat(
+                    formatted.AsSpan(0, start),
+                    value?.ToString() ?? string.Empty,
+                    formatted.AsSpan(end + 1));
+            }
+
+            return new LocalizedString(key, formatted, resourceNotFound: false);
         });
 
         return localizer;

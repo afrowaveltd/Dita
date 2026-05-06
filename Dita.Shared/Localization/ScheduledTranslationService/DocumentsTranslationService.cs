@@ -22,6 +22,7 @@ public class DocumentsTranslationService(
     TranslationRetryService retryService,
     ISignalRPublisher signalRPublisher,
     IHostEnvironment hostEnvironment,
+    ILanguageService languageService,
     AutomaticTranslationSettings settings,
     IStringLocalizer<DocumentsTranslationService> localizer,
     ILogger<DocumentsTranslationService> logger) : IDocumentsTranslationService
@@ -31,6 +32,7 @@ public class DocumentsTranslationService(
     private readonly TranslationRetryService _retryService = retryService;
     private readonly ISignalRPublisher _signalRPublisher = signalRPublisher;
     private readonly IHostEnvironment _hostEnvironment = hostEnvironment;
+    private readonly ILanguageService _languageService = languageService;
     private readonly AutomaticTranslationSettings _settings = settings;
     private readonly IStringLocalizer<DocumentsTranslationService> _localizer = localizer;
     private readonly ILogger<DocumentsTranslationService> _logger = logger;
@@ -42,6 +44,12 @@ public class DocumentsTranslationService(
     private string T(string text) => _localizer[text].Value;
 
     private string T(string text, object values) => _localizer[text, values].Value;
+
+    private string GetLocalizedLanguageName(string languageCode)
+    {
+        string languageName = _languageService.GetLanguageDisplayName(languageCode);
+        return string.IsNullOrWhiteSpace(languageName) ? languageCode : T(languageName);
+    }
 
     /// <summary>
     /// Synchronizes Markdown translations by detecting changed source files and translating them
@@ -164,6 +172,7 @@ public class DocumentsTranslationService(
 
         foreach (string targetLanguage in targetLanguages)
         {
+            string displayLanguage = GetLocalizedLanguageName(targetLanguage);
             string targetFilePath = Path.Combine(
                 Path.GetDirectoryName(sourceFile) ?? string.Empty,
                 $"{targetLanguage}.md");
@@ -177,7 +186,7 @@ public class DocumentsTranslationService(
                     runId,
                     LocalizationMessageType.Progress,
                     ProcessStage.TranslateMarkdownFiles,
-                    T("Skipping '{targetLanguage}' for '{sourcePath}' - already fully translated.", new { targetLanguage, sourcePath = sourceDisplayPath }),
+                    T("Skipping '{targetLanguage}' for '{sourcePath}' - already fully translated.", new { targetLanguage = displayLanguage, sourcePath = sourceDisplayPath }),
                     new TranslationProgressUpdate
                     {
                         WorkItemId = $"markdown:{sourceDisplayPath}:{targetLanguage}",
@@ -196,19 +205,19 @@ public class DocumentsTranslationService(
                 runId,
                 LocalizationMessageType.Progress,
                 ProcessStage.TranslateMarkdownFiles,
-                T("Translating '{sourcePath}' to '{targetLanguage}'.", new { sourcePath = sourceDisplayPath, targetLanguage }));
+                T("Translating '{sourcePath}' to '{targetLanguage}'.", new { sourcePath = sourceDisplayPath, targetLanguage = displayLanguage }));
 
             // Check if target language is supported
             if (!await IsLanguageSupportedAsync(targetLanguage))
             {
                 _logger.LogWarning("Language '{TargetLanguage}' is not supported by the translation server. Skipping.", targetLanguage);
-                report.Errors.Add(CreateError(sourceFile, ErrorCode.TranslationFailed, T("Language '{targetLanguage}' is not supported.", new { targetLanguage })));
+                report.Errors.Add(CreateError(sourceFile, ErrorCode.TranslationFailed, T("Language '{targetLanguage}' is not supported.", new { targetLanguage = displayLanguage })));
 
                 await _signalRPublisher.PublishMessageAsync(
                     runId,
                     LocalizationMessageType.Progress,
                     ProcessStage.TranslateMarkdownFiles,
-                    T("Language '{targetLanguage}' is not supported by the translation server. Skipping.", new { targetLanguage }),
+                    T("Language '{targetLanguage}' is not supported by the translation server. Skipping.", new { targetLanguage = displayLanguage }),
                     new TranslationProgressUpdate
                     {
                         WorkItemId = $"markdown:{sourceDisplayPath}:{targetLanguage}",
@@ -301,13 +310,13 @@ public class DocumentsTranslationService(
                         "Markdown structure validation failed for '{SourceFile}' -> '{TargetLanguage}'. Skipping save.",
                         sourceFile, targetLanguage);
                     report.Errors.Add(CreateError(sourceFile, ErrorCode.TranslationFailed,
-                        T("Structure validation failed for '{targetLanguage}'.", new { targetLanguage })));
+                        T("Structure validation failed for '{targetLanguage}'.", new { targetLanguage = displayLanguage })));
 
                     await _signalRPublisher.PublishMessageAsync(
                         runId,
                         LocalizationMessageType.Progress,
                         ProcessStage.TranslateMarkdownFiles,
-                        T("Structure validation failed for '{targetLanguage}' in '{sourcePath}'.", new { targetLanguage, sourcePath = sourceDisplayPath }),
+                        T("Structure validation failed for '{targetLanguage}' in '{sourcePath}'.", new { targetLanguage = displayLanguage, sourcePath = sourceDisplayPath }),
                         new TranslationProgressUpdate
                         {
                             WorkItemId = $"markdown:{sourceDisplayPath}:{targetLanguage}",
@@ -337,7 +346,7 @@ public class DocumentsTranslationService(
                     ProcessStage.TranslateMarkdownFiles,
                     T("Saved '{targetLanguage}' translation for '{sourcePath}' ({translatedCount}/{blockCount} blocks translated).", new
                     {
-                        targetLanguage,
+                        targetLanguage = displayLanguage,
                         sourcePath = sourceDisplayPath,
                         translatedCount,
                         blockCount = sourceBlocks.Count
@@ -366,7 +375,7 @@ public class DocumentsTranslationService(
                     ProcessStage.TranslateMarkdownFiles,
                     T("Failed to save '{targetLanguage}' translation for '{sourcePath}': {message}", new
                     {
-                        targetLanguage,
+                        targetLanguage = displayLanguage,
                         sourcePath = sourceDisplayPath,
                         message = ex.Message
                     }),

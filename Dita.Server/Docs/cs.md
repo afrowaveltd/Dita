@@ -32,8 +32,8 @@ Monolitický se rozkládá na čtyři specializované služby koordinované lehk
 
 Nová admin stránka, která poskytuje skutečnou viditelnost do překladatelského potrubí:
 
-- Zobrazí všechny události SignalR, jak se objeví
-- Typ barevné kódované zprávy (modrá = spuštěná, zelená = dokončena, červená = chyba)
+- Zobrazí veškerý signál R nežádoucí účinky, které se vyskytly
+- Typ barevně kódované zprávy (modrá = spuštěna, zelená = dokončena, červená = chyba)
 - Spojení status banner s auto- reconnect
 - Počitadlo zpráv a export do JSON
 
@@ -65,7 +65,7 @@ Soubory Markdownu se překládají postupně:
 - **Selective retry**: Only failed blocks are re-translated on the next run
 - **Metadata persistence**: Translation state survives application restarts
 
-### Zvýšená logika retry
+### Vylepšená logika retry
 
 Tři úrovně odolnosti:
 
@@ -112,7 +112,7 @@ Zaevidováno v:
 - /
 - /
 
-Uzel SignalR je zmapován pro připojení klientů.
+Signál Rhub je zmapován pro připojení klientů.
 
 ## Zkouška
 
@@ -120,8 +120,8 @@ Uzel SignalR je zmapován pro připojení klientů.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Nové zkušební pokrytí přidáno pro:
-  - Funkce PlaceholderService
-  - Organizace BackendTranslationService
+  - Placeholder Funkce služby
+  - BackendTranslation Organizace služeb
   - Nosiče JsonStringLocalizer
 
 ### Známá omezení
@@ -136,13 +136,13 @@ Uzel SignalR je zmapován pro připojení klientů.
 - - Překlady názvu země
 - - Synchronizace slovníku JSON
 - - Markdown překlad
-- - Vydávání zpráv SignalR
+- - Signál R publikování zpráv
 - - Zopakujte logiku pomocí maskáče
 - - Publisher interface
 - - Rozhraní služeb země
 - - Lokalizační servisní rozhraní
 - - Rozhraní služby dokumentů
-- - Rozhraní orchestru (aktualizováno)
+- - Orchestrační rozhraní (aktualizováno)
 - - Per- file translation metadata
 
 ### Aktualizované služby v
@@ -172,7 +172,7 @@ Všechny změny jsou aditivní:
 - Poziční formátování () funguje beze změny
 - Stávající formát slovníku JSON je nezměněn
 - Stávající struktura Markdown se nezměnila
-- SignalR zprávy používají stejný formát
+- Signál R zprávy používají stejný formát
 
 ## Migrační cesta
 

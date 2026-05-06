@@ -37,6 +37,12 @@ public class CountriesTranslationService(
 
     private string T(string text, object values) => _localizer[text, values].Value;
 
+    private string GetLocalizedLanguageName(string languageCode)
+    {
+        string languageName = _languageService.GetLanguageDisplayName(languageCode);
+        return string.IsNullOrWhiteSpace(languageName) ? languageCode : T(languageName);
+    }
+
     /// <summary>
     /// Synchronizes country names into localization dictionaries for all target languages.
     /// Translates each missing country name per-language and saves the dictionary immediately.
@@ -114,11 +120,13 @@ public class CountriesTranslationService(
                     DefaultDictionaryCount = report.DefaultDictionaryCount
                 };
 
+                string displayLanguage = GetLocalizedLanguageName(targetLanguage);
+
                 await _signalRPublisher.PublishMessageAsync(
                     runId,
                     LocalizationMessageType.Progress,
                     ProcessStage.TranslateCountries,
-                    T("Starting country translations for '{targetLanguage}'.", new { targetLanguage }));
+                    T("Starting country translations for '{targetLanguage}'.", new { targetLanguage = displayLanguage }));
 
                 var dictionaryResponse = await _languageService.GetDictionaryAsync(targetLanguage);
                 var dictionary = dictionaryResponse.Success && dictionaryResponse.Data != null
@@ -163,7 +171,7 @@ public class CountriesTranslationService(
                     ProcessStage.TranslateCountries,
                     T("Country translations for '{targetLanguage}' completed. Translated: {translatedCount}, Skipped: {skippedCount}, Errors: {errorCount}.", new
                     {
-                        targetLanguage,
+                        targetLanguage = displayLanguage,
                         translatedCount = translatedInLanguage,
                         skippedCount = skippedInLanguage,
                         errorCount = languageReport.Errors?.Count ?? 0
@@ -281,7 +289,11 @@ public class CountriesTranslationService(
                 runId,
                 LocalizationMessageType.Progress,
                 ProcessStage.TranslateCountries,
-                T("Saved dictionary for '{language}' ({entryCount} entries).", new { language, entryCount = dictionary.Count }));
+                T("Saved dictionary for '{language}' ({entryCount} entries).", new
+                {
+                    language = GetLocalizedLanguageName(language),
+                    entryCount = dictionary.Count
+                }));
 
             return;
         }
@@ -295,7 +307,11 @@ public class CountriesTranslationService(
             runId,
             LocalizationMessageType.Progress,
             ProcessStage.TranslateCountries,
-            T("Failed to save dictionary for '{language}': {message}", new { language, message = result.Message }),
+            T("Failed to save dictionary for '{language}': {message}", new
+            {
+                language = GetLocalizedLanguageName(language),
+                message = result.Message
+            }),
             isError: true);
     }
 

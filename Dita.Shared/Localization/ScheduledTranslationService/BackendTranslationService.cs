@@ -15,6 +15,7 @@ namespace Dita.Shared.Localization.ScheduledTranslationService;
 /// </summary>
 public class BackendTranslationService(
     IConfiguration configuration,
+    ILanguageService languageService,
     ILibreTranslateService translateService,
     ISignalRPublisher signalRPublisher,
     ICountriesTranslationService countriesService,
@@ -24,6 +25,7 @@ public class BackendTranslationService(
     ILogger<BackendTranslationService> logger) : IBackendTranslationService
 {
     private readonly AutomaticTranslationSettings _settings = configuration.GetSection("AutomaticTranslationSettings").Get<AutomaticTranslationSettings>() ?? new AutomaticTranslationSettings();
+    private readonly ILanguageService _languageService = languageService;
     private readonly ILibreTranslateService _translateService = translateService;
     private readonly ISignalRPublisher _signalRPublisher = signalRPublisher;
     private readonly IStringLocalizer<BackendTranslationService> _t = t;
@@ -148,7 +150,7 @@ public class BackendTranslationService(
                 T("Discovered {count} available languages: {languages}.", new
                 {
                     count = report.AvailableLanguages.Length,
-                    languages = string.Join(", ", report.AvailableLanguages)
+                    languages = string.Join(", ", report.AvailableLanguages.Select(GetLocalizedLanguageName))
                 }));
 
             if (!_settings.AppsettingsLoaded)
@@ -160,7 +162,10 @@ public class BackendTranslationService(
 
             if (!languagesResponse.Data.Contains(defaultLanguage, StringComparer.OrdinalIgnoreCase))
             {
-                throw new InvalidOperationException(T("Default language '{defaultLanguage}' is not supported by the translation server.", new { defaultLanguage }));
+                throw new InvalidOperationException(T("Default language '{defaultLanguage}' is not supported by the translation server.", new
+                {
+                    defaultLanguage = GetLocalizedLanguageName(defaultLanguage)
+                }));
             }
 
             // Build target language list
@@ -196,6 +201,12 @@ public class BackendTranslationService(
     private string T(string text) => _t[text].Value;
 
     private string T(string text, object values) => _t[text, values].Value;
+
+    private string GetLocalizedLanguageName(string languageCode)
+    {
+        string languageName = _languageService.GetLanguageDisplayName(languageCode);
+        return string.IsNullOrWhiteSpace(languageName) ? languageCode : T(languageName);
+    }
 
     private TranslationError CreateError(string source, ErrorCode code, string? details = null)
     {

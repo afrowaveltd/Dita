@@ -12,7 +12,7 @@ Die Monolithik wurde in vier spezialisierte Dienstleistungen zerlegt, die von ei
 
 - **BackendTranslationService** — Pipeline-Orchester (Servervalidierung, Bühnendelegation, Fehlerbehandlung)
 - **CountriesTranslationService** — Ländername Synchronisation (Englisch → Zielsprache)
-- **LocalizationTranslationService** — JSON Wörterbuchsynchronisation (mitgelieferte/entfernte Schlüssel)
+- **LocalizationTranslationService** — JSON Wörterbuch-Synchronisation (beigefügte/entfernte Schlüssel)
 - **DokumenteTranslationService** — Markdown-Dokumentationsübersetzung mit Block-Level-Tracking
 - **SignalRPublisher** — Echtzeit-Fortschrittsberichte über SignalR
 - **TranslationRetryService** — Bühnenretry mit Platzhalterbewahrung
@@ -32,7 +32,7 @@ Die Monolithik wurde in vier spezialisierte Dienstleistungen zerlegt, die von ei
 
 Eine neue Admin-Seite, die Echtzeitsicht in die Übersetzungspipeline bietet:
 
-- Zeigt alle SignalR-Ereignisse an, wie sie auftreten
+- Zeigt alle Signale R Ereignisse wie sie auftreten
 - Farbcodierte Nachrichtentypen (blue=started, green=completed, red=error)
 - Verbindungsstatus-Banner mit Auto-Reconnect
 - Nachrichtenzähler und Export nach JSON
@@ -52,7 +52,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ```
 
 Eigenschaften:
-- Platzhalterwerte zur Laufzeit oder zur Speicherung in
+- Platzhalterwerte, die zu Laufzeit bereitgestellt oder in
 - Automatische Maskierung/Restaurierung während der Übersetzung, um Korruption zu verhindern
 - Rückwärtskompatibel mit bestehenden Platzhaltern
 
@@ -62,8 +62,8 @@ Markdown-Dateien werden inkrementell übersetzt:
 
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-Level-Tracking**: Tracks Übersetzungsstatus pro Block
-- **Selective Retry**: Nur gescheiterte Blöcke werden auf dem nächsten Lauf wiedertranslatiert
-- **Metadata persistence**: Translation state survives application restarts
+- **Selective Retry**: Nur gescheiterte Blöcke werden auf dem nächsten Lauf wiederversetzt
+- **Metadata Persistenz**: Übersetzungsstaat überlebt Antragsneustarts
 
 ### verbesserte retry-logik
 
@@ -71,7 +71,7 @@ Drei Ebenen der Widerstandsfähigkeit:
 
 1. **HTTP retry** (LibreTranslateService): 5 Versuche mit exponentiellem Backoff (1s–5s)
 2. **State Retry** (TranslationRetryService): 3 weitere Versuche mit 30s Verzögerungen
-3. **Block-Retry** (DocumentsTranslationService): Verfehlte Markdown-Blöcke auf dem nächsten Lauf
+3. **Block retry** (DokumentsTranslationService): Verfehlte Markdown-Blöcke auf dem nächsten Lauf
 
 ### signalgeber melden
 
@@ -86,7 +86,7 @@ Echtzeit-Fortschrittsberichte für alle Pipeline-Operationen:
 
 ### werbungen.json
 
-Keine Änderungen. Die bestehende Konfiguration funktioniert weiterhin:
+Keine Änderungen. Die bestehende Konfiguration funktioniert weiter:
 
 ```json
 {
@@ -112,7 +112,7 @@ Registriert in:
 - /
 - /
 
-Die SignalR-Hub ist für Client-Verbindungen abgebildet.
+Das Signal R-Hub wird für Client-Verbindungen abgebildet.
 
 ## Prüfung
 
@@ -120,8 +120,8 @@ Die SignalR-Hub ist für Client-Verbindungen abgebildet.
 
 - **243/244 tests passieren** (1 durch gleichzeitigen zugriff auf die datei in der testumgebung übersprungen)
 - Neue Testabdeckung hinzugefügt für:
-  - PlaceholderService Funktionalität
-  - BackendTranslationService Orchester
+  - Platzhalter Service Funktionalität
+  - Zurück zur Übersicht Service Orchester
   - JsonStringLocalizer Platzhalter Indexe
 
 ### Bekannte Einschränkungen
@@ -136,7 +136,7 @@ Die SignalR-Hub ist für Client-Verbindungen abgebildet.
 - — Ländername Übersetzung
 - — JSON Wörterbuchsynchronisation
 - — Übersetzung von Markdown
-- — SignalR-Nachrichtenveröffentlichung
+- — Signal R-Nachrichtenveröffentlichung
 - — Wiederhollogik mit Platzhaltermaske
 - — verlegerschnittstelle
 - — Schnittstelle zum Landservice
@@ -159,9 +159,9 @@ Die SignalR-Hub ist für Client-Verbindungen abgebildet.
 
 ### Neue Dokumentation in
 
-- — Aktualisierte Pipelinedokumentation
-- — Leitfaden für die Platzhaltersysteme
-- — Dashboard Nutzungsanleitung
+- — Aktualisierte Pipeline-Dokumentation
+- — Leitfaden für den Platzhalter
+- — Gebrauchsanleitung des Armaturenbretts
 - — Übersicht über die technische Architektur
 
 ## Zurück zur Übersicht
@@ -172,7 +172,7 @@ Alle Änderungen sind additiv:
 - Positionsformatierung () funktioniert unverändert
 - Das bestehende JSON Wörterbuchformat ist unverändert
 - Vorhandene Markdown-Struktur ist unverändert
-- SignalR-Nachrichten verwenden das gleiche Format
+- Signal R-Nachrichten verwenden das gleiche Format
 
 ## Migrationspfad
 
@@ -192,7 +192,7 @@ Keine Migration erforderlich. Die Refactoring ist intern:
 
 Geplante Verbesserungen:
 
-1. **AI Feinabstimmung** — Übersetzungsrezension für Phrasen > 5 Wörter
+1. **AI Feinabstimmung** — Übersetzungsrezension für Phrasen nach der Maschine > 5 Wörter
 2. **Admin-Authentifizierung** — Administratorseiten für autorisierte Benutzer einschränken
 3. **Dictionary Editor** — Web UI für die Verwaltung von Lokalisierungsschlüsseln
 4. **Übersetzungsstatistik** — Diagramme mit Übersetzungszählungen und Fehlerquoten im Laufe der Zeit

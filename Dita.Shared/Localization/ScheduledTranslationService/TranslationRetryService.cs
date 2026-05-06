@@ -81,12 +81,12 @@ public class TranslationRetryService
             {
                 // Restore original placeholder names in the translated text
                 string restoredText = restore(response.Data.TranslatedText);
-                response.Data.TranslatedText = restoredText;
+                response.Data.TranslatedText = _placeholderService.RestorePlaceholdersFromSource(text, restoredText);
 
                 _logger.LogDebug(
                     "Translation succeeded for {TargetLanguage}. Placeholders preserved: {HasPlaceholders}.",
                     targetLanguage,
-                    _placeholderService.HasPlaceholders(restoredText));
+                    _placeholderService.HasPlaceholders(response.Data.TranslatedText));
 
                 return response;
             }
@@ -114,4 +114,5 @@ public class TranslationRetryService
         return Response<TranslateResult>.Fail(
             $"Translation failed after {attempt} attempts for language '{targetLanguage}'.");
     }
-}
+
+    }

@@ -92,6 +92,15 @@ public interface IPlaceholderService
         Dictionary<string, string>? referenceValues);
 
     /// <summary>
+    /// Repairs placeholder artifacts in translated text by recovering canonical placeholders
+    /// from the original source text when translation engines rewrite placeholder tokens.
+    /// </summary>
+    /// <param name="sourceText">The original source text containing canonical placeholders.</param>
+    /// <param name="translatedText">The translated text to repair.</param>
+    /// <returns>The translated text with recovered placeholders where possible.</returns>
+    string RestorePlaceholdersFromSource(string sourceText, string translatedText);
+
+    /// <summary>
     /// Saves the current placeholder values to disk.
     /// </summary>
     Task SaveAsync();

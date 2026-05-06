@@ -248,10 +248,44 @@ public class PlaceholderService : IPlaceholderService
                 return match.Value;
             });
 
-            return result;
+            return RestorePlaceholdersFromSource(template, result);
         };
 
         return (prepared, restore);
+    }
+
+    /// <inheritdoc />
+    public string RestorePlaceholdersFromSource(string sourceText, string translatedText)
+    {
+        if (string.IsNullOrWhiteSpace(sourceText)
+            || string.IsNullOrWhiteSpace(translatedText)
+            || !HasPlaceholders(sourceText))
+        {
+            return translatedText;
+        }
+
+        string[] placeholders = ExtractPlaceholders(sourceText);
+        if (placeholders.Length == 0)
+        {
+            return translatedText;
+        }
+
+        string result = translatedText;
+        for (int i = 0; i < placeholders.Length; i++)
+        {
+            string placeholderToken = $"{{{placeholders[i]}}}";
+            result = ReplaceArtifact(result, $"CLAS{i}", placeholderToken);
+            result = ReplaceArtifact(result, $"CLASS{i}", placeholderToken);
+            result = ReplaceArtifact(result, $"CZ{i}", placeholderToken);
+            result = ReplaceArtifact(result, $"PH{i}", placeholderToken);
+        }
+
+        if (placeholders.Length == 1 && string.Equals(result.Trim(), placeholders[0], StringComparison.OrdinalIgnoreCase))
+        {
+            return $"{{{placeholders[0]}}}";
+        }
+
+        return result;
     }
 
     private static int FindNthOccurrence(string text, string value, int n)
@@ -264,6 +298,20 @@ public class PlaceholderService : IPlaceholderService
             if (index < 0) return -1;
         }
         return index;
+    }
+
+    private static string ReplaceArtifact(string text, string artifact, string replacement)
+    {
+        if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(artifact))
+        {
+            return text;
+        }
+
+        return Regex.Replace(
+            text,
+            Regex.Escape(artifact),
+            replacement,
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 
     /// <inheritdoc />

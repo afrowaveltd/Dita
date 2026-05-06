@@ -32,8 +32,8 @@ Monolitike është dekompozuar në katër shërbime të specializuara të koordi
 
 Një faqe e re admin që ofron dukshmëri në kohë reale në tubacionin e përkthimit:
 
-- Shfaq të gjithë ngjarjet e Sinjalit kur ndodhin
-- Llojet e mesazheve të koduara me ngjyrë (foot=filluar, e gjelbër=e plotë, e kuqe=error)
+- Shfaq të gjithë sinjalin R
+- Llojet e mesazheve të koduara me ngjyrë (botër=filluar, e gjelbër=e plotë, e kuqe=error)
 - Lidhja me file auto- lidhur
 - Mesazhi
 
@@ -112,7 +112,7 @@ I regjistruar në:
 - /
 - /
 
-Qendra e Sinjalit është e pajisur për lidhjet e klientëve.
+Sinjali Raster është i pajisur për lidhje me klientët.
 
 ## Prova
 
@@ -120,8 +120,8 @@ Qendra e Sinjalit është e pajisur për lidhjet e klientëve.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Për:
-  - Funksioni i vendit
-  - Orkestra e dytë e interfaqes
+  - Place Funksionet e shërbimit
+  - Ndërfaqe orkestrimi i shërbimit
   - Treguesit vendshënues JsonString
 
 ### Kufizime të njohura
@@ -136,7 +136,7 @@ Qendra e Sinjalit është e pajisur për lidhjet e klientëve.
 - Përkthimi i emrit të vendit
 - Sinkronizimi i fjalorit JSON
 - Përkthimi
-- Mesazhi
+- Sinjali Printo mesazhin
 - ⇩ Përpiqu të provosh logjikën me maska vendshënuese
 - Ndërfaqe Editor
 - Ndërfaqe e shërbimit lokal
@@ -148,7 +148,7 @@ Qendra e Sinjalit është e pajisur për lidhjet e klientëve.
 ### Shërbimet e përditësuara
 
 - ⇩ Shtoi mbështetje vendshënuese me emër
-- U rifreskua për parametrin e ri
+- ⇩ Për tjetër
 - Menaxhues vendshënues i emëruar
 - Ndërfaqe
 
@@ -159,20 +159,20 @@ Qendra e Sinjalit është e pajisur për lidhjet e klientëve.
 
 ### Dokumentë i ri
 
-- Dokumentimi i ri i tubacionit
+- ⇩ Dokumentet e përditësuara të tubacionit
 - Udhëzues i sistemit të vendeve
 - ⇩ Udhëzues përdorimi i Dashboard
 - Pamje e arkitekturës teknike
 
-## Compatibiliteti
+## Kompatibiliteti
 
 Të gjitha ndryshimet janë shtesë:
 
 - Kodi aktual () funksionon i pandryshuar
-- Formati () i pozicionit
+- Rregullimi i pozicionit () funksionon i pandryshuar
 - Formati ekzistues i fjalorit JSON është i pandryshuar
 - Struktura ekzistuese e shënimit është e pandryshuar
-- Sinjale
+- Sinjali R
 
 ## Shtegu i emigracionit
 

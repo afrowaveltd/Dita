@@ -32,7 +32,7 @@ La monolita estis malkonstruita en kvar specialigitajn servojn kunordigitajn far
 
 Nova admin paĝo kiu disponigas realtempan videblecon en la tradukon dukto:
 
-- Montras ĉiujn SignalR-okazaĵojn kiam ili okazas
+- Apartigas ĉiujn signalojn R-okazaĵoj kiel ili okazas
 - Koloro-koditaj mesaĝspecoj (bluaj ekkomencitaj, verdaj kompletigitaj, ruĝa tero)
 - Ligo statusstandardo kun aŭto-religo
 - Mesaĝo kontraŭ kaj eksportado al JSON
@@ -112,7 +112,7 @@ Registrita en:
 - /
 - /
 
-La SignalR-nabo estas mapita ĉe por klientligoj.
+La Signalo R-nabo estas mapita ĉe por klientaj ligoj.
 
 ## Testado
 
@@ -120,13 +120,13 @@ La SignalR-nabo estas mapita ĉe por klientligoj.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Nova testpriraportado aldonis por:
-  - Situa funkcieco
-  - BackendTranslationService instrumentado
+  - Situo Servo
+  - Malantaŭa Translation Servorkestro
   - JsonStringLocalizer lokulo indeksuloj
 
 ### Konataj Limigoj
 
-- testo estas translokita kiam kurante en paralela ĉar multoblaj testkazoj dividas la saman dosieron. Ĝi pasas kiam ĝi kuras en izoliteco.
+- `SaveAndLoad_PreservesPlaceholders` test is skipped when running in parallel because multiple test instances share the same `placeholders.json` file. It passes when run in isolation.
 
 ## Nova dosierstrukturo
 
@@ -134,9 +134,9 @@ La SignalR-nabo estas mapita ĉe por klientligoj.
 
 - Pipeline orkestrotor
 - Landa nomo traduko
-- JSON-vorta sinkronigado
+- JSON-vortaro sinkronigado
 - Markdown traduko
-- SignalR-mesaĝo
+- Signalo - Signalo R mesaĝo publikiganta
 - Retry logiko kun lokulo maskanta
 - Publisher interfaco
 - Landa servinterfaco
@@ -148,7 +148,7 @@ La SignalR-nabo estas mapita ĉe por klientligoj.
 ### Ĝisdatigitaj servoj en
 
 - Aldonita nomita lokula subteno
-- Ĝisdatigita por nova parametro
+- - Ĝisdatigita por nova parametro
 - Nomita lokula administrado
 - Situa interfaco
 
@@ -159,7 +159,7 @@ La SignalR-nabo estas mapita ĉe por klientligoj.
 
 ### Nova dokumentado en
 
-- Ĝisdatigita dukto dokumentaro
+- - Ĝisdatigita dukto dokumentaro
 - Situa sistemo
 - Dashboard-uzokutimo
 - Teknika arkitektursuperrigardo
@@ -172,11 +172,11 @@ La SignalR-nabo estas mapita ĉe por klientligoj.
 - Pozicio formatado () funkcias senŝanĝa
 - Eksistanta JSON-vorta formato estas senŝanĝa
 - Existing Markdown strukturo estas senŝanĝa
-- Signalaj mesaĝoj uzas la saman formaton
+- Signalo Signalo R mesaĝoj uzas la saman formaton
 
 ## Migradoj
 
-Neniu migrado postulis. La rektoro estas interna:
+Neniu migrado postulis. La refaktoro estas interna:
 
 1. Malnova estis konservita kiel referenco kaj tiam anstataŭigita
 2. DI-registradoj estis ĝisdatigitaj por uzi novajn interfacojn

@@ -536,6 +536,26 @@ public class PlaceholderServiceTests
         Assert.Equal("Máte {count} zpráv", restore("Máte 5 zpráv"));
     }
 
+    [Fact]
+    public void RestorePlaceholdersFromSource_WithClassArtifacts_RestoresIndexedPlaceholders()
+    {
+        var service = CreateService();
+        string restored = service.RestorePlaceholdersFromSource(
+            "Saved dictionary for '{language}' ({entryCount} entries).",
+            "Uložený slovník pro 'CLAS0' (CLAS1 položek).");
+
+        Assert.Equal("Uložený slovník pro '{language}' ({entryCount} položek).", restored);
+    }
+
+    [Fact]
+    public void RestorePlaceholdersFromSource_WithSinglePlaceholderNameOnly_RestoresPlaceholderToken()
+    {
+        var service = CreateService();
+        string restored = service.RestorePlaceholdersFromSource("Live Translation Monitor", "Name");
+
+        Assert.Equal("Name", restored);
+    }
+
     private static PlaceholderService CreateService()
     {
         string filePath = Path.Combine(
