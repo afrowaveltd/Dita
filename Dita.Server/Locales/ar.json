@@ -85,7 +85,7 @@
   "Denmark": "\u0627\u0644\u062F\u0627\u0646\u0645\u0631\u0643",
   "Detected {addedCount} added and {removedCount} removed keys in default dictionary.": "\u0645\u064F\u0646\u0642\u0651\u064E\u0639\u064E \u27E70 \u0645\u064F\u0636\u0627\u0641\u0627\u064B \u0648 \u27E61 \u064A\u064F\u0632\u064A\u0644\u064F \u0627\u0644\u0645\u0641\u0627\u062A\u064A\u062D\u064E \u0641\u064A \u0642\u0650\u0628\u0644\u0650 \u0627\u0644\u0641\u0634\u0644\u0650.",
   "Disconnected": "\u0645\u0646\u0641\u0635\u0644\u0629",
-  "Discovered {count} available languages: {languages}.": "Discovered .0 available languages: \u27E61..",
+  "Discovered {count} available languages: {languages}.": "Discovered {0} available languages: {1}..",
   "Djibouti": "\u062C\u064A\u0628\u0648\u062A\u064A",
   "Dominica": "\u062F\u0648\u0645\u064A\u0646\u064A\u0643\u0627",
   "Dominican Republic": "\u0627\u0644\u062C\u0645\u0647\u0648\u0631\u064A\u0629 \u0627\u0644\u062F\u0648\u0645\u064A\u0646\u064A\u0643\u064A\u0629",

@@ -126,7 +126,7 @@ La Signalo R-nabo estas mapita ĉe por klientaj ligoj.
 
 ### Konataj Limigoj
 
-- `SaveAndLoad_PreservesPlaceholders` test is skipped when running in parallel because multiple test instances share the same `placeholders.json` file. It passes when run in isolation.
+- testo estas translokita kiam kurante en paralela ĉar multoblaj testkazoj dividas la saman dosieron. Ĝi pasas kiam ĝi kuras en izoliteco.
 
 ## Nova dosierstrukturo
 
