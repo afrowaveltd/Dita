@@ -1,6 +1,6 @@
 ﻿# Live-Übersetzung Dashboard
 
-Das Live Translation Dashboard ist eine Admin-Seite, die Echtzeitsicht in die automatische Übersetzungspipeline bietet. Es verbindet sich mit der SignalR-Hub und zeigt alle Pipeline-Ereignisse, wie sie auftreten.
+Das Live Translation Dashboard ist eine Admin-Seite, die Echtzeit-Übersicht in die automatische Übersetzungspipeline bietet. Es verbindet sich mit der SignalR-Hub und zeigt alle Pipeline-Ereignisse, wie sie auftreten.
 
 ## URL
 
@@ -12,14 +12,14 @@ Das Live Translation Dashboard ist eine Admin-Seite, die Echtzeitsicht in die au
 
 ### Echtzeit-Ereignisstrom
 
-Alle Signale R-Ereignisse aus der Übersetzungspipeline werden in einer Live-Updating-Tabelle angezeigt:
+Alle SignalR-Ereignisse aus der Übersetzungspipeline werden in einer Live-Updating-Tabelle angezeigt:
 
 - **Sequenznummer** — Monotonzähler innerhalb jeder Pipeline
 - **Timestamp** — Ortszeit, zu dem die Veranstaltung empfangen wurde
 - **Run ID** — Shortened GUID for correlation
 - **Stage** — Pipeline Stage Badge (CheckServer, TranslateCountries, etc.)
 - **Typ** — Nachrichtentypabzeichen (StageStarted, Progress, StageCompleted, etc.)
-- **Message** — Human-readable description
+- **Message** — Human lesbare Beschreibung
 - **Details** — Full JSON payload of the event data
 
 ### Farbcodierung
@@ -44,10 +44,10 @@ Die Verbindung verwendet eine automatische Wiederverbindung mit exponentiellem B
 ### Kontrolle
 
 - **Clear Feed** — Entfernt alle angezeigten Nachrichten und setzt den Zähler zurück
-- **Export JSON** — Downloads aller empfangenen Nachrichten als JSON-Datei zur Analyse
-- **Messagezähler** — Zeigt die Gesamtzahl der in dieser Sitzung empfangenen Veranstaltungen
+- **Export JSON** — Downloadt alle empfangenen Nachrichten als JSON-Datei zur Analyse
+- **Message Counter** — Zeigt die Gesamtzahl der in dieser Sitzung empfangenen Veranstaltungen
 
-## Signal R Nabe
+## SignalR Nabe
 
 Das Armaturenbrett verbindet:
 
@@ -58,7 +58,7 @@ const connection = new signalr.HubConnectionBuilder()
     .build();
 ```
 
-### Nachrichtenübermittlung
+### Mitteilungsvertrag
 
 ```typescript
 interface LocalizationHubMessage {
@@ -91,7 +91,7 @@ Warnzeichen
 
 ### zurück
 
-- **Lokalisation Hub** () — SignalR-Hub, der Nachrichten an alle angeschlossenen Kunden sendet
+- **LocalizationHub** () — SignalR-Hub, der Nachrichten an alle angeschlossenen Kunden sendet
 - **ISignalRPublisher** — Zusammenfassung über den Hub für den Einsatz in Übersetzungsdiensten
 - **SignalRPublisher** — Standard-Implementierung, die eine monotone Sequenz inkrementiert und sendet
 
@@ -121,10 +121,10 @@ Dita.Server/Pages/Admin/
 
 Geplante Verbesserungen für das Dashboard:
 
-- **Authentication** — Beschränken Sie den Zugang zu Benutzern mit der Rolle
+- **Authentication** — Beschränkung des Zugangs zu Benutzern mit der Rolle
 - **Filterung** — Filtern von Ereignissen nach Stufe, Typ oder ID
 - **Historical runs** — View completed runs from a database or log file
-- **Statistik** — Diagramme mit Übersetzungszahlen, Fehlerquoten und Latenz im Laufe der Zeit
+- **Statistik** — Diagramme mit Übersetzungszählungen, Fehlerquoten und Latenz im Laufe der Zeit
 - **Manuelle Trigger** — Tasten zum manuellen Start bestimmter Pipeline-Stufen
 - **Konfiguration** — Direkt aus dem Dashboard bearbeiten
 - **Language management** — Unterstützte Sprachen ansehen und bearbeiten
@@ -144,7 +144,7 @@ Geplante Verbesserungen für das Dashboard:
 1. Überprüfen Sie, ob die SignalR-Hub-URL zwischen Server () und Client () übereinstimmt
 2. Überprüfen Sie den Scheduler aktivieren
 3. Schauen Sie sich Server-Logs für Translation Pipeline-Fehler an
-4. Prüfen Sie den Browser Netzwerk-Tab für WebSocket-Nachrichten
+4. Browser-Netzwerk-Tab für WebSocket-Nachrichten überprüfen
 
 ### Nachrichten sind aus dem Auftrag
 

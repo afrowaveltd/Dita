@@ -12,7 +12,7 @@ Live Translation Dashboard yra admin puslapis, kuris suteikia realiu laiku matom
 
 ### @ info: whatsthis
 
-Signalas R vertimų biuro renginiai pateikiami atnaujinamoje lentelėje:
+All SignalR events from the translation building are should in a live- revising table:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -47,9 +47,9 @@ Jungtis naudoja automatinį reconnect su eksponentine nugaros: 0S, 2S, 5S, 10S, 
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Signalas R stebulė
+## SignalR mazgas
 
-Prietaisų skydelio jungtis:
+Prietaisų skydelis jungia:
 
 ```javascript
 const connection = new signalr.HubConnectionBuilder()
@@ -114,7 +114,7 @@ Dita.Server/Pages/Admin/
 1. Pradėk Ditą. Serverio programa
 2. Pereiti prie
 3. Sigger vertimo paleisti (arba laukti reguliatoriaus arba skambinti API)
-4. Stebėti įvykius realiu laiku
+4. Žiūrėti įvykius, rodomas realiu laiku
 5. @ info: whatsthis
 
 ## Tolesni veiksmai
@@ -141,13 +141,13 @@ Planuojami prietaisų skydelio patobulinimai:
 
 ### @ info: whatsthis
 
-1. Patikrinkite, ar SionalR mazgo URL atitinka serverio () ir kliento ()
+1. Patikrinkite, ar SionalR mazgo URL sutampa tarp serverio () ir kliento ()
 2. @ info: whatsthis
 3. Žvilgsnis į serverio žurnalus vertimo vamzdyno klaidoms
-4. Patikrinti naršyklę Comment
+4. Name
 
 ### Laiškai neveikia
 
 Laukas garantuoja užsakymas per vieną kartą. (neprivaloma)
-- Kelių vamzdynų tiesimas iš dalies sutampantis (neturėtų įvykti dėl semaforo šliuzo)
+- Kelių vamzdynų tiesimas iš dalies sutampa (neturėtų įvykti dėl semaforo užrakto)
 - Naršyklės atvaizdavimo problemos (pabandykite atnaujinti puslapį)

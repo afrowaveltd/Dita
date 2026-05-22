@@ -12,7 +12,7 @@ Live Translation Dashboard administratzaile-orri bat da, eta denbora errealeko i
 
 ### Denbora errealeko gertaeren korrontea
 
-Seinale guztiak Itzulpen-hodiko R gertaerak taula bizigarri batean erakusten dira:
+Translazio-hodiko seinale-gertaera guztiak taula bizi batean bistaratzen dira:
 
 - **Sequence zenbakia** — Monotonic-en kontagailua hodi bakoitzaren barruan
 - **Timestamp** - Gertaera jaso zeneko ordu lokala
@@ -47,7 +47,7 @@ Konexioak konexio automatikoa erabiltzen du atzeraldi esponentzialarekin: 0s, 2s
 - **Export JSON** - Jasotako mezu guztiak JSON fitxategi gisa deskargatzen ditu analisirako
 - **Mezu-kontagailua** - Saio honetan jasotako gertaera kopurua erakusten du
 
-## Seinalea R hub
+## Seinale-zentroa
 
 Arbela honela konektatzen da:
 
@@ -91,7 +91,7 @@ Abisu-txartela
 
 ### Motorra
 
-- ** Lokalizazioa Hub** () - konektatutako bezero guztiei mezuak igortzen dizkien seinale-zentroa
+- **LocalizationHub** () - Konektatutako bezero guztiei mezuak igortzen dizkien seinale-zentroa
 - **ISignalRPublisher** — Laburpena itzulpen-zerbitzuetan erabiltzeko
 - **SignalRPublisher** - Sekuentzia monotoniko bat eta emisioak handitzen dituen inplementazio lehenetsia
 
@@ -144,7 +144,7 @@ Hobekuntzak antolatu dira arbelerako:
 1. Egiaztatu SignalR-aren URLa zerbitzariaren () eta bezeroaren () artean bat datorrela
 2. Egiaztatu antolatzailea gaituta dagoela
 3. Begiratu zerbitzarien erregistroak itzulpen-hodien erroreetarako
-4. Egiaztatu arakatzailea WebSocket mezuen sareko fitxa
+4. Egiaztatu arakatzailearen sareko fitxa webSocket mezuetarako
 
 ### Mezuak ez daude ordenan
 

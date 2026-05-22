@@ -12,13 +12,13 @@ Le tableau de bord de la traduction en direct est une page d'administration qui 
 
 ### Flux d'événements en temps réel
 
-Tous les signaux Les événements R du pipeline de traduction sont affichés dans un tableau de mise à jour en direct:
+Tous les événements SignalR du pipeline de traduction sont affichés dans une table de mise à jour en direct:
 
-- **Numéro de séquence** — Compteur monotonique dans chaque conduite
+- ** Numéro de séquence** — Compteur monotonique dans chaque conduite
 - **Timestamp** — Heure locale où l'événement a été reçu
 - **ID de course** — GUID raccourci pour corrélation
 - **Étage** — Badge de la scène pipeline (CheckServers, TranslateCountries, etc.)
-- **Type** — Badge de type message (StageStarted, Progress, StageComplete, etc.)
+- **Type** — Badge type message (StageStarted, Progress, StageComplet, etc.)
 - **Message** — Description lisible par l'homme
 - **Détails** — Charge utile complète JSON des données de l'événement
 
@@ -34,7 +34,7 @@ Blanc (par défaut)
 ### État de la connexion
 
 Une bannière d'état en haut montre :
-- **Connectation** — Établissement d'une connexion SignalR
+- **Connectation** — Établissement de la connexion signalR
 - **Connecté** — Réception des événements normalement
 - **Reconnecting** — Connexion perdue, essayant de se reconnecter
 - **Déconnecté** — Fermeture de la connexion
@@ -45,9 +45,9 @@ La connexion utilise un reconnect automatique avec backoff exponentiel: 0s, 2s, 
 
 - **Feed clair** — Supprime tous les messages affichés et réinitialise le compteur
 - **Export JSON** — Téléchargements tous les messages reçus en tant que fichier JSON pour analyse
-- **Message compteur** — Indique le nombre total d'événements reçus au cours de cette session
+- ** Compteur de messages** — Indique le nombre total d'événements reçus au cours de cette session
 
-## Signal Moyeu R
+## Moyeu signalR
 
 Le tableau de bord se connecte à :
 
@@ -91,7 +91,7 @@ Insigne d'avertissement
 
 ### Moteur
 
-- **Localisation Hub** () — Hub SignalR qui diffuse des messages à tous les clients connectés
+- **LocalisationHub** () — Hub SignalR qui diffuse des messages à tous les clients connectés
 - **ISignalRPublisher** — Abstraction sur le hub pour utilisation dans les services de traduction
 - **SignalRPublisher** — Implémentation par défaut qui incrémente une séquence monotonique et des émissions
 
@@ -144,10 +144,10 @@ Améliorations prévues pour le tableau de bord :
 1. Vérifiez que l'URL du hub SignalR correspond entre le serveur () et le client ()
 2. Vérifier que le programmeur est activé dans
 3. Regardez les journaux de serveurs pour les erreurs de pipeline de traduction
-4. Vérifiez le navigateur Onglet réseau pour les messages WebSocket
+4. Vérifiez l'onglet réseau du navigateur pour les messages WebSocket
 
 ### Les messages sont hors service
 
 Le champ garantit la commande en une seule fois. Si les messages apparaissent hors ordre, ils peuvent indiquer :
-- Multiples écoulements de pipeline se chevauchant (ne devrait pas se produire en raison de la fermeture du sémaphore)
+- Multiples écoulements de pipeline se chevauchant (ne devrait pas se produire en raison de l'écluse du sémaphore)
 - Problèmes de rendu du navigateur (essayer de rafraîchir la page)

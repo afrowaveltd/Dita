@@ -32,9 +32,9 @@ Monolithic به چهار سرویس تخصصی هماهنگ شده توسط یک
 
 یک صفحه مدیریت جدید که دید زمان واقعی را به خط لوله ترجمه ارائه می دهد:
 
-- نمایش همه سیگنال ها رویدادهای R همانطور که رخ می دهند
+- نمایش همه حوادث سیگنال را به عنوان آنها رخ می دهد
 - انواع پیام های رنگی (Blue=started, Green=completed, Red=error)
-- بنر وضعیت اتصال با auto-reconnect
+- برچسب وضعیت اتصال با auto-reconnect
 - شمارنده پیام و صادرات به JSON
 
 ### نام: Placeholder
@@ -53,7 +53,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ویژگی ها:
 - ارزش های سهامدار ارائه شده در زمان اجرا یا ذخیره شده در
-- ماسک برداری خودکار در طول ترجمه برای جلوگیری از فساد
+- ماسک زدن خودکار در طول ترجمه برای جلوگیری از فساد
 - Backward سازگار با سهامداران فعلی
 
 ### ترجمه مقدماتی
@@ -63,7 +63,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
 - **Selective retry**: Only failed blocks are re-translated on the next run
-- ** پایداری داده ها **: دولت ترجمه از راه اندازی مجدد درخواست بقا می یابد
+- **Metadata persistence**: Translation state survives application restarts
 
 ### Retry Logic
 
@@ -84,9 +84,9 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ## تغییرات پیکربندی
 
-### برنامه ریزی
+### تنظیمات
 
-هیچ تغییر شکستی پیکربندی موجود همچنان به کار ادامه می دهد:
+هیچ تغییر شکستی وجود ندارد. پیکربندی موجود همچنان به کار ادامه می دهد:
 
 ```json
 {
@@ -112,21 +112,21 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - /
 - /
 
-سیگنال راب برای اتصالات مشتری نقشه برداری می شود.
+مرکز سیگنالR برای اتصالات مشتری نقشه برداری شده است.
 
 ## تست
 
 ### وضعیت آزمون
 
-- **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
+- **243 / 244 تست عبور ** (1 به دلیل دسترسی فایل همزمان در محیط آزمایش از بین رفته)
 - پوشش تست جدید اضافه شده برای:
-  - Placeholder عملکرد خدمات
-  - BackendTranslation خدمات ارکستر
-  - JsonStringLocalizer Indexers
+  - قابلیت های PlaceholderService
+  - BackendTranslation ارکستر
+  - JsonStringLocalizer Placeholder
 
 ### محدودیت های شناخته شده
 
-- تست زمانی که به طور موازی اجرا می شود، از بین می رود، زیرا چندین مورد آزمون همان فایل را به اشتراک می گذارند. هنگامی که در انزوا اجرا می شود.
+- تست زمانی که به صورت موازی اجرا می شود، از بین می رود، زیرا چندین مورد آزمون همان فایل را به اشتراک می گذارند. هنگامی که در انزوا اجرا می شود.
 
 ## ساختار فایل جدید
 
@@ -136,7 +136,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - نام کشور ترجمه
 - هماهنگ سازی فرهنگ لغت JSON
 - ترجمه های Markdown
-- سیگنال انتشار پیام R
+- انتشار پیام سیگنالR
 - – Retry Logic with Placeholder Masking
 - رابط ناشر
 - رابط خدمات کشور
@@ -148,7 +148,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ### خدمات به روز رسانی در
 
 - اضافه شده به نام حمایت از Placeholder
-- - به روز رسانی برای پارامتر جدید
+- به روز رسانی برای پارامتر جدید
 - نام گذاری مدیریت Placeholder
 - رابط کاربری Placeholder
 
@@ -172,7 +172,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - قالب بندی موضعی () بدون تغییر کار می کند
 - فرمت دیکشنری JSON بدون تغییر است
 - ساختار فعلی Markdown بدون تغییر است
-- سیگنال سیگنال پیام های R از همان فرمت استفاده می کنند
+- پیام های سیگنال R از همان فرمت استفاده می کنند
 
 ## مسیر مهاجرت
 
@@ -185,7 +185,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ## بهبود عملکرد
 
 - **Reduced memory usage**: Files saved per-language immediately instead of holding all in memory
-- **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
+- ** افزایش تدریجی اجرا می شود ** فقط بلوک های مارک معکوس تغییر یافته / اصلاح شده دوباره ترجمه می شوند
 - **Better visibility**: Real-time progress helps diagnose slow stages
 
 ## افزایش آینده
@@ -193,7 +193,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 بهبود برنامه ریزی شده:
 
 1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
-2. ** احراز هویت اداری ** صفحات مدیریت محدود برای کاربران مجاز
+2. ** تاییدیه مدیریت ** صفحات مدیریت محدود برای کاربران مجاز
 3. **Dictionary editor** — Web UI for managing localization keys
 4. ** آمار ترجمه ** نمودارها نشان دهنده میزان ترجمه و نرخ خطا در طول زمان
 5. **Custom placeholder syntax** — Support for alternate placeholder formats

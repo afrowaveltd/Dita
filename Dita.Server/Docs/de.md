@@ -2,7 +2,7 @@
 
 ## Überblick
 
-Dieses Dokument fasst alle Änderungen an dem automatischen Übersetzungsdienst von Dita zusammen, einschließlich der Architektur-Refactoring, neue Features, Beobachtungsverbesserungen und Lokalisierung Verbesserungen.
+Dieses Dokument fasst alle Änderungen an dem automatischen Übersetzungsdienst von Dita zusammen, einschließlich Architektur-Refactoring, neue Features, Beobachtungsverbesserungen und Lokalisierung Verbesserungen.
 
 ## Architekturveränderungen
 
@@ -32,7 +32,7 @@ Die Monolithik wurde in vier spezialisierte Dienstleistungen zerlegt, die von ei
 
 Eine neue Admin-Seite, die Echtzeitsicht in die Übersetzungspipeline bietet:
 
-- Zeigt alle Signale R Ereignisse wie sie auftreten
+- Zeigt alle SignalR-Ereignisse an, wie sie auftreten
 - Farbcodierte Nachrichtentypen (blue=started, green=completed, red=error)
 - Verbindungsstatus-Banner mit Auto-Reconnect
 - Nachrichtenzähler und Export nach JSON
@@ -52,7 +52,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ```
 
 Eigenschaften:
-- Platzhalterwerte, die zu Laufzeit bereitgestellt oder in
+- Platzhalterwerte, die zur Laufzeit bereitgestellt oder gespeichert werden
 - Automatische Maskierung/Restaurierung während der Übersetzung, um Korruption zu verhindern
 - Rückwärtskompatibel mit bestehenden Platzhaltern
 
@@ -63,7 +63,7 @@ Markdown-Dateien werden inkrementell übersetzt:
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-Level-Tracking**: Tracks Übersetzungsstatus pro Block
 - **Selective Retry**: Nur gescheiterte Blöcke werden auf dem nächsten Lauf wiederversetzt
-- **Metadata Persistenz**: Übersetzungsstaat überlebt Antragsneustarts
+- **Metadaten-Persistenz**: Übersetzungszustand überlebt Antrag neustarts
 
 ### verbesserte retry-logik
 
@@ -71,7 +71,7 @@ Drei Ebenen der Widerstandsfähigkeit:
 
 1. **HTTP retry** (LibreTranslateService): 5 Versuche mit exponentiellem Backoff (1s–5s)
 2. **State Retry** (TranslationRetryService): 3 weitere Versuche mit 30s Verzögerungen
-3. **Block retry** (DokumentsTranslationService): Verfehlte Markdown-Blöcke auf dem nächsten Lauf
+3. **Block-Retry** (DocumentsTranslationService): Versäumte Markdown-Blöcke auf dem nächsten Lauf
 
 ### signalgeber melden
 
@@ -86,7 +86,7 @@ Echtzeit-Fortschrittsberichte für alle Pipeline-Operationen:
 
 ### werbungen.json
 
-Keine Änderungen. Die bestehende Konfiguration funktioniert weiter:
+Keine Änderungen. Die bestehende Konfiguration funktioniert weiterhin:
 
 ```json
 {
@@ -112,7 +112,7 @@ Registriert in:
 - /
 - /
 
-Das Signal R-Hub wird für Client-Verbindungen abgebildet.
+Die SignalR-Hub ist für Client-Verbindungen abgebildet.
 
 ## Prüfung
 
@@ -120,8 +120,8 @@ Das Signal R-Hub wird für Client-Verbindungen abgebildet.
 
 - **243/244 tests passieren** (1 durch gleichzeitigen zugriff auf die datei in der testumgebung übersprungen)
 - Neue Testabdeckung hinzugefügt für:
-  - Platzhalter Service Funktionalität
-  - Zurück zur Übersicht Service Orchester
+  - PlaceholderService Funktionalität
+  - BackendTranslationService Orchester
   - JsonStringLocalizer Platzhalter Indexe
 
 ### Bekannte Einschränkungen
@@ -136,7 +136,7 @@ Das Signal R-Hub wird für Client-Verbindungen abgebildet.
 - — Ländername Übersetzung
 - — JSON Wörterbuchsynchronisation
 - — Übersetzung von Markdown
-- — Signal R-Nachrichtenveröffentlichung
+- — SignalR-Nachrichtenveröffentlichung
 - — Wiederhollogik mit Platzhaltermaske
 - — verlegerschnittstelle
 - — Schnittstelle zum Landservice
@@ -159,9 +159,9 @@ Das Signal R-Hub wird für Client-Verbindungen abgebildet.
 
 ### Neue Dokumentation in
 
-- — Aktualisierte Pipeline-Dokumentation
+- — Aktualisierte Pipelinedokumentation
 - — Leitfaden für den Platzhalter
-- — Gebrauchsanleitung des Armaturenbretts
+- — Dashboard Nutzungsanleitung
 - — Übersicht über die technische Architektur
 
 ## Zurück zur Übersicht
@@ -172,7 +172,7 @@ Alle Änderungen sind additiv:
 - Positionsformatierung () funktioniert unverändert
 - Das bestehende JSON Wörterbuchformat ist unverändert
 - Vorhandene Markdown-Struktur ist unverändert
-- Signal R-Nachrichten verwenden das gleiche Format
+- SignalR-Nachrichten verwenden dasselbe Format
 
 ## Migrationspfad
 
@@ -192,7 +192,7 @@ Keine Migration erforderlich. Die Refactoring ist intern:
 
 Geplante Verbesserungen:
 
-1. **AI Feinabstimmung** — Übersetzungsrezension für Phrasen nach der Maschine > 5 Wörter
+1. **AI Feinabstimmung** — Übersetzungsrezension für Phrasen > 5 Wörter
 2. **Admin-Authentifizierung** — Administratorseiten für autorisierte Benutzer einschränken
 3. **Dictionary Editor** — Web UI für die Verwaltung von Lokalisierungsschlüsseln
 4. **Übersetzungsstatistik** — Diagramme mit Übersetzungszählungen und Fehlerquoten im Laufe der Zeit

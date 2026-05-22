@@ -2,13 +2,13 @@
 
 ## Comment
 
-Šiame dokumente apibendrinami visi pakeitimai, padaryti į Dita automatinio vertimo paslaugos, įskaitant architektūros reaktoriaus, naujų funkcijų, stebimumo gerinimo, ir lokalizacijos patobulinimai.
+Šiame dokumente apibendrinami visi pakeitimai, padaryti "Dita" automatinio vertimo paslaugos, įskaitant architektūros reaktoriaus, naujų funkcijų, stebimumo gerinimo, ir lokalizacijos patobulinimai.
 
 ## Architektūros pokyčiai
 
 ### Name
 
-Monolitinis skaidomas į keturias specializuotas paslaugas, koordinuojamas lengvo orkestro:
+Monolitinis buvo suskaidytas į keturias specializuotas paslaugas, koordinuojamas lengvo orkestro:
 
 - **BackendTranslationService** — Pipeline orchestrator (server validation, stage delegation, error handling)
 - **CountriesTranslationService** — Country name synchronization (English → target language)
@@ -32,7 +32,7 @@ Monolitinis skaidomas į keturias specializuotas paslaugas, koordinuojamas lengv
 
 Naujas admin puslapis, kuris suteikia realaus laiko matomumą į vertimo vamzdyną:
 
-- Name R įvykiai, kai jie įvyksta
+- Rodo visus SignalR įvykius, kai jie įvyksta
 - Spalvoto kodo pranešimų tipai (mėlyna = pradėta, žalia = užbaigta, raudona = klaida)
 - Jungiamosios būklės baneris su prijungimu automatiškai
 - Laiško skaitiklis ir eksportas į JSON
@@ -86,7 +86,7 @@ Visų vamzdynų operacijų pažangos ataskaitoms:
 
 ### appsettings.json
 
-Nekeisti. Esama konfigūracija toliau veikia:
+Nekeisti. Egzistuojanti konfigūracija toliau veikia:
 
 ```json
 {
@@ -112,7 +112,7 @@ Registruota:
 - /
 - /
 
-Signalas R centras yra susietas klientų ryšiams.
+SignalR centras sudarytas klientų ryšiams.
 
 ## Testavimas
 
@@ -120,8 +120,8 @@ Signalas R centras yra susietas klientų ryšiams.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Pridedama nauja bandymų aprėptis:
-  - Talpyklės laikiklis Tarnybos funkcijos
-  - Comment Tarnybos struktūra
+  - PlaceholderService funkcijos
+  - BackendTranslationService orchestration
   - JsonStringLocalizer klaviatūros indeksai
 
 ### Žinomi apribojimai
@@ -136,11 +136,11 @@ Signalas R centras yra susietas klientų ryšiams.
 - - Šalies pavadinimo vertimas
 - - JSON žodyno sinchronizavimas
 - - Markdown vertimas
-- - Signalas Laiškų publikavimas
+- - SignalR pranešimų leidyba
 - - Kartojama logika su placebu
 - - Leidėjo sąsaja
-- - Šalies paslaugų sąsaja
-- - Lokalizacijos paslaugos sąsaja
+- Šalies paslaugų sąsaja
+- Lokalizacijos paslaugos sąsaja
 - - Dokumentų aptarnavimo sąsaja
 - - Orkestro sąsaja (atnaujinta)
 - - Pe- file vertimo metaduomenys
@@ -148,7 +148,7 @@ Signalas R centras yra susietas klientų ryšiams.
 ### Atnaujinta Paslaugos
 
 - - Pridėta pavadintą placeholder parama
-- - Atnaujinta pagal naują parametrą
+- - Atnaujinta dėl naujo parametro
 - - Name
 - Kameros laikiklio sąsaja
 
@@ -171,8 +171,8 @@ III PRIEDAS
 - NAME OF TRANSLATORS
 - Padėties formatavimas () darbai nepasikeitė
 - NAME OF TRANSLATORS
-- @ info: whatsthis
-- Signalas R pranešimai naudoja tą patį formatą
+- @ info: tooltip
+- SignalR pranešimai naudoja tą patį formatą
 
 ## Migracijos kelias
 

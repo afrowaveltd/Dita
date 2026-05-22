@@ -12,7 +12,7 @@ Live Translation Dashboard הוא דף ניהול המספק חשיפה בזמן
 
 ### זרם אירועים בזמן אמת
 
-כל אות אירועי R מצנרת התרגום מוצגים בטבלה חיה:
+כל אירועי אותר מצנרת התרגום מוצגים בטבלה חיה:
 
 - ** מספר מקריות** - מול מונוטוני בתוך כל צינור
 - **Timestamp** — Local time when the event was received
@@ -47,7 +47,7 @@ Live Translation Dashboard הוא דף ניהול המספק חשיפה בזמן
 - **Export JSON** - הורד את כל ההודעות שהתקבלו כקובץ JSON לניתוח
 - **Message counter** — Shows total number of events received in this session
 
-## אותות רכז R
+## מרכז אותות
 
 לוח המחוונים מתחבר ל:
 
@@ -91,17 +91,17 @@ interface LocalizationHubMessage {
 
 ### חזרה
 
-- **LocalizationHub** (`/hubs/localization`) — SignalR hub that broadcasts messages to all connected clients
+- ** LocalizationHub** () - מרכז אותות שמשדר הודעות לכל הלקוחות המחוברים
 - **ISignalRPublisher** - קיצור של המרכז לשימוש בשירותי תרגום
-- **SignalRPublisher**- Default application that increments a Monotonicרצף ו-Switchs
+- **SignalRPublisher** – Default application that increments a Monotonicרצף ו-Switchs
 
 ### החזית
 
 - HTML/JS עם Bootstrap 5
-- השתמש ב- Microsoft SignalR JavaScript Customer Library (מטען מ- CDN)
+- שימוש ב- Microsoft SignalR JavaScript Customer Library (מטען מ- CDN)
 - אין הוראות בצד השרת הנדרש להזנת האירוע
 
-### מבנה Page
+### מבנה עמוד
 
 ```
 Dita.Server/Pages/Admin/
@@ -123,11 +123,11 @@ Dita.Server/Pages/Admin/
 
 - ** Authentication** - הגבלת גישה למשתמשים עם התפקיד
 - **Filtering** — Filter events by stage, type, or run ID
-- ** ריצות היסטוריות ** - תצוגה הושלמה פועל ממסד נתונים או קובץ יומן
+- ** ריצות היסטוריות** - תצוגה הושלמה פועל ממסד נתונים או קובץ יומן
 - **Statistics** - תרשימים המציגים ספירות תרגום, שיעורי שגיאה, ושקיפות לאורך זמן
-- ** גורמים מנליים** - Buttons כדי להתחיל באופן ידני שלבים ספציפיים של צינורות
+- **Manual triggers** — Buttons to manually start specific pipeline stages
 - **Configuration** - עריכה ישירות מן המחוונים
-- ** ניהול לבנגואז** - View and Edit Languages
+- **Language management** — View and edit supported languages
 - ** תצוגה מקדימה ** - Browse and Search Localization dictionaries
 
 ## פתרון בעיות
@@ -144,7 +144,7 @@ Dita.Server/Pages/Admin/
 1. בדוק כי כתובת ה-URL של SignalR בין השרת () ללקוח ()
 2. בדוק את לוח הזמנים ניתן
 3. ראה יומני השרת עבור שגיאות צינור תרגום
-4. בדוק את הדפדפן כרטיסיית רשת עבור הודעות WebSocket
+4. בדוק את הכרטיסיה להודעות WebSocket
 
 ### הודעות הן מתוך סדר
 

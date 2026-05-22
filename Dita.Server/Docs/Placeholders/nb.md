@@ -1,6 +1,6 @@
 ﻿# Stedholdere i lokalisering
 
-Dita støtter **navngitte plassholdere** i lokaliseringsstrenger, noe som gjør det mulig å sette inn dynamiske verdier ved kjøring samtidig som riktig grammatikk bevares på tvers av språk.
+Dita støtter **navngitt plassholdere** i lokaliseringsstrenger, noe som gjør det mulig å sette inn dynamiske verdier ved kjøring samtidig som riktig grammatikk bevares på tvers av språk.
 
 ## Syntaks
 
@@ -15,13 +15,13 @@ Stedholdere bruker curly-brace syntaksen i JSON ordbok verdier:
 
 I motsetning til posisjonsinnehavere ( ), er navngitte plassinnehavere **språklig-agnostisk** — oversettere kan ombestille dem til å matche målspråklig grammatikk uten å bryte koden.
 
-## Lagring
+## Oppbevaring
 
 Navngitte plassholdere har to verdikilder:
 
 ### 1. Kjøretidverdier (anbefales for dynamiske data)
 
-Pass verdier direkte når du henter den lokale strengen:
+Passer verdier direkte når du henter den lokaliserte strengen:
 
 ```csharp
 // In a Razor page or controller
@@ -147,22 +147,22 @@ Dette sikrer at:
 
 ## Beste praksis
 
-1. ** Bruke beskrivende navn**: er bedre enn eller
+1. **Use descriptive names**: `{userName}` is better than `{0}` or `{name}`
 2. **Hold plassholdere minimal**: For mange plassholdere gjør oversettelse vanskeligere
-3. **Dokument forventet typer**: Kommentarer i JSON-filen hjelper oversettere å forstå kontekst
-4. **Prefer løpsverdier**: For virkelig dynamiske data (brukernavn, tall, datoer), passere verdier på køyretid
-5. ** Bruk lagrede verdier for standard**: For konfigurasjon som sjelden endres (appnavn, støtte e-post)
-6. **Validate placeholders**: Use `ExtractPlaceholders()` to verify all expected placeholders are provided
+3. ** Dokument forventet typer**: Kommentarer i JSON-filen hjelper oversettere å forstå kontekst
+4. **Prefer løpsverdier**: For virkelig dynamiske data (brukernavn, teller, datoer), passere verdier på kjøretid
+5. ** Bruk lagrede verdier for standard**: For konfigurasjon som sjelden endres (søkenavn, støtte e-post)
+6. **Validate stedholdere**: Brukes til å verifisere alle forventet stedholdere er gitt
 
 ## Integrasjon med automatisk oversettelse
 
 Den håndterer automatisk bevaring av plassholderen under LibreTranslate-samtaler. Ingen ekstra konfigurasjon er nødvendig.
 
-De og begge bruker gjenforsøkstjenesten, så alle JSON ordbok oversettelser gjennomsiktig støtte navngitte stedholdere.
+De og begge bruker gjenforsøkstjenesten, så alle JSON ordbok oversettelser transparent støtte navngitte stedholdere.
 
 ## Bakoverkompatibilitet
 
-Eksisterende kode ved bruk av posisjonsinnehavere eller ingen stedholdere fortsetter å arbeide uendret:
+Eksisterende kode ved bruk av posisjonsinnehavere eller ingen stedsinnehavere fortsetter å arbeide uendret:
 
 ```csharp
 // Still works exactly as before
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Den navngitte stedholder API er additiv - det bryter ikke eksisterende bruk.
+Den navngitte plassholder API er additiv - det bryter ikke eksisterende bruk.

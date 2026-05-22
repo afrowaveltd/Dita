@@ -1,6 +1,6 @@
 ﻿# Əməkdaşlıq
 
-Bu səhifə Ditanın avtomatik çeviri sisteminin modulu mimarisini tarif edir, təhlükəsizliyi, testability və dayanıqlığını artırmaq üçün təklif edir.
+Bu səhifə Ditanın avtomatik çeviri sisteminin modulu mimarisini izah edir, təhlükəsizliyi, testability və dayanıqlığını artırmaq üçün təklif edir.
 
 ## Dizayn məhsulları
 
@@ -9,12 +9,12 @@ Yeniləşdirilməsi orijinal monolithic dizaynı ilə bir neçə məlumatlaşdı
 - ** Şirkətlərin məlumatlaşdırılması**: Hər bir çeviri domaini (sayt, JSON dictionaries, Markdown) izole edilir.
 - **Incremental persistence**: Files are saved per-language immediately after translation, reducing memory usage and providing earlier results.
 - **Resilience**: Bir çox retry səviyyəsi bütün boru quraşdırmadan əvvəlliyyatları işləyir.
-- **Observability**: Every significant operation is reported via SignalR for real-time monitoring.
+- **Observability**: Real-time monitorinq üçün SignalR haqqında hər hansı məsləhət bildirilir.
 - **Extensibility**: New translation targets can be added by implementing a single interface.
 
 ## Xidmət dekomporativ
 
-### BackendTranslationService
+### BackendTranslationService (orchestrator)
 
 **Responsibilities**:
 - Lineer həyahət sürətli idarəetmə (başa, tamamilə, səyahət)
@@ -45,13 +45,13 @@ Yeniləşdirilməsi orijinal monolithic dizaynı ilə bir neçə məlumatlaşdı
 **Responsibilities**:
 - Əvvəlki snapshot ilə cari default sözləşdirilməsi ilə əlavə / izləndirilmiş anahtarlar
 - Əməliyyat dilinə əlavə edib
-- Hər bir hedef dildən silinmə qaydaları
-- Birbaşa əlaqə üçün snapshot edin
+- Haqqında silinmiş şəkillərin silinməsini
+- Bir sonraki müqayisə üçün snapshot edin
 
 **Key davranış**:
 - Manual çevirilər haqqında əvvəl əvvvəllik (baharlanandan)
 - Əvvəlki mövzular təsdiq edilir və hər hansı bir dərhal qəbul edilir
-- Açıq rənglər haqqında silinir
+- Qeydiyyatdan keçməli
 - Snapshot yalnız bütün dillərdən sonra tam uğurlu
 
 ### Tarix
@@ -61,7 +61,7 @@ Yeniləşdirilməsi orijinal monolithic dizaynı ilə bir neçə məlumatlaşdı
 - SHA-256-hesapları istifadə edən məhsul faylları
 - In-blok çeviri statusu
 - Per-block retry ilə bloq blok-by-block
-- Müqaviləsindən sonra Markdown strategiyası
+- Müqayisə sonra Markdown strategiyası
 - Hər bir hər kəs dili faylını qəbul edin
 
 **Key davranış**:
@@ -74,10 +74,10 @@ Yeniləşdirilməsi orijinal monolithic dizaynı ilə bir neçə məlumatlaşdı
 
 Sistem üç səviyyədə retries təyin edir:
 
-### level - http (libretranslateservice)
+### level - http://libretranslateservice
 
 - Üstat geri dönüş ilə 5 əməkdaşlıq (1s, 2s, 3s, 4s, 5s)
-- Ağ vaxtları, 5xx məlumatları və səyahətlər
+- Ağ vaxtları, 5xx məlumatları və səyahət uğursuzluqları
 - HTTP müştəri konfiqurasiyası daxili
 
 ### level 2 —  stage (translationretryservice)
@@ -88,7 +88,7 @@ Sistem üç səviyyədə retries təyin edir:
 
 ### level - blok (documentstranslationservice)
 
-- Metadatatada qeyd olunacaq yalnız Markdown blokları
+- Metadatadatada qeyd olunmayan yalnız Markdown blokları
 - Əvvəlki boru runda avtomatlaşdırılmışdır
 - Ətraflı bloklar heç vaxt-translated
 
@@ -112,7 +112,7 @@ For each target language:
 [Save new snapshot]
 ```
 
-### Mark  Mark
+### Mark
 
 ```
 [Source File]
@@ -154,7 +154,7 @@ For each target language:
 
 ### Axtarış
 
-- **JSON**: default sözləşdirilməsində bir faylda yerləşdirilmiş (isim storage təchizatçısı ilə dəyişikdir)
+- **JSON**: default sözləşdirilən bir faylda yerləşdirilmiş (isim saxlama təchizatçısı tərəfindən daxildir)
 - **Purpose**: Əvvəlki runda təqdim edilən şeyi izləməklə dəstəkliyi
 
 ### E-poçt
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: məhsullar sözləndirilməsi
 - **Purpose**: proqramda yerləşdiricilər üçün default qiymətlərini verir
 
-## Signal  R
+## Saytın xəritəsi
 
 ### Oxunub
 
@@ -195,7 +195,7 @@ public interface ISignalRPublisher
 ### Qeydiyyat
 
 - Bir run daxil olmaq istehsalçılıq
-- Sequence nömrələri tərəfindən unikal
+- Qeydiyyat nömrələri tərəfindən unikal
 - Yadda saxla
 
 ### Qeydiyyat
@@ -278,15 +278,15 @@ Hər bir alt xidmət bağımsız test edilir:
 
 - Mock uğur/failure
 - Qeydiyyatdan keçin
-- I/O
+- I  for  for  for  for I/ Oxunub
 - Təhlükəsizlik davranışı
 
 ### İnteqrasiya testləri
 
-- Tam boru haqqında real (yerli) LibreTranslate sənayesi
-- Qeydiyyat R mesajlar bağlı müştərilərinə çatdırılır
+- Tam boru haqqında real (yer) LibreTranslate sənayesi
+- Təhlükəsiz müştərilən müştərilərinə çatdırılmışdır
 - Kompüter kompüterinq (semaphore)
-- Müqaviləsindən sonra Markdown strategiyası
+- Müqayisə sonra Markdown strategiyası
 
 ### End-to-end testləri
 
@@ -297,9 +297,9 @@ Hər bir alt xidmət bağımsız test edilir:
 
 ## Performans baxışları
 
-- **Memory**: Per-dil qorunması bütün diqqqoriyaları yaxşılaşdırmaq qarşısını alır
-- **Disk I/O**: Metadata faylları kiçik yüksək əlavə edir, lakin artan işə imkan verir
-- **Network**: throttling ilə mövcud emal LibreTranslate
+- **Memory**: Per-dil qorumaq bütün dictionaries tutmaq qarşısını almaq
+- **Disk I/O**: Metadata faylları kiçik yüksək əlavə edir, lakin artan iş
+- **Network**: Sequential processing with throttling prevents overwhelming LibreTranslate
 - **CPU**: SHA-256 təhlükəsizliyi və rəsmi təhlükəsizliyi müəyyən müəyyən müəyyən müəyyəndir
 - **SignalR**: Qırmızı mesajlar, tipik hesabatlar üçün pulsuz kompressiyası
 
@@ -310,8 +310,8 @@ Orijinal bir sinif bütün məhsul daxildir. Qarabağ yolu:
 1. İngilis dili →
 2. → JSON →
 3. Markdown mantığı →
-4. Qeydiyyat R yayımı
+4. Çap SignalR yayımı
 5. Retry →
 6. Kompüterini nümayiş edir - yalnız
 
-Bütün mövcud interfeyslər () qeyd olunub. Boru maşın avadanlıqları qarşılıq dəyişiklikləri görür.
+Bütün mövcud interfeyslər () qeyd olunub. Boru maşın avadanlıqları heç bir kvadrat dəyişiklikləri görür.

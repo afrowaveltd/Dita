@@ -12,7 +12,7 @@ The Live Translation Dashboard è una pagina di amministrazione che fornisce vis
 
 ### Stream eventi in tempo reale
 
-Tutti i segni Gli eventi R della pipeline di traduzione vengono visualizzati in una tabella live-updating:
+Tutti gli eventi SignalR della pipeline di traduzione vengono visualizzati in una tabella live-updating:
 
 - **Numero di sequenza** — Contatore monotonico in ogni processo di tubazione
 - **Timestamp** — Ora locale quando l'evento è stato ricevuto
@@ -34,9 +34,9 @@ Bianco (default)
 ### Stato di connessione
 
 Uno stato banner in alto mostra:
-- **Connecting** — Creazione del collegamento SignalR
+- **Connecting** — Creazione di connessione SignalR
 - **Connected** — Ricezione di eventi normalmente
-- **Reconnecting** — Collegamento perso, cercando di riconnettersi
+- **Reconnecting** — Collegamento perso, tentativo di riconnettersi
 - **Disconnected** — Collegamento chiuso
 
 La connessione utilizza la riconnessione automatica con backoff esponenziale: 0s, 2s, 5s, 10s, 30s.
@@ -47,7 +47,7 @@ La connessione utilizza la riconnessione automatica con backoff esponenziale: 0s
 - **Esporta JSON** — Scarica tutti i messaggi ricevuti come file JSON per l'analisi
 - **Message counter** — Mostra il numero totale di eventi ricevuti in questa sessione
 
-## Segnale Mozzo R
+## Mozzo Signal
 
 Il cruscotto si collega a:
 
@@ -85,13 +85,13 @@ Badge rosso
 Tasso verde
 Badge rosso
 Info badge
-Distintivo di avvertimento
+Tasso di avvertimento
 
 ## Attuazione tecnica
 
 ### Indietro
 
-- **Localizzazione Hub** () — Mozzo SignalR che trasmette messaggi a tutti i client collegati
+- **LocalizationHub** () — Mozzo SignalR che trasmette messaggi a tutti i client connessi
 - **ISignalRPublisher** — Astratto sul mozzo da utilizzare nei servizi di traduzione
 - **SignalRPublisher** — implementazione predefinita che incrementa una sequenza monotonica e trasmette
 
@@ -144,7 +144,7 @@ Miglioramenti pianificati per il cruscotto:
 1. Controllare che l'URL del hub di SignalR corrisponda tra server () e client ()
 2. Verificare che il programmatore sia abilitato
 3. Guarda i log dei server per gli errori di pipeline di traduzione
-4. Controlla il browser Scheda di rete per i messaggi WebSocket
+4. Controlla la scheda di rete del browser per i messaggi WebSocket
 
 ### I messaggi sono fuori ordine
 

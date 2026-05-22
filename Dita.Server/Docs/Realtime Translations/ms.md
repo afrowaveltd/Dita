@@ -15,17 +15,17 @@ Setiap sub-service beroperasi secara independen dan melaporkan kemajuan melalui 
 
 ## Apa yang pelayanan lakukan
 
-Layanan tersebut berjalan pada jadwal dan menjalankan jalur pipa lima tahap: validasi server, sinkronisasi negara, sinkronisasi kamus JSON, terjemahan berkas Markdown, dan melanjutkan hasilnya. Setiap tahap memancarkan peristiwa perkembangan real-time terstruktur melalui sinyal Dari R sehingga klien yang terhubung dapat mengikuti sebagai hasil kerja.
+Layanan tersebut berjalan pada jadwal dan menjalankan jalur pipa lima tahap: validasi server, sinkronisasi negara, sinkronisasi kamus JSON, terjemahan berkas Markdown, dan melanjutkan hasilnya. Tahap masing-masing memancarkan peristiwa kemajuan real-time yang terstruktur di atas SignalR sehingga klien yang terhubung dapat mengikuti sepanjang proses kerja.
 
 ## Tahap pipa
 
 ### Tahap 1 — Pelayan Cek
 
-Sebelum pekerjaan penerjemahan dimulai, pelayanan membuktikan bahwa semua prekondisi sudah puas:
+Sebelum pekerjaan penerjemahan dimulai, pelayanan membuktikan bahwa semua syarat sudah dipenuhi:
 
 - Seksi konfigurasi harus ada dan berlaku.
 - Server LibreTranslate harus merespon dalam latensi yang dapat diterima.
-- Daftar bahasa yang tersedia di server terjemahan akan diambil.
+- Daftar bahasa yang tersedia dalam server terjemahan akan diambil.
 - Bahasa baku yang telah dikonfigurasi harus ada dalam daftar tersebut.
 - Berkas JSON lokal hilang untuk setiap bahasa yang didukung dibuat secara otomatis.
 
@@ -43,11 +43,11 @@ Nama-nama Negara older disimpan selaras dari katalog baca-saja () ke dalam kamus
 
 ### Tahap 3 — TerjemahanJsonFiles
 
-Layanan gladien membandingkan kamus lokalisasi baku saat ini dengan snapshot yang disimpan dari run sebelumnya:
+Layanan gladius membandingkan kamus lokalisasi baku saat ini dengan snapshot yang disimpan dari run sebelumnya:
 
 - **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
-- Terjemahan-terjemahan Manual yang selalu diutamakan. Jika kamus target sudah berisi nilai untuk kunci, entri tersebut dibiarkan tidak berubah terlepas dari apa yang dikatakan oleh sumber.
+- Terjemahan-terjemahan Manual yang ditulis selalu menjadi prioritas. Jika kamus target sudah berisi nilai untuk kunci, entri itu dibiarkan tidak berubah terlepas dari apa yang dikatakan oleh sumber.
 - **Each kamus bahasa sasaran disimpan segera setelah terjemahannya selesai**, daripada menunggu semua bahasa selesai.
 - Jika terjemahan gagal untuk bahasa tertentu, layanannya akan kembali secara otomatis. Hanya kesalahan yang persisten (misalnya, bahasa yang tidak didukung) yang menyebabkan bahasa tersebut dilewatkan.
 - Setelah dijalankan, kamus baku saat ini disimpan sebagai snapshot baru untuk perbandingan berikutnya.
@@ -64,8 +64,8 @@ Layanan lemario berjalan akar dokumentasi terkonfigur (lalai: ) dan proses setia
 4. Untuk setiap bahasa sasaran, berkas yang bersangkutan juga diperiksa untuk integritas struktural.
 5. Berkas target apapun yang hilang, memiliki hash yang ketinggalan zaman, validasi struktur yang gagal, atau berisi blok yang tidak diterjemahkan dibaris gilir untuk re-translasi.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
-7. Berkas-berkas yang diterjemahkan secara sukses berhasil divalidasi untuk paritas struktural dengan sumber (hitungan heading sama, daftar item, blok kode, blokquotes, link, penanda tebal/italik, dan tag HTML) sebelum mereka ditulis ke disk.
-8. Jika semua file target untuk sumber berhasil, hash baru disimpan di sebelah sumber. Jika penulisan di samping sumber gagal (misalnya dalam penyebaran baca-saja), hash jatuh kembali ke direktori sementara.
+7. Berkas-berkas yang diterjemahkan secara sukses berhasil divalidasi untuk paritas struktural dengan sumber (hitungan heading sama, daftar item, blok kode, blokquotes, link, penanda tebal/italik, dan tag HTML) sebelum ditulis ke disk.
+8. Jika semua berkas target untuk sumber berhasil, hash baru disimpan di sebelah sumber. Jika penulisan di samping sumber gagal (misalnya dalam penyebaran baca-saja), hash jatuh kembali ke direktori sementara.
 9. Jika terjemahan target gagal validasi, metadata menandai blok-blok tersebut sebagai tidak diterjemahkan sehingga mereka dicoba ulang pada lari berikutnya.
 
 ### Tahap 5 — Mempertahankan Kembali
@@ -73,15 +73,15 @@ Layanan lemario berjalan akar dokumentasi terkonfigur (lalai: ) dan proses setia
 Sebuah konsolidasi dikumpulkan dan diterbitkan. Termasuk:
 
 - UTC UTC memulai dan menyelesaikan timestamp.
-- Kiraan jumlah dari file JSON lokal yang disimpan, file Markdown disimpan, file hash disimpan, dan fallback hash menulis.
+- Counts dari file JSON lokal yang disimpan, file Markdown disimpan, file hash disimpan, dan fallback hash menulis.
 - Kesalahan penyimpanan apapun yang dikumpulkan selama pelarian.
 - Statistik penerjemahan bahasa-Peran (hitungan diterjemahkan, jumlah dilewatkan, jumlah kesalahan).
 
-## Isyarat Sampul pesan Saraf R
+## Amplop pesan SignalR Secury
 
 Setiap peristiwa kemajuan disampaikan sebagai sebuah dengan bidang berikut:
 
-Sibuk
+Medan
 |-------|------|-------------|
 Pengenal korelasi untuk jalur pipa saat ini
 Monotonik monotonik counter dalam menjalankan, mulai dari 1
@@ -149,15 +149,15 @@ Jalur pipa ini menerapkan dua tingkat ketahanan:
 
 ### Uji-ulang tahap-tahapan tahap-Fando (TranslationRetryService)
 
-- Jika permintaan terjemahan gagal setelah retries internal LibreTranslate, melakukan hingga 3 retries level-tahap tambahan dengan penundaan 30 detik.
-- Topeng pemegang tempat: Pemegang tempat yang diberi nama placeholder () dalam teks diganti sementara dengan token aman () sebelum penerjemahan dan dipulihkan sesudahnya, memastikan tata bahasa yang benar dalam bahasa target.
+- Jika permintaan terjemahan gagal setelah retries internal LibreTranslate, melakukan hingga 3 retries tahap tambahan dengan penundaan 30 detik.
+- Pemasok placeholder: Pemegang tempat bernama () dalam teks diganti sementara dengan token aman () sebelum terjemahan dan dipulihkan sesudahnya, memastikan tata bahasa yang benar dalam bahasa target.
 
-### Pemvalidasi Bahasa Bahasa Bahasa Bahasa Bahasa Bahasa Bahasa Una
+### Pemvalidasi Bahasa Bahasa Bahasa Bahasa Bahasa Bahasa Una
 
 - Sebelum menerjemahkan ke bahasa target, layanan memverifikasi bahasa tersebut didukung oleh server terjemahan.
 - Bahasa yang tidak didukung dilewati dengan peringatan, mencegah percobaan yang gagal berulang.
 
-### Coba lagi aras-blok markdown
+### Coba lagi tingkat-blok markdown
 
 - Terjemahan-terjemahan markdown dilakukan block-by-block (heading, paragraf, daftar item).
 - Jika sebuah blok individu gagal terjemahan, itu ditandai sebagai tidak diterjemahkan dalam file metadata dan dicoba pada jalur pipa berikutnya.
@@ -179,9 +179,9 @@ Setiap kesalahan dalam sebuah laporan membawa narasumber (kode bahasa, jalur ber
 
 ## Terjemahan Live Dashboard
 
-Proyek dari Server ini termasuk sebuah halaman admin yang terhubung ke hub SignalR di dan menampilkan semua acara pipa secara real time.
+Proyek Zoila Server mencakup sebuah halaman admin yang menghubungkan ke hub SignalR di dan menampilkan semua acara pipa secara real time.
 
-- Memaparkan status koneksi, jumlah pesan, dan tabel yang sedang berlangsung.
+- Memaparkan status koneksi, jumlah pesan, dan tabel yang sedang berlangsung dari semua peristiwa.
 - Baris berkode warna: biru untuk tahap awal, hijau untuk pelengkapan, merah untuk kesalahan.
 - Sodium Mendukung membersihkan pakan dan mengekspor semua pesan ke JSON.
 - Auto-rekoneksi dengan pengunduran eksponensial jika sambungan terputus.

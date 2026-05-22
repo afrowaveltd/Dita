@@ -15,13 +15,13 @@ Feidhmíonn gach fo-sheirbhís go neamhspleách agus tuairiscíonn dul chun cinn
 
 ## Cad a dhéanann an tseirbhís
 
-Ritheann an tseirbhís ar sceideal agus forghníomhaíonn píblíne cúig chéim: bailíochtú freastalaí, sioncrónaithe tír, sioncrónaithe foclóir JSON, aistriúchán comhad Markdown, agus fós na torthaí. Gach céim astaíonn struchtúrtha imeachtaí dul chun cinn fíor-ama thar Signal R ionas gur féidir le cliaint nasctha a leanúint chomh maith le fáltais oibre.
+Ritheann an tseirbhís ar sceideal agus forghníomhaíonn píblíne cúig chéim: bailíochtú freastalaí, sioncrónaithe tír, sioncrónaithe foclóir JSON, aistriúchán comhad Markdown, agus fós na torthaí. Gach céim astaíonn struchtúrtha imeachtaí dul chun cinn fíor-ama thar SignalR ionas gur féidir le cliaint nasctha a leanúint chomh maith le fáltais oibre.
 
 ## Céimeanna Pipeline
 
 ### Céim 1 - Checkervers
 
-Sula dtosaíonn aon obair aistriúcháin, fíoraíonn an tseirbhís go bhfuil gach réamhchoinníollacha sásta:
+Sula dtosaíonn aon obair aistriúcháin, fíoraíonn an tseirbhís go bhfuil na réamhchoinníollacha sásta:
 
 - Ní mór don rannóg cumraíochta a bheith i láthair agus bailí.
 - Ní mór don fhreastalaí LibreTranslate freagra a thabhairt laistigh de latency inghlactha.
@@ -45,7 +45,7 @@ Ainmneacha tíre a choimeád i sync ó chatalóg léamh-amháin () isteach sa lo
 
 Cuireann an tseirbhís an foclóir logánaithe réamhshocraithe reatha i gcomparáid le pictiúr a stóráiltear ón rith roimhe seo:
 
-- ** Eochracha breise ** – iontrálacha atá i láthair sa mhainneachtain reatha ach as láthair ón léargas – a aistriú go dtí gach sprioctheanga nach bhfuil iontráil láimhe cheana féin don eochair.
+- ** Eochracha breise ** - iontrálacha atá i láthair sa mhainneachtain reatha ach as láthair ón léargas - a aistriú go dtí gach sprioctheanga nach bhfuil iontráil láimhe cheana féin don eochair.
 - **Eochracha aistrithe ** — scriostar iontrálacha atá i láthair sa phictiúr ach as láthair ón mainneachtain reatha - ó gach foclóir sprioctheanga.
 - Aistriúcháin Lámhleabhar ghlacadh i gcónaí tosaíocht. Má tá luach ar eochair cheana féin ag an spriocfhoclóir, fágtar an iontráil sin gan athrú beag beann ar an méid a deir an fhoinse.
 - ** Tá gach foclóir sprioc teanga a shábháil díreach tar éis a aistriúcháin iomlán **, seachas ag fanacht le gach teanga a chríochnú.
@@ -56,7 +56,7 @@ Déantar gach foclóir a stóráil i gcónaí le heochracha atá curtha in oiri�
 
 ### Céim 4 - TranslateMarkdownFiles
 
-Siúlóidí an tseirbhís na fréamhacha doiciméadú cumraithe (réamhshocrú:) agus próisis gach comhad foinse athchúrsach:
+Siúileann an tseirbhís na fréamhacha doiciméadú cumraithe (réamhshocrú:) agus próisis gach comhad foinse athchúrsach:
 
 1. Tá an t-ábhar comhad foinse a léamh agus tá SHA-256 ríomh.
 2. Tá comhad in aice leis na rianta foinse in aghaidh na teanga, stádas aistriúcháin per-block, ar chumas ** incriminteach ath-aistriú ** de na bloic theip amháin.
@@ -72,12 +72,12 @@ Siúlóidí an tseirbhís na fréamhacha doiciméadú cumraithe (réamhshocrú:)
 
 Tá comhdhlúite le chéile agus a fhoilsiú. Cuimsíonn sé:
 
-- UTC reáchtáil tús agus amstamps críochnaithe.
+- UTC reáchtáil tús agus ama críochnaithe.
 - Líonta de shábháil comhaid JSON locale, shábháil comhaid Markdown, shábháil comhaid hash, agus hash fallback scríobhann.
 - Aon earráidí stórála a bailíodh le linn an reáchtáil.
 - Staitisticí aistriúcháin in aghaidh na teanga (cruinneamh aistrithe, comhaireamh skipped, comhaireamh earráide).
 
-## Comharthaíocht R clúdach teachtaireacht
+## Clúdach teachtaireachta Comharthaíochta
 
 Tá gach imeacht dul chun cinn a sheachadadh mar a bhfuil na réimsí seo a leanas:
 
@@ -150,18 +150,18 @@ Cuireann an phíblíne dhá leibhéal athléimneachta:
 ### Fiosrúchán ar leibhéal na Céime (Seirbhís Aistrithe)
 
 - Má theipeann ar iarratas aistriúcháin tar éis retries inmheánacha LibreTranslate, déanann an suas le 3 retries leibhéal céim breise le 30-dara moill.
-- Maisiú na sealbhóirí poist: Ainmnítear sealbhóirí áite () i dtéacs in ionad go sealadach le comharthaí sábháilte () roimh an aistriúchán agus ar ais ina dhiaidh sin, ag cinntiú gramadaí ceart i sprioctheangacha.
+- Masc sealbhóirí Áite: Sealbhóirí Áite Ainmnithe () i dtéacs in ionad go sealadach le comharthaí sábháilte () roimh an aistriúchán agus ar ais ina dhiaidh sin, ag cinntiú gramadaí ceart i sprioctheangacha.
 
 ### Bailíochtú teanga
 
-- Sula aistriú chuig sprioctheanga, fíoraíonn an tseirbhís an teanga tacaíocht ag an bhfreastalaí aistriúcháin.
+- Sula aistriú chuig teanga sprioc, fíoraíonn an tseirbhís an teanga tacaíocht ag an bhfreastalaí aistriúcháin.
 - Teangacha gan tacaíocht a skipped le rabhadh, a chosc iarrachtaí theip arís agus arís eile.
 
 ### Fiosrúchán ar leibhéal an bhloc
 
 - Aistriúcháin Markdown a dhéantar bloc-ar-bloc (ceannteidil, míreanna, míreanna liosta).
 - Má theipeann ar bloc aonair aistriúcháin, tá sé marcáilte mar untranslated sa chomhad meiteashonraí agus atried ar an rith píblíne seo chugainn.
-- Na rianta seirbhíse in aghaidh na teanga, stádas in aghaidh an-bloc i gcomhaid in aice le gach comhad Markdown foinse.
+- Na rianta seirbhíse in aghaidh na teanga, stádas per-block i gcomhaid in aice le gach comhad Markdown fhoinse.
 
 ## Cód Earráid
 
@@ -177,7 +177,7 @@ Gach náisiúntacht
 
 Déanann gach earráid i dtuarascáil an t-aitheantóir foinse (cód teanga, cosán comhad, nó ainm stáitse), an cód earráide, agus teachtaireacht inléite ag an duine.
 
-## An tSraith Shinsearach
+## Cairtchlár an Aistriúcháin Beo
 
 Áirítear ar an tionscadal Freastalaí leathanach admin ag go nascann leis an mol SignalR ag agus taispeántais gach imeachtaí píblíne i bhfíor-am.
 
@@ -191,6 +191,6 @@ Déanann gach earráid i dtuarascáil an t-aitheantóir foinse (cód teanga, cos
 - ** Modúlachas **: Tá gach gnólacht aistriúcháin scoite amach ina sheirbhís féin le haghaidh inchothaitheachta agus intleachta.
 - ** Leanúnachas incriminteach **: Tá foclóirí agus comhaid Markdown shábháil in aghaidh na teanga díreach tar éis an aistriúcháin, brú cuimhne a laghdú agus aiseolas níos luaithe a sholáthar.
 - ** Athléimneacht **: Leibhéil éagsúla retry (HTTP, céim, bloc) a chinntiú nach bhfuil teipeanna transient bloc an píblíne.
-- ** rianú Stáit **: Per-file meiteashonraí () agus comhaid hash chumas obair incriminteach beacht ar Ritheann ina dhiaidh sin.
+- **Stáit rianú **: Per-comhad meiteashonraí () agus comhaid hash chumas obair incriminteach beacht ar Ritheann ina dhiaidh sin.
 - ** infheictheacht arís agus arís eile**: Tuairiscítear gach oibríocht shuntasach trí SignalR le haghaidh monatóireachta agus dífhabhtaithe.
-- ** Tá tús áite i gcónaí ag aistriúcháin láimhe thar breiseanna uathoibríocha. **
+- ** Tá tús áite i gcónaí ag aistriúcháin úsáideacha breisithe uathoibríoch.**

@@ -8,19 +8,19 @@ Dette dokumentet oppsummerer alle endringer som gjøres i Dita automatisk overse
 
 ### Refactored MotorTranslationService
 
-Den monolitiske har blitt delt i fire spesialiserte tjenester koordinert av en lett orkesterator:
+Den monolitiske har blitt demontert til fire spesialiserte tjenester koordinert av en lett orkesterator:
 
 - **BackendTranslationService** — Rørledningsorkester (servervalidering, fasedelegasjon, feilhåndtering)
 - **CountrysTranslationService** — Landsnavnssynkronisering (engelsk → målspråk)
 - **LocalizationTranslationService** — JSON ordboksynkronisering (tilsatt/fjernede nøkler)
-- **DokumenterTranslationService** — Merkedokumentasjon oversettelse med blokknivå sporing
-- **SignarRPublisher** — Rapportering i sanntid via SignalR
+- **DokumentsTranslationService** — Merkedokumentasjon oversettelse med blokknivå sporing
+- **SignalRPublisher** — Rapportering i sanntid via SignalR
 - **TranslationRetryService** — Stagenivå reforsøk med bevaring av plassholder
 
 ### Fordeler
 
-- **Bevaring av bekymringer**: Hver tjeneste håndterer et enkelt oversettelsesdomene
-- **Holdbarhet**: Mindre klasser er lettere å forstå og teste
+- **Bekymring av bekymringer**: Hver tjeneste håndterer et enkelt oversettelsesdomene
+- **Holdbarhet**: Mindre klasser er enklere å forstå og teste
 - ** Omfattbarhet**: Nye oversettelsesmål kan legges til via grensesnitt implementering
 - ** Pålitelighet**: Uavhengige tjenester gir bedre feilisolasjon
 
@@ -32,10 +32,10 @@ Den monolitiske har blitt delt i fire spesialiserte tjenester koordinert av en l
 
 En ny administratorside som gir sanntid synlighet i oversettelsesrørledningen:
 
-- Viser alle signaler R hendelser som de oppstår
-- Fargekodede meldingstyper (blå=startet, grønn=fullført, rød=feil)
+- Viser alle SignalR hendelser som de forekommer
+- Fargekodede meldingstyper (blue=startet, green=completed, red=error)
 - Tilkoblingsstatusbanner med auto-tilkobling
-- Meldingsbehandler og eksport til JSON
+- Meldingsmottaker og eksport til JSON
 
 ### Navngitte plassholdere
 
@@ -62,16 +62,16 @@ Merke ned filer oversettes gradvis:
 
 - **Per-språklig lagring**: Hvert målspråk lagres umiddelbart etter oversettelse og reduserer minnetrykket
 - **Block-level sporing**: spor oversettelsesstatus per blokk
-- **Selektiv gjenforsøk**: Bare feilblokker omsettes på nytt i neste løp
-- **Metadata utholdenhet**: Oversettelsesstaten overlever programmet starter på nytt
+- **Selektiv gjenforsøk**: Bare mislykkede blokker omsettes i neste løp
+- **Metadataholdighet**: Oversettelsestilstand overlever programmet starter på nytt
 
 ### Forbedret reprøv Logic
 
 Tre nivåer av motstandsdyktighet:
 
 1. **HTTP reprøv** (LibreTranslateService): 5 forsøk med eksponentiell backoff (1s–5s)
-2. **Stage retry** (TranslationRetryService): 3 ytterligere forsøk med 30s forsinkelser
-3. **Block retry** (DokumentsTranslationService): Klarte ikke å merke ned blokker på nytt ved neste løp
+2. **Stage reprøv** (TranslationRetryService): 3 ytterligere forsøk med 30s forsinkelser
+3. **Block retry** (DokumentsTranslationService): Mislykkes Markdown-blokker på nytt ved neste løp
 
 ### SignalR rapportering
 
@@ -112,7 +112,7 @@ Registrert i:
 - /
 - /
 
-Signalet R hub er kartlagt på for klientforbindelser.
+SignalR hub er kartlagt på klientforbindelser.
 
 ## Testing
 
@@ -120,13 +120,13 @@ Signalet R hub er kartlagt på for klientforbindelser.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Ny testdekning lagt til for:
-  - Stedholder Tjenestefunksjonalitet
-  - Motortranslasjon Serviceorkester
+  - StedholderTjenestefunksjonalitet
+  - MotorTranslationService orkester
   - JsonString Localizer plassholder indeksere
 
 ### Kjente grenser
 
-- testen hoppes over når du kjører parallelt fordi flere testinstanser deler den samme filen. Den passerer når den kjører i isolasjon.
+- testen hoppes over når den kjører parallelt fordi flere testinstanser deler den samme filen. Den passerer når den kjører i isolasjon.
 
 ## Ny filstruktur
 
@@ -136,30 +136,30 @@ Signalet R hub er kartlagt på for klientforbindelser.
 - — Oversettelse av landnavn
 - — JSON ordbok synkronisering
 - — Merkeoversettelse
-- — Signal R melding publisering
+- — SignalR-meldingspublikasjon
 - — Prøv logikk på nytt med plassholdermaskering
 - — Utgivergrensesnitt
 - — Landservicegrensesnitt
 - — Lokaliseringstjenestegrensesnitt
 - — Dokumenttjenestegrensesnitt
-- — orkestratorgrensesnitt (oppgradert)
+- — Orchestrator grensesnitt (oppdatert)
 - — Oversettelsesmetadata per fil
 
 ### Oppdaterte Tjenester i
 
-- — Lagt til navngitt plassholderstøtte
-- — Oppdatert for ny parameter
+- — Lagt til navngitt stedholderstøtte
+- - Oppdatert for ny parameter
 - — Navngitt stedholderadministrasjon
 - — Plassholdergrensesnitt
 
 ### Ny annonseside i
 
-- — Sanntidsovervåkningsside
+- — Sanntidsovervåking
 - — Sidemodell
 
 ### Ny dokumentasjon i
 
-- — Oppdatert kanaldokumentasjon
+- — Oppdatert rørledningsdokumentasjon
 - — Stedholderens systemveiledning
 - — Dashboard bruk guide
 - — Oversikt over teknisk arkitektur
@@ -172,7 +172,7 @@ Alle endringer er tilsetningsstoffer:
 - Posisjonsformatering () fungerer uendret
 - Eksisterende JSON ordbokformat er uendret
 - Eksisterende markeringsstruktur er uendret
-- Signal R-meldinger bruker samme format
+- SignalR-meldinger bruker samme format
 
 ## Migrasjonssti
 
@@ -185,14 +185,14 @@ Ingen migrasjon kreves. Omsetningen er intern:
 ## Effektforbedringer
 
 - **Redusert minnebruk**: Filer lagret per-språk umiddelbart i stedet for å holde alle i minnet
-- **Faster inkremental løp**: Bare endret/feilstilte merkeblokker omsettes
+- **Faster inkremental kjøres**: Bare endret/feilstilte merkeblokker omsettes
 - **Better synlighet**: Real-time fremgang hjelper diagnostisere langsomme stadier
 
 ## Fremtidige forbedringer
 
 Planlagte forbedringer:
 
-1. **AI fine-tuning** — Oversettelsesanmeldelse etter maskin for fraser > 5 ord
+1. **AI finjustering** — Oversettelsesanmeldelse av ettermaskin for fraser > 5 ord
 2. **Admin-autentisering** — Begrense administratorsider til autoriserte brukere
 3. **Dictionary editor** — Web UI for å administrere lokaliseringsnøkler
 4. **Translationsstatistikk** — Kart som viser antall oversettelser og feilpriser over tid

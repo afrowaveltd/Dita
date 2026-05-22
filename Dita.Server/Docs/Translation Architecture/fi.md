@@ -1,15 +1,15 @@
 ﻿# Käännösarkkitehtuuri
 
-Tässä asiakirjassa kuvataan Ditan automaattisen käännösjärjestelmän modulaarista arkkitehtuuria, joka on otettu käyttöön ylläpidettävyyden, testauskelpoisuuden ja sietokyvyn parantamiseksi.
+Tässä asiakirjassa kuvataan Ditan automaattisen käännösjärjestelmän modulaarista arkkitehtuuria, joka on otettu käyttöön ylläpidettävyyden, testaavuuden ja sietokyvyn parantamiseksi.
 
 ## Suunnittelutavoitteet
 
 Korjauksessa käsiteltiin useita alkuperäisen monoliittisen mallin ongelmia:
 
 - ** Huolenjako**: Kukin käännösalue (maat, JSON-sanakirjat, Markdown) on eristetty.
-- ** Perusjatkuvuus**: Tiedostot tallennetaan kielellä välittömästi kääntämisen jälkeen, mikä vähentää muistin käyttöä ja tuottaa aiemmin tuloksia.
-- **Kestävyys**: Useat uusintatasot käsittelevät ohimeneviä epäonnistumisia sulkematta koko putkistoa.
-- ** Havaintokyky**: Kaikki merkittävät operaatiot ilmoitetaan SignalR:n kautta reaaliaikaista seurantaa varten.
+- ** Perusjatkuvuus**: Tiedostot tallennetaan kielellä välittömästi kääntämisen jälkeen, mikä vähentää muistin käyttöä ja tuottaa aikaisempia tuloksia.
+- ** Kestävyys**: Useat uusintatasot käsittelevät ohimeneviä epäonnistumisia sulkematta koko putkistoa.
+- ** Havaintokyky**: Kaikki merkittävät operaatiot raportoidaan SignalR:n kautta reaaliaikaista seurantaa varten.
 - ** Laajuus**: Uusia käännöstavoitteita voidaan lisätä yhden käyttöliittymän avulla.
 
 ## Palvelun hajoaminen
@@ -46,7 +46,7 @@ Korjauksessa käsiteltiin useita alkuperäisen monoliittisen mallin ongelmia:
 - Havaitse lisätty tai poistettu avaimet vertaamalla nykyistä oletussanakirjaa edelliseen tilannekuvaan
 - Käännä lisättyjä avaimia jokaiselle kohdekielelle
 - Poista poistetut avaimet jokaisesta kohdekielestä
-- Tallenna kuva seuraavaa vertailua varten
+- Tallenna kuvakuva seuraavaa vertailua varten
 
 **Key behaviors**:
 - Manuaaliset käännökset ovat aina etusijalla (ei koskaan ylikirjoitettu)
@@ -67,7 +67,7 @@ Korjauksessa käsiteltiin useita alkuperäisen monoliittisen mallin ongelmia:
 **Key behaviors**:
 - Ryhmätason rakeisuus: otsikot, kohdat, luettelon kohdat käännetään erikseen
 - Metadataraidat, jotka estävät onnistuneen/hylätyn kielen
-- Epäonnistuneet lohkot yritetään uudelleen seuraavalla juoksulla ilman uudelleentranslatointi onnistunut lohkot
+- Epäonnistuneet lohkot yritetään uudelleen seuraavalla juoksulla ilman uudelleentranslatointi onnistuneita lohkoja
 - Rakennevalidointi takaa otsakemäärät, luettelot, koodilohkot jne
 
 ## Uudelleen
@@ -154,21 +154,21 @@ For each target language:
 
 ### Kuvat
 
-- **JSON**: Tallennettuna tiedostoon oletussanakirjan vieressä (nimi vaihtelee tallennuspalvelun mukaan)
+- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
 - **Purpose**: Mahdollistaa inkrementaalisen synkronoinnin seuraamalla edellisen ajon tapahtumia
 
 ### Hash-tiedostot
 
 - **Markdown**: lähdetiedoston vieressä
 - **Fallback**: jos ensisijainen sijainti lukee vain
-- **Purpose**: Havaitsee lähdemuutoksia välttää tarpeettoman uudelleenkäännöksen
+- **Purpose**: Havaitsee lähteen muutoksia välttää tarpeettoman uudelleenkäännöksen
 
 ### Käännösmetatiedot
 
 - ** merkintä**:
 - ** Sisältö**:
   - Lähde:
-- Kieliblokin tila (joukossa booleans)
+- kieli-blokin tila (array of booleans)
 - Viimeisin päivitysaikaleima
 - **Purpose**: Mahdollistaa vain epäonnistuneiden lohkojen osittaisen uudelleenkäännöksen
 
@@ -178,11 +178,11 @@ For each target language:
 - **Sisältö**: Sanakirja avaimista paikanhaltijan nimi-arvo paria
 - **Purpose**: Tarjoaa oletusarvot nimetyille paikanhaltijoille koko sovelluksessa
 
-## Signaali R Raportointi
+## SignalR-raportointi
 
 ### Julkaisijan abstraktio
 
-decouples translation services from signer specifics:
+decouples translation services from SignalR specifications:
 
 ```csharp
 public interface ISignalRPublisher
@@ -194,7 +194,7 @@ public interface ISignalRPublisher
 
 ### Sekvenssitakeet
 
-- Yhden ajon viestit ovat monotonisesti jaksotettuja
+- Yhden ajon viestit ovat yksitoikkoisia
 - Sarjanumerot ovat yksilöllisiä per-ajo kautta
 - Asiakkaat voivat havaita aukkoja tai tilata uudelleen
 
@@ -244,7 +244,7 @@ public class CustomPlaceholderService : IPlaceholderService
 
 ## Asetukset
 
-### appsetings.json
+### apsetations.json
 
 ```json
 {
@@ -261,7 +261,7 @@ public class CustomPlaceholderService : IPlaceholderService
 }
 ```
 
-### Runtime viritys
+### Käynnistys
 
 Asetukset
 |---------|---------|--------|
@@ -278,13 +278,13 @@ Jokainen osapalvelu voidaan testata itsenäisesti:
 
 - Mock simuloida menestys / epäonnistuminen
 - Mock raportoinnin todentamiseksi
-- Käytä tiedoston I/O väliaikaisia kansioita
+- Käytä väliaikaishakemistoja tiedostoon I/ O
 - Varmista kielikohtainen tallennus
 
 ### Integrointitestit
 
 - Täysi putkisto käynnissä todellinen (paikallinen) LibreKäännä esimerkki
-- Varmista signaali R-viestit toimitetaan yhteydessä oleville asiakkaille
+- Varmista SignalR-viestit toimitetaan liitetyille asiakkaille
 - Kokeile samanaikaista ajon estoa (semafore)
 - Validoidaan Markdown rakenne käännöksen jälkeen
 
@@ -298,19 +298,19 @@ Jokainen osapalvelu voidaan testata itsenäisesti:
 ## Suorituskykyä koskevat näkökohdat
 
 - **Muisti**: Kielitallennus estää kaikkien sanakirjojen tallentamisen muistiin
-- **Disk I/O**: Metadata files add small overhead but enable incremental work
-- **Verkko**: Sekventiaalinen käsittely trottling estää ylivoimainen LibreTranslate
-- **PU**: SHA-256 hashing ja regex validointi ovat nopeita suhteessa käännös latenssi
-- **SignalR**: Kevyet viestit, ei kuormakompressiota tyypillisiin raportteihin
+- **Disk I/O**: Metadatatiedostot lisäävät pieniä kustannuksia, mutta mahdollistavat lisätyön
+- **Verkko**: Sequential käsittely trottling estää ylivoimainen LibreTranslate
+- **CPU**: SHA-256 hashing ja regex validointi ovat nopeita suhteessa käännös latenssi
+- **SignalR**: Kevyet viestit, tyypillisiin raportteihin ei tarvita hyötykuormakompressiota
 
 ## Siirtyminen monoliittisesta suunnittelusta
 
-Alkuperäinen sisälsi kaikki logiikka yhdessä luokassa. Muuttopolku
+Alkuperäinen sisälsi kaiken logiikan yhdessä luokassa. Muuttopolku
 
 1. Pura maan logiikka →
 2. Pura JSONin logiikka →
 3. Pura merkintälogiikka →
-4. Pura signaali R julkaisutoiminta →
+4. Pura SignalR julkaisu →
 5. Pura retry logiikka →
 6. Yksinkertaistetaan orkesteria vain delegaatioon
 

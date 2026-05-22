@@ -2,22 +2,22 @@
 
 ## Overview
 
-Bu səhifə Dita avtomatlaşdırma xidməti, yeni xüsusiyyətlər, gözəllik inkişafları və yerlileştirme inkişafları daxil olmaqla, Dita avtomatik çeviri xidmət xidməti üçün bütün dəyişikliklərini dəyişdirir.
+Bu səhifə Dita avtomatlaşdırma xidmət xidmətinin bütün dəyişikliklərini mövcuddur, yeni xüsusiyyətlər, gözəllik inkişafları və yerlileştirme inkişafları daxildir.
 
 ## Memarlıq məlumatları
 
 ### Resursed BackendTranslService
 
-Monolithic parlaq bir rəsmi rəsmi rəsmi rəsmi xüsusi xidmətlərinə pozulmuşdur:
+Monolithic parlaq bir rəsmi rəsmi rəsmi rəsmi xidmətləri ilə müəyyən edilmişdir:
 
-- **BackendTranslationService** — Boru sənayesi (server validation, mərkəzi məlumat, səviyyə məlumat)
+- **BackendTranslationService** — Boru sənayesi (server validation, mərkəzi məlumat, səyahəti)
 - **CountriesTranslationService** — Ümumdünya adı senkronizasyon (İngilis dili →)
 - **LocalizationTranslationService ** — JSON səviyyə sinksiyası (added/removed keys)
 - **DocumentsTranslationService** - Blok-düzlük monitorinq ilə Markdown məlumatları məlumat
 - **SignalRPublisher** - SignalR ilə Real-time təhlükəsizlik hesabatı
-- **TranslationRetryService** - mövcud saxlama ilə mövcud retry
+- **TranslationRetryService** — mövcud saxlama ilə mövcud retry
 
-### Axtarış
+### Benefits
 
 - ** Şirkətlərin məlumatlaşdırılması**: Hər bir xidmət domen adı transferi
 - **Maintainability**: Kiçik kurslar anlamaq və test daha asandır
@@ -30,16 +30,16 @@ Monolithic parlaq bir rəsmi rəsmi rəsmi rəsmi xüsusi xidmətlərinə pozulm
 
 **Location**: `/Admin/LiveTranslation`
 
-translation : : :  the  the
+Translation : : :  the  the
 
-- Bütün Signal Onlar meydana gətirdiyi hallarda
-- Yadda saxla
+- Onlar olduğu kimi bütün SignalR hadisələri göstərir
+- Color-coded mesaj növü (blue= started, yaşıl = tamamilə, qırmızı=error)
 - Auto-reconnect ilə Bağlantı status banner
 - JSON-a qoşulmaq
 
 ### Ad Soyad
 
-Yerlileştirme sistemi növbətli dillərin inkişaf etdirilməsi üçün yer sahibləri () adlanır:
+Yerlileştirme sistemi hər hansı müxtəlif dillərin inkişaf edilməsi üçün yer tutucuları () dəstəkləyir:
 
 ```csharp
 // Usage in code
@@ -63,7 +63,7 @@ Markdown faylları inkişaf edir:
 - **Per-dil qəbul**: Müəlliflik hüququqları qorunur
 - **Block-level monitor**: blok başına çeviri statusunu izləyir
 - **Selective retry**: Only failed blocks are re-translated on the next run
-- **Metadata davamlılığı**: Translation dövrü tətbiq edir
+- **Metadata davamlılığı**: İqtisadiyyatdan keçmişdir
 
 ### Retry Logic inkişaf
 
@@ -71,7 +71,7 @@ Markdown faylları inkişaf edir:
 
 1. **HTTP retry** (LibreTranslateService): 5 kateqoriya geri dönüş ilə çalışır (1s–5s)
 2. **Stage retry** (TranslationRetryService): 30s gecikmə ilə 3 əlavə məsləhət
-3. **Block retry** (DocumentsTranslationService): İndi runda saxla
+3. **Block retry** (DocumentsTranslationService): Birbaşa run yenilənmiş Markdown blokları
 
 ### Saytın xəritəsi
 
@@ -112,16 +112,16 @@ Daxil ol:
 - /
 - /
 
-Qalereya R hub müştəri əməliyyatları üçün xidmət edilir.
+SignalR hub müştəri əməliyyatları üçün xidmət edilir.
 
-## Test
+## Kompüter
 
 ### Test statusu
 
 - **243/244 testlər** (1 test texnologiyası daxil olmaqla atladı)
-- Yeni test məlumatları əlavə edilir:
-  - Qeydiyyat Xidmət funksiyası
-  - Qeydiyyat Xidmət orqasiyası
+- Yeni test səhifə:
+  - Qalereya
+  - BackendTranslationService
   - JsonStringLocalizer yerləşdirici indeksers
 
 ### Xüsusiyyətlər
@@ -134,22 +134,22 @@ Qalereya R hub müştəri əməliyyatları üçün xidmət edilir.
 
 - - Borular
 - - Ümumi adı
-- — JSON sözlər sinkronization
+- — JSON sözlər sinkronizasiyası
 - — Markdown çevirici
-- - Signal R mesaj yayımı
+- - SignalR mesaj yayımı
 - - Yerləşdirici maska ilə retry mantığı
 - - Publisher interfeys
 - - Country xidmət interfeys
-- — Yerlileştirme xidməti interfeys
+- - Yerlileştirme xidməti interfeys
 - - Document xidmət interfeys
-- - Orkestor interfeys (updated)
+- - Orkeor interfeys (updated)
 - - Per-file çeviri metadata
 
 ### Yeniyetmə xidmətləri
 
 - - mövcudluq əlavə
-- — Yeni parametr üçün yeni
-- - Add yerləşdirici idarə
+- — Yeni parametr üçün yeniləndirilmişdir
+- — Add yerləşdirici idarə
 - - Yerləşdirici interfeys
 
 ### Yeni Admin
@@ -159,8 +159,8 @@ Qalereya R hub müştəri əməliyyatları üçün xidmət edilir.
 
 ### Yeni Sertifikatlaşdırma
 
-- — Xüsusi boru məlumatları
-- — - Placeholder system guide
+- — yenilənmiş boru məlumatları
+- - Qeydiyyat sistemi
 - - Dashboard istifadəçisi
 - — Texniki memarlıq
 
@@ -169,14 +169,14 @@ Qalereya R hub müştəri əməliyyatları üçün xidmət edilir.
 Bütün dəyişikliklər əlavə olunur:
 
 - Yerlileştirme kodu () mövcuddur
-- Rəsmi format () işlənir
+- Rəsmi formatlama () işlənir
 - Uşaq JSON səviyyə formatı dəyişikliklənir
-- Mövcud Markdown struktursuz
-- Signal R mesajlar eyni formatdan istifadə
+- Markdown strukturu mövcuddur
+- SignalR mesajları eyni formatdan istifadə edir
 
 ## Miqrasiya yolu
 
-Heç bir göç lazımdır. Refaktoring daxilidir:
+Növbət lazımdır. Refaktoring daxilidir:
 
 1. Yaşlı bir referans kimi qəbul edilmişdir və sonra əvvəl
 2. Yeni interfeys istifadə etmək üçün yeni qeydiyyatlar yeniləndi
@@ -185,19 +185,19 @@ Heç bir göç lazımdır. Refaktoring daxilidir:
 ## Proqramlar
 
 - **İnformasiya istifadəsi**: Fayllar haqqında bütün saxla
-- **Faster inkişaf işıqlar**: Yalnız dəyişdirilmiş/failed Markdown blokları re-translated
-- **Better görünürlük**: Real-time inkişaf yavaş məhsullara kömək edir
+- **Faster inkişafı**: Yalnız dəyişdirilmiş/failed Markdown blokları re-translated
+- **Better görünürlük**: Real-time inkişaf yavaş məhsulları tanıyacaq
 
 ## İnnovasiyalar
 
 Planned inkişaf:
 
-1. **AI fine-tuning** — məlumatlar üçün Post-machine çeviri baxış > 5 söz
+1. **AI fine-tuning** — Post-machine sözlər üçün təsviri baxış > 5 söz
 2. **Admin nəzarət** — Restrict admin səhifəçilərin saytında
 3. **Dictionary istehsalçısı** — Yerlileştirme qorunması üçün Web UI
 4. **Translation statistika** — Müəlliflik sayı və səviyyə faizlərini vasitəsilə göstərir
-5. **İctimai yerləşdirici texnologiyası **
+5. **İctimai yerləşdirici texnologiyası** — alternativ yerləşdirici formatları
 
 ## Bakı
 
-Komponent xidməti ilə suallar və məlumatlar üçün, hər bir modul xidmətlərini həyata keçirmək və ya inkişaf komandasına əlaqə saxlayın.
+Komponent xidməti ilə suallar və suallar üçün, hər bir modul nümayişlərini həyata keçirmək və ya inkişaf komandasına əlaqə saxlayın.

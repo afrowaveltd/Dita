@@ -1,6 +1,6 @@
 ﻿# Živý překlad Přístrojová deska
 
-Přístrojová deska Live Translation je admin stránka, která poskytuje skutečnou viditelnost do automatického překladu potrubí. Připojí se k náboji SignalR a zobrazí všechny události plynovodu, jak k nim dochází.
+Přístrojová deska Live Translation je admin stránka, která zajišťuje viditelnost v reálném čase do automatického překladu potrubí. Připojí se k náboji SignalR a zobrazí všechny události plynovodu, jak k nim dochází.
 
 ## URL
 
@@ -12,7 +12,7 @@ Přístrojová deska Live Translation je admin stránka, která poskytuje skute�
 
 ### Real- time event stream
 
-Všechny signály Události z překladatelského potrubí jsou zobrazeny v tabulce s živou aktualizací:
+Všechny události SignalR z překladatelského potrubí jsou zobrazeny v tabulce s živou aktualizací:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -39,7 +39,7 @@ Status banner na vrcholu ukazuje:
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-Připojení využívá automatické opětovné spojení s exponenciálním zpětným pásmem: 0s, 2s, 5s, 10s, 30s.
+Spojení využívá automatické spojení s exponenciálním zpětným pásmem: 0s, 2s, 5s, 10s, 30s.
 
 ### Kontroly
 
@@ -47,7 +47,7 @@ Připojení využívá automatické opětovné spojení s exponenciálním zpět
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Signál R hub
+## Uzel SignalR
 
 Přístrojová deska se připojí k:
 
@@ -98,8 +98,8 @@ Výstražný odznak
 ### Hranice
 
 - Čisté HTML / JS s Bootstrap 5 styling
-- Používá knihovnu Microsoft SignalR JavaScript klient (načteno z CDN)
-- Žádné serverboard vykreslování potřebné pro událost krmiva
+- Používá knihovnu klienta Microsoft SignalR JavaScript (načteno z CDN)
+- Žádné serverboční vykreslování nutné pro událost krmiva
 
 ### Struktura stránky
 
@@ -115,7 +115,7 @@ Dita.Server/Pages/Admin/
 2. Přejít na
 3. Spustit překlad běh (buď čekat na plánovač nebo volat API)
 4. Sledovat události se objeví v reálném čase
-5. Pomocí tlačítka Export zachytíte plnou stopu pro ladění
+5. Pomocí tlačítka Export můžete zachytit celou stopu pro ladění
 
 ## Budoucí zlepšení
 
@@ -144,7 +144,7 @@ Plánované zlepšení palubní desky:
 1. Zkontrolujte, zda URL URL rozhraní SignalR odpovídá serveru () a klientovi ()
 2. Ověřte, zda je zapnutý plánovač v
 3. Podívejte se na protokoly serverů pro chyby v překladu potrubí
-4. Zkontrolujte prohlížeč Záložka sítě pro zprávy WebSocket
+4. Zkontrolujte kartu Síť prohlížeče pro zprávy WebSocket
 
 ### Zprávy jsou mimo provoz
 

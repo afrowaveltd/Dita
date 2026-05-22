@@ -37,7 +37,7 @@ Le remaniement a permis de répondre à plusieurs préoccupations concernant la 
 
 **Comportements clés**:
 - Si la langue par défaut est l'anglais: noms de pays stockés as-is
-- Si la langue par défaut est autre : les noms anglais traduits en langue par défaut d'abord
+- Si la langue par défaut est autre : les noms anglais traduits dans la langue par défaut d'abord
 - Chaque langue est traitée indépendamment avec sa propre boucle de réessayer
 
 ### LocalisationService de traduction
@@ -45,7 +45,7 @@ Le remaniement a permis de répondre à plusieurs préoccupations concernant la 
 ** Responsabilités** :
 - Détecter les clés ajoutées/supprimées en comparant le dictionnaire par défaut actuel avec l'instantané précédent
 - Traduire les clés ajoutées dans chaque langue cible
-- Supprimer les clés supprimées de chaque langue cible
+- Supprimer les touches supprimées de chaque langue cible
 - Enregistrer un instantané pour la prochaine comparaison
 
 **Comportements clés**:
@@ -67,7 +67,7 @@ Le remaniement a permis de répondre à plusieurs préoccupations concernant la 
 **Comportements clés**:
 - Granularité au niveau du bloc: les en-têtes, les paragraphes, les éléments de liste sont traduits séparément
 - Les traces de métadonnées qui bloquent ont réussi/ont échoué par langue
-- Les blocs échoués sont retriés à la prochaine course sans re-transcrire les blocs réussis
+- Les blocs échoués sont retriés sur la prochaine course sans re-transcrire les blocs réussis
 - La validation de la structure assure le comptage des caps, des listes, des blocs de code, etc
 
 ## Stratégie de réessayer
@@ -83,7 +83,7 @@ Le système met en œuvre des relevés à trois niveaux:
 ### Niveau 2 — Étape (Service de la traduction)
 
 - Jusqu'à 3 tentatives avec 30 secondes de retard
-- Redirige l'intégralité de la requête de traduction après épuisement des requêtes HTTP
+- Redirige l'ensemble de la requête de traduction après épuisement des requêtes HTTP
 - Le masquage et la restauration du porte-place sont appliqués à ce niveau
 
 ### Niveau 3 — Bloc (Service de traduction des documents)
@@ -150,11 +150,11 @@ For each target language:
    └─ Save dictionary immediately
 ```
 
-## Résistance de l ' État
+## Résistance des États
 
 ### Coups de vue
 
-- **JSON** : stocké dans un fichier à côté du dictionnaire par défaut (le nom varie selon le fournisseur de stockage)
+- **JSON**: Stocké dans un fichier à côté du dictionnaire par défaut (le nom varie selon le fournisseur de stockage)
 - **Purpose**: Active la synchronisation progressive en suivant ce qui était présent dans l'exécution précédente
 
 ### Fichiers Hash
@@ -176,9 +176,9 @@ For each target language:
 
 - **Dossier**:
 - **Contenu**: Dictionnaire des clés pour les paires de noms de domaine
-- **Objet**: Fournit des valeurs par défaut pour les détenteurs de place nommés dans toute l'application
+- **But**: Fournit des valeurs par défaut pour les détenteurs de place nommés dans l'application
 
-## Signal Rapports R
+## SignalR
 
 ### Abstraction de l'éditeur
 
@@ -214,7 +214,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 4. Injecter dans le constructeur
 5. Appel après les étapes existantes
 
-### Politique de réexpédition sur mesure
+### Politique de rétry sur mesure
 
 Paramètres du constructeur de dépassement:
 
@@ -231,7 +231,7 @@ services.AddSingleton<TranslationRetryService>(
 
 ### Gestion personnalisée du détenteur de place
 
-Mettre en œuvre pour modifier la syntaxe ou le stockage du détenteur de place :
+Mettre en œuvre pour modifier la syntaxe ou le stockage du détenteur de place:
 
 ```csharp
 public class CustomPlaceholderService : IPlaceholderService
@@ -278,13 +278,13 @@ Chaque sous-service est testable de manière indépendante:
 
 - Mock pour simuler succès/échec
 - Mock pour vérifier les rapports
-- Utiliser des répertoires temporaires pour le fichier E/S
+- Utiliser des répertoires temporaires pour le fichier I/ O
 - Vérifier le comportement de sauvegarde par langue
 
 ### Essais d'intégration
 
 - Plein pipeline avec réel (local) Libre instance
-- Vérifier le signal Les messages R sont livrés aux clients connectés
+- Vérifier que les messages SignalR sont livrés aux clients connectés
 - Essai de prévention simultanée (sémaphore)
 - Valider la structure Markdown après la traduction
 
@@ -310,7 +310,7 @@ L'original contenait toute la logique dans une classe. La voie migratoire:
 1. Extraire la logique du pays →
 2. Extraire la logique JSON →
 3. Extraire la logique de balisage →
-4. Signal d'extraction Édition R →
+4. Extraire la publication SignalR →
 5. Extraire la logique de réessayer →
 6. Simplifiez l'orchestreur à la délégation seulement
 

@@ -12,7 +12,7 @@ El tauler de traducció en directe és una pàgina d' administrador que proporci
 
 ### Flux d' esdeveniments en temps real
 
-Tots els senyals Els esdeveniments R des de la canonada de traducció es mostren en una taula de desenvolupament en directe:
+Tots els esdeveniments senyalR de la canonada de traducció es mostren en una taula d' obertura en directe:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -47,7 +47,7 @@ La connexió usa la reconnexió automàtica amb l'operació exponencial: 0s, 2s,
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Senyal centre
+## Concentrador senyalR
 
 El tauler es connecta a:
 
@@ -91,7 +91,7 @@ Placa d' avís
 
 ### Dorsal
 
-- **LocalizationHub** (`/hubs/localization`) — SignalR hub that broadcasts messages to all connected clients
+- **LocalizationHub ** genionHyb () bELR que emet els missatges a tots els clients connectats
 - **ISignalRPublisher** — Abstraction over the hub for use in translation services
 - **SignalRPublisher** — Default implementation that increments a monotonic sequence and broadcasts
 
@@ -143,11 +143,11 @@ Millores planificades per al tauler:
 
 1. Comproveu que l' URL del senyalRG coincideix entre el servidor () i el client ()
 2. Verifica el planificador està habilitat
-3. Mireu els registres del servidor per als errors de canonada de traducció
-4. Comprova el navegador Pestanya Xarxa per missatges WebSocket
+3. Mireu els registres del servidor pels errors de canonada de traducció
+4. Comprova la pestanya Xarxa del navegador pels missatges WebSocket
 
 ### Els missatges estan fora de l' ordre
 
 El camp garanteix l'ordre d'una sola sortida. Si els missatges apareixen fora d' ordre, pot indicar:
 - S' està sobreposant múltiples canonades (no hauria de passar degut al bloqueig del mapa)
-- Problemes de representació del navegador (provent el refresc de la pàgina)
+- Problemes de representació del navegador (proventeix la pàgina)

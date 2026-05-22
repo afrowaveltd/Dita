@@ -19,7 +19,7 @@ Konumal yer sahipleri aksine (, ), adı verilen yer sahipleri ** dil-agnostic** 
 
 Adlandırılmış yer sahipleri iki değer kaynağı vardır:
 
-### 1. Runtime değerleri ( dinamik veriler için komplike edilmiştir)
+### 1. Runtime values (recommended for dynamic data)
 
 Yerelleştirilmiş dizeyi retrievlendirmede doğrudan para kazanır:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Mağazalı değerler ( yarı-statik konfigürasyon için)
+### 2. Mağaza değerleri ( yarı-statik konfigürasyon için)
 
 Rehberde bir dosyayı yönetir:
 
@@ -124,11 +124,11 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## Çeviri davranışı
 
-Otomatik çeviri servisi isim isimleri ile metin karşılaştığında:
+Otomatik çeviri servisi isim yer sahipleri ile metin karşılaştığında:
 
 1. ** Çeviriden önce**: Yer sahipleri güvenli jetonlarla maskelenir () çeviri motorun onları değiştirmesini önlemek için.
 2. ** Çeviri sırasında**: Çeviri motoru süreçleri sadece translatable metin.
-3. ** Çeviriden sonra **: Orijinal yer sahipleri () doğru pozisyonlarda restore edilir.
+3. ** Çeviri sonrası**: Orijinal yer sahipleri isimleri () doğru pozisyonlarda restore edilir.
 
 ### Örnek
 
@@ -141,7 +141,7 @@ Kaynak (İngilizce):
 Son sonuç:
 
 Bu bunu sağlar:
-- Placeholder asla tercüme edilmez veya yozlaşmış
+- Placeholder asla tercüme edilmez veya bozulmuş
 - Hedef dil grameri çevreleyen metni özgürce yeniden düzenleyebilir
 - Aynı şablon tüm dillerde doğru çalışır
 
@@ -149,7 +149,7 @@ Bu bunu sağlar:
 
 1. **Use descriptive names **: is better than or or
 2. **Yer sahipleri minimum**: Çok fazla yer sahibi çevirisi daha zor yapar
-3. **Belirli tipler **: JSON dosyasında Yorumlar, çevirmenlerin bağlam anlamalarına yardımcı olur
+3. **Belirli türleri**: JSON dosyasında yorumlar, çevirmenlerin bağlam anlamalarına yardımcı olur
 4. **Prefer runtime values**: Gerçekten dinamik veriler için (kullanıcı isimler, sayılar, tarihler), runtime values at runtime
 5. ** varsayılanlar için depolanmış değerleri kullanın**: Nadiren değişiklikler olan yapılandırma için (örneğin, e-posta desteği)
 6. **Validate yer sahipleri**: Tüm beklenen yer sahipleri için doğrulamak için kullanılır
@@ -162,7 +162,7 @@ Ve her ikisi de yeniden deneme hizmeti kullanır, bu yüzden tüm JSON sözlüğ
 
 ## Backward uyumluluk
 
-Pozisyonal yer sahipleri veya yer sahipleri kullanan mevcut kod değişmeden çalışmaya devam ediyor:
+Pozisyonal yer sahipleri veya yer sahipleri kullanan mevcut kod, değişmeden çalışmaya devam ediyor:
 
 ```csharp
 // Still works exactly as before

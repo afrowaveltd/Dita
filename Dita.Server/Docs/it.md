@@ -22,7 +22,7 @@ Il monolitico è stato decomposto in quattro servizi specializzati coordinati da
 - **Separazione delle preoccupazioni**: Ogni servizio gestisce un dominio di traduzione singolo
 - **Maintainability** Le classi più piccole sono più facili da capire e da testare
 - **Extensibility**: New translation targets can be added via interface implementation
-- ** Affidabilità**: I servizi indipendenti forniscono un migliore isolamento dei guasti
+- **Reliability**: I servizi indipendenti forniscono un migliore isolamento dei guasti
 
 ## Nuove funzionalità
 
@@ -32,7 +32,7 @@ Il monolitico è stato decomposto in quattro servizi specializzati coordinati da
 
 Una nuova pagina di amministrazione che fornisce visibilità in tempo reale nella pipeline di traduzione:
 
-- Visualizza tutti i segnali Eventi R come si verificano
+- Visualizza tutti gli eventi SignalR come si verificano
 - Tipo di messaggio codificato a colori (blue=started, green=completed, red=error)
 - Banner di stato di connessione con ricollegamento automatico
 - Contatore messaggi ed esportazione a JSON
@@ -63,7 +63,7 @@ I file Markdown sono tradotti in modo incrementale:
 - **Risparmio per lingua ** Ogni lingua di destinazione viene salvata immediatamente dopo la traduzione, riducendo la pressione della memoria
 - **Block-level tracking**: traccia lo stato di traduzione per blocco
 - **Ricerca selettiva ** Solo i blocchi falliti sono ritraslati sulla prossima corsa
-- **Persistenza dei dati**: lo stato di traduzione sopravvive riavviamento delle applicazioni
+- **Persistenza dei dati** Stato di traduzione sopravvive l'applicazione riavvia
 
 ### Logica di riprovazione avanzata
 
@@ -112,7 +112,7 @@ Registrato in:
 - /
 - /
 
-Il segno R hub è mappato per le connessioni client.
+Il mozzo SignalR è mappato per le connessioni client.
 
 ## test di prova
 
@@ -120,8 +120,8 @@ Il segno R hub è mappato per le connessioni client.
 
 - **243/244 test di passaggio** (1 saltato a causa dell'accesso al file concomitante in ambiente di prova)
 - Nuova copertura di prova aggiunta per:
-  - Portaoggetti Funzionalità di servizio
-  - IndietroTraduzione Orchestrazione di servizio
+  - Funzionalità di PlaceholderService
+  - BackendTranslationService orchestrazione
   - JsonStringLocalizer segnaposto indici
 
 ### Limitazioni conosciute
@@ -132,11 +132,11 @@ Il segno R hub è mappato per le connessioni client.
 
 ### Servizi in
 
-- — Orchestratore di tubatura
-- — Traduzione di un nome di paese
+- — Orchestratore di tubature
+- — Traduzione di nome di paese
 - — Sincronizzazione del dizionario JSON
-- — Traduzione Markdown
-- — Segnale Pubblicazione di un messaggio
+- — Traduzione di Markdown
+- — Pubblicazione di messaggi SignalR
 - — Promuovere la logica con la maschera del segnaposto
 - — Interfaccia editoriale
 - — Interfaccia di servizio di paese
@@ -171,8 +171,8 @@ Tutti i cambiamenti sono additivi:
 - Il codice di localizzazione esistente () funziona invariato
 - Formattazione posizionale () funziona invariata
 - Il formato del dizionario JSON esistente è invariato
-- La struttura esistente di Markdown è invariata
-- Segnale I messaggi R utilizzano lo stesso formato
+- La struttura di Markdown esistente è invariata
+- I messaggi SignalR usano lo stesso formato
 
 ## Percorso di migrazione
 
@@ -185,15 +185,15 @@ Nessuna migrazione richiesta. Il refactoring è interno:
 ## Miglioramenti delle prestazioni
 
 - ** Utilizzo della memoria ridotta ** File salvati per lingua immediatamente invece di tenere tutti in memoria
-- **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
+- ** Correzioni incrementali più veloci ** Solo i blocchi Markdown modificati/falled sono ritraslati
 - ** Migliore visibilità ** Il progresso in tempo reale aiuta a diagnosticare le fasi lente
 
 ## Miglioramenti futuri
 
 Miglioramenti pianificati:
 
-1. **AI fine-tuning** — Revisione della traduzione automatica per le frasi > 5 parole
-2. **Aautenticazione di amministratore** — Limitare le pagine di amministrazione agli utenti autorizzati
+1. **AI fine-tuning** — Rassegna di traduzione automatica per frasi > 5 parole
+2. ** Autenticazione di amministratore** — Limitare le pagine di amministrazione agli utenti autorizzati
 3. **Dictionary editor** — Web UI per la gestione delle chiavi di localizzazione
 4. **Statistiche di traduzione** — Grafico che mostra i conti di traduzione e i tassi di errore nel tempo
 5. **Custom placeholder syntax** — Supporto per formati placeholder alternativi

@@ -2,7 +2,7 @@
 
 ## Tinjau
 
-Dokumen ini merangkum semua perubahan yang dibuat ke layanan terjemahan otomatis Dita, termasuk arsitektur memfaktorkan ulang, fitur baru, perbaikan pengamatan, dan peningkatan lokalisasi.
+Dokumen ini merangkum semua perubahan yang dibuat ke layanan terjemahan otomatis Dita, termasuk penekanan arsitektur, fitur baru, perbaikan pengamatan, dan peningkatan lokalisasi.
 
 ## Arsitektur Perubahan
 
@@ -32,7 +32,7 @@ Monolitik telah terurai menjadi empat layanan khusus yang dikoordinasikan oleh s
 
 Halaman admin baru yang menyediakan visibilitas real-time ke dalam pipeline terjemahan:
 
-- Tampilkan semua sinyal Peristiwa R saat mereka terjadi
+- Tampilkan semua kejadian SignalR saat mereka terjadi
 - Tipe pesan berkode warna (blue = started, green = completed, red = error)
 - Banner status koneksi dengan auto-reconnect
 - Penghitung pesan dan ekspor ke JSON
@@ -80,7 +80,7 @@ Real- waktu pelaporan untuk semua operasi pipeline:
 - Setiap tahap menerbitkan peristiwa
 - Kemajuan bahasa yang diterbitkan sebagai peristiwa
 - Kejadian galat termasuk konteks rinci (source, error code, message)
-- Nomor seperi menjamin pemesanan dalam setiap run
+- Nomor urutan jaminan pemesanan dalam setiap run
 
 ## Perubahan Konfigurasi
 
@@ -112,7 +112,7 @@ Terdaftar dalam:
 - /
 - /
 
-Sinyal Pusat R dipetakan untuk koneksi klien.
+Pusat Sinyal dipetakan untuk koneksi klien.
 
 ## Pengujian
 
@@ -120,8 +120,8 @@ Sinyal Pusat R dipetakan untuk koneksi klien.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Cakupan tes baru ditambahkan untuk:
-  - Placeholder Fungsi layanan
-  - Terjemahan Belakang Orchestration layanan
+  - Fungsi Layanan PlaceholderService
+  - Orkestra Layanan Translasi latar
   - JsonStringLocalizer placeholder indexers
 
 ### Batas Dikenal
@@ -136,12 +136,12 @@ Sinyal Pusat R dipetakan untuk koneksi klien.
 - - Terjemahan nama negara
 - - JSON kamus sinkronisasi
 - - Terjemahan Markdown
-- - Sinyal Penerbitan pesan R
+- - Sinyal pesan penerbitan
 - - Coba lagi logika dengan placeholder masking
 - - Antar muka penerbit
 - - Antar muka layanan negara
 - - Antarmuka layanan Lokalisasi
-- - Antar muka layanan dokumen
+- - Antarmuka layanan dokumen
 - - Antarmuka orchestrator (diperbarui)
 - - Metadata terjemahan per- file
 
@@ -154,7 +154,7 @@ Sinyal Pusat R dipetakan untuk koneksi klien.
 
 ### Halaman Admin Baru di
 
-- - Real- waktu halaman pemantauan
+- - Real- waktu halaman monitor
 - - Model halaman
 
 ### Dokumentasi Baru di
@@ -172,7 +172,7 @@ Semua perubahan additif:
 - Pemformatan posisi () bekerja tidak berubah
 - Format kamus JSON yang ada tidak berubah
 - Struktur Markdown yang ada tidak berubah
-- Sinyal R pesan menggunakan format yang sama
+- Pesan SignalR memakai format yang sama
 
 ## Path Migrasi
 

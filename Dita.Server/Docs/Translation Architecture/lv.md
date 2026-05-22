@@ -1,16 +1,16 @@
 ﻿# Tulkošanas arhitektūra
 
-Šajā dokumentā aprakstīta Ditas automātiskās tulkošanas sistēmas modulārā arhitektūra, kas ieviesta, lai uzlabotu uzturamību, pārbaudāmību un izturību.
+Šajā dokumentā aprakstīta Ditas automātiskās tulkošanas sistēmas modulārā arhitektūra, kas ieviesta, lai uzlabotu uzturēšanu, pārbaudāmību un izturību.
 
 ## Dizaina mērķi
 
-Refaktorēšanā tika ņemtas vērā vairākas bažas saistībā ar sākotnējo monolītu konstrukciju:
+Refaktūrā tika risinātas vairākas problēmas saistībā ar sākotnējo monolītu dizainu:
 
 - ** Bažu nošķiršana**: Katrs tulkošanas domēns (valstis, JSON vārdnīcas, Markdown) ir izolēts.
 - ** Inkrementālā noturība**: Faili tiek saglabāti uz vienu valodu uzreiz pēc tulkojuma, samazinot atmiņas izmantošanu un sniedzot agrākus rezultātus.
 - ** Noturība**: Vairāki atkārtošanas līmeņi rīkoties pārejošas neveiksmes, nebloķējot visu cauruļvadu.
-- **Observability**: Every significant operation is reported via SignalR for real-time monitoring.
-- **Terminalitāte**: Jaunus tulkošanas mērķus var pievienot, ieviešot vienu saskarni.
+- **Novērojamība**: Par katru nozīmīgu darbību tiek ziņots, izmantojot SignalR, reāllaika monitoringam.
+- **Tīrība**: Jaunus tulkošanas mērķus var pievienot, ieviešot vienu saskarni.
 
 ## Dienesta sadalīšanās
 
@@ -18,7 +18,7 @@ Refaktorēšanā tika ņemtas vērā vairākas bažas saistībā ar sākotnējo 
 
 **Responsibilities**:
 - Cauruļvadu ekspluatācijas cikla pārvaldība (sākums, pabeigšana, kļūdu apstrāde)
-- Uz semaforiem balstīta konvalūtas kontrole (novērš pārklāšanos trases)
+- Uz semaforiem balstīta concurency kontrole (novērš pārklāšanos braucienus)
 - Servera apstiprināšana (latence, valodas pieejamība, konfigurācija)
 - Deleģēšana uz apakšpakalpojumiem
 
@@ -31,7 +31,7 @@ Refaktorēšanā tika ņemtas vērā vairākas bažas saistībā ar sākotnējo 
 
 **Responsibilities**:
 - Lasīt no mapes
-- Sinhronizēt valstu nosaukumus noklusētajā lokalizācijas vārdnīcā
+- Sinhronizēt valstu nosaukumus noklusētajā lokāles vārdnīcā
 - Tulkot trūkstošos valstu nosaukumus katrā mērķa valodā
 - Saglabāt katru mērķa vārdnīcu uzreiz pēc tulkošanas
 
@@ -51,7 +51,7 @@ Refaktorēšanā tika ņemtas vērā vairākas bažas saistībā ar sākotnējo 
 **Pamata uzvedība**:
 - Manuālie tulkojumi vienmēr ir prioritāte (nekad nav pārrakstīti)
 - Pievienotās atslēgas tiek tulkoti un saglabāti par valodu nekavējoties
-- Izņemtās atslēgas nekavējoties tiek dzēstas no vienas valodas
+- Noņemtās atslēgas nekavējoties tiek dzēstas no vienas valodas
 - Snapshot tiek saglabāts tikai pēc tam, kad visas valodas veiksmīgi pabeigtas
 
 ### DokumentiTranslationService
@@ -60,7 +60,7 @@ Refaktorēšanā tika ņemtas vērā vairākas bažas saistībā ar sākotnējo 
 - Pastaiga konfigurēta Atzīmēšanas saknes rekursīvi
 - Noteikt izmainītos pirmkoda failus, izmantojot SHA-256 hashes
 - Celiņa uz bloka tulkošanas statuss
-- Tulkot block-by-block ar vienu bloku retritry
+- Tulkot block-by-block ar per-block retry
 - Pārbaudīt iezīmēšanas struktūru pēc tulkojuma
 - Saglabāt katru mērķa valodas failu neatkarīgi
 
@@ -72,7 +72,7 @@ Refaktorēšanā tika ņemtas vērā vairākas bažas saistībā ar sākotnējo 
 
 ## Mēģināt vēlreiz
 
-Sistēma īsteno atkārtojumus trīs līmeņos:
+Sistēma īsteno retries trīs līmeņos:
 
 ### Līmenis – HTTP (LibreTranslateService)
 
@@ -154,7 +154,7 @@ For each target language:
 
 ### Momentuzņēmumu
 
-- **JSON**: Saglabāts failā blakus noklusētajai vārdnīcai (nosaukums atšķiras pēc glabāšanas nodrošinātāja)
+- **JSON**: Saglabāts failā blakus noklusētajai vārdnīcai (vārds atšķiras no glabāšanas nodrošinātāja)
 - **Purpose**: Ieslēdz inkrementālo sinhronizāciju, sekojot iepriekšējā izpildījumā esošajam
 
 ### Hash faili
@@ -175,12 +175,12 @@ For each target language:
 ### Vietnieka uzglabāšana
 
 - **Fails**:
-- **Saturs**: Vietnes turētāja vārda vērtību pāru atslēgu vārdnīca
+- **Saturs**: Vietu turētāja vārdu un vērtību pāru atslēgu vārdnīca
 - **Purpose**: Nodrošina noklusējuma vērtības nosauktajiem vietturiem visā pieteikumā
 
-## Signāls R ziņojums
+## SignālaR ziņošana
 
-### Publicētāja abstrakcija
+### Izdevēja abstrakcija
 
 atsaista tulkošanas pakalpojumus no SignalR īpatnībām:
 
@@ -194,7 +194,7 @@ public interface ISignalRPublisher
 
 ### Secīguma garantijas
 
-- Vēstules vienā kārtā ir monotoni secīgi
+- Vēstules vienā reizē ir monotoni sekvencētas
 - Kārtas numuri ir unikāli, izmantojot
 - Klienti var atklāt nepilnības vai pārkārtošanu
 
@@ -209,7 +209,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 ### Pievieno jaunu tulkošanas mērķi
 
 1. Izveidot jaunu saskarni ar
-2. Ieviest saskarni ar domēnu loģiku
+2. Īstenot saskarni ar domēnu loģiku
 3. Reģistrēties DI konteinerā
 4. Ievadīt konstruktorā
 5. Zvans pēc esošajiem posmiem
@@ -276,42 +276,42 @@ Iestatījums
 
 Katrs apakšpakalpojums ir neatkarīgi pārbaudāms:
 
-- Mock, lai simulēt panākumus / neveiksmīgs
+- Mock simulēt panākumus / neveiksmīgs
 - Pārbaudīt ziņojumu
-- Lietot pagaidu mapes failam I/O
+- Lietot pagaidu mapes failam I/ O
 - Pārbaudīt katras valodas saglabāšanas uzvedību
 
 ### Integrācijas testi
 
-- Pilna cauruļvada izmantošana ar reālu (vietēju) LibreTranslate instance
-- Pārbaudīt signālu R ziņojumi tiek piegādāti saistītajiem klientiem
+- Pilna cauruļvada izmantošana ar reālu (vietēju) LibreTulkošanas instance
+- Pārbaudīt SignalR ziņojumus tiek piegādāti pieslēgtiem klientiem
 - Testa vienlaicīgas palaišanas novēršana (semafora)
 - Pārbaudīt iezīmēšanas struktūru pēc tulkojuma
 
 ### Beigu testi
 
 - Ieslēdz tulkojumu caur API vai plānotāju
-- Pārbaudīt visus mērķa valodu failus tiek izveidots / atjaunināts
+- Pārbaudīt visus mērķa valodas failus tiek izveidots / atjaunināts
 - Pārbaudīt metadatu failus satur pareizu bloka statusu
 - Apstiprināt, ka vietturi tiek saglabāti tulkojumos
 
 ## Darbības apsvērumi
 
-- **Atmiņa**: Saglabāšana vienā valodā neļauj paturēt atmiņā visas vārdnīcas
-- **Disks I/O**: Metadati faili pievienot mazo gaisvadu bet iespējot pakāpenisks darbs
-- **Tīkls**: Secīga apstrāde ar drostling novērš pārliecinošu LibreTranslate
+- **Atmiņa**: Saglabāšana vienā valodā neļauj turēt atmiņā visas vārdnīcas
+- **Disk I/O**: Metadati faili pievienot nelielu gaisvadu, bet ļauj pakāpeniski strādāt
+- **Tīkls**: Secīga apstrāde ar throttling novērš pārliecinošu LibreTranslate
 - **CPU**: SHA-256 hashing un regex validācija ir ātri attiecībā pret tulkošanas latentumu
 - **SignalR**: viegli ziņojumi, nav nepieciešama derīgas kravas saspiešana tipiskiem ziņojumiem
 
 ## Migrācija no monolītās konstrukcijas
 
-Oriģināls saturēja visu loģiku vienā klasē. Migrācijas ceļš:
+Oriģinālā bija visa loģika vienā klasē. Migrācijas ceļš:
 
-1. Atspiest valsts loģika →
-2. Izvilkuma JSON loģika →
+1. Ieguves valsts loģika →
+2. Izspiest JSON loģika →
 3. Ekstrakcijas iezīmēšanas loģika →
-4. Atspiest signālu R izdošana →
+4. Ekstrakts SignalR izdevējdarbība →
 5. Ekstrakta atkārtošanas loģika →
 6. Vienkāršot orķestra tikai delegāciju
 
-Visas esošās saskarnes () netiek mainītas. Cauruļvada patērētāji neredz nekādas izmaiņas.
+Visas esošās saskarnes () nemainās. Cauruļvada patērētāji neredz nekādas izmaiņas.

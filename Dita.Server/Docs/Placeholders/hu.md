@@ -1,10 +1,10 @@
-﻿# Elnevezett helyfoglalók lokalizációban
+﻿# A helymeghatározók neve
 
 Dita supports **named placeholders** in localization strings, allowing dynamic values to be inserted at runtime while preserving correct grammar across languages.
 
 ## Szintaxis
 
-Helyzetfoglalók használja a curly- merevítő szintaxist belül JSON szótár értékek:
+A helyfoglalók a JSON szótár értékein belüli curly- merevítő szintaxist használják:
 
 ```json
 {
@@ -17,7 +17,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 ## Tárolás
 
-A "PlaceHolders" két értékforrást jelent:
+A "PlaceHolders" két értékforrás:
 
 ### 1. Futási idő értékek (dinamikus adatokhoz ajánlott)
 
@@ -50,7 +50,7 @@ A fájl kezelése a könyvtárban:
 
 Stored values act as **defaults** and are overridden by runtime values.
 
-## API-hivatkozás
+## Az API hivatkozása
 
 ### JsonStringLocalizer indexer
 
@@ -102,7 +102,7 @@ public interface IPlaceholderService
 
 ### Kiterjesztési módszerek
 
-Kényelmi célra, ha a következőkkel dolgozik:
+Kényelmi célra, ha az alábbiakkal dolgozik:
 
 ```csharp
 public static class StringLocalizerExtensions
@@ -142,7 +142,7 @@ Végső eredmény:
 
 Ez biztosítja, hogy:
 - A helyfoglalókat soha nem fordítják vagy rontják meg
-- Cél- nyelv nyelvtan lehet átrendezni a környező szöveget szabadon
+- Target-language nyelvtan lehet átrendezni a környező szöveget szabadon
 - Ugyanaz a sablon működik helyesen minden nyelven
 
 ## Legjobb gyakorlatok

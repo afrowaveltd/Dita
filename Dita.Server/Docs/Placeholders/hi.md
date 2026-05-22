@@ -13,7 +13,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 }
 ```
 
-पोजीशनल प्लेसहोल्डर (, ) के विपरीत, नामित प्लेसहोल्डर **language-agnostic** — अनुवादक कोड को तोड़ने के बिना उन्हें लक्ष्य-भाषा व्याकरण से मिलान करने का आदेश दे सकते हैं।.
+पोजीशनल प्लेसहोल्डर (, ) के विपरीत, नामित प्लेसहोल्डर **language-agnostic** — अनुवादक उन्हें कोड को तोड़ने के बिना लक्ष्य-भाषा व्याकरण से मिलान करने का आदेश दे सकते हैं।.
 
 ## भंडारण
 
@@ -147,7 +147,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## सर्वोत्तम प्रथाओं
 
-1. **Use descriptive name**: बेहतर है
+1. **Use descriptive name**: से बेहतर है या
 2. **Keep placeholders minimal**: Too many placeholders make translation harder
 3. **Document expected types**: Comments in the JSON file help translators understand context
 4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime

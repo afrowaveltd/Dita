@@ -1,6 +1,6 @@
 ﻿# Traductions en temps réel
 
-Ce document existe comme entrée de test en direct pour le pipeline de traduction automatique. Toute modification de ce fichier déclenche la retraduction de tous les fichiers de langue cible lors de la prochaine exécution programmée.
+Ce document existe comme entrée de test en direct pour le pipeline de traduction automatique. Toute modification de ce fichier déclenche la traduction de tous les fichiers de langue cible lors de la prochaine exécution programmée.
 
 ## Aperçu de l'architecture
 
@@ -9,31 +9,31 @@ Le pipeline de traduction a été restructuré en une architecture modulaire ave
 - **BackendTranslationService** — Organise l'ensemble du pipeline, gère la validation du serveur et les délégués travaillent aux sous-services.
 - **PaysTranslationService** — Synchronise les noms de pays des dictionnaires par langue.
 - **LocalisationTranslationService** — Détecte les clés ajoutées ou supprimées dans le dictionnaire JSON par défaut et les traduit dans les langues cibles.
-- **DocumentsTranslationService** — Traduit les fichiers de documentation Markdown avec le suivi par bloc et les métadonnées.
+- **DocumentsTranslationService** — Traduit les fichiers de documentation Markdown avec suivi par bloc et métadonnées.
 
 Chaque sous-service fonctionne de manière indépendante et rend compte de ses progrès via SignalR en temps réel.
 
 ## Ce que fait le service
 
-Le service fonctionne selon un calendrier et exécute un pipeline en cinq étapes: validation du serveur, synchronisation du pays, synchronisation du dictionnaire JSON, traduction du fichier Markdown et persistance des résultats. Chaque étape émet des événements structurés de progression en temps réel sur Signal R afin que les clients connectés puissent suivre le déroulement du travail.
+Le service fonctionne selon un calendrier et exécute un pipeline en cinq étapes: validation du serveur, synchronisation du pays, synchronisation du dictionnaire JSON, traduction des fichiers Markdown et persistance des résultats. Chaque étape émet des événements structurés en temps réel sur SignalR afin que les clients connectés puissent suivre le déroulement du travail.
 
 ## Étapes du pipeline
 
 ### Étape 1 — Serviteurs de contrôle
 
-Avant tout travail de traduction, le service vérifie que toutes les conditions préalables sont remplies :
+Avant tout travail de traduction, le service vérifie que toutes les conditions préalables sont remplies:
 
 - La section de configuration doit être présente et valide.
 - Le serveur LibreTrail doit répondre dans une latence acceptable.
 - La liste des langues disponibles sur le serveur de traduction est récupérée.
 - La langue par défaut configurée doit être présente dans cette liste.
-- Les fichiers JSON locaux manquants pour n'importe quelle langue prise en charge sont créés automatiquement.
+- Les fichiers JSON locaux manquants pour toute langue prise en charge sont créés automatiquement.
 
 Si une vérification échoue, le pipeline s'arrête immédiatement et un message est émis.
 
 ### Étape 2 — Pays de traduction
 
-Les noms de pays sont synchronisés depuis un catalogue en lecture seule () vers les dictionnaires JSON de localisation.
+Les noms de pays sont synchronisés depuis un catalogue en lecture seule () dans les dictionnaires JSON de localisation.
 
 - Si la langue par défaut de l'application est l'anglais, chaque nom de pays est stocké comme sans traduction.
 - Si la langue par défaut est n'importe quelle autre langue, le nom du pays anglais est d'abord traduit dans cette langue, et le résultat devient l'entrée dans le dictionnaire par défaut.
@@ -47,12 +47,12 @@ Le service compare le dictionnaire de localisation par défaut actuel avec un in
 
 - **Les clés ajoutées** — entrées présentes dans la valeur par défaut actuelle mais absentes de l'instantané — sont traduites dans chaque langue cible qui n'a pas déjà d'entrée manuelle pour cette clé.
 - **Les touches supprimées** — entrées présentes dans l'instantané mais absentes de la valeur par défaut actuelle — sont supprimées de chaque dictionnaire de langue cible.
-- Les traductions manuelles sont toujours prioritaires. Si un dictionnaire cible contient déjà une valeur pour une clé, cette entrée reste inchangée, peu importe ce que dit la source.
-- **Chaque dictionnaire de langue cible est sauvegardé immédiatement après sa traduction complète**, plutôt que d'attendre la fin de toutes les langues.
+- Les traductions manuelles sont toujours prioritaires. Si un dictionnaire cible contient déjà une valeur pour une clé, cette entrée reste inchangée indépendamment de ce que dit la source.
+- **Chaque dictionnaire de langues cibles est sauvegardé immédiatement après la traduction complète**, plutôt que d'attendre que toutes les langues soient terminées.
 - Si une traduction échoue pour une langue spécifique, le service est automatiquement récupéré. Seules les erreurs persistantes (p. ex., un langage non pris en charge) font que ce langage est ignoré.
 - Après l'exécution, le dictionnaire par défaut actuel est enregistré comme nouveau snapshot pour la prochaine comparaison.
 
-Tous les dictionnaires sont toujours stockés avec des clés classées par ordre alphabétique et JSON pour la lisibilité humaine.
+Tous les dictionnaires sont toujours stockés avec des clés classées alphabétiquement et JSON dentelé pour la lisibilité humaine.
 
 ### Étape 4 — Traduire les fichiers Markdown
 
@@ -62,7 +62,7 @@ Le service guide les racines de documentation configurées (par défaut : ) et t
 2. Un fichier à côté des pistes source par langue, statut de traduction par bloc, permettant **rétraduction progressive** de blocs échoués.
 3. Le hash stocké de l'exécution précédente (conservé dans un fichier à côté du fichier source, ou dans un emplacement de repli temporaire) est comparé au hash actuel.
 4. Pour chaque langue cible, le fichier correspondant est également vérifié pour l'intégrité structurelle.
-5. Tout fichier cible manquant, ayant un hachage dépassé, ne valide pas la structure, ou contenant des blocs non traduits est en attente pour une nouvelle traduction.
+5. Tout fichier cible manquant, ayant un hachage périmé, ne valide pas la structure ou contenant des blocs non traduits est en file d'attente pour une nouvelle traduction.
 6. **Chaque langue cible est traduite et sauvegardée indépendamment** — si le tchèque réussit mais que le français échoue, le fichier tchèque est toujours écrit sur disque.
 7. Les fichiers traduits avec succès sont validés pour la parité structurelle avec la source (nombres de titres égaux, éléments de liste, blocs de code, blockquotes, liens, marqueurs gras/italiques et balises HTML) avant qu'ils soient écrits sur le disque.
 8. Si tous les fichiers cibles d'une source réussissent, le nouveau hachage est stocké à côté de la source. Si l'écriture à côté de la source échoue (par exemple en lecture seule), le hash revient dans le répertoire temporaire.
@@ -77,7 +77,7 @@ Une synthèse est assemblée et publiée. Il comprend:
 - Toute erreur de stockage collectée pendant l'exécution.
 - Statistiques de traduction par langue (nombre traduit, nombre omis, nombre d'erreurs).
 
-## Signal enveloppe de message R
+## Enveloppe du message signalR
 
 Chaque événement de progrès est livré dans les domaines suivants :
 
@@ -86,7 +86,7 @@ Champ
 Identificateur de corrélation pour le fonctionnement actuel du pipeline
 Compteur monotonique dans une course, à partir de 1
 Type sémantique du message
-Étape pipeline le message appartient à
+Phase pipeline le message appartient à
 Heure UTC où le message a été émis
 Indique si le message représente une condition d'erreur
 Résumé lisible par l'homme
@@ -150,7 +150,7 @@ Le pipeline met en œuvre deux niveaux de résilience:
 ### Recours à l'étape (Service de la traduction)
 
 - Si une demande de traduction échoue après les relevés internes de LibreTrail, la réalisation jusqu'à 3 relevés supplémentaires de niveau étape avec 30 secondes de retard.
-- Masquage du porte-place: Les détenteurs de place nominés () dans le texte sont temporairement remplacés par des jetons sûrs () avant la traduction et restaurés après, assurant une grammaire correcte dans les langues cibles.
+- Masquage d'emplacement : Les emplacements désignés () dans le texte sont temporairement remplacés par des jetons sûrs () avant la traduction et restaurés après, assurant une grammaire correcte dans les langues cibles.
 
 ### Validation linguistique
 
@@ -161,7 +161,7 @@ Le pipeline met en œuvre deux niveaux de résilience:
 
 - Les traductions Markdown sont effectuées bloc par bloc (en-têtes, paragraphes, éléments de liste).
 - Si un bloc individuel échoue à la traduction, il est marqué comme non traduit dans le fichier de métadonnées et réédité sur le prochain pipeline.
-- Le service suit l'état par langue, par bloc dans les fichiers à côté de chaque fichier Markdown source.
+- Le service suit l'état par langue et par bloc dans les fichiers à côté de chaque fichier Markdown source.
 
 ## Codes d'erreur
 
@@ -175,22 +175,22 @@ Portée
 4000–4999
 5000–5999
 
-Chaque erreur d'un rapport porte l'identifiant source (code de langue, chemin de fichier ou nom d'étape), le code d'erreur et un message lisible par l'homme.
+Chaque erreur d'un rapport porte l'identificateur de source (code de langue, chemin de fichier ou nom d'étape), le code d'erreur et un message lisible par l'homme.
 
 ## Tableau de bord de la traduction en direct
 
 Le projet Server inclut une page d'administration à laquelle se connecte le hub SignalR et affiche tous les événements de pipeline en temps réel.
 
 - Affiche l'état de la connexion, le nombre de messages et une table de mise à jour en direct de tous les événements.
-- Lignes codées en couleurs: bleu pour le démarrage de la scène, vert pour l'achèvement, rouge pour les erreurs.
+- Lignes codées en couleurs: bleu pour le démarrage de l'étape, vert pour l'achèvement, rouge pour les erreurs.
 - Prend en charge la compensation du flux et l'exportation de tous les messages vers JSON.
 - Auto-reconnecte avec un retour exponentiel si la connexion tombe.
 
 ## Principes de conception
 
 - **Modularité**: Chaque souci de traduction est isolé dans son propre service pour la maintenance et la testabilité.
-- **Constante incrémentale**: Les dictionnaires et les fichiers Markdown sont enregistrés par langue immédiatement après la traduction, ce qui réduit la pression de la mémoire et fournit des commentaires plus tôt.
-- **Resilience**: Plusieurs niveaux de ré-essai (HTTP, étape, bloc) garantissent que les défaillances transitoires ne bloquent pas le pipeline.
-- ** Suivi de l'État** : Les métadonnées par fichier () et les fichiers de hachage permettent un travail progressif précis sur les séries subséquentes.
-- ** Visibilité en temps réel**: Chaque opération importante est signalée via SignalR pour la surveillance et le débogage.
-- **Les traductions manuelles ont toujours priorité sur les ajouts automatiques. **
+- **Constante incrémentale**: Les dictionnaires et les fichiers Markdown sont enregistrés par langue immédiatement après la traduction, ce qui réduit la pression de mémoire et fournit des commentaires plus tôt.
+- **Résilience**: Plusieurs niveaux de ré-essai (HTTP, étape, bloc) garantissent que les défaillances transitoires ne bloquent pas le pipeline.
+- **Suivi de l'état**: Les métadonnées par fichier () et les fichiers de hachage permettent un travail progressif précis sur les exécutions ultérieures.
+- ** Visibilité en temps réel**: Chaque opération importante est signalée par SignalR pour la surveillance et le débogage.
+- **Les traductions manuelles ont toujours priorité sur les ajouts automatiques.**

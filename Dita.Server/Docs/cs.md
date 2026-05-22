@@ -2,11 +2,11 @@
 
 ## Přehled
 
-Tento dokument shrnuje všechny změny provedené na Dita automatické překladatelské služby, včetně architektura refaktoring, nové funkce, zlepšení pozorovatelnosti a lokalizace vylepšení.
+Tento dokument shrnuje všechny změny provedené na Dita automatické překladatelské služby, včetně architektura refaktoring, nové funkce, zlepšení pozorovatelnosti, a lokalizace vylepšení.
 
 ## Změny architektury
 
-### Refaktorovaný BackendTranslationService
+### Refaktored BackendTranslationService
 
 Monolitický se rozkládá na čtyři specializované služby koordinované lehkým orchestrátorem:
 
@@ -32,14 +32,14 @@ Monolitický se rozkládá na čtyři specializované služby koordinované lehk
 
 Nová admin stránka, která poskytuje skutečnou viditelnost do překladatelského potrubí:
 
-- Zobrazí veškerý signál R nežádoucí účinky, které se vyskytly
+- Zobrazí všechny události SignalR, jak se objeví
 - Typ barevně kódované zprávy (modrá = spuštěna, zelená = dokončena, červená = chyba)
 - Spojení status banner s auto- reconnect
 - Počitadlo zpráv a export do JSON
 
 ### Pojmenované paměťové nosiče
 
-Systém lokalizace nyní podporuje pojmenované nosiče () pro lepší gramatiku v různých jazycích:
+Lokalizační systém nyní podporuje pojmenované stojany () pro lepší gramatiku v různých jazycích:
 
 ```csharp
 // Usage in code
@@ -65,7 +65,7 @@ Soubory Markdownu se překládají postupně:
 - **Selective retry**: Only failed blocks are re-translated on the next run
 - **Metadata persistence**: Translation state survives application restarts
 
-### Vylepšená logika retry
+### Zvýšená logika retry
 
 Tři úrovně odolnosti:
 
@@ -112,16 +112,16 @@ Zaevidováno v:
 - /
 - /
 
-Signál Rhub je zmapován pro připojení klientů.
+Uzel SignalR je zmapován pro připojení klientů.
 
 ## Zkouška
 
 ### Stav zkoušky
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
-- Nové zkušební pokrytí přidáno pro:
-  - Placeholder Funkce služby
-  - BackendTranslation Organizace služeb
+- Přidána nová zkušební pokrytí pro:
+  - Funkce PlaceholderService
+  - Organizace BackendTranslationService
   - Nosiče JsonStringLocalizer
 
 ### Známá omezení
@@ -134,9 +134,9 @@ Signál Rhub je zmapován pro připojení klientů.
 
 - - Pipeline orchestrátor
 - - Překlady názvu země
-- - Synchronizace slovníku JSON
+- - synchronizace slovníku JSON
 - - Markdown překlad
-- - Signál R publikování zpráv
+- - Vydávání zpráv SignalR
 - - Zopakujte logiku pomocí maskáče
 - - Publisher interface
 - - Rozhraní služeb země
@@ -149,7 +149,7 @@ Signál Rhub je zmapován pro připojení klientů.
 
 - - Přidána jmenovaná podpora na místo
 - - Aktualizováno pro nový parametr
-- - Pojmenovaná správa místa
+- - Pojmenovaná správa míst
 - - Rozhraní Placeholder
 
 ### Nová admin stránka in
@@ -172,7 +172,7 @@ Všechny změny jsou aditivní:
 - Poziční formátování () funguje beze změny
 - Stávající formát slovníku JSON je nezměněn
 - Stávající struktura Markdown se nezměnila
-- Signál R zprávy používají stejný formát
+- SignalR zprávy používají stejný formát
 
 ## Migrační cesta
 
@@ -200,4 +200,4 @@ Plánované zlepšení:
 
 ## Kontakt
 
-Pro dotazy nebo otázky s překladatelskou službou se prosím podívejte do podrobné dokumentace v adresáři každého modulu nebo kontaktujte vývojový tým.
+Pro dotazy nebo otázky s překladatelskou službou se prosím podívejte na podrobnou dokumentaci v adresáři každého modulu nebo kontaktujte vývojový tým.

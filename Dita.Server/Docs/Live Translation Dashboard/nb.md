@@ -1,6 +1,6 @@
 ﻿# Live Oversettelse Dashboard
 
-Live Translation Dashboard er en admin-side som gir sanntid synlighet i den automatiske oversettelsesrørledningen. Den kobles til SignalR hub og viser alle pipeline hendelser som de oppstår.
+Live Translation Dashboard er en admin-side som gir sanntidssynlighet i den automatiske oversettelsesrørledningen. Den kobler til SignalR-hub og viser alle pipeline hendelser som de oppstår.
 
 ## URL
 
@@ -10,13 +10,13 @@ Live Translation Dashboard er en admin-side som gir sanntid synlighet i den auto
 
 ## Funksjoner
 
-### Real-time event stream
+### sanntids event stream
 
-Alle signaler R hendelser fra oversettelsesrørledningen vises i en live-updating tabell:
+Alle SignalR hendelser fra oversettelsesrørledningen vises i en live-updating tabell:
 
 - **Sekvensnummer** — Monotonisk teller innenfor hvert rørledningskjøring
 - **Timestamp** — Lokal tid da hendelsen ble mottatt
-- **Rør ID** — Forkortet GUID for korrelasjon
+- **Rør ID** — Kortere GUID for korrelasjon
 - **Stage** — Pipeline scenemerke (SjekkServere, Oversettere, etc.)
 - ** Type** — Meldingstypemerke (StageStartet, Fremskritt, StageCompleted, etc.)
 - ** Melding** — Menneskelesbar beskrivelse
@@ -45,9 +45,9 @@ Tilkoblingen bruker automatisk reconnect with exponential backoff: 0s, 2s, 5s, 1
 
 - **Clear Feed** — Removes all displayed messages and resets the counter
 - **Eksporter JSON** — Nedlastinger alle mottatte meldinger som en JSON-fil for analyse
-- ** Melding teller** — Viser totalt antall hendelser mottatt i denne sesjonen
+- **Message teller** — Viser totalt antall hendelser mottatt i denne sesjonen
 
-## Signal R hub
+## signaler hub
 
 Dashboard kobler til:
 
@@ -73,7 +73,7 @@ interface LocalizationHubMessage {
 }
 ```
 
-### hendelsestyper
+### Hendelsestyper
 
 Dashboard håndterer alle verdier:
 
@@ -91,14 +91,14 @@ Advarselsmerke
 
 ### Motor
 
-- **Lokalisering Hub** () — SignalR-hub som sender meldinger til alle tilkoblede klienter
+- **LocalizationHub** () — SignalR hub som sender meldinger til alle tilkoblede klienter
 - **ISignalRPublicer** — Abstraksjon over navet for bruk i oversettelsestjenester
-- **SignalRPublisher** — Standard implementering som øker en monoton sekvens og sendinger
+- **SignalRpublicer** - Standard implementering som øker en monoton sekvens og sendinger
 
 ### Frontend
 
 - Ren HTML/JS med Bootstrap 5 styling
-- Bruker Microsoft SignalR JavaScript-klientbiblioteket (lastet fra CDN)
+- Bruker Microsoft SignalR JavaScript klientbiblioteket (lastet fra CDN)
 - Ingen serversiden gjengivelse nødvendig for hendelsesfeed
 
 ### Sidestruktur
@@ -122,17 +122,17 @@ Dita.Server/Pages/Admin/
 Planlagte forbedringer for dashboard:
 
 - **Autentisering** — Begrense tilgangen til brukere med rollen
-- ** Filtrering** — Filtrer hendelser etter trinn, type eller kjøre ID
+- **Filtering** — Filter events by stage, type, or run ID
 - **Historiske kjører** — Vis fullførte kjører fra en database eller loggfil
 - **Statistics** — Kart som viser antall oversettelser, feilpriser og latens over tid
-- **Manuelt utløser** — Knapper for manuelt å starte spesifikke rørledningsfaser
+- **Manuelt utløser** — Knapper for å manuelt starte spesifikke rørledningsstadier
 - ** Konfigurasjon** — Rediger direkte fra instrumentbordet
 - ** Språkhåndtering** — Vis og rediger støttede språk
 - **Dokumentær forhåndsvisning** — Bla gjennom og søk i lokale ordbøker
 
 ## Feilsøking
 
-### Dashboard-visninger " Nedlagt for å koble til"
+### Dashboard-visninger "Failed å koble til"
 
 1. Bekreft at serveren kjører og er tilgjengelig
 2. Sjekk nettleserkonsollen for CORS eller nettverksfeil
@@ -144,10 +144,10 @@ Planlagte forbedringer for dashboard:
 1. Sjekk at URL-adressen til signalR samsvarer mellom server () og klient ()
 2. Kontroller at planleggeren er aktivert i
 3. Se på serverlogger for oversettelsesrørledningsfeil
-4. Sjekk nettleser Nettverksfanen for WebSocket-meldinger
+4. Sjekk nettlesernettverksfanen for WebSocket-meldinger
 
-### Meldingene er ute av orden
+### Meldinger er ute av orden
 
-Feltet garanterer bestilling i et enkelt løp. Hvis meldinger vises ut av orden, kan det indikere:
-- Flere rørledninger kjører overlappende (bør ikke skje på grunn av semaphore lås)
-- Nettlesergjengivelse problemer (prøv forfriskende siden)
+Feltet garanterer bestilling i et enkelt løp. Hvis meldinger vises utenfor rekkefølgen, kan det indikere:
+- Flere rørledninger overlapper (bør ikke skje på grunn av semafor lås)
+- Nettlesergjengivelse problemer (prøve forfriskende siden)

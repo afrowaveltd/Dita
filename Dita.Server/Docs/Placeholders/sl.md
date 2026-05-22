@@ -13,7 +13,7 @@ Plačniki uporabljajo kodrasto-brace sintax znotraj vrednosti slovarja JSON:
 }
 ```
 
-Za razliko od pozicijskih imetnikov (, ), imenovani kraji so **jezikovno-agnostični** – prevajalci jih lahko prerazporedijo, da se ujemajo ciljno-jezikovno slovnico, ne da bi kršili kodo.
+V nasprotju s pozicijskimi imetniki (, ) so imenovani kraji **jezikovno-agnostični** – prevajalci jih lahko prerazporedijo tako, da ustrezajo tarčno-jezikovni slovnici, ne da bi kršili kodo.
 
 ## Shranjevanje
 
@@ -48,7 +48,7 @@ Upravlja datoteko v imeniku:
 }
 ```
 
-Shranjene vrednosti delujejo kot **privzete** in so razveljavljene z vrednostmi časa delovanja.
+Shranjene vrednosti delujejo kot **privzete ** in so razveljavljene z vrednostmi časa delovanja.
 
 ## Sklic na API
 
@@ -128,7 +128,7 @@ Ko avtomatska prevajalska služba naleti na besedilo z imenovanimi imetniki:
 
 1. ** Pred prevajanjem**: Plačniki so zamaskirani z varnimi žetoni (), da bi preprečili, da bi jih prevajalni motor spremenil.
 2. ** Med prevajanjem**: Translacijski motor obdeluje samo prekladljivo besedilo.
-3. ** Po prevodu**: Izvirna imena imetnikov () so obnovljena v pravilnih položajih.
+3. ** Po prevajanju**: Izvirna imena imetnikov () so obnovljena na svojih pravilnih položajih.
 
 ### Primer
 
@@ -149,10 +149,10 @@ To zagotavlja, da:
 
 1. **Uporabite opisna imena**: je boljša od ali
 2. ** Ohranjajte mecen minimalen**: Preveč ljudi otežuje prevajanje
-3. **Pričakovane vrste dokumentov**: Komentarji v datoteki JSON pomagajo prevajalcem razumeti kontekst
+3. ** Pričakovani tipi dokumentov**: Pripombe v datoteki JSON prevajalcem pomagajo razumeti kontekst
 4. **Prefer vrednosti časa delovanja**: Za resnično dinamične podatke (uporabniška imena, številke, datumi), vrednosti podajanja ob času delovanja
 5. **Uporabi shranjene vrednosti za privzete vrednosti**: Za nastavitve, ki se redko spremenijo (app name, podpora email)
-6. **Validate placembers**: Zagotovi se uporaba za preverjanje vseh pričakovanih imetnikov
+6. **Validate placembers**: Zagotovljena je uporaba za preverjanje vseh pričakovanih imetnikov
 
 ## Integracija s samodejnim prevajanjem
 

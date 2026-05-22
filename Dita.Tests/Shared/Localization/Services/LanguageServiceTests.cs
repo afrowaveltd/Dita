@@ -167,6 +167,14 @@ public class LanguageServiceTests : IDisposable
    }
 
    [Fact]
+   public void WhenLocaleCodeIsRtlLanguageThenIsRtlReturnsTrue()
+   {
+      EnsureLanguagesJson();
+      var svc = CreateService();
+      Assert.True(svc.IsRtl("ar-SA"));
+   }
+
+   [Fact]
    public void WhenCodeIsLtrLanguageThenIsRtlReturnsFalse()
    {
       EnsureLanguagesJson();

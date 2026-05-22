@@ -4,7 +4,7 @@ Ang Data ay sumusuporta sa **named placeholders** sa localization stranses, na n
 
 ## kabutihan
 
-Ginagamit ng mga may - ari ng lugar ang curly-bace conclusion sa loob ng diksyunaryong JSON:
+Ginagamit ng mga may - ari ng lugar ang curly-bace contraction sa loob ng diksyunaryong JSON:
 
 ```json
 {
@@ -13,13 +13,13 @@ Ginagamit ng mga may - ari ng lugar ang curly-bace conclusion sa loob ng diksyun
 }
 ```
 
-Hindi tulad ng mga positional placeholder (, ), na pinangalanang placeholders ay **wika-agnostic** — ang mga tagapagsalin ay maaaring mag-order sa kanila na tumugma sa target-wikang balarila nang hindi nilalabag ang kodigo.
+Hindi tulad ng mga positional placeholder (, ), na pinangalanang placeholders ay **wika-agnostic** — ang mga tagapagsalin ay maaaring mag-ayos sa kanila na tumugma sa target-wikang balarila nang hindi nilalabag ang kodigo.
 
 ## Pagkawasak
 
 Ang mga may - ari ng lugar ay may dalawang pinagmumulan ng mga pamantayan:
 
-### 1. Mga pamantayan sa panahon (isinaayos para sa dinamikong impormasyon)
+### 1. Tumatakbo ng mga halaga ng panahon (isinaayos para sa dynamic data)
 
 Pasahin nang tuwiran ang mga pamantayan kapag kinukuha ang lokal na tali:
 
@@ -124,11 +124,11 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## Pag - uugali sa pagsasalin
 
-Kapag ang automatic translation service ay nakikipag - text sa mga may - ari ng lugar:
+Nang ang automatic translation service ay makasalubong ng pangalang placeholders:
 
-1. ** Bago isalin**: Ang mga may-ari ng lugar ay nakabalatkayo na may ligtas na mga token () upang hindi mabago ng transaksyon engine.
+1. ** Bago isalin**: Ang mga may-ari ng lugar ay nakabalatkayo na may ligtas na mga token () upang hindi mabago ng transaksyon engine ang mga ito.
 2. **During translation**: The translation engine processes only the translatable text.
-3. **After translation**: Original placeholder names (`{name}`) are restored in their correct positions.
+3. ** Pagkatapos ng pagsasalin**: Ang mga orihinal na placeholder na pangalan () ay ibinalik sa kanilang mga tamang posisyon.
 
 ### Halimbawa
 
@@ -143,13 +143,13 @@ Huling resulta:
 Tinitiyak nito:
 - Ang mga may - ari ng lugar ay hindi kailanman isinasalin o sinisira
 - Maaaring malayang baguhin ng balarila ng Target-wika ang nakapaligid na teksto
-- Ang gayunding template ay gumagana nang tama sa lahat ng wika
+- Ang gayunding template ay wastong gumagana sa lahat ng wika
 
 ## Pinakamahuhusay na kaugalian
 
 1. **Gumamit ng naglalarawang mga pangalan**: ay mas mabuti kaysa o
-2. ** Panatilihing kaunti ang mga may - ari ng lugar**: Pinahihirap ng napakaraming may - ari ng lugar ang pagsasalin
-3. ** Ang inaasahang mga uri**: Ang mga komento sa salansan ng JSON ay tumutulong sa mga tagapagsalin na maunawaan ang konteksto
+2. ** Panatilihing kaunti ang mga may - ari ng lugar**: Ginagawang mas mahirap ng napakaraming may - ari ng lugar ang pagsasalin
+3. **Document expected types**: Comments in the JSON file help translators understand context
 4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime
 5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
 6. **Validate placeholders**: Ginagamit upang tiyakin ang lahat ng inaasahang may - ari ng lugar

@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## Sintaksor
 
-Përdoruesit e vendeve përdorin sintaksën e kaçurlit brenda fjalorit JSON:
+Mikmbajtësit e vendeve përdorin sintaksën e kaçurlit brenda fjalorit JSON:
 
 ```json
 {
@@ -19,7 +19,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 Vendshënuesit e emëruar kanë dy burime vlerash:
 
-### 1. për
+### 1. Vlerat e vrapimit (për të dhënat dinamike)
 
 Kur merr
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. për
+### 2 vlera të ruajtura (për një konfigurim gjysmë-statik)
 
 A në:
 
@@ -158,9 +158,9 @@ Kjo siguron që:
 
 Ruajtja automatike e vendshënimit gjatë thirrjeve Libre Translate. Nuk nevojitet konfigurim shtesë.
 
-Shërbimi riprodhues dhe të dyja bashkë, kështu që të gjitha përkthimet e fjalorit JSON mbështeten në mënyrë transparente me emrin vendshënues.
+Shërbimi riprodhues dhe të dyja, kështu që të gjitha përkthimet e fjalorit JSON mbështeten në mënyrë transparente me emrin vendshënues.
 
-## Përputhja prapa
+## Pajtueshmëri e kthyer mbrapsht
 
 Kodi ekzistues duke përdorur vendshënues pozicionalë apo jo vendshënues vazhdon të punojë i pandryshuar:
 

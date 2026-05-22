@@ -10,6 +10,9 @@ html {
   position: relative;
   min-height: 100%;
   font-size: 14px;
+  --dita-nav-height: 60px;
+  --dita-footer-height: 60px;
+  --dita-dashboard-shell-gap: 14px;
 }
 
 @media (min-width: 768px) {
@@ -54,7 +57,7 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  height: 60px;
+  height: var(--dita-nav-height);
   border-bottom: 1px solid var(--ts-nav-border);
   background: var(--ts-nav-bg);
   backdrop-filter: blur(14px) saturate(1.4);
@@ -195,7 +198,7 @@ a:hover {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 60px;
+  height: var(--dita-footer-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -497,19 +500,52 @@ pre code {
 }
 
 /* ── Dashboard page full-viewport overrides ────────────────── */
-/* When the dashboard is active we collapse the global chrome    */
+/* When the dashboard is active we keep the global chrome, but
+   give the monitor the width and height it needs for FullHD use. */
 
 body:has(.translation-service-dashboard) {
-  margin-bottom: 0;
+  margin-bottom: var(--dita-footer-height);
   background: var(--ts-bg);
-}
-
-body:has(.translation-service-dashboard) .dita-nav,
-body:has(.translation-service-dashboard) .dita-footer {
-  display: none;
 }
 
 body:has(.translation-service-dashboard) .dita-main {
   max-width: none;
-  padding: 0;
+  padding: var(--dita-dashboard-shell-gap) 18px;
+}
+
+body:has(.translation-service-dashboard) .dita-main > main {
+  min-height: calc(100vh - var(--dita-nav-height) - var(--dita-footer-height) - (var(--dita-dashboard-shell-gap) * 2));
+}
+
+html:dir(rtl) .dita-nav-links,
+html:dir(rtl) .dita-nav-actions,
+html:dir(rtl) .translation-header-actions,
+html:dir(rtl) .translation-stream-tools {
+  direction: rtl;
+}
+
+html:dir(rtl) .translation-event {
+  border-left-width: 1px;
+  border-right: 4px solid var(--ts-event-accent);
+}
+
+html:dir(rtl) .translation-event.is-error,
+html:dir(rtl) .translation-event.is-stagefailed,
+html:dir(rtl) .translation-event.is-pipelinefailed {
+  border-right-color: var(--ts-danger);
+}
+
+html:dir(rtl) .translation-event.is-stagecompleted,
+html:dir(rtl) .translation-event.is-pipelinecompleted {
+  border-right-color: var(--ts-complete);
+}
+
+html:dir(rtl) .translation-event.is-stagestarted {
+  border-right-color: var(--ts-primary);
+}
+
+html:dir(rtl) pre,
+html:dir(rtl) code {
+  direction: ltr;
+  unicode-bidi: isolate;
 }

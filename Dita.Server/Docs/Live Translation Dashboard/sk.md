@@ -1,6 +1,6 @@
 ﻿# živý preklad prístrojová doska
 
-Live Translation Dashboard je admin stránka, ktorá poskytuje v reálnom čase viditeľnosť do automatického prekladu potrubia. Spája sa s uzlom SignalR a zobrazí všetky udalosti súvisiace s potrubím.
+Live Translation Dashboard je admin stránka, ktorá poskytuje v reálnom čase viditeľnosť do automatického prekladu potrubia. Spája sa s uzlom SignalR a zobrazuje všetky udalosti súvisiace s potrubím.
 
 ## URL
 
@@ -12,7 +12,7 @@ Live Translation Dashboard je admin stránka, ktorá poskytuje v reálnom čase 
 
 ### Stream udalostí v reálnom čase
 
-Všetky signály R udalosti z prekladového potrubia sú zobrazené v live-updating tabuľke:
+Všetky udalosti SignalR z prekladového potrubia sú zobrazené v live-aktualizačnej tabuľke:
 
 - **Číslo sekvencie**
 - ** Časová pečiatka**
@@ -33,7 +33,7 @@ Biela (predvolená)
 
 ### Stav pripojenia
 
-Status banner na vrchu ukazuje:
+Stavový banner na vrchu ukazuje:
 - **Connecting**
 - **Connected**
 - ** Opätovné pripojenie**
@@ -47,7 +47,7 @@ Pripojenie využíva automatické opätovné pripojenie s exponenciálnym výstu
 - **Export JSON**
 - **Message counter**
 
-## Signál R centrum
+## SignalR centrum
 
 Palubná doska sa pripája k:
 
@@ -91,7 +91,7 @@ Výstražný odznak
 
 ### Backend
 
-- ** Lokalizácia Hub** ()
+- **LokalizáciaHub** ()
 - **ISignalRPublisher**
 - **SignalRPublisher**
 
@@ -99,7 +99,7 @@ Výstražný odznak
 
 - Čistý HTML / JS s Bootstrap 5 styling
 - Používa knižnicu Microsoft SignalR JavaScript klienta (načítaná z CDN)
-- Pre prenos udalostí nie je potrebné žiadne zobrazenie na strane servera
+- Pre prenos udalostí nie je potrebné žiadne zobrazovanie na strane servera
 
 ### Štruktúra stránky
 
@@ -114,7 +114,7 @@ Dita.Server/Pages/Admin/
 1. Naštartuj Ditu. Aplikácia servera
 2. Navigovať do
 3. Spustiť prekladateľský beh (buď čakať na rozpisovač alebo volajte API)
-4. Sledujte udalosti v reálnom čase
+4. Sledovať udalosti sa objavujú v reálnom čase
 5. Použite tlačidlo Export na zachytenie celej stopy pre ladenie
 
 ## Budúce zlepšenia
@@ -122,7 +122,7 @@ Dita.Server/Pages/Admin/
 Plánované zlepšenia prístrojovej dosky:
 
 - **Autentifikácia**
-- **Filterovanie**
+- **Filtering**
 - **Historické behy**
 - ** Štatistika**
 - **Manual triggers** — Buttons to manually start specific pipeline stages
@@ -132,9 +132,9 @@ Plánované zlepšenia prístrojovej dosky:
 
 ## Riešenie problémov
 
-### Dashboard zobrazuje "Failed to connect"
+### Dashboard ukazuje "Failed to connect"
 
-1. Overiť server beží a prístupný
+1. Overiť, či server beží a je prístupný
 2. Skontrolovať konzolu prehliadača pre CORS alebo sieťové chyby
 3. Potvrdiť prítomnosť
 4. Uistite sa, že žiadny firewall blokuje pripojenie WebSocket
@@ -149,5 +149,5 @@ Plánované zlepšenia prístrojovej dosky:
 ### Správy sú mimo prevádzky
 
 Pole zaručuje objednanie v rámci jedného kola. Ak sa správy objavia mimo prevádzky, môžu sa v nich uviesť:
-- Viacnásobné presahovanie vedenia potrubia (nemal by sa stať kvôli semaphore zámku)
+- Viacnásobné presahovanie vedenia potrubia (nemala by sa stať kvôli semaphore zámku)
 - Prehliadač renderovanie otázky (skúste osviežiť stránku)

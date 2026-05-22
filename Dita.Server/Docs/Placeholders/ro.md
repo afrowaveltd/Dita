@@ -1,6 +1,6 @@
 ﻿# Deţinătorii numiţi în localizare
 
-Dita suportă **deţinătorii numiţi** în siruri de caractere de localizare, permiţând inserarea valorilor dinamice în timp ce păstrează gramatica corectă în limbi.
+Dita suportă ** nume de ocupanți** în siruri de caractere de localizare, permițând inserarea valorilor dinamice în timp ce păstrarea gramaticii corecte în limbi.
 
 ## Sintaxă
 
@@ -13,7 +13,7 @@ Deţinătorii folosesc sintaxa creţ-creţ în interiorul valorilor dicţionarul
 }
 ```
 
-Spre deosebire de ocupanţii poziţionali (), deţinătorii de locaţii numiţi sunt **agnostici în limba** .
+Spre deosebire de ocupanţii poziţionali (, ), deţinătorii de locuri numiţi sunt ** agnostici în limba** .
 
 ## Depozitare
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Valori stocate (pentru configurația semistatică)
+### 2. Valori stocate (pentru configurare semistatica)
 
 Gestionează un fișier în director:
 
@@ -150,7 +150,7 @@ Aceasta garantează că:
 1. **Folosiţi nume descriptive**: este mai bun decât sau
 2. ** Păstraţi ocupanţii minimali**: Prea mulţi ocupanţi fac traducerea mai dificilă
 3. ** Tipuri preconizate de documente**: Comentariile din dosarul JSON ajută traducătorii să înțeleagă contextul
-4. ** Preferați valorile runtime **: Pentru date cu adevarat dinamice (nume de utilizator, numere, date), trece valorile la termen
+4. ** Preferați valorile runtime **: Pentru date cu adevarat dinamice (nume de utilizator, conte, date), trece valorile la termen
 5. ** Utilizați valorile stocate pentru implicite**: Pentru configurarea care rareori se modifică (aplică numele, suport email)
 6. **Validaţi locaţiile**: Utilizați pentru a verifica toți titularii de locuri așteptați sunt furnizate
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Deţinătorul numit API este aditiv .
+Deţinătorul numit API este un aditiv .

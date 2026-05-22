@@ -8,9 +8,9 @@ Thug an t-athfhachtóir aghaidh ar roinnt imní leis an dearadh monailiteach bun
 
 - ** Imní a réiteach**: Tá gach réimse aistriúcháin (contrárthaí, foclóirí JSON, Markdown) scoite amach.
 - ** Leanúnachas incriminteach **: Comhaid a shábháil in aghaidh an-teanga díreach tar éis an aistriúcháin, úsáid cuimhne a laghdú agus torthaí níos luaithe a sholáthar.
-- **Resilience **: Leibhéil retry Il láimhseáil teipeanna transient gan bac ar an píblíne ar fad.
+- ** Athléimneacht **: Láimhseálann leibhéil éagsúla retry teipeanna transient gan bac a chur ar an bpíblíne ar fad.
 - ** Inbhraiteacht **: Tuairiscítear gach oibríocht shuntasach trí SignalR le haghaidh monatóireachta fíor-ama.
-- **Extensibility **: Is féidir spriocanna aistriúcháin nua a chur leis trí chur i bhfeidhm comhéadan amháin.
+- ** Dlúis **: Is féidir spriocanna aistriúcháin nua a chur leis trí chur i bhfeidhm comhéadan amháin.
 
 ## Dianscaoileadh seirbhíse
 
@@ -86,10 +86,10 @@ Cuireann an córas retries chun feidhme ag trí leibhéal:
 - Re-tiomáineann an t-iarratas aistriúcháin ar fad tar éis HTTP-leibhéal retries ídithe
 - Cuirtear mascáil agus athchóiriú i bhfeidhm ar an leibhéal seo
 
-### Leibhéal 3 - Bloc (Seirbhís Aistrithe Doiciméid)
+### Leibhéal 3 - Bloc (Seirbhís Aistrithe)
 
 - Bloic Markdown Aonair a theipeann marcáilte i meiteashonraí
-- Retried go huathoibríoch ar an chéad píblíne eile reáchtáil
+- Retried go huathoibríoch ar an chéad píblíne eile a reáchtáil
 - Riamh bloic Rathúil ath-aistrithe
 
 ## Sreabhadh sonraí
@@ -154,13 +154,13 @@ For each target language:
 
 ### grianghraif
 
-- **JSON**: Stóráilte i gcomhad in aice leis an bhfoclóir réamhshocraithe (ní athraíonn ainm an tsoláthraí stórála)
+- **GEAR **: Stóráilte i gcomhad in aice leis an bhfoclóir réamhshocraithe (ní athraíonn ainm an tsoláthraí stórála)
 - **Purpose **: Cumasaigh sync incriminteach ag rianú cad a bhí i láthair sa reáchtáil roimhe
 
 ### Comhaid Hash
 
 - **Markdown**: in aice leis an gcomhad foinse
-- ** Aiseolas **: más rud é go bhfuil an suíomh bunscoile ar siúl
+- ** Aiseolas **: má tá an suíomh príomhúil á léamh go luath
 - **Purpose**: Ailtirí athruithe foinse a sheachaint ath-aistriú gan ghá
 
 ### Meiteashonraí aistriúcháin
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Foclóir na heochracha do sealbhóirí ainm-luach péirí
 - **Purpose**: Soláthraíonn luachanna réamhshocraithe do sealbhóirí áite ainmnithe ar fud an t-iarratas
 
-## Comharthaíocht Tuairisciú RR
+## Tuairisciú SignalR
 
 ### Déan Teagmháil Linn
 
@@ -244,7 +244,7 @@ public class CustomPlaceholderService : IPlaceholderService
 
 ## Cumraíocht
 
-### riachtanais uisce: measartha
+### appsettings.json
 
 ```json
 {
@@ -278,13 +278,13 @@ Tá gach fo-sheirbhís intástáil go neamhspleách:
 
 - Mock chun insamhail rath / fabraic
 - Coileach chun tuairisciú a fhíorú
-- Bain úsáid as eolairí sealadacha le haghaidh comhad I/O
+- Bain úsáid as eolairí sealadacha le haghaidh comhad I/ An tOileán
 - Fíoraigh iompar coigilte in aghaidh na teanga
 
 ### Tástálacha comhtháite
 
 - Píblíne iomlán reáchtáil le fíor (áitiúil) LibreTranslate shampla
-- Fíoraigh Comharthaíocht R teachtaireachtaí a sheachadadh chuig cliaint ceangailte
+- Fíoraigh teachtaireachtaí SignalR a sheachadadh do chliaint ceangailte
 - Tástáil a chosc reáchtáil comhthráthach (semaphore)
 - Struchtúr Markdown Bailí tar éis aistriúcháin
 
@@ -298,8 +298,8 @@ Tá gach fo-sheirbhís intástáil go neamhspleách:
 ## Breithnithe feidhmíochta
 
 - ** Cuimhne **: Cuireann an coigilt teanga cosc ar gach foclóir a choinneáil i gcuimhne
-- **Disk I/O**: Comhaid meiteashonraí a chur lastuas beag ach ar chumas obair incriminteach
-- **Network **: Coscann próiseáil seicheamhach le throttling LibreTranslate mór
+- **Disk I / O**: Comhaid meiteashonraí a chur lastuas beag ach ar chumas obair incriminteach
+- **Network **: Cuireann próiseáil leordhóthanach le rathú cosc ar LibreTranslate mór
 - **CPU**: SHA-256 Tá hashing agus regex bailíochtú tapa i gcoibhneas le latency aistriúcháin
 - **SignalR**: teachtaireachtaí éadroma, gan aon chomhbhrú pálasta ag teastáil le haghaidh tuarascálacha tipiciúla
 
@@ -310,7 +310,7 @@ An bunaidh go léir loighic i rang amháin. An cosán imirce:
 1. Sliocht loighic tír →
 2. Sliocht loighic JSON →
 3. Sliocht Markdown loighic →
-4. Sliocht Comharthaí R foilsiú →
+4. Sliocht SignalR fhoilsiú →
 5. Sliocht loighic retry →
 6. Ceolfhoireann a shimpliú go toscaireacht amháin
 

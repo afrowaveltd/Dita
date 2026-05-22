@@ -19,7 +19,7 @@ Leku-marka posizionalak ez bezala (, ), leku-marka izendatuak **hizkuntza-agnost
 
 Izendatutako leku-markak bi balio-iturri ditu:
 
-### 1. Denboraren balioak (datu dinamikoentzat gomendatuak)
+### 1. Runtime balioak (datu dinamikoentzat gomendatua)
 
 Eman balioak zuzenean lokaleko katea berreskuratzean:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Gordetako balioak (konfigurazio erdi estatikoarentzat)
+### 2. Gordetako balioak (konfigurazio estatikoarentzat)
 
 Direktorioko fitxategi bat kudeatzen du:
 
@@ -128,7 +128,7 @@ Itzulpen automatikoko zerbitzuak leku-markadun testua aurkitzen duenean:
 
 1. **Itzulpena baino lehen**: Leku-jabeek token seguruekin () maskaratzen dituzte itzulpen-motorrak aldatzea saihesteko.
 2. **Itzulpen iraunkorra**: Itzulpen-motorrak testu itzulgarria bakarrik prozesatzen du.
-3. **Itzulpenaren ondoren**: Jatorrizko leku-izenak () berrezarri egiten dira beren kokaleku egokietan.
+3. **Itzulpenaren ondoren**: Jatorrizko leku-markaren izenak () beren posizio egokietan berreskuratzen dira.
 
 ### Adibidea
 
@@ -149,7 +149,7 @@ Horrek ziurtatzen du:
 
 1. **Erabili izen deskriptiboak**
 2. **Gorde leku-markak gutxienekoak**: Leku-marka gehiegik zaildu egiten dute itzulpena
-3. **Dokumentua espero zen motak**: JSON fitxategi-laguntzako itzultzaileek testuingurua ulertzen dute
+3. **Dokumentua espero zen motak**: JSON fitxategiko iruzkinak, itzultzaileek testuingurua ulertzen dute
 4. **Prefer runtime balioak**: Datu benetan dinamikoentzat (erabiltzaile-izenak, zenbaketak, datak), gainditu balioak exekuzio-denboran
 5. **Erabili gordetako balioak lehenespenez**: Oso gutxitan aldatzen den konfigurazioa (apl-izena, euskarri-posta)
 6. **Validate leku-markak**: Erabili espero zen leku-marka guztiak egiaztatzeko
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Etiketa-markaren APIa gehigarria da, ez du existitzen den erabilera hausten.
+Izendatutako leku-markaren APIa gehigarria da, ez du lehendik dagoen erabilera eteten.

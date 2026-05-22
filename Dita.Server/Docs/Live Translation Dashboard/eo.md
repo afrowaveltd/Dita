@@ -12,7 +12,7 @@ La Live Translation Dashboard estas admin paĝo kiu disponigas realtempan videbl
 
 ### Realtempa okazaĵrivereto
 
-Ĉiuj Signaloj R-okazaĵoj de la traduko dukto estas elmontritaj en vigla tablo:
+Ĉiuj SignalR-okazaĵoj de la traduko dukto estas elmontritaj en vigla tablo:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -39,7 +39,7 @@ Statusstandardo ĉe la pintekspozicioj:
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-La ligo uzas aŭtomatan religon kun eksponenta dorso: 0s, 2s, 5s, 10s, 30s.
+La ligo uzas aŭtomatan religon kun eksponenta dorsflanko: 0s, 2s, 5s, 10s, 30'oj.
 
 ### Kontroloj
 
@@ -47,7 +47,7 @@ La ligo uzas aŭtomatan religon kun eksponenta dorso: 0s, 2s, 5s, 10s, 30s.
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Signalo Signalo R nabo
+## SignalR
 
 La dashboard ligas al:
 
@@ -112,12 +112,12 @@ Dita.Server/Pages/Admin/
 ## Uzo dum evoluo
 
 1. Komencu la Dita. Servilo
-2. Navigacio al
+2. Navigi al
 3. Trigger traduko kuras (aŭ atendas la horaron aŭ vokas la API)
 4. La okazaĵoj aperas en reala tempo
 5. Uzu la Eksportbutonon por kapti plenan spuron por malkonstruado
 
-## Estontaj pliigoj
+## Estontaj pliboniĝoj
 
 Planitaj plibonigoj por la dashboard:
 
@@ -142,9 +142,9 @@ Planitaj plibonigoj por la dashboard:
 ### La okazaĵoj ne aperas
 
 1. Kontrolu ke la SignalR nabo URL matĉoj inter servilo () kaj kliento ()
-2. La programisto estas ebligita en
+2. Verify la plandisto estas ebligita en
 3. Vidu servilregistrojn por traduko dukto eraroj
-4. Kontrolu retumilon Reta klapeto por WebSocket mesaĝoj
+4. Kontrolu retumilo Network-klapeto por WebSocket mesaĝoj
 
 ### Mesaĝoj estas el ordo
 

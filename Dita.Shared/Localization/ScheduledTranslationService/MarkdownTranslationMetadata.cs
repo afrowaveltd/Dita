@@ -77,6 +77,22 @@ public class MarkdownTranslationMetadata
     }
 
     /// <summary>
+    /// Checks whether all expected blocks are translated for the given language.
+    /// </summary>
+    /// <param name="language">The language code to check.</param>
+    /// <param name="expectedBlockCount">Current number of translatable blocks in the source document.</param>
+    /// <returns>True if the tracked block count matches and every block is marked translated.</returns>
+    public bool IsFullyTranslated(string language, int expectedBlockCount)
+    {
+        if (!LanguageBlockStatus.TryGetValue(language, out List<bool>? blocks))
+        {
+            return false;
+        }
+
+        return blocks.Count == expectedBlockCount && blocks.All(b => b);
+    }
+
+    /// <summary>
     /// Returns the number of untranslated blocks for the given language.
     /// </summary>
     /// <param name="language">The language code to check.</param>
@@ -98,8 +114,32 @@ public class MarkdownTranslationMetadata
     /// <returns>True if the source has changed since the metadata was created.</returns>
     public bool IsStale(string currentSourceContent)
     {
-        string currentHash = ComputeHash(currentSourceContent);
-        return !string.Equals(SourceHash, currentHash, StringComparison.OrdinalIgnoreCase);
+        string normalizedHash = ComputeSourceHash(currentSourceContent);
+        if (string.Equals(SourceHash, normalizedHash, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        // Backward compatibility for metadata written before line-ending normalization.
+        string rawHash = ComputeHash(currentSourceContent);
+        if (string.Equals(SourceHash, rawHash, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        string crlfHash = ComputeHash(NormalizeLineEndings(currentSourceContent, "\r\n"));
+        return !string.Equals(SourceHash, crlfHash, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Computes the stable source hash used for Markdown change detection.
+    /// Line endings are normalized before hashing so Windows/Linux checkouts compare equal.
+    /// </summary>
+    /// <param name="content">The source Markdown content.</param>
+    /// <returns>A SHA256 hash of the normalized content.</returns>
+    public static string ComputeSourceHash(string content)
+    {
+        return ComputeHash(NormalizeLineEndings(content, "\n"));
     }
 
     private static string GetMetadataPath(string sourceFilePath)
@@ -113,5 +153,13 @@ public class MarkdownTranslationMetadata
     {
         byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(content));
         return Convert.ToHexString(bytes);
+    }
+
+    private static string NormalizeLineEndings(string content, string newline)
+    {
+        return content
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace("\r", "\n", StringComparison.Ordinal)
+            .Replace("\n", newline, StringComparison.Ordinal);
     }
 }

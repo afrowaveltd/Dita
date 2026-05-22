@@ -32,14 +32,14 @@ Monolitická bola rozčlenená na štyri špecializované služby koordinované 
 
 Nová admin stránka, ktorá poskytuje viditeľnosť v reálnom čase do prekladového potrubia:
 
-- Zobrazí všetky signály R udalosti, ako sa vyskytujú
-- Farebne kódované typy správ (modré=začiatočné, zelené=dokončené, červené=error)
+- Zobrazí všetky udalosti SignalR, keď sa vyskytnú
+- Farebne kódované typy správ (blue=started, green= completed, red=error)
 - Pripojenie banner s auto-opätovným pripojením
 - Počítadlo správ a export do JSON
 
 ### Pomenovaní držitelia miest
 
-Lokalizačný systém teraz podporuje pomenované osoby () pre zlepšenie gramatiky v rôznych jazykoch:
+Systém lokalizácie teraz podporuje pomenované osoby () pre zlepšenie gramatiky v rôznych jazykoch:
 
 ```csharp
 // Usage in code
@@ -53,8 +53,8 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 Vlastnosti:
 - Hodnoty umiestnenia poskytnuté v čase zábehu alebo uložené v
-- Automatické maskovanie/reorganizácia počas prekladu, aby sa zabránilo korupcii
-- Späť kompatibilný s existujúcimi pozičnými stanovišťami
+- Automatické maskovanie/obnovenie počas prekladu, aby sa zabránilo korupcii
+- Spätne kompatibilné s existujúcimi pozičnými stanovišťami
 
 ### Prírastkový preklad
 
@@ -63,7 +63,7 @@ Markdown súbory sú preložené postupne:
 - ** Per- language sporenie **: Každý cieľový jazyk je uložený okamžite po preklade, zníženie tlaku pamäte
 - ** Sledovanie na úrovni bloku**: stav prekladania skladieb na blok
 - ** Selektívne opakovanie **: Iba zlyhali bloky sú re-preložené na ďalšie spustenie
-- **Metadata perzistencia**: Prekladový stav prežije reštartovanie aplikácie
+- ** Pretrvávanie údajov **: Prekladový stav prežije reštartovanie aplikácie
 
 ### Vylepšená logická rézia
 
@@ -71,7 +71,7 @@ Tri úrovne odolnosti:
 
 1. ** HTTP retry** (LibreTranslateService): 5 pokusov s exponenciálnym spätným účinkom (1s
 2. **Stage retry** (TranslationRetryService): 3 ďalšie pokusy s 30-ročnými oneskoreniami
-3. **Block retry** (DocumentsTranslationService): Failed Markdown blocks retried on next run
+3. **Block retry** (DocumentsTranslationService): Failed Markdown locks retried on next run
 
 ### Hlásenie signálu
 
@@ -80,7 +80,7 @@ Podávanie správ o pokroku v reálnom čase pre všetky potrubné operácie:
 - Každá etapa zverejňuje udalosti
 - Per-jazykový pokrok zverejnený ako podujatia
 - Chybové udalosti zahŕňajú podrobný kontext (zdroj, chybový kód, správu)
-- Poradové čísla zaručujú objednávanie v rámci každého spustenia
+- Poradové čísla zaručujú objednávanie v rámci každého behu
 
 ## Zmeny konfigurácie
 
@@ -112,7 +112,7 @@ Zaevidovaná v:
 - /
 - /
 
-Signál R centrum je mapované pre klientske pripojenia.
+SignalR centrum je mapované pre klientske spojenia.
 
 ## Testovanie
 
@@ -120,8 +120,8 @@ Signál R centrum je mapované pre klientske pripojenia.
 
 - **243/244 absolvovaných testov** (1 preskočených kvôli súbežnému prístupu k súboru v testovacom prostredí)
 - Nové skúšobné pokrytie pridané pre:
-  - Držiteľ Funkčnosť služby
-  - BackendPreklad Service orchestration
+  - Funkcia PlacelderService
+  - BackendPrekladService orchestration
   - JsonStringLocalizer indexers
 
 ### Známe obmedzenia
@@ -136,7 +136,7 @@ Signál R centrum je mapované pre klientske pripojenia.
 - Preklad názvu krajiny
 - Synchronizácia slovníka JSON
 - — Markdown translation
-- R publikácia správy
+- — SignalR message publishing
 - — Retry logic with placeholder masking
 - — Publisher interface
 - — Country service interface
@@ -148,7 +148,7 @@ Signál R centrum je mapované pre klientske pripojenia.
 ### Aktualizované služby v
 
 - — Added named placeholder support
-- Aktualizované pre nový parameter
+- aktualizované pre nový parameter
 - — Named placeholder management
 - — Placeholder interface
 
@@ -159,7 +159,7 @@ Signál R centrum je mapované pre klientske pripojenia.
 
 ### Nová dokumentácia
 
-- Aktualizovaná dokumentácia o potrubí
+- — Updated pipeline documentation
 - — Placeholder system guide
 - — Dashboard usage guide
 - prehľad technickej architektúry
@@ -172,7 +172,7 @@ Všetky zmeny sú doplnkové:
 - Formátovanie polohy () funguje nezmenené
 - Existujúci formát slovníka JSON je nezmenený
 - Existujúca štruktúra Markdown je nezmenená
-- Signál R správy používajú rovnaký formát
+- SignalR správy používajú rovnaký formát
 
 ## Cesta k migrácii
 
@@ -185,14 +185,14 @@ Nevyžaduje sa migrácia. Refaktorizácia je vnútorná:
 ## Zlepšenia výkonnosti
 
 - ** Znížené používanie pamäte**: Súbory uložené v jednom jazyku okamžite namiesto toho, aby držali všetko v pamäti
-- ** Rastúci prírastok počet cyklov **: Iba zmenené / neúspešné Markdown bloky sú znovu preložené
+- ** Rastúce prírastkové otáčky**: Iba zmenené / neúspešné Markdown bloky sú znovu preložené
 - ** Lepšia viditeľnosť**: Pokrok v reálnom čase pomáha diagnostikovať pomalé fázy
 
 ## Budúce zlepšenia
 
 Plánované zlepšenia:
 
-1. **AI dolaďovanie**  5 slov
+1. **AI dolaďovanie**
 2. **Admin autentifikácia**
 3. **Slovníkový editor**
 4. ** Štatistika prekladov**

@@ -1,6 +1,6 @@
 ﻿# Terjemahan Real- waktu
 
-Dokumen ini ada sebagai masukan uji langsung untuk pipa terjemahan otomatis. Setiap perubahan ke berkas pemicu re- terjemahan dari semua target berkas bahasa pada jadwal berikutnya.
+Dokumen ini ada sebagai masukan uji langsung untuk pipa terjemahan otomatis. Setiap perubahan ke berkas pemicu re- terjemahan dari semua target berkas bahasa pada run dijadwalkan berikutnya.
 
 ## Tampilan arsitektur
 
@@ -15,7 +15,7 @@ Setiap sub- layanan beroperasi secara independen dan laporan kemajuan melalui Si
 
 ## Apa yang layanan lakukan
 
-Layanan berjalan pada jadwal dan mengeksekusi pipeline tahap lima: validasi server, sinkronisasi negara, sinkronisasi kamus JSON, Markdown berkas terjemahan, dan mempertahankan hasil. Setiap tahap memancarkan struktur real-waktu kemajuan peristiwa atas sinyal R sehingga klien yang terhubung dapat mengikuti bersama sebagai hasil kerja.
+Layanan berjalan pada jadwal dan mengeksekusi sebuah baris pipa tahap lima: validasi server, sinkronisasi negara, sinkronisasi kamus JSON, Markdown berkas terjemahan, dan mempertahankan hasil. Setiap tahap memancarkan struktur-waktu kemajuan peristiwa melalui Sinyal sehingga klien terhubung dapat mengikuti sepanjang sebagai hasil kerja.
 
 ## Tahap pipa
 
@@ -24,14 +24,14 @@ Layanan berjalan pada jadwal dan mengeksekusi pipeline tahap lima: validasi serv
 Sebelum pekerjaan terjemahan dimulai, layanan memverifikasi bahwa semua kondisi puas:
 
 - Bagian konfigurasi harus ada dan valid.
-- Server LibreTranslate harus merespon dalam waktu yang dapat diterima.
+- Server LibreTranslate harus merespon dalam latensi yang dapat diterima.
 - Daftar bahasa yang tersedia pada server terjemahan diambil.
 - Bahasa baku yang dikonfigurasi mesti ada dalam daftar itu.
 - Berkas lokal JSON yang hilang untuk setiap bahasa yang didukung dibuat secara otomatis.
 
 Jika ada pemeriksaan gagal, pipa berhenti segera dan pesan dipancarkan.
 
-### Tahap 2 - Negara Terjemahan
+### Tahap 2 - Negara Penerjemah
 
 Nama negara disimpan dalam sinkron dari katalog baca-saja () ke lokalisasi kamus JSON.
 
@@ -47,12 +47,12 @@ Layanan ini membandingkan kamus lokalisasi baku saat ini dengan snapshot yang di
 
 - **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
-- Terjemahan manual selalu mengambil prioritas. Jika sebuah kamus target telah berisi sebuah nilai untuk sebuah kunci, entri itu dibiarkan tidak berubah terlepas dari apa yang dikatakan oleh sumber.
+- Terjemahan manual selalu mengambil prioritas. Jika sebuah kamus target telah berisi sebuah nilai untuk sebuah kunci, entri itu tidak berubah terlepas dari apa yang dikatakan oleh sumber.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
 - Jika terjemahan gagal untuk bahasa tertentu, layanan akan mencoba kembali secara otomatis. Hanya persisten errors (misalnya, bahasa yang tidak didukung) menyebabkan bahasa yang akan dilewati.
 - Setelah dijalankan, kamus bawaan saat ini disimpan sebagai snapshot baru untuk perbandingan berikutnya.
 
-Semua kamus selalu disimpan dengan tombol diurutkan secara alfabet dan JSON yang rusak untuk readabilitas manusia.
+Semua kamus selalu disimpan dengan kunci diurutkan secara alfabet dan JSON yang rusak untuk readabilitas manusia.
 
 ### Tahap 4 - Diterjemahkan MarkdownFiles
 
@@ -66,25 +66,25 @@ Layanan berjalan akar dokumentasi terkonfigurasi (baku:) dan proses setiap berka
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
 7. Berkas yang sukses diterjemahkan bervalidasi untuk paritas struktural dengan sumber (jumlah judul yang sama, item daftar, blok kode, kutipan blok, link, tebal / miring, dan tag HTML) sebelum mereka ditulis ke disk.
 8. Jika semua berkas target untuk sumber sukses, hash baru disimpan di sebelah sumber. Jika menulis di samping sumber gagal (misalnya dalam pengiriman baca-saja), hash kembali ke direktori sementara.
-9. Jika target terjemahan gagal validasi, metadata menandai blok-blok sebagai tidak diterjemahkan sehingga mereka dicoba ulang pada run berikutnya.
+9. Jika target terjemahan gagal validasi, metadata menandai blok-blok sebagai tidak diterjemahkan sehingga mereka dicoba ulang pada jalankan berikutnya.
 
-### Tahap 5 - Hasil Tabung
+### Tahap 5-Hasil Tabung
 
 Sebuah konsolidasi dirakit dan diterbitkan. Termasuk:
 
 - UTC menjalankan awal dan menyelesaikan penanda waktu.
 - Menghitung berkas lokal JSON yang disimpan, menyimpan berkas Markdown, menyimpan berkas hash, dan hash fallback menulis.
 - Kesalahan penyimpanan yang dikumpulkan selama menjalankan.
-- Statistik terjemahan bahasa per- (jumlah terjemahan, hitungan terlewati, kesalahan dihitung).
+- Statistik terjemahan bahasa per- (jumlah terjemahan, hitungan lewati, kesalahan menghitung).
 
-## Sinyal Amplop pesan R
+## Amplop pesan SignalR
 
 Setiap progres event disampaikan sebagai dengan ruas berikut:
 
 Ruas
 |-------|------|-------------|
 Identifier korelasi untuk menjalankan pipeline kini
-monotonic counter dalam menjalankan, dimulai dari 1
+Monotonic counter dalam menjalankan, dimulai dari 1
 Tipe semantik pesan
 Panggung baris pipa pesan milik
 Waktu UTC ketika pesan dipancarkan
@@ -150,7 +150,7 @@ Penerapan pipeline dua tingkat ketahanan:
 ### Stage- level coba ulang (Layanan coba terjemahan)
 
 - Jika permintaan terjemahan gagal setelah pengulangan internal LibreTranslate, performa hingga 3 tingkat tambahan mengulang dengan penundaan 30 detik.
-- Placeholder masking: Namanya placeholder () dalam teks sementara diganti dengan token aman () sebelum terjemahan dan dipulihkan sesudahnya, memastikan tata bahasa yang benar dalam bahasa target.
+- Placeholder masking: bernama placeholder () dalam teks sementara diganti dengan token aman () sebelum terjemahan dan dikembalikan sesudahnya, memastikan tata bahasa yang benar dalam bahasa target.
 
 ### Validasi bahasa
 
@@ -161,7 +161,7 @@ Penerapan pipeline dua tingkat ketahanan:
 
 - Terjemahan Markdown dilakukan blok-by- blok (headdings, paragraf, daftar item).
 - Jika sebuah blok individu gagal menerjemahkan, itu ditandai sebagai tidak diterjemahkan dalam berkas metadata dan dicoba ulang pada baris pipa berikutnya.
-- Layanan melacak perbahasa, status per- blok dalam berkas di sebelah setiap berkas Markdown sumber.
+- Layanan melacak per- bahasa, status per- blok dalam berkas di sebelah setiap berkas Markdown sumber.
 
 ## Kode galat
 
@@ -182,7 +182,7 @@ Setiap kesalahan dalam laporan membawa identifier sumber (kode bahasa, path berk
 Proyek Server memuat halaman admin yang terhubung ke server SignalR dan menampilkan semua peristiwa pipa secara langsung.
 
 - Tampilkan status koneksi, jumlah pesan, dan sebuah tabel pengubahan kehidupan dari semua kejadian.
-- Baris warna - kode: biru untuk awal tahap, hijau untuk pelengkapan, merah untuk kesalahan.
+- Baris warna-kode: biru untuk awal tahap, hijau untuk pelengkapan, merah untuk kesalahan.
 - Mendukung menghapus asupan dan mengekspor semua pesan ke JSON.
 - Auto- menghubungkan kembali dengan backoff eksponensial jika koneksi turun.
 

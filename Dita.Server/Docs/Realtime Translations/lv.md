@@ -4,18 +4,18 @@
 
 ## Arhitektūras pārskats
 
-Tulkošanas cauruļvads ir pārbūvēts par modulāru arhitektūru ar četriem specializētiem apakšpakalpojumiem, kurus koordinē vieglais orķestrs:
+Tulkošanas cauruļvads ir pārbūvēts par modulāru arhitektūru ar četriem specializētiem apakšpakalpojumiem, ko koordinē vieglais orķestrs:
 
 - **BackendTranslationService** — orķestrē visu cauruļvadu, apkalpo servera apstiprināšanu un deleģē darbu apakšpakalpojumiem.
 - **CountriesTranslationService** — Sinhronizē valstu nosaukumus no vienas valodas vārdnīcas.
-- **LocalizationTranslationService** – Noskaidro pievienotās/izņemtās atslēgas noklusējuma JSON vārdnīcā un tulko tās mērķa valodās.
+- **LocalizationTranslationService** — nosaka pievienotās/izņemtās atslēgas noklusējuma JSON vārdnīcā un tulko tās mērķa valodās.
 - **DokumentiTranslationService** — Tulko iezīmē iezīmēšanas dokumentācijas failus ar per-block izsekošanu un metadatiem.
 
 Katrs apakšpakalpojums darbojas neatkarīgi un reāllaikā ziņo par progresu, izmantojot SignalR.
 
 ## Ko dara dienests
 
-Pakalpojums darbojas pēc grafika un izpilda piecu pakāpju cauruļvadu: servera apstiprināšanu, valstu sinhronizāciju, JSON vārdnīca sinhronizāciju, Markdown failu tulkošanu, un saglabājot rezultātus. Katrs posms emitē strukturētus reālā laika progresa notikumus virs signāla R, lai savienotie klienti varētu sekot līdzi, kad darbs turpinās.
+Pakalpojums darbojas pēc grafika un izpilda piecu pakāpju cauruļvadu: servera apstiprināšanu, valstu sinhronizāciju, JSON vārdnīcas sinhronizāciju, Markdown failu tulkojumu, un saglabājot rezultātus. Katrs posms emitē strukturētus reālā laika progresa notikumus virs SignalR, lai savienotie klienti varētu sekot līdzi, kad darbs turpinās.
 
 ## Cauruļvadu posmi
 
@@ -35,7 +35,7 @@ Ja kāda pārbaude neizdodas, cauruļvads nekavējoties apstājas un ziņojums t
 
 Valstu nosaukumi tiek saglabāti sinhronizēti no lasāma kataloga () lokalizācijas JSON vārdnīcās.
 
-- Ja pieteikuma noklusējuma valoda ir angļu, katrs valsts nosaukums tiek saglabāts kā bez tulkojuma.
+- Ja pieteikuma noklusējuma valoda ir angļu valoda, katrs valsts nosaukums tiek saglabāts kā bez tulkojuma.
 - Ja noklusējuma valoda ir kāda cita valoda, angļu valsts nosaukums vispirms tiek tulkots šajā valodā, un rezultāts kļūst par ierakstu noklusējuma vārdnīcā.
 - Pēc noklusējuma vārdnīcas atjaunināšanas, katrs trūkstošais valsts ieraksts katrā mērķa valodas vārdnīcā tiek tulkots un saglabāts **tūlīt katrā valodā**.
 - Jau tulkotie ieraksti tiek saglabāti bez izmaiņām.
@@ -46,13 +46,13 @@ Valstu nosaukumi tiek saglabāti sinhronizēti no lasāma kataloga () lokalizāc
 Pakalpojums salīdzina pašreizējo noklusējuma lokalizācijas vārdnīcu ar iepriekšējā izpildījumā glabātu momentuzņēmumu:
 
 - **Pievienotie taustiņi** – pašreizējā noklusējuma ieraksti, kas nav momentuzņēmums, – tiek tulkoti katrā mērķa valodā, kurā vēl nav manuāla ieraksta par šo atslēgu.
-- ** Noņemtie taustiņi** – ieraksti, kas atrodas momentuzņēmums, bet nav no pašreizējā noklusējuma – tiek dzēsti no katras mērķa valodas vārdnīcas.
+- ** Noņemtie taustiņi** – momentuzņēmums, bet nav pašreizējā noklusējuma ieraksti – tiek dzēsti no katras mērķa valodas vārdnīcas.
 - Manuālie tulkojumi vienmēr ir prioritāte. Ja mērķa vārdnīca jau satur atslēgas vērtību, šis ieraksts paliek nemainīgs neatkarīgi no avota teiktā.
-- **Katra mērķa valodas vārdnīca tiek saglabāta tūlīt pēc tulkojumu pabeigšanas**, nevis gaida, kad visas valodas tiks pabeigtas.
+- **Katra mērķa valodas vārdnīca tiek saglabāta uzreiz pēc tulkojumu pabeigšanas**, nevis gaida, kad visas valodas tiks pabeigtas.
 - Ja tulkojums kādā valodā neizdodas, pakalpojums automātiski atkārtojas. Tikai pastāvīgas kļūdas (piem, neatbalstīta valoda) liek šo valodu izlaist.
 - Pēc palaišanas pašreizējā noklusētā vārdnīca tiek saglabāta kā jaunais momentuzņēmums nākamajam salīdzinājumam.
 
-Visas vārdnīcas vienmēr tiek glabātas ar alfabētiski sakārtotām atslēgām un ierindotām JSON cilvēka lasāmībai.
+Visas vārdnīcas vienmēr tiek glabātas ar alfabētiski sakārtotām atslēgām un ierindota JSON cilvēka lasāmībai.
 
 ### Posms – TranslateMarkdownFiles
 
@@ -62,11 +62,11 @@ Pakalpojums iziet konfigurēto dokumentācijas saknes (noklusējums: ) un apstr�
 2. Fails blakus avota celiņiem par valodu, par bloka tulkošanas statusu, kas ļauj ** Inkrementāla re- tulkošana** tikai neveiksmīgajiem blokiem.
 3. Saglabātais hash no iepriekšējās palaišanas (turēts failā blakus avota failam, vai pagaidu atkāpšanās vietā) tiek salīdzināts ar pašreizējo hash.
 4. Katrai mērķa valodai pārbauda arī atbilstošo failu strukturālo integritāti.
-5. Jebkurš mērķa fails, kas trūkst, ir novecojis hash, neizdodas struktūras apstiprināšanu, vai satur netulkoti bloki tiek ierindots pārtulkošanai.
-6. **Katra mērķa valoda tiek tulkota un saglabāta neatkarīgi** — ja čehu panākumus, bet franču neizdodas, čehu fails joprojām ir rakstīts diskā.
-7. Veiksmīgi tulkotie faili tiek validēti strukturālai paritātei ar avotu (vienāds virsrakstu skaits, saraksta ieraksti, kodu bloki, bloktekutes, saites, treknrakstā/itāliski marķieri, un HTML tagi) pirms tie tiek rakstīti diskā.
-8. Ja visi mērķa faili avotam izdodas, jaunais hash tiek saglabāts blakus avotam. Ja rakstīšana blakus avotam neizdodas (piemēram, tikai lasāmos izvietojumos), hash atgriežas pagaidu direktorijā.
-9. Ja kāds mērķis tulkojums neizdodas apstiprināšanu, metadati iezīmē šos blokus kā netulkoti, lai tie tiek retrided par nākamo palaist.
+5. Jebkurš mērķa fails, kas trūkst, ir novecojis hash, neizdodas struktūras validāciju, vai satur netulkots bloki ir rindā atkārtotai tulkošanai.
+6. **Katra mērķa valoda tiek tulkota un saglabāta patstāvīgi** — ja čehu valodai izdodas, bet franču valodai neizdodas, čehu fails joprojām tiek rakstīts diskā.
+7. Veiksmīgi tulkotie faili tiek validēti strukturālai paritātei ar avotu (vienāds virsraksta skaits, saraksta ieraksti, kodu bloki, blockquotes, saites, treknraksts/itālisks marķieri, un HTML tagi) pirms tie tiek rakstīti diskā.
+8. Ja visi mērķa faili avotam izdodas, jaunais hash tiek saglabāts blakus avotam. Ja rakstīšana blakus avotam neizdodas (piemēram, tikai lasāmos izvietojumos), hash atkrīt uz pagaidu direktoriju.
+9. Ja kāds mērķa tulkojums neapstiprina, metadati iezīmē šos blokus kā netulkotus, lai tie tiktu retrideti nākamajā braucienā.
 
 ### Pakāpe – rezultāti
 
@@ -77,7 +77,7 @@ Konsolidēts tiek samontēts un publicēts. Tie ietver:
 - Visas glabāšanas kļūdas, kas savāktas brauciena laikā.
 - Tulkojumu statistika par katru valodu (tulkots skaits, izlaists skaits, kļūdu skaits).
 
-## Signāls R ziņojuma aploksne
+## SignalR ziņojuma aploksne
 
 Katrs progresa pasākums tiek īstenots kā ar šādiem laukiem:
 
@@ -90,7 +90,7 @@ Cauruļvada posms, kuram pieder ziņojums
 Zvaigznāju vārdi
 Vai ziņojums ir kļūdas nosacījums
 Cilvēklasāms kopsavilkums
-Posmveida īpatnējā lietderīgā slodze (ziņojuma objekts vai nulles)
+Posmveida īpatnējā lietderīgā slodze (ziņojuma objekts vai nulle)
 
 ### Ziņojumu veidi
 
@@ -150,7 +150,7 @@ Cauruļvads īsteno divus elastīguma līmeņus:
 ### Skatuves līmeņa atkārtojums (TranslationRestryService)
 
 - Ja tulkošanas pieprasījums neizdodas pēc LibreTranslate iekšējās retries, veic līdz 3 papildu posma līmeņa retries ar 30 sekunžu kavēšanos.
-- Vietu turētāja maska: Nosauktos vietturus () tekstā uz laiku aizstāj ar drošām žetoniem () pirms tulkojuma un pēc tam atjauno, nodrošinot pareizu gramatiku mērķa valodās.
+- Vietnieku maskēšana: Nosauktos vietturus () tekstā uz laiku aizstāj ar drošiem žetoniem () pirms tulkojuma un pēc tam atjauno, nodrošinot pareizu gramatiku mērķa valodās.
 
 ### Valodu apstiprināšana
 
@@ -160,7 +160,7 @@ Cauruļvads īsteno divus elastīguma līmeņus:
 ### Atzīmēšanas bloka līmeņa atkārtojums
 
 - Marķējuma tulkojumi tiek veikti block-by-block (pozīcijas, punkti, saraksta preces).
-- Ja atsevišķais bloks neizpilda tulkojumu, tas metadatu failā tiek atzīmēts kā netulkots un retranslēts nākamajā vada palaišanas reizē.
+- Ja atsevišķam blokam neizdodas tulkojums, tas metadatu failā tiek atzīmēts kā netulkots un retranslēts nākamajā vada palaišanas reizē.
 - Pakalpojums izseko par valodu, par bloka statusu failos blakus katram avota iezīmēšanas failam.
 
 ## Kļūdu kodi
@@ -191,6 +191,6 @@ Servera projekts ietver admin lapu, kas savieno ar SignalR centrmezglu un parād
 - **Modularitāte**: Katrs tulkošanas jautājums ir izolēts savā dienestā, lai uzturētu un pārbaudītu.
 - ** Inkrementālā noturība**: Vārdnīcas un iezīmēšanas faili tiek saglabāti uz vienu valodu uzreiz pēc tulkojuma, samazinot atmiņas spiedienu un nodrošinot agrāku atgriezenisko saiti.
 - ** Noturība**: Vairāki atkārtošanas līmeņi (HTTP, stadija, bloks) nodrošina pārejošas kļūmes, nebloķē cauruļvadu.
-- **Valsts uzraudzība**: Katram failam metadati () un hash faili ļauj precīzi inkrementāli strādāt turpmākajās programmās.
+- **Valsts izsekošana**: Katram failam metadati () un hash faili ļauj precīzi inkrementāli strādāt nākamajos braucienos.
 - **Reālā laika redzamība**: Par katru nozīmīgu darbību tiek ziņots, izmantojot SignalR monitoringam un atkļūdošanai.
-- ** Manuālie tulkojumi vienmēr ir prioritāte pār automātiskajiem papildinājumiem. **
+- **Manuālie tulkojumi vienmēr ir prioritāte pār automātiskajiem papildinājumiem.**

@@ -1,6 +1,6 @@
 ﻿# Real- time oversættelser
 
-Dette dokument findes som et live testinput for den automatiske oversættelsesledning. Enhver ændring til denne fil udløser re- oversættelse af alle målsprogfiler på næste planlagte køre.
+Dette dokument findes som et live testinput for den automatiske oversættelsesledning. Enhver ændring til denne fil udløser re- oversættelse af alle målsprog filer på den næste planlagte kørsel.
 
 ## Arkitektoversigt
 
@@ -15,16 +15,16 @@ Hver deltjeneste fungerer uafhængigt og rapporterer fremskridt via SignatalR i 
 
 ## Hvad tjenesten gør
 
-Tjenesten kører på en tidsplan og udfører en femtrins rørledning: server validering, land synkronisering, JSON ordbog synkronisering, Markdown fil oversættelse, og fastholder resultaterne. Hver fase udsender strukturerede real-time fremskridt begivenheder over Signal R så forbundne klienter kan følge med i arbejdet.
+Tjenesten kører på en tidsplan og udfører en femtrins rørledning: server validering, land synkronisering, JSON ordbog synkronisering, Markdown fil oversættelse, og fastholde resultaterne. Hvert trin udsender strukturerede real- tid fremskridt begivenheder over SignatalR, så forbundne klienter kan følge med i arbejdet.
 
 ## Rørledningstrin
 
 ### Trin 1 - CheckServers
 
-Inden oversættelsesarbejdet påbegyndes, kontrollerer tjenesten, at alle forudsætninger er opfyldt:
+Før oversættelsesarbejdet påbegyndes, kontrollerer tjenesten, at alle forudsætninger er opfyldt:
 
 - Konfigurationsafsnittet skal være til stede og gyldigt.
-- LibreTranslat- serveren skal reagere inden for en acceptabel latency.
+- LibreTranslat- serveren skal svare inden for en acceptabel latency.
 - Listen over sprog tilgængelige på oversættelsesserveren er hentet.
 - Det konfigurerede standardsprog skal være til stede i denne liste.
 - Mangler locale JSON filer for alle understøttede sprog oprettes automatisk.
@@ -47,10 +47,10 @@ Tjenesten sammenligner den nuværende standard lokalisering ordbog med et øjebl
 
 - **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
-- Manuelle oversættelser prioriteres altid. Hvis en målordbog allerede indeholder en værdi for en nøgle, er denne indgang uændret uanset hvad kilden siger.
+- Manuelle oversættelser har altid førsteprioritet. Hvis en målordbog allerede indeholder en værdi for en nøgle, er denne indgang uændret uanset hvad kilden siger.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
 - Hvis en oversættelse mislykkes for et bestemt sprog, tjenesten forsøger automatisk. Kun vedvarende fejl (f.eks. ikke-understøttet sprog) får dette sprog til at springe over.
-- Efter løbet gemmes den aktuelle standardordbog som det nye øjebliksbillede til næste sammenligning.
+- Efter løbet gemmes den nuværende standardordbog som det nye øjebliksbillede til næste sammenligning.
 
 Alle ordbøger gemmes altid med alfabetisk sorterede nøgler og indrykkede JSON til menneskelig læsbarhed.
 
@@ -58,15 +58,15 @@ Alle ordbøger gemmes altid med alfabetisk sorterede nøgler og indrykkede JSON 
 
 Tjenesten går de konfigurerede dokumentationsrødder (standard:) og behandler hver kildefil rekursivt:
 
-1. Kildefilens indhold er læst og en SHA- 256 hash er beregnet.
+1. Kildefilens indhold læses og en SHA- 256 hash beregnes.
 2. A `.translation-meta.json` file next to the source tracks per-language, per-block translation status, enabling **incremental re-translation** of only failed blocks.
 3. Den gemte hash fra det foregående løb (opbevares i en fil ved siden af kildefilen, eller i en midlertidig fallback placering) sammenlignes med den aktuelle hash.
 4. For hvert målsprog kontrolleres den tilsvarende fil også for strukturel integritet.
 5. Enhver målfil, der mangler, har en forældet hash, mislykkes struktur validering, eller indeholder uoversat blokke er i kø for genoversættelse.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
-7. Succesfuldt oversat filer er valideret for strukturel paritet med kilden (lige overskrift tæller, liste poster, kode blokke, blokkitater, links, fed / kursiv markører, og HTML tags), før de er skrevet til disk.
+7. Succesfuldt oversat filer er valideret for strukturel paritet med kilden (lige overskrifter tæller, liste poster, kode blokke, blokkitater, links, fed / kursiv markører, og HTML tags), før de er skrevet til disk.
 8. Hvis alle målfiler for en kilde lykkes, er den nye hash gemt ved siden af kilden. Hvis skrivning ved siden af kilden mislykkes (for eksempel i read- only installationer), hash falder tilbage til den midlertidige mappe.
-9. Hvis nogen måloversættelse mislykkes validering, metadata markerer disse blokke som uoversat, så de er prøvet igen på næste kørsel.
+9. Hvis nogen måloversættelse mislykkes validering, metadata markerer disse blokke som uoversat, så de er prøvet igen på det næste løb.
 
 ### Fase 5 - StoringResults
 
@@ -77,7 +77,7 @@ En konsolideret er samlet og offentliggjort. Omfatter:
 - Eventuelle lagerfejl indsamlet under kørslen.
 - Per- sprog oversættelse statistik (oversat tæller, skippet tæller, fejltælling).
 
-## Signal Konvolut for R-meddelelser
+## Konvolut for signalR-meddelelser
 
 Alle fremskridt er leveret som en med følgende områder:
 
@@ -141,16 +141,16 @@ StageCompleted / StoringResults
 PipelineCompleted / StoringResults
 ```
 
-Hvis noget stadie mislykkes, er de resterende stadier sprunget over, en meddelelse er udsendt, og endelig en meddelelse lukker løbet.
+Hvis noget stadie mislykkes, er de resterende faser sprunget over, en meddelelse er udsendt, og endelig en meddelelse lukker løbet.
 
 ## Oversættelse retry logik
 
 Rørledningen gennemfører to niveauer af modstandsdygtighed:
 
-### Stage- level returforsøg (TranslationRetryService)
+### Stage- level relry (TranslationRetryService)
 
 - Hvis en oversættelse anmodning mislykkes efter LibreTranslates interne forsøg, udfører op til 3 ekstra scene-niveau forsøger igen med 30-sekunders forsinkelser.
-- Placeholder maskering: Navngivne pladsholdere () i teksten erstattes midlertidigt med sikre tokens () før oversættelse og gendannes bagefter, hvilket sikrer korrekt grammatik på målsprog.
+- Placeholder maskering: navngivet pladsholdere () i tekst er midlertidigt erstattet med sikre tokens () før oversættelse og restaureres bagefter, hvilket sikrer korrekt grammatik på målsprog.
 
 ### Sprogvalidering
 
@@ -183,7 +183,7 @@ Server projektet indeholder en admin side på, der forbinder til SignalR hub på
 
 - Viser tilslutningsstatus, meddelelsestælling og en live- updating tabel over alle begivenheder.
 - Farvekodede rækker: blå for scenestart, grøn for færdiggørelse, rød for fejl.
-- Understøtter clearing feed og eksportere alle meddelelser til JSON.
+- Understøtter clearing af foder og eksportere alle meddelelser til JSON.
 - Auto- genopretter forbindelse med eksponentiel backoff, hvis forbindelsen falder.
 
 ## Konstruktionsprincipper

@@ -19,7 +19,7 @@ Positional placeholders (, )와는 달리, placeholders는 **language-agnostic *
 
 Named placeholders에는 2개의 값이 있습니다:
 
-### 1. 명세 Runtime 값 (동적인 데이터에 대한 권장)
+### 1. Runtime 값 (동적 데이터에 대한 권장)
 
 Localized 문자열을 retrieving 할 때 패스 값:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. 명세 저장된 값 (반전용 구성)
+### 2. 저장된 값 (반전적인 윤곽을 위해)
 
 디렉토리의 파일 관리:
 
@@ -128,7 +128,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 1. **번역은 **: placeholders are masked with safe token () 번역 엔진을 수정하여.
 2. ** 번역 중 **: 번역 엔진은 번역 가능한 텍스트만 처리합니다.
-3. **번역 후 **: Original placeholder name ()은 올바른 위치에 복원됩니다.
+3. **번역 후 **: Original placeholder name ()는 올바른 위치에 복원됩니다.
 
 ### Example
 
@@ -140,7 +140,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 최종 결과:
 
-이 보증:
+이것은 그것을 지킵니다:
 - 주주는 결코 번역하거나 손상되지 않습니다
 - Target-language 문법은 주변 텍스트를 자유롭게 배열할 수 있습니다
 - 같은 템플릿은 모든 언어로 올바르게 작동합니다
@@ -149,7 +149,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 1. ** descriptive name 사용 **: 보다 나거나
 2. ** 최소 주주 **: Too many placeholders 만들기 번역 harder
-3. **Document 예상 유형 **: JSON 파일에 대한 의견은 번역자를 이해
+3. **Document 예상 유형 **: JSON 파일에 대한 의견은 번역자를 이해합니다
 4. **Prefer 런타임 값**: 진정한 동적 데이터 (사용자 이름, 수, 날짜), 런타임에 값을 전달
 5. **기본값 사용**: 거의 변화하는 구성 (app name, support email)
 6. **일부 주주 **: 모든 예상된 주주를 확인하기 위한 사용

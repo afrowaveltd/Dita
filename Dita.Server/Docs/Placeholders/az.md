@@ -1,10 +1,10 @@
-﻿# Yerlileştirmenin adlanan yerləri
+﻿# Yerlileştirmenin adlanmış yerləri
 
-Dita dəstəkləyir **named yerləşdiriciləri** yerlileştirme stringləri, dinamik qiymətləri dillərində düzgün dilləşdirilməsi zamanı işləməyə imkan verir.
+Dita dəstəkləyir ** xüsusiləşdirilmiş yerləşdiriciləri ** yerlileştirme səfərlərində, dinamik dəyərlər dillər arasında doğru dilləşdirilməsi zamanı işləməyə imkan verir.
 
 ## Axtar
 
-Placeholders JSON sözlərin dəstəklərində curly-brace sözləri istifadə edin:
+Placeholders JSON sözləri dəstəklərində curly-brace sözləri istifadə edin:
 
 ```json
 {
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Yadda saxla
+### 2. Mağazalı qiymətlər (iki effekt üçün)
 
 Kataloqda bir fayl idarə edir:
 
@@ -114,7 +114,7 @@ public static class StringLocalizerExtensions
 }
 ```
 
-Usage:
+istifadə:
 ```csharp
 var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, string>
 {
@@ -128,7 +128,7 @@ Avtomatik çeviri xidməti yerləşdiriciləri ilə məhsulla görüşür:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
-3. **Axtarışdan sonra**: Orijinal yerləşmiş adlar () onların düzgün mövcuddur.
+3. **Axtarışdan sonra**: Orijinal yerləşdirici adlar () onların düzgün mövcuddur.
 
 ### Axtarış
 
@@ -142,16 +142,16 @@ Son versiya:
 
 Bu bunu təsdiq edir:
 - Qalereya
-- Ətraflı dil xəstəlik məhsulları daxil ola bilər
+- Ətraflı dil xəstəlik məhsulları daxil edə bilər
 - Eyni şablon bütün dillərdə düzgün çalışır
 
 ## Best proqramlar
 
-1. **Fablaşdırma adları**: daha yaxşıdır və
+1. **Fablaşdırma adları**: daha yaxşıdır və yaxşıdır
 2. **Keep placeholders minimal**: Too many placeholders make translation harder
-3. **Document gözəl növü**: JSON faylında Şəkillər konfransçıları bağlamaq
+3. **Document gözəl növü**: JSON faylında məsləhətçilər konfrans anlamaq
 4. **Prefer runtime qiymətləri**: Xüsusi dinamik məlumatlar üçün (kullanıcı adları, sayı, tarixləri), runtime dəyişikliklərini keçmək
-5. ** defaultlar üçün saxlanılmış qiymətləri**: nadir dəyişikliklərin konfiqurasiyası (adı, e-poçt)
+5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
 6. **Validate yer sahibləri**: Bütün gözəl mövcudları doğrulamak üçün istifadə edin
 
 ## Avtomatik çeviri ilə inteqrasiya
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Adı yerləşdirici API daxildir - mövcud istifadə deyil.
+Adı yerholder API əlavə edir - mövcud istifadə deyil.

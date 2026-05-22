@@ -43,7 +43,7 @@ Refactoring ditujukan beberapa kekhawatiran dengan desain monolitik asli:
 ### Layanan Translasi Localization
 
 **Responsibilities**:
-- Deteksi tombol yang ditambahkan / dihapus dengan membandingkan kamus baku kini dengan snapshot sebelumnya
+- Deteksi tombol ditambahkan / dihapus dengan membandingkan kamus baku kini dengan snapshot sebelumnya
 - Terjemahkan kunci ke dalam setiap bahasa target
 - Hapus kunci yang dihapus dari setiap bahasa target
 - Simpan snapshot untuk perbandingan berikutnya
@@ -82,7 +82,7 @@ Sistem menerapkan ulang pada tiga tingkat:
 
 ### Level 2 - Stage (TranslationRetryService)
 
-- Hingga 3 kali percobaan dengan penundaan 30 detik
+- Sampai 3 kali percobaan dengan penundaan 30 detik
 - Didorong ulang seluruh permintaan terjemahan setelah nilai ulang HTTP habis
 - Placeholder masking dan restorasi diterapkan pada tingkat ini
 
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Sinyal R pelaporan
+## Sinyal pelaporan
 
 ### Penerbit abstrak
 
@@ -211,7 +211,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 1. Buat antar muka baru dengan
 2. Implikasi antarmuka dengan logika domain- spesifik
 3. Register dalam DI kontainer
-4. Suntikkan ke konstruktor
+4. Inject ke konstruktor
 5. Panggilan dari setelah tahap yang ada
 
 ### Kebijakan coba ulang gubahan
@@ -229,7 +229,7 @@ services.AddSingleton<TranslationRetryService>(
     ));
 ```
 
-### Penanganan placeholder ubahan
+### Menangani placeholder gubahan
 
 Implikasi untuk mengubah placeholder sintaks atau penyimpanan:
 
@@ -284,7 +284,7 @@ Setiap layanan sub- independen diuji:
 ### Tes integrasi
 
 - Jalankan pipa penuh dengan instansi LibreTranslate asli (lokal)
-- Verifikasi Sinyal Pesan R dikirim ke klien yang terhubung
+- Verifikasi pesan SignalR dikirim ke klien yang terhubung
 - Uji pencegahan run concurrent (semaphore)
 - Validasi struktur Markdown setelah terjemahan
 
@@ -310,8 +310,8 @@ Asli berisi semua logika dalam satu kelas. Jalur migrasi:
 1. Ekstrak logika negara
 2. Ekstrak logika JSON 1f
 3. Ekstrak logika Markdown Az
-4. Ekstrak sinyal R Penerbitan
-5. Ekstrak tanya ulang
-6. Sederhanakan pengelola untuk mendelegasi- saja
+4. Ekstrak IgnalR penerbitan
+5. Ekstraksi coba ulang logika 1f
+6. Sederhanakan antristrator ke delegation-saja
 
 Semua antarmuka yang ada tetap tidak berubah. Konsumen dari baris pipa tidak melihat perubahan yang putus.

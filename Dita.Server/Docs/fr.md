@@ -32,7 +32,7 @@ Le monolithique a été décomposé en quatre services spécialisés coordonnés
 
 Une nouvelle page d'administration qui fournit une visibilité en temps réel dans le pipeline de traduction:
 
-- Affiche tous les signaux Les événements de R au fur et à mesure qu'ils se produisent
+- Affiche tous les événements SignalR à mesure qu'ils se produisent
 - Types de messages codés en couleur (bleu=démarré, vert=complété, rouge=error)
 - Bannière d'état de connexion avec connexion automatique
 - Compteur de messages et exportation vers JSON
@@ -54,7 +54,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 Caractéristiques:
 - Valeurs de placement fournies à l'exécution ou stockées dans
 - Masquage/restauration automatique pendant la traduction pour prévenir la corruption
-- Compatibilité avec les positions existantes
+- Compatibilité arrière avec les positions existantes
 
 ### Traduction différentielle
 
@@ -71,7 +71,7 @@ Trois niveaux de résilience :
 
 1. **HTTP retry** (Liberservice): 5 tentatives avec un retour exponentiel (1s–5s)
 2. **Répétition de l'étape** (TranslationRetryService): 3 tentatives supplémentaires avec des retards de 30s
-3. **Block retry** (Service de traduction des documents): Blocs de Markdown échoués réajustés au prochain tirage
+3. **Block retry** (DocumentsTranslationService) : Les blocs de balisage échoués ont été rejugés à la prochaine manche
 
 ### SignalR Signalisation
 
@@ -112,7 +112,7 @@ Enregistré dans :
 - /
 - /
 
-Le signal R hub est cartographié pour les connexions client.
+Le hub SignalR est cartographié pour les connexions client.
 
 ## Essais
 
@@ -120,8 +120,8 @@ Le signal R hub est cartographié pour les connexions client.
 
 - **243/244 essais réussis** (1 échappé en raison de l'accès simultané au fichier dans l'environnement d'essai)
 - Nouvelle couverture de test ajoutée pour:
-  - Titulaire Fonctionnalité du service
-  - BackendTraduction Orchestration de service
+  - Fonctionnalité de PlaceholderService
+  - orchestre service de traduction backend
   - JsonStringLocalizer placeholder indexers
 
 ### Limitations connues
@@ -136,7 +136,7 @@ Le signal R hub est cartographié pour les connexions client.
 - — Traduction des noms de pays
 - — Synchronisation du dictionnaire JSON
 - — Traduction par marquage
-- — Signal Publication de messages R
+- — Publication des messages SignalR
 - — Réessayez la logique avec le masquage de l'emplacement
 - — Interface éditeur
 - — Interface de service par pays
@@ -148,7 +148,7 @@ Le signal R hub est cartographié pour les connexions client.
 ### Services mis à jour en
 
 - — Ajout d'un support nominatif
-- — Mise à jour pour le nouveau paramètre
+- — Mise à jour pour un nouveau paramètre
 - — Gestion nominative des lieux
 - — Interface de localisation
 
@@ -172,7 +172,7 @@ Tous les changements sont additifs:
 - Formatage positionnel () fonctionne sans changement
 - Le format actuel du dictionnaire JSON est inchangé
 - La structure actuelle du marquage est inchangée
-- Signal Les messages R utilisent le même format
+- Les messages signalR utilisent le même format
 
 ## Voie migratoire
 
@@ -185,7 +185,7 @@ Aucune migration requise. La refacturation est interne:
 ## Amélioration des performances
 
 - **Utilisation réduite de la mémoire**: Fichiers enregistrés par langue immédiatement au lieu de garder tout en mémoire
-- **Création progressive Essais**: Seuls les blocs de balisage modifiés ou échoués sont retranscrits
+- **Frais d'exécution supplémentaires**: Seuls les blocs de balisage modifiés/échecs sont retranscrits
 - ** Meilleure visibilité**: Le progrès en temps réel aide à diagnostiquer les étapes lentes
 
 ## Améliorations futures
@@ -196,7 +196,7 @@ Améliorations prévues :
 2. **Authentification administrative** — Restreindre les pages administratives aux utilisateurs autorisés
 3. ** Éditeur de dictionnaire** — UI Web pour la gestion des clés de localisation
 4. **Statistiques sur la traduction** — Graphiques montrant les nombres de traductions et les taux d'erreur dans le temps
-5. ** Syntaxe personnalisée du détenteur de place** — Prise en charge des formats de remplacement du détenteur de place
+5. ** Syntaxe du détenteur de place sur mesure** — Prise en charge des autres formats
 
 ## Personne à contacter
 

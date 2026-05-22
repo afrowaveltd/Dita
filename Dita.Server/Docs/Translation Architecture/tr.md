@@ -50,11 +50,11 @@ Yeniden düzenleme orijinal monolithic tasarım ile birkaç endişeye yol açtı
 
 **Key behavior**:
 - Manual çeviriler her zaman öncelik alır (never over written)
-- Eklenen anahtarlar tercüme edilir ve hemen her dilde kurtarılır
+- Eklenen anahtarlar hemen tercüme edilir ve sürekli kurtarılır
 - Kaldırılmış anahtarlar hemen dil için silinir
 - Snapshot sadece tüm dillerin başarıyla tamamlandıktan sonra kurtarıldı
 
-### BelgeleriTranslationServiceServiceService
+### BelgeleriTranslationServiceService
 
 **Responsibiliteler**:
 - Walk yapılandırılmış Markdown kökleri recursally
@@ -86,7 +86,7 @@ Sistem üç seviyede retries uygular:
 - HTTP seviyesi retries sonrası tüm çeviri isteklerini yeniden yükleyin
 - Placeholder maskeleme ve restorasyon bu seviyede uygulanır
 
-### Seviye 3 - Block (DocumentsTranslationService)
+### 3. Seviye - Blok (DocumentsTranslationService)
 
 - Başarısız olan bireysel Markdown blokları metadata
 - Bir sonraki boru hattında otomatik olarak geri alındı
@@ -154,7 +154,7 @@ For each target language:
 
 ### anlık görüntüler
 
-- **JSON **: Varsayılan sözlüğün yanında bir dosyada depo sağlayıcı tarafından değişir)
+- **JSON**: Varsayılan sözlüğe bir sonraki bir dosyada (isim depolama sağlayıcı tarafından değişir)
 - **Purpose**: Önceki vadede neler olduğunu takip ederek enables arter senkronizasyonu
 
 ### Hash dosyaları
@@ -169,16 +169,16 @@ For each target language:
 - **Contents**:
   - Source content hashh
 - Per-dil blok durumu (abooleans)
-- Son güncelleme süreleri
+- Last update timestampampamp
 - **Purpose**: Sadece başarısız blokların kısmi yeniden-translasyonu
 
 ### Placeholder depolama
 
 - **File**:
-- **Contents**: Anahtarların Kelime değerli çiftleri yerine getirmesi
+- **Contents **: Anahtarların Kelime değerli çiftleri yerine getirmesi
 - **Purpose**: Uygulamadaki yer sahipleri için varsayılan değerleri sağlayın
 
-## Signal Signal R raporlama R raporlama
+## SignalR raporlama
 
 ### Yayımcı Özet
 
@@ -210,7 +210,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 
 1. Yeni bir arayüz oluşturun
 2. Domaine özgü mantıkla arayüzü uygulayın
-3. DI konteynerinde kayıt
+3. DI konteynerinde kayıt olun
 4. İndüktöre
 5. Mevcut aşamalardan sonra çağrı
 
@@ -242,7 +242,7 @@ public class CustomPlaceholderService : IPlaceholderService
 }
 ```
 
-## Yapılandırma
+## Yapı oluşturma
 
 ### örnekler.json
 
@@ -276,15 +276,15 @@ Ayar ayarı
 
 Her alt hizmet bağımsız olarak test edilebilir:
 
-- Başarı/failure'i simüle etmek için
+- Başarı/failure taklit etmek için Mock
 - Mock raporlama raporlamayı doğrulamak için
-- Dosya için geçici direktörler I/O
+- Dosya için geçici yönetmenler kullanın I / Ey
 - Per-dil tasarrufu davranışını onaylayın
 
 ### Bütünleme testleri
 
 - Full pipeline gerçek (yerel) LibreTranslate örneği ile çalışır
-- İşareti Ver R mesajları bağlantılı müşterilere teslim edilir
+- SignalR mesajlarının bağlantılı müşterilere teslim edilmesi
 - Test concurrent run prevent (semaphore)
 - Çeviri sonrası Markdown yapısı
 
@@ -298,10 +298,10 @@ Her alt hizmet bağımsız olarak test edilebilir:
 ## Performans değerlendirmeleri
 
 - **Memory **: Per-dil tasarrufu hafızadaki tüm sözlükleri hafızada tutmayı engelliyor
-- **Disk I/O**: Metadata dosyaları küçük bir üst ekler, ancak artımlı çalışma sağlar
-- **Network**: Manrottling ile eşit işlem ezici LibreTranslate
+- **Disk I/O**: Metadata dosyaları küçük bir üst ekler, ancak artan çalışma çalışmasını sağlar
+- **Network**: throttling ile eşit işlem ezici LibreTranslate
 - **CPU**: SHA-256 hashing ve regex geçerliliği geçncy çeviri ile hızlı bir şekilde bağlantılıdır
-- **SignalR**: Hafif mesajlar, tipik raporlar için gerekli olan ücret sıkıştırması gerekmez
+- **SignalR **: Hafif mesajlar, tipik raporlar için gerekli olan ücret sıkıştırması gerekmez
 
 ## Monolithic design
 
@@ -310,7 +310,7 @@ Orijinal tek bir sınıfta tüm mantığı içeriyordu. Göç yolu:
 1. Ülke mantığı →
 2. JSON mantığı →
 3. Markdown mantığı →
-4. Signal R yayın →
+4. SignalR yayınını →
 5. Retry mantığı →
 6. Orkestracıyı sadece delegasyona basitleştiriyor
 

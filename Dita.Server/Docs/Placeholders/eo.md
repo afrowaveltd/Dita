@@ -19,7 +19,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 Nomita lokposedantoj havas du fontojn de valoroj:
 
-### 1. Runtime valoroj (rekomentaj por dinamikaj datenoj)
+### Runtime valoroj (rekomentaj por dinamikaj datenoj)
 
 Enirvaloroj rekte dum prenado de la lokalizita kordo:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Stokitaj valoroj (por semi-senmova konfiguracio)
+### 2. Stored valoroj (por semi-senmova konfiguracio)
 
 La administras dosieron en la adresaro:
 
@@ -156,7 +156,7 @@ Tio certigas tion:
 
 ## Integriĝo kun aŭtomata traduko
 
-La aŭtomate pritraktas lokulan konservadon dum LibreTranslate vokas. Neniu kroma konfiguracio estas necesa.
+La aŭtomate pritraktas lokulan konservadon dum LibreTranslate vokas. Neniu alia agordo estas necesa.
 
 La kaj ambaŭ uzas la reenkondukservon, tiel ke ĉiuj JSON-vortartradukoj travideble apogas nomitajn lokposedantoj.
 

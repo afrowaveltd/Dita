@@ -1,6 +1,6 @@
 ﻿# Nosaukti vietturi lokalizācijai
 
-Dita atbalsta **nosauktus vietturus** lokalizācijas virknēs, ļaujot ierakstīt dinamiskās vērtības darba laikā, vienlaikus saglabājot pareizu gramatiku visās valodās.
+Dita atbalsta **Nosaukti vietturi** lokalizācijas virknēs, ļaujot dinamiskās vērtības ievietot darba laikā, saglabājot pareizu gramatiku visās valodās.
 
 ## Sintakse
 
@@ -13,7 +13,7 @@ Vietas turētāji izmanto cirtaini-brace sintakses JSON vārdnīcas robežās v�
 }
 ```
 
-Atšķirībā no pozicionāliem vietturiem (, ), nosaukti vietturi ir ** valoda-agnostika** — tulkotāji var tos pārkārtot, lai atbilstu mērķvalodas gramatikai, nepārkāpjot kodu.
+Atšķirībā no pozicionāliem vietturiem (, ) nosauktie vietturi ir ** valoda-agnostika** — tulkotāji var tos pārkārtot, lai tie atbilstu mērķvalodas gramatikai, nepārkāpjot kodu.
 
 ## Glabāšana
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Glabātās vērtības (pusstatiskai konfigurācijai)
+### 2. Uzglabātās vērtības (pusstatiskām konfigurācijām)
 
 Pārvalda failu direktorijā:
 
@@ -126,9 +126,9 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 Kad automātiskais tulkošanas dienests saskaras ar tekstu ar nosauktajiem vietturiem:
 
-1. **Pirms tulkošanas**: Vietas turētāji ir maskēti ar drošiem žetoniem (), lai tulkošanas dzinējs nevarētu tos modificēt.
+1. **Pirms tulkošanas**: Vietas turētāji ir maskēti ar drošiem žetoniem (), lai novērstu tulkošanas dzinēja pārveidošanu.
 2. **Tulkojuma laikā**: Tulkošanas dzinējs apstrādā tikai tulkojamo tekstu.
-3. **Pēc tulkojuma**: Oriģinālie vietturu vārdi () tiek atjaunoti pareizās pozīcijās.
+3. **Pēc tulkojuma**: Oriģinālie vietturu nosaukumi () tiek atjaunoti pareizās pozīcijās.
 
 ### Piemērs
 
@@ -148,8 +148,8 @@ Tas nodrošina, ka:
 ## Paraugprakse
 
 1. **Izmantot aprakstošus vārdus**: ir labāks par vai
-2. ** Paturēt vietas turētājus minimālus**: Pārāk daudzi vietturi padara tulkojumu grūtāk
-3. **Dokumentu gaidāmie veidi**: Komentāri JSON failā palīdz tulkotājiem saprast kontekstu
+2. ** Paturēt vietas turētājus minimālus**: Pārāk daudz vietturu padara tulkošanu grūtāku
+3. ** Paredzamie dokumentu veidi**: Komentāri JSON datnē palīdz tulkotājiem saprast kontekstu
 4. ** Prefer runtime vērtības**: Patiesi dinamiskiem datiem (lietotāju vārdi, skaits, datumi), pasi vērtības palaišanas laikā
 5. ** Izmantot noklusētās vērtības**: Konfigurācijai, kas reti mainās (app name, support email)
 6. **Novērtēti vietturi**: Tiek nodrošināta izmantošana visu paredzamo vietturu pārbaudei
@@ -158,7 +158,7 @@ Tas nodrošina, ka:
 
 Automātiski apstrādā vietturis saglabāšanu LibreTranslate zvanu laikā. Nav nepieciešama papildu konfigurācija.
 
-Gan izmantot retritry pakalpojumu, tāpēc visi JSON vārdnīca tulkojumi caurspīdīgi atbalsta nosaukto vietturi.
+Gan izmantot retritry pakalpojumu, tāpēc visi JSON vārdnīcas tulkojumi caurspīdīgi atbalsta nosaukto vietturi.
 
 ## Aizmugurējā savietojamība
 

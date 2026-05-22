@@ -9,7 +9,7 @@ Refactoring behandlade flera problem med den ursprungliga monolitiska designen:
 - **Separation of concerns**: Each translation domain (countries, JSON dictionaries, Markdown) is isolated.
 - **Inkrementell uthållighet**: Filer sparas per språk omedelbart efter översättning, vilket minskar minnesanvändningen och ger tidigare resultat.
 - **Resiliens**: Flera retrynivåer hanterar övergående misslyckanden utan att blockera hela rörledningen.
-- **Observability**: Every significant operation is reported via SignalR for real-time monitoring.
+- **Observability**: Varje betydande operation rapporteras via SignalR för övervakning i realtid.
 - **Extensibility**: Nya översättningsmål kan läggas till genom att implementera ett enda gränssnitt.
 
 ## Servicedekomposition
@@ -27,7 +27,7 @@ Refactoring behandlade flera problem med den ursprungliga monolitiska designen:
 - Fil I/O för specifika format
 - Retry logic
 
-### Länder TranslationService
+### LänderTranslationService
 
 ** Ansvar**:
 - Läs från katalogen
@@ -44,7 +44,7 @@ Refactoring behandlade flera problem med den ursprungliga monolitiska designen:
 
 ** Ansvar**:
 - Detektera extra / borttagna nycklar genom att jämföra nuvarande standardordbok med tidigare ögonblicksbild
-- Översätta tillsatta nycklar till varje målspråk
+- Översätt tillsatta nycklar till varje målspråk
 - Ta bort raderade nycklar från varje målspråk
 - Spara ögonblicksbild för nästa jämförelse
 
@@ -88,7 +88,7 @@ Systemet genomför retries på tre nivåer:
 
 ### Nivå 3 – Block (DokumentTranslationService)
 
-- Individuella Markdown block som misslyckas markeras i metadata
+- Individuella Markdown block som misslyckas är markerade i metadata
 - Hämtas automatiskt på nästa pipeline körning
 - Framgångsrika block översätts aldrig
 
@@ -160,7 +160,7 @@ For each target language:
 ### Hash filer
 
 - **Markdown**: `{sourceFile}.hash.json` next to the source file
-- **Fallback**: `{tempDir}/{sanitizedPath}.hash.json` if primary location is read-only
+- **Fallback**: om primärt läge är lättläst
 - **Purpose**: Detekterar källförändringar för att undvika onödig återöversättning
 
 ### Översättningsmetadata
@@ -178,11 +178,11 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Ger standardvärden för namngivna platsägare i hela ansökan
 
-## Signal R-rapportering
+## SignalR-rapportering
 
 ### Publicera abstraktion
 
-decouples översättningstjänster från SignalR-specifikationer:
+avkodar översättningstjänster från SignalR-specifikationer:
 
 ```csharp
 public interface ISignalRPublisher
@@ -192,7 +192,7 @@ public interface ISignalRPublisher
 }
 ```
 
-### Sekvensgarantier
+### Sequence garanterar
 
 - Meddelanden inom en enda körning är monotoniskt sekvenserade
 - Sekvensnummer är unika per-run via
@@ -278,13 +278,13 @@ Varje undertjänst är oberoende testbar:
 
 - Mock för att simulera framgång / misslyckande
 - Mock för att verifiera rapportering
-- Använd tillfälliga kataloger för fil I/O
+- Använd tillfälliga kataloger för fil I/ O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O O
 - Verifiera per språk spara beteende
 
 ### Integrationstest
 
 - Full pipeline körs med verkliga (lokala) LibreTranslate instans
-- Verifiera Signal R-meddelanden levereras till anslutna kunder
+- Verifiera SignalR-meddelanden levereras till anslutna kunder
 - Test samtidig körförebyggande (semafor)
 - Validate Markdown struktur efter översättning
 
@@ -299,7 +299,7 @@ Varje undertjänst är oberoende testbar:
 
 - **Memory**: Per-language saving prevents holding all dictionaries in memory
 - **Disk I/O**: Metadata files add small overhead but enable incremental work
-- **Network**: Sequential processing with throttling prevents overwhelming LibreTranslate
+- **Nätverk**: Sekventiell bearbetning med strypning förhindrar överväldigande LibreTranslate
 - **CPU**: SHA-256 hashing and regex validation are fast relative to translation latency
 - **SignalR**: Lätta meddelanden, ingen nyttolastkomprimering som behövs för typiska rapporter
 
@@ -310,7 +310,7 @@ Originalet innehöll all logik i en klass. Migrationsvägen:
 1. Extrahera land logik
 2. Extrahera JSON logik
 3. Extrahera Markdown logik
-4. Extrakt Signal R publicering
+4. Extrahera SignalR publicering
 5. Extrahera retry logik
 6. Förenkla orkestratorn för delegation endast
 

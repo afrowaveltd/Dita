@@ -4,7 +4,7 @@ Dokumen historiografi ini menggambarkan arsitektur modular sistem penerjemahan o
 
 ## Tujuan desain
 
-Refactoring yang ditujukan beberapa kekhawatiran dengan desain monolitik asli:
+Pemfaktoran ulang yang ditujukan beberapa kekhawatiran dengan desain monolitik asli:
 
 - **Separation of concerns**: Each translation domain (countries, JSON dictionaries, Markdown) is isolated.
 - **Incremental persistence**: Files are saved per-language immediately after translation, reducing memory usage and providing earlier results.
@@ -16,10 +16,10 @@ Refactoring yang ditujukan beberapa kekhawatiran dengan desain monolitik asli:
 
 ### (orchestrator)
 
-**Penerimaan**:
+**Sponsabilitas**:
 - Manajemen daur hidup jalur pipa (mulai, penyempurnaan, penanganan kesalahan)
 - Pengendali konkurensi berbasis Semafor (prevents pertumpang tindih runs)
-- Pemvalidasi Server XAWN (latensi, ketersediaan bahasa, konfigurasi)
+- Pemvalidasi Server XAVN (latensi, ketersediaan bahasa, konfigurasi)
 - Delegasi untuk sub-layanan
 
 **Does NOT contain**:
@@ -29,10 +29,10 @@ Refactoring yang ditujukan beberapa kekhawatiran dengan desain monolitik asli:
 
 ### Penerjemahan Negara
 
-**Penerimaan**:
+**Sponsabilitas**:
 - Baca dari direktori
 - Mensinkronisasi nama negara ke dalam kamus lokal baku
-- Terjemahkan nama negara yang hilang per bahasa target
+- Terjemahkan nama negara hilang per bahasa target
 - Anda telah menyimpan kamus target secara segera setelah terjemahan
 
 ** Perilaku kunci**:
@@ -42,7 +42,7 @@ Refactoring yang ditujukan beberapa kekhawatiran dengan desain monolitik asli:
 
 ### Panduan Translasi Lokalisasi
 
-**Penerimaan**:
+**Sponsabilitas**:
 - Terdeteksi kunci yang ditambahkan/dibuang dengan membandingkan kamus default saat ini dengan snapshot sebelumnya
 - Terjemahkan kunci yang ditambahkan ke dalam setiap bahasa target
 - Offoffoff dari setiap bahasa target
@@ -54,9 +54,9 @@ Refactoring yang ditujukan beberapa kekhawatiran dengan desain monolitik asli:
 - Kunci dibuang akan dihapus per-bahasa segera
 - Snapshot disimpan hanya setelah semua bahasa selesai dengan sukses
 
-### DokumenTranslasiService
+### Dokumen-dokumenTranslasiService
 
-**Penerimaan**:
+**Sponsabilitas**:
 - Akar Markdown terkonfigur secara rekursif
 - Kesankan adanya perubahan berkas sumber menggunakan sHA-256 hashes
 - Status terjemahan per-blok trek dalam
@@ -68,7 +68,7 @@ Refactoring yang ditujukan beberapa kekhawatiran dengan desain monolitik asli:
 - Tingkat granularitas: heading, paragraf, daftar item diterjemahkan secara terpisah
 - Data meta trek yang mana blok berhasil/digagalkan per bahasa
 - Blok Gagal dicoba ulang pada run berikutnya tanpa memindahkan kembali blok sukses
-- Validasi struktur Ukraina memastikan jumlah heading, daftar, blok kode, dll cocok dengan sumber
+- Validasi struktur Ukraina memastikan jumlah heading, daftar, blok kode, dll. cocok dengan sumber
 
 ## Strategi coba lagi
 
@@ -83,13 +83,13 @@ Sistem ini menerapkan retries pada tiga tingkat:
 ### Tahap 2 — Tahap (Percobaan Translasi)
 
 - Sampai 3 percobaan dengan penundaan 30 detik
-- Memacu-kembali seluruh permintaan terjemahan setelah retries tahap HTTP habis
+- Memacu kembali seluruh permintaan terjemahan setelah retries tahap HTTP habis
 - Penopeng dan pemugaran placeholder diterapkan pada tingkat ini
 
 ### Aras 3 — Blok (DokumenTranslationService)
 
 - Blok Markdown Individual Individual yang gagal ditandai dalam metadata
-- Retried automatically on the next pipeline run
+- Be rulang secara otomatis pada jalur pipa berikutnya
 - Blok-blok sukses tidak pernah diterjemahkan kembali
 
 ## Aliran Data
@@ -154,7 +154,7 @@ For each target language:
 
 ### Snapshots
 
-- **JSON**: Disimpan dalam berkas di sebelah kamus lalai (nama bervariasi oleh penyedia penyimpanan)
+- **JASON**:(nama bervariasi oleh penyedia penyimpanan)
 - **Purpose**: Enables incremental sync by tracking what was present in the previous run
 
 ### Berkas hash taskin
@@ -178,11 +178,11 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Isyarat Melapor
+## SignalR melaporkan
 
 ### Abspirasi Penerbit
 
-layanan terjemahan dari SignalR spesifik:
+layanan penerjemahan dari SignalR spesifik:
 
 ```csharp
 public interface ISignalRPublisher
@@ -274,17 +274,17 @@ Fiji 30
 
 ### Tes unit
 
-Setiap sub-service secara independen dapat diuji:
+Setiap sub-layanan secara independen dapat diuji:
 
 - Si Mock untuk mensimulasikan sukses/gagal
 - Mereka akan melapor
-- Gunakan direktori sementara untuk berkas I/O
+- Gunakan direktori sementara untuk berkas I/ Perancis
 - Verifikasi perilaku hemat per-bahasa
 
 ### Uji integrasi
 
 - Saluran pipa penuh dengan kejadian nyata (lokal) LibreTranslate
-- Signal Verifikasi SMTP Pesan-pesan dari surat-surat R dikirim ke klien yang terhubung
+- Pesan-pesan SignalR yang pasti akan dikirim ke klien yang tersambung
 - Uji percobaan concurrent jalankan pencegahan (semafor)
 - Sahkan struktur Markdown setelah terjemahan
 
@@ -293,13 +293,13 @@ Setiap sub-service secara independen dapat diuji:
 - Terjemahan Pemicu Feater melalui API atau penjadwal
 - Sahkan semua berkas bahasa target diciptakan/updated
 - Periksa berkas data meta data biodata mengandung status blok yang benar
-- Pemegang tempat yang dikonfirmasi telah dipertahankan di seluruh terjemahan
+- Pemegang tempat konfirmasi transmitter telah diawetkan di seluruh terjemahan
 
-## Pertimbangan Kinerja
+## Pertimbangan kinerja
 
 - **Memory**: Per-language saving prevents holding all dictionaries in memory
 - **Disk I/O**: Metadata files add small overhead but enable incremental work
-- **Network**: Sequential processing with throttling prevents overwhelming LibreTranslate
+- **Rangkaian**: Pemrosesan berurutan dengan throttling mencegah luar biasa LibreTranslate
 - **CPU**: SHA-256 hashing and regex validation are fast relative to translation latency
 - **SignalR**: Lightweight messages, no payload compression needed for typical reports
 
@@ -310,7 +310,7 @@ Yang asli berisi semua logika dalam satu kelas. Jalur migrasi:
 1. Logika negeri →
 2. Kemakmuran logika JSON →
 3. Ekstrak Logika Markdown →
-4. Isyarat Penerbitan →
+4. Penerbitan sinyal →
 5. Ekstrak kembali logika →
 6. Sederhanakan orkestrator ke delegasi-saja
 

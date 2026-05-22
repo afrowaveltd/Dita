@@ -1,6 +1,6 @@
 ﻿# bord de traducere live
 
-Live Translation Dashboard este o pagină admin care oferă vizibilitate în timp real în conducta de traducere automată. Se conectează la hub-ul SignarR și afișează toate evenimentele de conducte în timp ce acestea apar.
+Live Translation Dashboard este o pagină admin care oferă vizibilitate în timp real în conducta de traducere automată. Se conectează la hub-ul SignalR și afișează toate evenimentele de conducte în timp ce acestea apar.
 
 ## URL
 
@@ -12,9 +12,9 @@ Live Translation Dashboard este o pagină admin care oferă vizibilitate în tim
 
 ### Fluxul de evenimente în timp real
 
-Toate semnalele Evenimentele R de la conducta de traducere sunt afișate într-un tabel live-updateing:
+Toate evenimentele SignalR de la conducta de traducere sunt afișate într-un tabel live-updated:
 
-- **Secvenţa numărul**
+- **Numărul secvenţei**
 - **Timestamp**
 - **Run ID**
 - **Stage**
@@ -39,7 +39,7 @@ Un banner de stare în top arată:
 - ** Reconectarea**
 - ** Deconectat**
 
-Conexiunea foloseste reconectare automata cu exponentiala: 0s, 2s, 5s, 10s, 30s.
+Conexiunea utilizează reconectare automată cu exponențial de rezervă: 0s, 2s, 5s, 10s, 30s.
 
 ### Controale
 
@@ -47,7 +47,7 @@ Conexiunea foloseste reconectare automata cu exponentiala: 0s, 2s, 5s, 10s, 30s.
 - **Export JSON**
 - **Mesaj contra**
 
-## Semnal R hub
+## Conector de semnal
 
 Tabloul de bord se conectează la:
 
@@ -91,7 +91,7 @@ Insigna de avertizare
 
 ### Platformă
 
-- **Localizare Hub** ()
+- **LocalizareHub** ()
 - **ISignalRPublisher**
 - **SignalRPublisher**
 
@@ -136,18 +136,18 @@ Dita.Server/Pages/Admin/
 
 1. Verificați dacă serverul rulează și este accesibil
 2. Verificați consola browser pentru CORS sau erori de rețea
-3. Confirmaţi că este prezent în
+3. Confirmă că este prezent în
 4. Asigurați-vă că niciun firewall nu blochează conexiunile WebSocket
 
 ### Evenimentele nu apar
 
-1. Verificați dacă URL-ul hubului SignalR se potrivește între server () și client ()
+1. Verificați dacă URL-ul hub-ului SignalR se potrivește între server () și client ()
 2. Verificați programatorul este activat în
 3. Uită-te la jurnalele serverului pentru erori de conducte de traducere
-4. Verificați browserul Tab-ul de rețea pentru mesajele WebSocket
+4. Verificați fila de rețea a browser-ului pentru mesajele WebSocket
 
 ### Mesajele sunt deplasate
 
-Câmpul garantează comandarea într-o singură cursă. În cazul în care mesajele nu sunt în ordine, acestea pot indica:
+Câmpul garantează comandarea într-o singură cursă. Dacă mesajele apar în afara ordinii, acestea pot indica:
 - Conducte multiple se suprapun (nu ar trebui să se întâmple din cauza blocare semafor)
 - Comment

@@ -7,15 +7,15 @@ Ta dokument obstaja kot vhodni preskus v živo za cevovod za avtomatsko prevajan
 Prevajalski cevovod je bil preoblikovan v modularno arhitekturo s štirimi specializiranimi podstoritvami, ki jih koordinira lahki orkestrator:
 
 - **BackendTranslationService** — Orkesterira celoten cevovod, upravlja potrjevanje strežnikov in delegati delajo na podstoritve.
-- **Služba za prevajanje** — Sinhronizira državna imena iz slovarjev v enem jeziku.
-- **LocalizationTranslationService** — Detekti, dodani/odstranjeni ključi v privzetem slovarju JSON in jih prevaja v ciljne jezike.
+- **Služba za prevajanje** — Sinhronizira imena držav iz slovarjev v enem jeziku.
+- **LocalizationTranslationService** — Detekti, dodani/odpravljeni ključi v privzetem slovarju JSON in jih prevaja v ciljne jezike.
 - **DokumentiPrevajanjeService** — Prevaja dokumentarne datoteke Markdown s sledenjem po bloku in metapodatki.
 
 Vsaka podstoritev deluje neodvisno in poroča o napredku prek SignalR v realnem času.
 
 ## Kaj stori služba
 
-Storitev poteka po urniku in izvaja petstopenjski cevovod: potrjevanje strežnika, sinhronizacija države, sinhronizacija slovarja JSON, prevod datoteke Markdown in vztraja pri rezultatih. Vsaka faza oddaja strukturirane dogodke v realnem času nad signalom R tako, da lahko povezane stranke sledijo kot prihodek od dela.
+Storitev poteka po urniku in izvaja petstopenjski cevovod: potrjevanje strežnika, sinhronizacija države, sinhronizacija slovarja JSON, prevod datoteke Markdown in vztraja pri rezultatih. Vsaka stopnja oddaja strukturirane dogodke napredka v realnem času nad SignalR, tako da lahko povezani odjemalci sledijo, ko se delo nadaljuje.
 
 ## Faze cevovodov
 
@@ -36,14 +36,14 @@ V primeru neuspešnega preverjanja se cevovod takoj ustavi in pošlje sporočilo
 Imena držav se hranijo v sinhronizaciji iz kataloga samo za branje () v slovarje JSON lokalizacije.
 
 - Če je privzeti jezik uporabe angleščina, se ime vsake države shrani kot brez prevoda.
-- Če je privzeti jezik kateri koli drug jezik, je angleško ime države najprej prevedeno v ta jezik, rezultat pa postane vnos v privzetem slovarju.
+- Če je privzeti jezik katerikoli drug jezik, je angleško ime države najprej prevedeno v ta jezik, rezultat pa postane vnos v privzetem slovarju.
 - Po posodobitvi privzetega slovarja se vsak manjkajoči vnos države v vsakem slovarju ciljnega jezika prevede in shrani ** takoj na jezik**.
 - Že prevedeni vnosi so ohranjeni brez spremembe.
 - Če prevod ne uspe, se storitev pred selitvijo v naslednji jezik vrne do trikrat s 30-sekundnimi zamudami.
 
 ### Faza 3 – Prevedi dosjeje Json
 
-Storitev primerja trenutni privzeti slovar lokalizacije s posnetek, ki je bil shranjen v prejšnjem zagonu:
+Storitev primerja trenutni privzeti slovar lokalizacije s sliko, ki je shranjena v prejšnjem zagonu:
 
 - ** Vgrajeni ključi** – vnosi, ki so prisotni v trenutnem privzetem stanju, vendar jih ni na posnetku – so prevedeni v vsak ciljni jezik, ki še nima ročnega vnosa za ta ključ.
 - ** Odvzeti ključi** – vnosi, ki so prisotni na posnetku, vendar jih trenutno ni, se izbrišejo iz vsakega slovarja ciljnega jezika.
@@ -56,15 +56,15 @@ Vsi slovarji so vedno shranjeni z abecedno razvrščenimi ključi in vdolbinami 
 
 ### Faza 4 – datoteke s prevodi
 
-Storitev hodi nastavljeno dokumentacijo korenine (privzeto: ) in obdela vsak vir datoteke rekurzivno:
+Storitev hodi nastavljeno dokumentacijo korenine (privzeto: ) in obdeluje vsako izvorno datoteko rekurzivno:
 
 1. Vsebina izvorne datoteke se bere in izračuna se hašiš SHA-256.
 2. Datoteka ob izvornih skladbah na jezik, status prevajanja na blok, ki omogoča ** inkrementalno prevajanje** le neuspešnih blokov.
 3. Shranjen hašiš iz prejšnjega zaganjanja (urejen v datoteko poleg izvorne datoteke, ali na začasni nadomestni lokaciji) se primerja s trenutnim hašišem.
 4. Za vsak ciljni jezik se preveri tudi ustrezna datoteka glede strukturne celovitosti.
 5. Vsaka manjkajoča ciljna datoteka, ki ima zastarel hašiš, neuspešno potrjevanje strukture ali vsebuje neprevedene bloke, je v vrsti za prevajanje.
-6. ** Vsak ciljni jezik je preveden in shranjen neodvisno** – če če češki uspe, a francoski spodleti, je češka datoteka še vedno napisana na disk.
-7. Uspešno prevedene datoteke so validirane za strukturno pariteto z virom (enako število naslovov, seznam elementov, kode blokov, blokov, povezav, krepko/italnih označevalcev, in HTML oznake), preden so zapisane na disk.
+6. ** Vsak ciljni jezik je preveden in shranjen neodvisno** – če če češki uspe, francoski pa ne, je češka datoteka še vedno napisana na disk.
+7. Uspešno prevedene datoteke so validirane za strukturno pariteto z virom (enako število naslovov, seznam postavk, kode blokov, blokov, povezav, krepko/italnih označevalcev, in HTML oznake), preden so zapisane na disk.
 8. Če vse ciljne datoteke za vir uspejo, se novi haši shrani poleg vira. Če pisanje ob viru spodleti (na primer pri razporeditvah samo za branje), hašiš pade nazaj v začasni imenik.
 9. Če kateri koli ciljni prevod ne uspe validirati, metapodatki označijo te bloke kot neprevedene, tako da se ponovno uporabijo v naslednjem teku.
 
@@ -75,9 +75,9 @@ Konsolidirana se sestavi in objavi. Vključuje:
 - Časovni žigi začetka in zaključka delovanja UTC.
 - Število shranjenih krajevnih datotek JSON, shrani Markdown datoteke, shrani Hash datoteke, in rezervni hash piše.
 - Vse napake pri shranjevanju, zbrane med vožnjo.
-- Statistika prevajanja po jezikih (prevedeno štetje, preskoči štetje, štetje napak).
+- Statistika prevajanja v jeziku (prevedeno štetje, preskoči štetje, štetje napak).
 
-## Signal R ovojnica sporočila
+## Ovojnica sporočila SignalR
 
 Vsak dogodek napredka je dostavljen z naslednjimi polji:
 
@@ -141,7 +141,7 @@ StageCompleted / StoringResults
 PipelineCompleted / StoringResults
 ```
 
-Če katera stopnja spodleti, se preostale stopnje preskočijo, pošlje se sporočilo in končno sporočilo zapre tek.
+Če katera stopnja ne uspe, se preostale stopnje preskočijo, pošlje se sporočilo in končno sporočilo zapre tek.
 
 ## Logika ponovnega preizkusa prevodov
 
@@ -149,8 +149,8 @@ Cevovod izvaja dve stopnji odpornosti:
 
 ### Ponovni preizkus stopnje (TranslationRetryService)
 
-- Če zahteva za prevod ne uspe po notranjih retrijev LibreTranslate, opravi do 3 dodatne stopnje-stopnje z 30-sekundnimi zamudami.
-- Zamaskiranje držal: Imenovani imetniki () v besedilu se začasno nadomestijo z varnimi žetoni () pred prevajanjem in se nato obnovijo, kar zagotavlja pravilno slovnico v ciljnih jezikih.
+- Če zahtevek za prevod ne uspe po notranjih retrijev LibreTranslate, opravi do 3 dodatne stopnje retries z 30-sekundnimi zamudami.
+- Placeholder maskiranje: Imenovani kraji () v besedilu se začasno nadomestijo z varnimi žetoni () pred prevajanjem in se nato obnovi, kar zagotavlja pravilno slovnico v ciljnih jezikih.
 
 ### Potrditev jezika
 
@@ -159,13 +159,13 @@ Cevovod izvaja dve stopnji odpornosti:
 
 ### Označevanje ravni bloka
 
-- Prevodi Markdown se izvajajo po blokih (postavke, odstavki, postavke seznama).
+- Označevanje prevodi se izvajajo blok-po-blok (postavke, odstavki, postavke seznama).
 - Če posamezni blok ne uspe prevesti, je označen kot nepreveden v metapodatkovni datoteki in ponovno preizkušen na naslednjem cevovodu.
 - Servis sledi na jezik, stanje na blok v datotekah poleg vsakega vira Markdown datoteke.
 
 ## Kode napak
 
-O napakah se poroča z uporabo enotnega števila, združenega v razpone:
+O napakah se poroča z uporabo enotnega števila, razvrščenega v razpone:
 
 Razpon
 |-------|----------|
@@ -179,18 +179,18 @@ Vsaka napaka v poročilu nosi izvorno oznako (jezikovno kodo, pot datoteke ali i
 
 ## Prevodna plošča v živo
 
-Projekt Server vključuje admin stran na kateri se poveže z vozliščem SignalR na in prikazuje vse cevovod dogodkov v realnem času.
+Projekt Server vključuje admin stran, ki se navezuje na vozlišče SignalR in prikazuje vse plinovodne dogodke v realnem času.
 
 - Prikazuje stanje povezave, število sporočil in razpredelnico vseh dogodkov v živo.
 - Barvno kodirane vrstice: modra za začetek odra, zelena za dokončanje, rdeča za napake.
-- Podpira čiščenje vira in izvoz vseh sporočil v JSON.
+- Podpira čiščenje krme in izvoz vseh sporočil v JSON.
 - Samodejno se priklopi z eksponentnim zaostankom, če povezava pade.
 
 ## Načela projektiranja
 
-- **Modularnost**: Vsak prevajalski problem je izoliran v svoji službi za vzdrževanje in preizkušanje.
+- **Modularnost**: Vsak prevajalski pomislek je izoliran v svoji službi za vzdrževanje in preizkušanje.
 - ** Vztrajnost mišic**: Dictionaryji in Markdown datoteke so shranjene na jezik takoj po prevodu, zmanjšanje pritiska pomnilnika in zagotavljanje zgodnejših povratnih informacij.
 - **Odpornost**: Večkratni nivoji ponovnih poskusov (HTTP, stopnja, blok) zagotavljajo, da prehodne napake ne blokirajo cevovoda.
-- **State tracking**: Per-file metadata (`.translation-meta.json`) and hash files enable precise incremental work on subsequent runs.
+- **Sledenje državi**: Per-file metapodatki () in hash datoteke omogočajo natančno postopna dela na kasnejših tekih.
 - ** Vidljivost v realnem času**: Vsaka pomembna operacija se poroča preko SignalR za spremljanje in razhroščevanje.
-- **Ročni prevodi imajo vedno prednost pred avtomatskimi dodatki. **
+- ** Ročni prevodi imajo vedno prednost pred samodejnimi dodatki.**

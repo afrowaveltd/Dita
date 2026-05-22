@@ -12,7 +12,7 @@ Dashboard - це сторінка адміністратора, яка забе�
 
 ### Поточний час
 
-Всі записи У живому столі відображаються події з перехідного трубопроводу:
+Усі події SignalR з перехідного трубопроводу відображаються в живому столі:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -36,8 +36,8 @@ Dashboard - це сторінка адміністратора, яка забе�
 Статус банера вгорі показує:
 - **Connecting** — Establishing SignalR connection
 - **Connected** — Receiving events normally
-- **Reconnecting** — Connection lost, attempting to reconnect
-- **Disconnected** — Connection closed
+- **Відключення** — З’єднання втрачено, спробує від’єднатись
+- **Disconnected** — Замкнено підключення
 
 З'єднання використовує автоматичне відключення з відключенням: 0s, 2s, 5s, 10s, 30s.
 
@@ -47,7 +47,7 @@ Dashboard - це сторінка адміністратора, яка забе�
 - **Export JSON** — Завантаження всіх отриманих повідомлень як файл JSON для аналізу
 - **Message counter** — Shows total number of events received in this session
 
-## Увійти Р хуб
+## Навігація
 
 З'єднує панель:
 
@@ -91,14 +91,14 @@ interface LocalizationHubMessage {
 
 ### Зареєструватися
 
-- **LocalizationHub** (`/hubs/localization`) — SignalR hub that broadcasts messages to all connected clients
+- **LocalizationHub** () — SignalR hub, який веде повідомлення до всіх підключених клієнтів
 - **ISignalRPublisher** — Abstraction over the hub for use in translation services
-- **SignalRPublisher** — За замовчуванням, що викликає монотонну послідовність та трансляції
+- **SignalRPublisher** — Default implementation that increments a monotonic sequence and broadcasts
 
 ### Фронт
 
 - Чистий HTML / JS з Bootstrap 5 укладання
-- РусскийУкраїнськаБеларускаяOʻzbek tiliEnglish
+- Русский EnglishРусскийУкраїнськаPolskiItalianoEspañol汉语Bahasa Indonesiaहिन्दीPortuguês日本語DeutschFrançaisภาษาไทยελληνικά اللغة العربية
 - Не потрібно натиснути на сервер
 
 ### Структура сторінки
@@ -115,7 +115,7 @@ Dita.Server/Pages/Admin/
 2. Навігація
 3. Перевірити переклад (написатися на графік або виклик API)
 4. Перегляд подій в режимі реального часу
-5. Використовуйте кнопку Експорту, щоб захопити повний слід для видалення
+5. Використовуйте кнопку Експорт, щоб захопити повний слід для відбілювання
 
 ## Майбутні добавки
 
@@ -125,7 +125,7 @@ Dita.Server/Pages/Admin/
 - **Filtering** — Filter events by stage, type, or run ID
 - **Historical runs** — View completed runs from a database or log file
 - **Statistics** — Charts showing translation counts, error rates, and latency over time
-- **Manual triggers** — Buttons to manually start specific pipeline stages
+- **Універсальні тригери** — кнопки для ручного запуску конкретних етапів трубопроводів
 - **Конфігурація** — Редагувати безпосередньо з панелі інструментів
 - **Language Management** — Перегляд та редагування підтримуваних мов
 - **Dictionary preview** — Browse and search localization dictionaries
@@ -141,13 +141,13 @@ Dita.Server/Pages/Admin/
 
 ### Події не з'являються
 
-1. Перевірте, що URL-адреса SignalR між сервером () та клієнтом ()
+1. Перевірте, що URL-адреса SignalR між сервером () і клієнтом ()
 2. Перевірити графік ввімкнено
 3. Дивитися на серверних колодах для помилок конвеєра
-4. Перевірити браузер Вкладка мережі для повідомлень WebSocket
+4. Перевірити вкладку мережі браузера для повідомлень WebSocket
 
 ### Повідомлення з замовлення
 
 Поле гарантує замовлення в межах одного ходу. Якщо повідомлення з'являються з замовлення, це може вказувати:
 - Кілька трубопроводів перекриття (нав'язується з замком смофору)
-- Випадкові питання (зновлення сторінки)
+- Випадкові проблеми з відновленням сторінок

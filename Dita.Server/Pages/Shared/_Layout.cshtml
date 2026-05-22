@@ -1,11 +1,21 @@
+@using System.Globalization
+@using Dita.Shared.Localization.Services
 @using Microsoft.Extensions.Localization
-@inject IStringLocalizer<IndexModel> t;
+@inject IStringLocalizer<IndexModel> t
+@inject ILanguageService LanguageService
+@{
+    string currentCulture = string.IsNullOrWhiteSpace(CultureInfo.CurrentUICulture.Name)
+        ? "en"
+        : CultureInfo.CurrentUICulture.Name;
+    string documentDirection = LanguageService.IsRtl(currentCulture) ? "rtl" : "ltr";
+    string pageTitle = t[ViewData["Title"] is null ? "Dita" : t[$"{ViewData["Title"]} - Dita"]];
+}
 <!DOCTYPE html>
-<html lang="en" data-dita-theme="dark">
+<html lang="@currentCulture" dir="@documentDirection" data-dita-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dita</title>
+    <title>@pageTitle</title>
     <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/dita.theme.css" asp-append-version="true" />
@@ -25,10 +35,15 @@
 
         <ul class="dita-nav-links" id="navLinks">
             <li><a asp-area="" asp-page="/Index">@t["Home"]</a></li>
-            <li><a asp-area="" asp-page="/Privacy">@t["Privacy"]</a></li>
             <li><a href="/scalar/Dita" target="_blank" rel="noopener">@t["API Explorer"]</a></li>
-            <li><a asp-area="" asp-page="/Admin/LiveTranslation">@t["Dashboard"]</a></li>
+            <li><a asp-area="" asp-page="/Admin/LiveTranslation">@t["Live Translations"]</a></li>
         </ul>
+
+        <div class="dita-nav-actions">
+            <button class="dita-theme-toggle" type="button" title="@t["Settings"]" aria-label="Settings" id="settingsButton">
+                <span id="settingsIcon">⚙️</span>
+            </button>
+        </div>
 
         <div class="dita-nav-actions">
             <button class="dita-theme-toggle" type="button" title="@t["Switch theme"]" aria-label="Switch theme" id="globalThemeToggle">
@@ -45,7 +60,7 @@
 
     <footer class="dita-footer">
         <span>&copy; 2026 Dita</span>
-        <span><a asp-area="" asp-page="/Privacy">@t["Privacy"]</a></span>
+       
     </footer>
 
 

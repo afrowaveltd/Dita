@@ -12,12 +12,12 @@
 
 ### रियल टाइम इवेंट स्ट्रीम
 
-सभी संकेत अनुवाद पाइपलाइन से आर इवेंट्स को लाइव-अपडेटिंग टेबल में प्रदर्शित किया जाता है:
+अनुवाद पाइपलाइन से सभी सिग्नलआर कार्यक्रम लाइव-अपडेटिंग टेबल में प्रदर्शित होते हैं:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - ** टाइमस्टैम्प ** - जब घटना प्राप्त हुई थी तब स्थानीय समय
 - **Run ID** - संक्षिप्त GUID सहसंबंध के लिए
-- **Stage** — Pipeline stage badge (CheckServers, TranslateCountries, etc.)
+- ** स्टेज ** - पाइपलाइन स्टेज बैज (चेकसर्वर्स, ट्रांसलेटकॉंटरी आदि)
 - **Type** — Message type badge (StageStarted, Progress, StageCompleted, etc.)
 - **Message** — Human-readable description
 - **Details** — Full JSON payload of the event data
@@ -47,7 +47,7 @@
 - **Export JSON** - सभी को विश्लेषण के लिए JSON फ़ाइल के रूप में संदेश प्राप्त हुआ
 - **Message counter** — Shows total number of events received in this session
 
-## संकेत आर हब
+## सिग्नलआर हब
 
 डैशबोर्ड से जुड़ जाता है:
 
@@ -91,7 +91,7 @@ interface LocalizationHubMessage {
 
 ### बैकएंड
 
-- **LocalizationHub** (`/hubs/localization`) — SignalR hub that broadcasts messages to all connected clients
+- **LocalizationHub ** () - सिग्नलआर हब जो सभी जुड़े ग्राहकों को संदेश प्रसारित करता है
 - ** ISignalRPublisher ** - अनुवाद सेवाओं में उपयोग के लिए हब पर प्रतिबंध
 - **SignalRPublisher** — Default implementation that increments a monotonic sequence and broadcasts
 
@@ -122,7 +122,7 @@ Dita.Server/Pages/Admin/
 डैशबोर्ड के लिए योजनाबद्ध सुधार:
 
 - **Authentication** — Restrict access to users with the `Admin` role
-- **फ़िल्टर ** - चरण, प्रकार, या चलाने वाली आईडी द्वारा फ़िल्टर घटनाएं
+- **Filtering** — Filter events by stage, type, or run ID
 - **Historical runs** — View completed runs from a database or log file
 - **Statistics** — Charts showing translation counts, error rates, and latency over time
 - ** मैनुअल ट्रिगर ** - बटन मैन्युअल रूप से विशिष्ट पाइपलाइन चरणों को शुरू करने के लिए
@@ -141,10 +141,10 @@ Dita.Server/Pages/Admin/
 
 ### घटनाओं दिखाई नहीं दे रहे हैं
 
-1. जांचें कि सिग्नलआर हब यूआरएल सर्वर () और क्लाइंट () के बीच मेल खाता है।
+1. जांचें कि सिग्नलआर हब यूआरएल सर्वर () और क्लाइंट () के बीच मेल खाता है
 2. शेड्यूलर को सत्यापित करने में सक्षम है
 3. अनुवाद पाइपलाइन त्रुटियों के लिए सर्वर लॉग को देखें
-4. ब्राउज़र की जाँच करें WebSocket संदेशों के लिए नेटवर्क टैब
+4. WebSocket संदेशों के लिए ब्राउज़र नेटवर्क टैब की जाँच करें
 
 ### संदेश आदेश से बाहर हैं
 

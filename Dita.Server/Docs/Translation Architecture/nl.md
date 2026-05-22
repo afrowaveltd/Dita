@@ -7,9 +7,9 @@ Dit document beschrijft de modulaire architectuur van Dita's automatische vertaa
 De refactoring richtte zich op verschillende zorgen over het oorspronkelijke monolithische ontwerp:
 
 - **Verdeling van de bezorgdheid**: Elk vertaaldomein (landen, JSON woordenboeken, Markdown) is geïsoleerd.
-- **Incrementele persistentie**: Bestanden worden per taal onmiddellijk na vertaling opgeslagen, waardoor het geheugengebruik wordt verminderd en eerdere resultaten worden verkregen.
+- **Incrementele persistentie**: Bestanden worden per taal onmiddellijk na de vertaling opgeslagen, waardoor het geheugen wordt verminderd en eerdere resultaten worden verkregen.
 - **Resilience**: Multiple retry levels verwerken voorbijgaande storingen zonder de gehele pijpleiding te blokkeren.
-- **Observabiliteit**: Elke belangrijke operatie wordt gemeld via SignalR voor real-time monitoring.
+- **Bewaarbaarheid**: Elke belangrijke operatie wordt gemeld via SignalR voor real-time monitoring.
 - **Uithoudingsvermogen**: Nieuwe vertaaldoelen kunnen worden toegevoegd door de invoering van één interface.
 
 ## Ontbinding van de dienst
@@ -66,7 +66,7 @@ De refactoring richtte zich op verschillende zorgen over het oorspronkelijke mon
 
 **Kerngedrag**:
 - Blokniveau granulariteit: rubrieken, alinea's, lijstposten worden afzonderlijk vertaald
-- Metadata tracks die blocks succesvol zijn/zijn mislukt per taal
+- Metadata tracks die blocks succesvol/onvoldoende per taal
 - Foute blokken worden opnieuw opgehaald op de volgende run zonder opnieuw te vertalen succesvolle blokken
 - Structuurvalidatie zorgt voor koptellingen, lijsten, codeblokken, enz
 
@@ -74,7 +74,7 @@ De refactoring richtte zich op verschillende zorgen over het oorspronkelijke mon
 
 Het systeem implementeert herhalingen op drie niveaus:
 
-### Niveau 1: HTTP (LibreTranslateService)
+### HTTP van niveau 1 (LibreTranslateService)
 
 - Tot 5 pogingen met exponentiële backoff (1s, 2s, 3s, 4s, 5s)
 - Behandelt netwerk timeouts, 5xx fouten, en voorbijgaande storingen
@@ -154,8 +154,8 @@ For each target language:
 
 ### Snapshots
 
-- **JSON**: opgeslagen in een bestand naast het standaard woordenboek (naam varieert per opslagprovider)
-- **Purpose**: Activeert incrementele synchronisatie door te volgen wat aanwezig was in de vorige run
+- **JSON**: Opgeslagen in een bestand naast het standaard woordenboek (naam varieert per opslagprovider)
+- **Purpose**: Schakel incrementele synchronisatie in door te volgen wat aanwezig was in de vorige run
 
 ### Hash-bestanden
 
@@ -178,7 +178,7 @@ For each target language:
 - **Inhoud**: Woordenboek van de sleutels van plaatshouder naam-waarde paren
 - **Purpose**: Biedt standaardwaarden voor benoemde plaatshouders in de toepassing
 
-## Signaal R-rapportage
+## SignalR-rapportage
 
 ### Uitgever abstractie
 
@@ -278,20 +278,20 @@ Elke subdienst is onafhankelijk te testen:
 
 - Spot om succes/fout te simuleren
 - Spot om rapportage te verifiëren
-- Tijdelijke mappen gebruiken voor bestand I/O
+- Gebruik tijdelijke mappen voor bestand I/ O
 - Verifiëren per-taal opslaan gedrag
 
 ### Integratietests
 
 - Volledige pijpleiding loopt met echte (lokale) LibreVertaal instantie
-- Signaal verifiëren R berichten worden geleverd aan verbonden klanten
+- Controleer SignalR berichten worden geleverd aan verbonden clients
 - Test gelijktijdige runpreventie (semafore)
 - Valideren Markdown structuur na vertaling
 
 ### Eind-tot-eindtests
 
 - Trigger vertaling via API of scheduler
-- Controleren of alle doeltaalbestanden zijn aangemaakt of bijgewerkt
+- Controleren of alle doeltaalbestanden zijn aangemaakt/bijgewerkt
 - Metadatabestanden controleren die de juiste blokstatus bevatten
 - Bevestig plaatshouders worden bewaard in vertalingen
 
@@ -299,7 +299,7 @@ Elke subdienst is onafhankelijk te testen:
 
 - **Geheugen**: Per-taal opslaan voorkomt het vasthouden van alle woordenboeken in het geheugen
 - **Disk I/O**: Metadatabestanden voegen kleine overhead toe maar maken incrementele werkzaamheden mogelijk
-- **Network**: Sequentiële verwerking met throttling voorkomt overweldigende LibreVertalen
+- **Netwerk**: Sequentiële verwerking met throttling voorkomt overweldigende LibreVertalen
 - **CPU**: SHA-256 hashing en regex validatie zijn snel ten opzichte van vertaling latentie
 - **SignalR**: Lichtgewicht berichten, geen lading compressie nodig voor typische rapporten
 
@@ -310,7 +310,7 @@ Het origineel bevatte alle logica in één klasse. Het migratiepad:
 1. Landlogica uitpakken →
 2. Uitpakken JSON logica →
 3. Logica uitpakken →
-4. Signaal uitpakken R publiceren →
+4. Uitpakken SignalR publiceren →
 5. Logica opnieuw uitpakken →
 6. Vereenvoudig orkestmeester tot delegatie-alleen
 

@@ -12,7 +12,7 @@ O Live Translation Dashboard é unha páxina de administración que proporciona 
 
 ### Evento en tempo real stream
 
-Todo sinal Os eventos R do oleoduto de tradución móstranse nunha táboa de actualización en vivo:
+Todos os eventos SignalR do oleoduto de tradución móstranse nunha táboa de actualización en vivo:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -20,7 +20,7 @@ Todo sinal Os eventos R do oleoduto de tradución móstranse nunha táboa de act
 - **Stage** — Pipeline stage badge (CheckServers, TranslateCountries, etc.)
 - **Type** — Message type badge (StageStarted, Progress, StageCompleted, etc.)
 - ** Mensaxe** - descrición lexible por humanos
-- **Detalles**: Carga completa de datos do evento
+- **Detalles**: Carga completa dos datos do evento
 
 ### Color codificación
 
@@ -47,7 +47,7 @@ A conexión utiliza unha reconecta automática con backup exponencial: 0s, 2s, 5
 - **Exportar JSON** Descarga todas as mensaxes recibidas como un ficheiro JSON para a súa análise
 - **Message counter** — Shows total number of events received in this session
 
-## Sinal R Hub
+## sinal hub
 
 O panel conecta con:
 
@@ -113,7 +113,7 @@ Dita.Server/Pages/Admin/
 
 1. Inicio » Dita Aplicación do servidor
 2. Navegar para
-3. Cortar unha tradución (ou esperar polo programador ou chamar a API)
+3. Corrixir unha tradución (xa sexa para o programador ou chamar a API)
 4. Os eventos aparecen en tempo real
 5. Use o botón Export para capturar unha traza completa para depurar
 
@@ -144,7 +144,7 @@ Melloras previstas para o panel:
 1. Comproba que a URL do hub de SignalR coincida entre o servidor () e o cliente ()
 2. Comproba se o programa está activado
 3. Vexa os rexistros do servidor para erros no pipeline de tradución
-4. Comprobar navegador Páxina web para WebSocket Mensaxes
+4. Consulte a pestana da Rede do navegador para as mensaxes de WebSocket
 
 ### As mensaxes están fóra de orde
 

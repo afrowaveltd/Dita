@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## فائلز
 
-Placellers scarely-brace scons in Jamous Dictionary اقدار:
+Placellers Carrely-brace scons in Jamous Dictionary اقدار:
 
 ```json
 {
@@ -19,7 +19,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 نامزد مکانی اقدار کے دو ماخذ ہیں:
 
-### 1۔ Runtime قدروں (nugional data کے لیے دیکھیں)
+### 1۔ Runtime قدروں (nugional data)۔
 
 مقامی طور پر بننے والے طیاروں کی دیکھ‌بھال کرتے وقت براہِ‌راست قدریں :
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### ۲ ۔ قیمتی قدریں ( نیم اسٹیکی وضع کے لیے) محفوظ کی جاتی ہیں۔
+### ۲ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔ ۔
 
 ڈائریکٹری میں فائل کا انتظام کرتا ہے:
 
@@ -124,7 +124,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## ترجمہ
 
-جبکہ خودکار ترجمہ سروس کے نام سے متن متن سے ملتا ہے:
+جبکہ خودکار ترجمہ سروس کے نام سے متن کے ساتھ ملتا ہے:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
@@ -142,7 +142,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 یہ اس بات کو یقینی بناتا ہے:
 - رہائشیوں کو کبھی ترجمہ یا بگاڑ نہیں کیا جاتا ہے۔
-- زبانوں کےگرام آزادانہ طور پر اردگرد کے متن کو واپس کر سکتے ہیں۔
+- اردگرد کے متن کو آزادانہ طور پر واپس بھیج سکتے ہیں۔
 - تمام زبانوں میں وہی ٹیمپل درست کام کرتا ہے۔
 
 ## بہترین عمل
@@ -158,7 +158,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 لیبریٹریل کال کرنے کے دوران خودکار کنٹرولز محفوظ رکھتی ہیں۔ اضافی وضع کی ضرورت نہیں ہے۔.
 
-اِس لیے تمام جِلدوں کا ترجمہ کرنے والوں کی مدد سے کِیا جاتا ہے ۔.
+اِس طرح اُن کی مدد کرنے کے لیے اُن کے پاس زیادہ وقت نہیں تھا ۔.
 
 ## واپسی کا سامان
 

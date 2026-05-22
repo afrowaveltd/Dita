@@ -1,6 +1,6 @@
 ﻿# dashboard tłumaczenie na żywo
 
-Live Translation Dashboard to strona administracyjna, która zapewnia real- time widoczność do automatycznego rurociągu tłumaczeniowego. Łączy się z węzłem SignalR i wyświetla wszystkie zdarzenia związane z rurociągami.
+Live Translation Dashboard to strona administracyjna, która zapewnia real- time widoczność do automatycznego rurociągu tłumaczeniowego. Łączy się z węzłem SignalR i wyświetla wszystkie zdarzenia związane z rurociągiem.
 
 ## URL
 
@@ -12,7 +12,7 @@ Live Translation Dashboard to strona administracyjna, która zapewnia real- time
 
 ### Strumień zdarzeń w czasie rzeczywistym
 
-Wszystkie sygnały Zdarzenia R z rurociągu tłumaczeniowego są wyświetlane w tabeli żywej aktualizacji:
+Wszystkie zdarzenia SignalR z rurociągu tłumaczeniowego są wyświetlane w tabeli aktualizacji żywej:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -33,13 +33,13 @@ Biały (domyślnie)
 
 ### Status połączenia
 
-Baner statusu na górze pokazuje:
+Baner stanu na górze pokazuje:
 - **Connecting** — Establishing SignalR connection
 - **Connected** — Receiving events normally
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-Połączenie wykorzystuje automatyczne ponowne połączenie z wykładniczym backoff: 0s, 2s, 5s, 10s, 30s.
+Połączenie wykorzystuje automatyczne ponowne połączenie z backupem wykładniczym: 0s, 2s, 5s, 10s, 30s.
 
 ### Kontrole
 
@@ -47,7 +47,7 @@ Połączenie wykorzystuje automatyczne ponowne połączenie z wykładniczym back
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Sygnał R piasta
+## Głowica sygnalizacyjna
 
 Deska rozdzielcza łączy się z:
 
@@ -77,7 +77,7 @@ interface LocalizationHubMessage {
 
 Deska rozdzielcza obsługuje wszystkie wartości:
 
-Rodzaj
+Typ
 |------|---------|
 Niebieska odznaka
 Zielona odznaka
@@ -143,11 +143,11 @@ Planowane ulepszenia deski rozdzielczej:
 
 1. Sprawdź, czy adres URL węzła SignalR pasuje do serwera () i klienta ()
 2. Weryfikacja terminarza jest włączona w
-3. Sprawdź dzienniki serwerów dla błędów rurociągu tłumaczenia
-4. Sprawdź przeglądarkę Karta sieciowa dla wiadomości WebSocket
+3. Spójrz na logi serwerów dla błędów rurociągu tłumaczenia
+4. Sprawdź zakładkę Sieć przeglądarki wiadomości WebSocket
 
 ### Wiadomości nie są w porządku
 
-Pole gwarantuje zamawianie w jednym biegu. Jeżeli komunikaty nie są w porządku, mogą wskazywać:
+Pole gwarantuje zamawianie w jednym biegu. Jeżeli wiadomości nie są w porządku, mogą one wskazywać:
 - Wiele rurociągów działa nakładanie (nie powinno się zdarzyć z powodu blokady semafora)
 - Problemy z renderowaniem przeglądarki (spróbuj odświeżyć stronę)

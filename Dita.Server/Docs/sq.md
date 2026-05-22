@@ -32,9 +32,9 @@ Monolitike është dekompozuar në katër shërbime të specializuara të koordi
 
 Një faqe e re admin që ofron dukshmëri në kohë reale në tubacionin e përkthimit:
 
-- Shfaq të gjithë sinjalin R
-- Llojet e mesazheve të koduara me ngjyrë (botër=filluar, e gjelbër=e plotë, e kuqe=error)
-- Lidhja me file auto- lidhur
+- Shfaq të gjithë ngjarjet e Sinjalit kur ndodhin
+- Llojet e mesazheve të koduara me ngjyrë (fotër=filluar, e gjelbër=e plotë, e kuqe=error)
+- Lidhja me file automatike
 - Mesazhi
 
 ### Mikpritës të emëruar
@@ -58,7 +58,7 @@ Veçoritë:
 
 ### Përkthimi i brendshëm
 
-Dosjet e shënuara janë përkthyer në rritje:
+Në rritje:
 
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
@@ -112,7 +112,7 @@ I regjistruar në:
 - /
 - /
 
-Sinjali Raster është i pajisur për lidhje me klientët.
+Qendra e Sinjalit është e pajisur për lidhjet e klientëve.
 
 ## Prova
 
@@ -120,8 +120,8 @@ Sinjali Raster është i pajisur për lidhje me klientët.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Për:
-  - Place Funksionet e shërbimit
-  - Ndërfaqe orkestrimi i shërbimit
+  - Funksioni i vendit
+  - Orkestra e dytë e interfaqes
   - Treguesit vendshënues JsonString
 
 ### Kufizime të njohura
@@ -136,7 +136,7 @@ Sinjali Raster është i pajisur për lidhje me klientët.
 - Përkthimi i emrit të vendit
 - Sinkronizimi i fjalorit JSON
 - Përkthimi
-- Sinjali Printo mesazhin
+- Mesazhi
 - ⇩ Përpiqu të provosh logjikën me maska vendshënuese
 - Ndërfaqe Editor
 - Ndërfaqe e shërbimit lokal
@@ -148,7 +148,7 @@ Sinjali Raster është i pajisur për lidhje me klientët.
 ### Shërbimet e përditësuara
 
 - ⇩ Shtoi mbështetje vendshënuese me emër
-- ⇩ Për tjetër
+- U rifreskua për parametrin e ri
 - Menaxhues vendshënues i emëruar
 - Ndërfaqe
 
@@ -159,7 +159,7 @@ Sinjali Raster është i pajisur për lidhje me klientët.
 
 ### Dokumentë i ri
 
-- ⇩ Dokumentet e përditësuara të tubacionit
+- Dokumentimi i ri i tubacionit
 - Udhëzues i sistemit të vendeve
 - ⇩ Udhëzues përdorimi i Dashboard
 - Pamje e arkitekturës teknike
@@ -172,7 +172,7 @@ Të gjitha ndryshimet janë shtesë:
 - Rregullimi i pozicionit () funksionon i pandryshuar
 - Formati ekzistues i fjalorit JSON është i pandryshuar
 - Struktura ekzistuese e shënimit është e pandryshuar
-- Sinjali R
+- Sinjale
 
 ## Shtegu i emigracionit
 
@@ -200,4 +200,4 @@ Përmirësimet e planifikuara:
 
 ## Kontakti
 
-Për pyetje ose për çështje me shërbimin e përkthimit, ju lutemi t'i referoheni dokumentacionit të hollësishëm të directory së çdo moduli ose të kontaktoni ekipin e zhvillimit.
+Për pyetje ose për çështje me shërbimin e përkthimit, ju lutemi t'i referoheni dokumentacionit të hollësishëm në directory e çdo moduli ose të kontaktoni ekipin e zhvillimit.

@@ -32,8 +32,8 @@
 
 דף ניהול חדש המספק חשיפה בזמן אמת לתוך צינור התרגום:
 
-- כל אות אירועים כפי שהם מתרחשים
-- סוגי הודעות מקודמות בצבע (כחול = מוקרן, ירוק = שלם, אדום=טרור)
+- מציג את כל האירועים של אותות כפי שהם מתרחשים
+- סוגי הודעות קודקוד צבע (כחול = מוקרן, ירוק = שלם, אדום=טרור)
 - המונחים: Auto-reconnect
 - הודעות נגד ויצוא ל-JSON
 
@@ -53,7 +53,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 תכונות:
 - ערכי בעלי מקומות הניתנים בזמן ריצה או מאוחסנים ב
-- מסכה אוטומטית / רדיפה במהלך התרגום כדי למנוע שחיתות
+- מסיכה אוטומטית / עצירות במהלך התרגום כדי למנוע שחיתות
 - Backward תואם את בעלי המיקום הקיימים
 
 ### תרגום מובנה
@@ -63,7 +63,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
 - ** retry**: רק בלוקים כושלים מתחדשים על הפרק הבא
-- **Metadata persistence**: Translation state survives application restarts
+- ** מידע מתמשך **: מדינת התרגום שורדת מחדש
 
 ### המונחים: retry Logic
 
@@ -71,9 +71,9 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 1. **HTTP retry** (Libreתרגםeservice): 5 ניסיונות עם גיבוי אקספוננציאלי (1s-5s)
 2. **Stage retry** (TranslationRetryService): 3 additional attempts with 30s delays
-3. **Block retry** (DocumentsTranslationService): Failed Markdown blocks retried on next run
+3. **Block retry** (Documents Translationion Service): נכשל בלוקים מחדש בריצה הבאה
 
-### דיווח SignalR
+### דוח SignalR
 
 דיווח על התקדמות בזמן אמת לכל פעולות הצנרת:
 
@@ -112,7 +112,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - /
 - /
 
-אות רכזת R ממפה לחיבורי לקוחות.
+מרכז אותר ממפה לחיבורי לקוחות.
 
 ## בדיקות
 
@@ -120,8 +120,8 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 - **243/244 בדיקות העוברות** (1 לדלג עקב גישה לקובץ במקביל בסביבת הבדיקה)
 - סיקור חדש נוסף ל:
-  - בעל מקומות פונקציונליות שירות
-  - תרגום לעברית תזמורת שירות
+  - פונקציונליות
+  - תרגום לעברית
   - JsonString Localizer Place indexers
 
 ### הגבלות ידועות
@@ -136,7 +136,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - שם המדינה
 - ג'ייסון מילון סינכרוניזציה
 - תרגום מובנה
-- אות הוצאה לאור
+- הודעה מיידית
 - לוגיקה חוזרת עם מסיכה
 - ממשק Publisher
 - ממשק שירות המדינה
@@ -148,7 +148,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ### שירותים מעודכנים
 
 - המונחים: placekeeper
-- - - - עדכון לפרמטר חדש
+- עדכון לפרמטר חדש
 - ניהול בעלי מקומות
 - ממשק בעלי מקומות
 
@@ -159,7 +159,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ### מסמך חדש
 
-- - - - תיעוד צינורות
+- תיעוד צינורות מעודכן
 - שם: Placekeeper
 - המונחים: Dashboard use guide
 - אדריכלות טכנית
@@ -172,7 +172,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - עיצוב מיקום () עובד ללא שינוי
 - פורמט מילון JSON קיים ללא שינוי
 - המבנה הקיים ללא שינוי
-- אותות הודעות R משתמשות באותו פורמט
+- הודעות SignalR משתמשות באותו פורמט
 
 ## נתיב הגירה
 
@@ -184,8 +184,8 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ## שיפור ביצועים
 
-- ** שימוש בזיכרון ** קבצים שנשמרו באופן מיידי במקום להחזיק את כולם בזיכרון
-- **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
+- ** שימוש בזיכרון **: קבצים ניצלו באופן מיידי במקום להחזיק את כולם בזיכרון
+- **התמריץ של ה-Faster פועל**: רק שינוי / failed Blos re-translated
 - **Better visibility**: Real-time progress helps diagnose slow stages
 
 ## שיפורים עתידיים
@@ -196,7 +196,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 2. ** אימות המודעה** - הגבלת דפי ניהול למשתמשים מורשים
 3. ** עורך דיסלקטיבי ** - Web UI for Management Localization
 4. ** סטטיסטיקות תרגום** - תרשימים המציגים ספירות תרגום ושיעורי שגיאה לאורך זמן
-5. ** syntax ** - תמיכה בפורמטים חלופיים
+5. ** syntax** - תמיכה בפורמטים חלופיים
 
 ## צור קשר
 

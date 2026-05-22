@@ -19,7 +19,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 Pavadintas placebo savininkai turi du šaltinius vertės:
 
-### 1. RP laiko vertės (rekomenduojamos dinaminiams duomenims)
+### 1. MN laiko vertės (rekomenduojamos dinaminiams duomenims)
 
 @ info: whatsthis
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Saugomos vertės (pusiau statinės konfigūracijos)
+### 2. Konservantai (pusiau statinei konfigūracijai)
 
 Name
 
@@ -141,7 +141,7 @@ Išversta į čekų kalbą:
 Galutinis rezultatas:
 
 Taip užtikrinama, kad:
-- Vietų laikikliai niekada neverčiami arba sugadinti
+- Vietų turėtojai niekada nėra išversti arba sugadintas
 - Tikslinės kalbos gramatika gali pertvarkyti aplinkinį tekstą laisvai
 - Tuos pačius šablonus teisinga naudoti visomis kalbomis
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Pavadintas placeholder API yra priedas - tai ne nutraukti esamą naudojimą.
+Pavadintas "placeholder API" yra adityvinis - tai nesuardo esamo naudojimo.

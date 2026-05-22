@@ -1,6 +1,6 @@
 ﻿# Élő fordítás műszerfal
 
-A Live Translation Dashboard egy admin oldal, amely valós idejű láthatóságot biztosít az automatikus fordítási csővezetékben. Kapcsolódik a SignalR csomóponthoz, és megjeleníti az összes csővezetékes eseményt, ahogy azok bekövetkeznek.
+A Live Translation Dashboard egy admin oldal, amely valós idejű láthatóságot biztosít az automatikus fordítási csővezetékben. Kapcsolódik a SignalR csomóponthoz, és megjeleníti az összes csővezeték-eseményt, ahogy azok bekövetkeznek.
 
 ## URL
 
@@ -12,7 +12,7 @@ A Live Translation Dashboard egy admin oldal, amely valós idejű láthatóságo
 
 ### Real-time eseménysorozat
 
-Minden jel A fordítóvezetékből származó R események egy élő-frissítő táblázatban jelennek meg:
+A fordítóvezetékből származó összes SignalR esemény egy élő-frissítő táblázatban látható:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -47,7 +47,7 @@ A kapcsolat automatikus visszacsatolást használ exponenciális visszacsatolás
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Jelzés R csomópont
+## SignalR csomópont
 
 A műszerfal a következőkhöz kapcsolódik:
 
@@ -113,7 +113,7 @@ Dita.Server/Pages/Admin/
 
 1. Indítsd a Dita-t. Szerver alkalmazás
 2. Naiv
-3. A fordítási folyamat kiírása (vagy várni a menetrend, vagy hívja az API)
+3. A fordítási folyamat kiírása (vagy várni a menetrend vagy hívja az API)
 4. Az események valós időben jelennek meg
 5. Használja az Export gombot, hogy rögzítse a teljes nyom hibakeresés
 
@@ -144,10 +144,10 @@ Tervezett javítások a műszerfalon:
 1. Ellenőrizze, hogy a SignalR hub URL illeszkedik-e a szerver () és az ügyfél () között
 2. Ellenőrizze, hogy az ütemező be van-e kapcsolva
 3. Nézze meg a szervernaplók fordítási csővezeték hibák
-4. A böngésző ellenőrzése Hálózati lap WebSocket üzenetekhez
+4. Ellenőrizze a böngésző Hálózat fülét a WebSocket üzenetek
 
 ### Az üzenetek nem működnek
 
 A mező garantálja a rendelést egyetlen futáson belül. Ha az üzenetek nem megfelelően jelennek meg, jelezheti:
-- Többszörös csővezeték egymást átfedő (nem történhet meg a szemaforos zár miatt)
+- Többszörös csővezeték egymást átfedő (nem történhet meg miatt szemaforos zár)
 - Browser rendering problémák (próbálja frissíteni az oldalt)

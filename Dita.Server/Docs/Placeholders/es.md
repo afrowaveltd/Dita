@@ -4,7 +4,7 @@ Dita soporta **nombrados titulares de posición** en cadenas de localización, p
 
 ## Sintaxis
 
-Los marcadores de posición usan la sintaxis de curvatura dentro de los valores del diccionario JSON:
+Los marcadores de posición usan la sintaxis de grosella dentro de los valores del diccionario JSON:
 
 ```json
 {
@@ -13,7 +13,7 @@ Los marcadores de posición usan la sintaxis de curvatura dentro de los valores 
 }
 ```
 
-A diferencia de los titulares de posición (, ), nombrados titulares de lugar son ** lingüaje-agnostic** — traductores pueden reordenarlos para que coincidan con la gramática de lengua de destino sin romper el código.
+A diferencia de los titulares de posición (, ), nombrados titulares de lugares son ** lingüaje-agnostic** — traductores pueden reordenarlos para que coincidan con la gramática de lengua de destino sin romper el código.
 
 ## Almacenamiento
 
@@ -48,7 +48,7 @@ El directorio gestiona un archivo:
 }
 ```
 
-Los valores almacenados actúan como **defaults** y están anulados por valores de tiempo de ejecución.
+Los valores almacenados actúan como **defaults** y son superados por valores de tiempo de ejecución.
 
 ## Referencia de API
 
@@ -124,11 +124,11 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## Comportamiento de traducción
 
-Cuando el servicio de traducción automática encuentra texto con titulares nombrados:
+Cuando el servicio de traducción automática encuentra texto con los titulares nombrados:
 
-1. **Antes de la traducción**: Los propietarios de puestos están enmascarados con fichas seguras () para evitar que el motor de traducción las modifique.
+1. **Antes de la traducción**: Los propietarios de puestos están enmascarados con fichas seguras () para evitar que el motor de traducción los modifique.
 2. **Durante la traducción**: El motor de traducción sólo procesa el texto translatable.
-3. **Después de la traducción**: Los nombres originales de los titulares de lugares () se restauran en sus posiciones correctas.
+3. **Después de la traducción**: Los nombres originales de los marcadores de posición () se restauran en sus posiciones correctas.
 
 ### Ejemplo
 
@@ -149,16 +149,16 @@ Esto garantiza que:
 
 1. **Use nombres descriptivos**: es mejor que o
 2. **Mantenga a los propietarios mínimos**: Demasiados propietarios hacen la traducción más difícil
-3. **Documento tipos esperados**: Comentarios en el archivo JSON ayuda a los traductores a comprender el contexto
-4. ** Valores del tiempo de ejecución prefijado**: Para datos realmente dinámicos (nombres de usuario, cuentas, fechas), pase valores a tiempo de ejecución
+3. **Tipos previstos en el documento**: Comentarios en el archivo JSON ayuda a los traductores a entender contexto
+4. ** Valores de tiempo de ejecución prefijado**: Para datos realmente dinámicos (nombres de usuario, cuentas, fechas), pase valores a tiempo de ejecución
 5. **Utilice valores almacenados por defectos**: Para la configuración que rara vez cambia (nombre de solicitud, correo electrónico de soporte)
-6. ** Accionistas validados**: Uso para verificar todos los titulares de puestos previstos
+6. ** Accionistas validados**: Use to verify all expected placeholders are provided
 
 ## Integración con traducción automática
 
-El manipula automáticamente la preservación de los titulares durante llamadas LibreTranslate. No se necesita configuración adicional.
+El manipula automáticamente la preservación del marcador de posición durante llamadas LibreTranslate. No se necesita configuración adicional.
 
-El y ambos utilizan el servicio de retry, así que todas las traducciones del diccionario JSON apoyan transparentemente a los titulares de lugares nombrados.
+Los y ambos utilizan el servicio de retry, así que todas las traducciones del diccionario JSON apoyan transparentemente a los titulares de lugares nombrados.
 
 ## Compatibilidad de retroceso
 

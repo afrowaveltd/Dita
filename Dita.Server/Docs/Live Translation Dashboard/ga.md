@@ -1,6 +1,6 @@
-﻿# An tSraith Shinsearach
+﻿# Cairtchlár an Aistriúcháin Beo
 
-Is é an Dashboard Aistriúcháin Beo leathanach admin a sholáthraíonn fíor-ama infheictheacht isteach sa phíblíne aistriúcháin uathoibríoch. Nascann sé leis an mol SignalR agus taispeánann sé gach imeacht píblíne mar a tharlaíonn siad.
+Is é an Dashboard Aistriúcháin Beo leathanach admin a sholáthraíonn fíor-ama infheictheacht isteach sa phíblíne aistriúcháin uathoibríoch. Ceanglaíonn sé leis an mol SignalR agus taispeánann sé gach imeacht píblíne mar a tharlaíonn siad.
 
 ## URL
 
@@ -12,11 +12,11 @@ Is é an Dashboard Aistriúcháin Beo leathanach admin a sholáthraíonn fíor-a
 
 ### Sruth imeacht fíor-ama
 
-Gach Comharthaíocht R imeachtaí ón bpíblíne aistriúcháin ar taispeáint i tábla beo-suas:
+Gach imeachtaí SignalR ón bpíblíne aistriúcháin ar taispeáint i tábla beo-suas:
 
 - ** Uimhir chosanta ** — Fritháireamh Monotonic laistigh de gach píblíne a reáchtáil
 - ** Amstampas ** — Am áitiúil nuair a fuarthas an ócáid
-- **RÁD ID RÉIGIÚN ** — RÁTHAITHE Gearrtha le haghaidh comhghaoil
+- **RÁD ID RÉIGIÚN ** — RÁTHAITHE Giorraithe le haghaidh comhghaoil
 - **Stage** — suaitheantas stáitse Pipeline (CheckServers, TranslateCountries, etc.)
 - ** Tiomáint ** — suaitheantas cineáil Teachtaireachta (Státáilte, Dul Chun Cinn, Céimnithe, etc.)
 - **Message** – Cur síos ar an duine inléite
@@ -47,7 +47,7 @@ A banner stádas ag na seónna barr:
 - **Easpórtáil JSON ** — Íoslódálacha gach teachtaireacht a fuarthas mar chomhad JSON le haghaidh anailíse
 - **Message counter** — Taispeáin líon iomlán na n-imeachtaí a fhaightear sa seisiún seo
 
-## Comharthaíocht Mol R
+## Mol SignalR
 
 Nascann an Painéal na nIonstraimí le:
 
@@ -91,7 +91,7 @@ Suaitheantas rabhaidh
 
 ### Amharc ar gach eolas
 
-- **Laghdú Hub** () — Mol SignalR a chraolann teachtaireachtaí chuig gach cliant ceangailte
+- ** ÍoslaghdúHub** () - Mol SignalR a chraolann teachtaireachtaí chuig gach cliant ceangailte
 - **ISignalRPublisher ** - Abstraction thar an mol lena n-úsáid i seirbhísí aistriúcháin
 - **SignalRPublisher ** - Réamhshocrú chur i bhfeidhm go incrimintí seicheamh monotonic agus craoltaí
 
@@ -127,7 +127,7 @@ Feabhsuithe pleanáilte don Painéal na nIonstraimí:
 - **Statistics** — Cairteanna a léiríonn comhaireamh aistriúcháin, rátaí earráide, agus latency le himeacht ama
 - ** triggers láimhe ** - Buttons chun tús a chur de láimh céimeanna píblíne ar leith
 - ** Cumraíocht ** - Éist go díreach ón Painéal na nIonstraimí
-- **Bainistíocht teanga ** – Teangacha a bhfuil tacaíocht faighte acu agus a bhfuil in eagar
+- **Bainistíocht teanga ** — Teangacha a bhfuil tacaíocht á tabhairt dóibh a fheiceáil agus a eagrú
 - ** Réamhamharc dictionary ** - Brabhsáil agus foclóirí logála cuardaigh
 
 ## Fabhtcheartú
@@ -144,7 +144,7 @@ Feabhsuithe pleanáilte don Painéal na nIonstraimí:
 1. Seiceáil go oireann an URL mol SignalR idir freastalaí () agus cliant ()
 2. Fíoraigh go bhfuil an sceidealóir ar chumas i
 3. Féach ar logs freastalaí le haghaidh earráidí píblíne aistriúcháin
-4. Seiceáil bhrabhsálaí Líonra tab for WebSocket teachtaireachtaí
+4. Seiceáil cluaisín líonra bhrabhsálaí le haghaidh teachtaireachtaí WebSocket
 
 ### Teachtaireachtaí atá as ord
 

@@ -12,13 +12,13 @@ Live Translation Dashboard är en admin sida som ger realtidssynlighet i den aut
 
 ### Real-time händelse stream
 
-Alla signaler R-händelser från översättningsledningen visas i en live-updating-tabell:
+Alla SignalR-händelser från översättningsledningen visas i en live-updating-tabell:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** – Lokal tid då evenemanget mottogs
 - **Run ID** — Shortened GUID for correlation
 - ** Steg ** - Pipeline scenmärke (CheckServers, TranslateCountries, etc.)
-- **Type ** - Meddelande typ märke (StageStarted, Progress, StageCompleted, etc.)
+- **Type** - Meddelande typ märke (StageStarted, Progress, StageCompleted, etc.)
 - **Meddelande** – Mänsklig läsbar beskrivning
 - ** Detaljer** – Full JSON-belastning av händelsedata
 
@@ -34,7 +34,7 @@ Vit (standard)
 ### Anslutningsstatus
 
 En statusbanner på toppen visar:
-- **Connecting** - Etablering SignalR-anslutning
+- **Connecting** – Etablering SignalR-anslutning
 - **Connected** – Att ta emot händelser normalt
 - ** Återanslutning** - Anslutning förlorad, försöker återansluta
 - **Disconnected** – Anslutning stängd
@@ -47,7 +47,7 @@ Anslutningen använder automatisk återanslutning med exponentiell backoff: 0s, 
 - **Export JSON** – Ladda ner alla mottagna meddelanden som en JSON-fil för analys
 - **Message counter** - Visar totalt antal händelser som mottagits under denna session
 
-## Signal R Hub
+## signaler hub
 
 Dashboard ansluter till:
 
@@ -91,7 +91,7 @@ Varning badge
 
 ### Backend
 
-- **Lokalisering Hub ** () - SignalR-nav som sänder meddelanden till alla anslutna kunder
+- **LocalizationHub** () - SignalR-nav som sänder meddelanden till alla anslutna kunder
 - **ISignalRPublisher** – Abstraktion över navet för användning i översättningstjänster
 - **SignalRPublisher** - Standard implementering som inkrementerar en monoton sekvens och sändningar
 
@@ -144,7 +144,7 @@ Planerade förbättringar för instrumentbrädan:
 1. Kontrollera att SignalR-nav URL matchar mellan server () och klient ()
 2. Verifiera schemaläggaren är aktiverad i
 3. Titta på serverloggar för översättningspipeline fel
-4. Kontrollera webbläsare Nätverksflik för WebSocket-meddelanden
+4. Kontrollera webbläsarfliken Nätverk för WebSocket-meddelanden
 
 ### Meddelanden är ur order
 

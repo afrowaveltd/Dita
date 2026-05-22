@@ -1,6 +1,6 @@
 ﻿# Pemegang Tempat Bernama Bernama di Lokalisasi
 
-Luadon Dita mendukung **named placeholders** dalam string lokalisasi, memungkinkan nilai dinamis untuk disisipkan pada waktu jalan sambil melestarikan tata bahasa yang benar di seluruh bahasa.
+Luadon Dita mendukung **named placeholders** dalam string lokalisasi, memungkinkan nilai dinamis untuk dimasukkan pada waktu jalan sambil melestarikan tata bahasa yang benar di seluruh bahasa.
 
 ## Sintaksis
 
@@ -17,9 +17,9 @@ Tidak seperti pemegang tempat kedudukan (, ), pemegang tempat bernama adalah **l
 
 ## Penyimpanan
 
-Pemegang tempat yang dinamai memiliki dua sumber nilai:
+Pemegang tempat yang dinamakan floned memiliki dua sumber nilai:
 
-### 1. ^ a b c d e f g h i j k l m n o p. Nilai runtime (disarankan untuk data dinamis)
+### 1. Nilai runtime (disarankan untuk data dinamis)
 
 Nilai Lulus secara langsung ketika mengambil kembali string terlokalisasi:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### Kampung 2. Nilai penyimpanan (untuk konfigurasi semi-statis)
+### 2. Nilai penyimpanan (untuk konfigurasi semi-statis)
 
 The mengelola file di direktori:
 
@@ -127,8 +127,8 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 Ketika layanan penerjemahan otomatis bertemu teks dengan pemegang tempat bernama:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
-2. **Terjemahan**: Penerjemahan mesin hanya memproses teks yang dapat diterjemahkan.
-3. **After translation**: Original placeholder names (`{name}`) are restored in their correct positions.
+2. **During translation**: The translation engine processes only the translatable text.
+3. **Setelah terjemahan **: Nama pemegang tempat asal () dipulihkan dalam posisi yang benar.
 
 ### Contoh senam
 
@@ -156,9 +156,9 @@ Ini memastikan bahwa:
 
 ## Integrasi dengan terjemahan otomatis
 
-Secara otomatis ia menangani pengawetan pemegang tempat selama panggilan LibreTranslate. Konfigurasi tambahan tidak diperlukan.
+Secara otomatis, placeholder awet selama panggilan LibreTranslate. Konfigurasi tambahan tidak diperlukan.
 
-Kekhanan dan keduanya menggunakan layanan retry, sehingga semua kamus JSON terjemahan transparan mendukung pemegang tempat bernama.
+© The dan keduanya menggunakan layanan retry, sehingga semua kamus JSON terjemahan transparan dukungan bernama placeholders.
 
 ## Keserasian Kwarnas Mundur
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Nama API pemegang tempatan adalah aditif — tidak merusak penggunaan yang ada.
+API pemegang tempat yang bernama API adalah aditif — tidak merusak penggunaan yang ada.

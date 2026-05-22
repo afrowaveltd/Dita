@@ -32,8 +32,8 @@ El monolítico se ha descompuesto en cuatro servicios especializados coordinados
 
 Una nueva página de administración que proporciona visibilidad en tiempo real en el oleoducto de traducción:
 
-- Muestra todas las señales R eventos como ocurren
-- Tipos de mensaje codificados en color (azul=estrellado, verde=completo, rojo=error)
+- Muestra todos los eventos de SignalR cuando ocurren
+- Tipos de mensaje codificados por colores (blue=started, green=completed, red=error)
 - Bandera de estado de conexión con auto-reconexión
 - Contratista de mensajes y exportación a JSON
 
@@ -63,7 +63,7 @@ Los archivos Markdown se traducen incrementalmente:
 - **Ahorro por idioma**: Cada idioma objetivo se guarda inmediatamente después de la traducción, reduciendo la presión de memoria
 - **Block-level tracking**: tracks translation status per block
 - **Retromisión selectiva**: Sólo bloques fallidos son retraducidos en la siguiente carrera
-- ** persistencia de metadatos**: estado de traducción sobrevive a la aplicación reinicia
+- ** Persistir en los metadatos**: Estado de traducción sobrevive a la aplicación
 
 ### Logic de reingreso mejorado
 
@@ -71,7 +71,7 @@ Tres niveles de resiliencia:
 
 1. **HTTP retry** (LibreTranslateService): 5 intentos con retroceso exponencial (1s–5s)
 2. **Retromisión en estadio** (TranslationRetryService): 3 intentos adicionales con 30 retrasos
-3. **Block retry** (DocumentosTranslationService): Los bloques de marcado fallidos se retractaron en la próxima carrera
+3. **Block retry** (DocumentosTranslationService): Failed Markdown blocks retried on next run
 
 ### señalización
 
@@ -112,7 +112,7 @@ Registrado en:
 - /
 - /
 
-La señal R hub se mapea para conexiones cliente.
+El centro SignalR está diseñado para las conexiones de clientes.
 
 ## Pruebas
 
@@ -120,26 +120,26 @@ La señal R hub se mapea para conexiones cliente.
 
 - **243/244 pruebas que pasan** (1 saltada debido al acceso simultáneo de archivos en entorno de prueba)
 - Nueva cobertura de prueba agregada para:
-  - Titular Función del servicio
-  - BackendTranslation Orquesta de servicio
+  - Función de servicio
+  - BackendTranslationOrquestación de servicio
   - JsonStringLocalizer marcador de posición indexadores
 
 ### Limitaciones conocidas
 
-- test se salta cuando se ejecuta en paralelo porque múltiples instancias de prueba comparten el mismo archivo. Pasa cuando se ejecuta en aislamiento.
+- test se salta cuando se ejecuta en paralelo porque múltiples instancias de prueba comparten el mismo archivo. Pasa cuando corre en aislamiento.
 
-## Nueva estructura de archivo
+## Nueva estructura de archivos
 
 ### Servicios en
 
-- - Orquestador de tuberías
+- — orquestador de tuberías
 - — Traducción del nombre del país
 - Sincronización del diccionario JSON
 - — Traducción de Markdown
-- - Signal Publicación de mensajes
+- — Publicación de mensajes SignalR
 - — Lógica de reingreso con enmascaramiento de marcadores
 - — Interfaz de editor
-- — Interfaz de servicios a los países
+- — Interfaz de servicio a los países
 - — Interfaz de servicios de localización
 - — Interfaz de servicio de documentos
 - — Interfaz de orquestador (actualizado)
@@ -171,8 +171,8 @@ Todos los cambios son aditivos:
 - Código de localización existente () funciona sin cambios
 - El formato de posición () funciona sin cambios
 - El formato de diccionario JSON existente no cambia
-- La estructura existente de Markdown no cambia
-- Signal Los mensajes R usan el mismo formato
+- La estructura de marcado existente no cambia
+- Los mensajes SignalR usan el mismo formato
 
 ## Sendero de migración
 
@@ -185,18 +185,18 @@ No se requiere migración. El refactoring es interno:
 ## Mejoras de la ejecución
 
 - **Uso de memoria reducido**: Archivos guardados por idioma inmediatamente en lugar de guardar todo en memoria
-- **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
+- **Grupos incrementales rápidos**: Sólo los bloques de Markdown cambiados/failados son re-translated
 - **Better visibility**: Real-time progress helps diagnose slow stages
 
 ## Mejoras futuras
 
 Mejoras previstas:
 
-1. **AI fine-tuning** — Revisión de la traducción posterior a la máquina para frases 5 palabras
+1. **AI fine-tuning** — Revisión de la traducción posterior a la máquina para frases
 2. ** autenticación de minas**: Restringir las páginas de administración a los usuarios autorizados
 3. **Diccionario editor** — Web UI para gestionar las claves de localización
 4. ** Estadísticas de traducción** — Gráficos que muestran los recuentos de traducción y tasas de error con el tiempo
-5. **Sintaxis del marcador de posición** — Soporte para formatos alternativos de marcador de posición
+5. **Sintaxis del marcador de posición** — Soporte para formatos alternativos del marcador de posición
 
 ## Contacto
 

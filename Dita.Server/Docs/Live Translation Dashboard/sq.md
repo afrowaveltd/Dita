@@ -1,6 +1,6 @@
-﻿# live
+﻿# përkthim i drejtpërdrejtë
 
-The Live Translation Dashboard është një faqe admin që ofron shikim real në tubacionin automatik të përkthimit. Ajo lidhet me shpërndarësin e sinjalit dhe shfaq të gjitha veprimtaritë e tubacionit ndërsa ato ndodhin.
+The Live Translation Dashboard është një faqe admin që siguron shikim real në tubacionin automatik të përkthimit. Ajo lidhet me shpërndarësin e sinjalit dhe shfaq të gjitha ngjarjet e tubacionit ndërsa ato ndodhin.
 
 ## URL
 
@@ -12,7 +12,7 @@ The Live Translation Dashboard është një faqe admin që ofron shikim real në
 
 ### Korrispondenti i eventit kur arrijnë mesazhe
 
-Gjithçka Sinjali Ngjarjet e R-së nga tubacioni i përkthimit janë shfaqur në një tryezë të mbivendosur:
+Të gjitha ngjarjet Sinjal R nga tubacioni i përkthimit janë shfaqur në një tabelë të mbivendosur:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -47,7 +47,7 @@ Lidhja përdor rilidhje automatike me mbështetje eksponenciale: 0s, 2s, 5s, 10s
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Sinjali R
+## Qendër sinjali
 
 Dyshemeja lidhet me:
 
@@ -81,9 +81,9 @@ Lloji
 |------|---------|
 Distinktivi blu
 Distinktivi i gjelbër
-Distinktiv i kuq
+Distinktivi i kuq
 Distinktivi i gjelbër
-Distinktiv i kuq
+Distinktivi i kuq
 Informacione
 Distinktivi i paralajmërimit
 
@@ -111,7 +111,7 @@ Dita.Server/Pages/Admin/
 
 ## Përdorimi gjatë zhvillimit
 
-1. Fillo me ditën. Aplikativi i serverit
+1. Fillo me Ditën. Aplikativi i serverit
 2. Navigate për
 3. A
 4. Shiko ngjarjet që shfaqen në kohë reale
@@ -134,7 +134,7 @@ Përmirësimet e planifikuara për tabelën:
 
 ### Dashboard tregon "Gënje për t'u lidhur"
 
-1. Verifikimi i serverit është në ekzekutim dhe është i arritshëm
+1. Kontrollo që serveri është në ekzekutim dhe është i arritshëm
 2. Kontrollo konsolën e shfletuesit për gabimet e CORS apo të rrjetit
 3. Konfirmo është i pranishëm
 4. Siguria jo është
@@ -144,7 +144,7 @@ Përmirësimet e planifikuara për tabelën:
 1. Kontrolli URL server dhe klient ()
 2. Kontrolli është në
 3. Shiko në server për gabim
-4. Pastro shfletuesin Skeda e rrjetit për mesazhet në Internet
+4. Kontrollo skedën e rrjetit të shfletuesit për mesazhet në Internet
 
 ### Mesazhet janë jashtë renditjes
 

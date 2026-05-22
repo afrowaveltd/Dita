@@ -7,7 +7,7 @@ Acest document descrie arhitectura modulară a sistemului de traducere automată
 Refactorizarea a abordat mai multe preocupări legate de designul monolitic original:
 
 - **Separarea preocupărilor**: Fiecare domeniu de traducere (țări, dicționare JSON, Markdown) este izolat.
-- ** Persistenţă creativă**: Fişierele sunt salvate pe limbă imediat după traducere, reducând utilizarea memoriei şi oferind rezultate anterioare.
+- ** Persistenţă creativă**: Fişierele sunt salvate în fiecare limbă imediat după traducere, reducând utilizarea memoriei şi oferind rezultate anterioare.
 - **Resilience**: Multiple niveluri de rejudecare manipulează eșecurile tranzitorii fără a bloca întreaga conductă.
 - **Observabilitate**: Fiecare operațiune semnificativă este raportată prin SignarR pentru monitorizare în timp real.
 - ** Extensibilitate **: Noi obiective de traducere pot fi adăugate prin implementarea unei singure interfețe.
@@ -58,7 +58,7 @@ Refactorizarea a abordat mai multe preocupări legate de designul monolitic orig
 
 ** Responsabilitățile**:
 - Mersul configurat rădăcinile Markdown recursiv
-- Detectează fișierele sursă modificate utilizând hașii SHA-256
+- Detectează fișierele sursă modificate utilizând hașișuri SHA-256
 - Starea traducerii pe bloc în
 - Tradu bloc cu bloc cu rejudecare per bloc
 - Validarea structurii Markdown după traducere
@@ -67,7 +67,7 @@ Refactorizarea a abordat mai multe preocupări legate de designul monolitic orig
 ** Comportamente cheie**:
 - Granulozitate la nivel de bloc: rubrici, paragrafe, elemente de listă sunt traduse separat
 - Urme de metadate care au reușit/au eșuat pe limbă
-- Blocurile eșuate sunt rejudecate pe rula următoare fără a re-traduce blocuri de succes
+- Blocurile eșuate sunt rejudecate pe următoarea cursă fără a re-traduce blocuri de succes
 - Validarea structurii asigură numărarea rubricilor, liste, blocuri de coduri, etc. sursa meciurilor
 
 ## Strategia de rescriere
@@ -154,7 +154,7 @@ For each target language:
 
 ### Fotografii
 
-- ** JSON**: Stocat într-un fișier lângă dicționarul implicit (numele variază de furnizorul de stocare)
+- ** JSON **: Stocat într-un fișier lângă dicționarul implicit (numele variază în funcție de furnizorul de stocare)
 - **Purpose**: Activează sincronizarea incrementală prin urmărirea a ceea ce a fost prezent în rula anterioară
 
 ### Fișiere hash
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dicţionar de taste la locholder nume-valoare pereche
 - **Purpose**: Oferă valori implicite pentru titularii de locuri numiți în întreaga aplicație
 
-## Semnal R Raportarea
+## Raportare semnalR
 
 ### Abstractare editor
 
@@ -278,13 +278,13 @@ Fiecare subserviciu poate fi testat independent:
 
 - Şoc pentru simularea succesului/eşecului
 - Mock pentru a verifica raportarea
-- Utilizați directoare temporare pentru fișierul I/O
+- Utilizați directoare temporare pentru fișierul I/ O
 - Verificați comportamentul de economisire per-limbă
 
 ### Teste de integrare
 
-- Full conductle run with real (local) LibreTranslate instance
-- Verifică semnalul Mesajele R sunt livrate clienților conectați
+- Full conductle run with real (local) LibreTraduce instance
+- Verificați mesajele SemnalR sunt livrate clienților conectați
 - Proba de prevenire concomitentă a alergării (semafor)
 - Validarea structurii Markdown după traducere
 
@@ -299,7 +299,7 @@ Fiecare subserviciu poate fi testat independent:
 
 - **Memorie**: Salvarea pe limbaj previne păstrarea tuturor dicționarelor în memorie
 - **Disk I/O**: Fișierele Metadata adaugă cheltuieli generale mici, dar permit lucrul incremental
-- **Network**: Procesare secvenţială cu trepidaţie previne supraîncărcarea libreTranslate
+- **Reţeaua**: Procesarea secvenţială cu trepidaţie previne covârşitoare libreTraducere
 - **CPU**: SHA-256 hashing și validarea regex sunt rapid legate de latență traducere
 - **SignalR**: Mesaje ușoare, nu este necesară compresie de sarcină utilă pentru rapoarte tipice
 
@@ -310,8 +310,8 @@ Originalul conţinea toată logica într-o singură clasă. Calea migraţiei:
 1. Logica țării de extracție →
 2. Extragerea logica JSON →
 3. Extragerea logica Markdown →
-4. Semnal de extragere R publicarea →
+4. →
 5. Logica de retrimitere a extractului →
-6. Simplifică orchestratorul doar pentru delegație
+6. Simplifică orchestratorul numai pentru delegație
 
 Toate interfețele existente () rămân neschimbate. Consumatorii conductei nu văd nicio schimbare.

@@ -32,7 +32,7 @@ Den monolitiske er blevet opdelt i fire specialiserede tjenester koordineret af 
 
 En ny admin side, der giver real- time synlighed i oversættelsesledningen:
 
-- Viser alle signaler R hændelser som de forekommer
+- Viser alle SignalR begivenheder som de forekommer
 - Farvekodede meddelelsestyper (blå = startet, grøn = afsluttet, rød = fejl)
 - Forbindelsesstatusbanner med automatisk genforbindelse
 - Meddelelsestæller og eksport til JSON
@@ -52,9 +52,9 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ```
 
 Funktioner:
-- Placeholder værdier, der leveres ved runtime eller opbevares i
+- Placeholderværdier ved driftstid eller opbevaret i
 - Automatisk maskering / restaurering under oversættelse for at forhindre korruption
-- Baglæns kompatibel med eksisterende positioneringspladsholdere
+- Tilbage kompatibel med eksisterende positioneringspladsholdere
 
 ### Incremental oversættelse
 
@@ -112,7 +112,7 @@ Registreret i:
 - /
 - /
 
-Signalet R-hub er kortlagt for kundeforbindelser.
+SignalR-hubben er kortlagt for kundeforbindelser.
 
 ## Test
 
@@ -120,9 +120,9 @@ Signalet R-hub er kortlagt for kundeforbindelser.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Ny testdækning tilføjet for:
-  - Placeholder Service funktionalitet
-  - BackendOversættelse Service orkestrering
-  - JsonStringLocalizer pladsholder indekserer
+  - Funktionen PlaceholderService
+  - BackendTranslationService-orkester
+  - JsonStringLocalizer pladsholder indeksering
 
 ### Kendte begrænsninger
 
@@ -136,8 +136,8 @@ Signalet R-hub er kortlagt for kundeforbindelser.
 - - Landenavn oversættelse
 - - JSON ordbog synkronisering
 - - Markering oversættelse
-- - Signal R meddelelse udgivelse
-- - Prøv igen logik med pladskortlægning
+- - SignalR meddelelse udgivelse
+- - Prøv igen logik med pladsholder maskering
 - - Publisher interface
 - - Land service interface
 - - Lokaliseringstjeneste interface
@@ -159,7 +159,7 @@ Signalet R-hub er kortlagt for kundeforbindelser.
 
 ### Ny dokumentation i
 
-- - Opdateret dokumentation for rørledninger
+- - Updated pipeline documentation
 - - Systemguide til stedholdere
 - - brugsvejledning for instrumentbrættet
 - - Teknisk arkitektur oversigt
@@ -172,11 +172,11 @@ Alle ændringer er additive:
 - Positional formatering () virker uændret
 - Eksisterende JSON ordbog format er uændret
 - Eksisterende markeringsstruktur er uændret
-- Signal R-meddelelser bruger samme format
+- SignalR-meddelelser bruger samme format
 
 ## Migrationsvej
 
-Ingen migration påkrævet. Refactoring er intern:
+Ingen migration påkrævet. Refaktoren er intern:
 
 1. Gammel blev bevaret som reference og derefter erstattet
 2. DI registreringer blev opdateret til at bruge nye grænseflader

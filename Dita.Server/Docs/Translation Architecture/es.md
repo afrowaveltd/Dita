@@ -1,6 +1,6 @@
 ﻿# Traducción Arquitectura
 
-Este documento describe la arquitectura modular del sistema de traducción automática de Dita, introducido para mejorar la capacidad de mantenimiento, testabilidad y resiliencia.
+Este documento describe la arquitectura modular del sistema de traducción automática de Dita, introducido para mejorar la sostenibilidad, la testabilidad y la resiliencia.
 
 ## Objetivos de diseño
 
@@ -49,7 +49,7 @@ el refactoring abordó varias preocupaciones con el diseño monolítico original
 - Guardar instantáneas para la próxima comparación
 
 **Comportamientos clave**:
-- Las traducciones manuales siempre toman prioridad (nunca sobrescrito)
+- Las traducciones manuales siempre tienen prioridad (nunca son sobrescritos)
 - Las teclas agregadas se traducen y se guardan por idioma inmediatamente
 - Las teclas eliminadas se eliminan por idioma inmediatamente
 - Snapshot se guarda sólo después de que todos los idiomas completen con éxito
@@ -59,14 +59,14 @@ el refactoring abordó varias preocupaciones con el diseño monolítico original
 ** responsabilidades**:
 - Caminar las raíces de Markdown configuradas recursivamente
 - Detectar archivos fuente cambiados usando hashes SHA-256
-- Seguimiento de la traducción por bloque estado en
+- Track per-block traducción status en
 - Traducir bloque-por-bloqueo con la retry de bloqueo
 - Validar estructura de marcado después de la traducción
 - Guardar cada archivo de idioma objetivo de forma independiente
 
 **Comportamientos clave**:
-- Granularidad de nivel de bloque: partidas, párrafos, listas se traducen por separado
-- Temas de metadatos que bloquean el éxito/failado por idioma
+- Granularidad de nivel de bloque: partidas, párrafos, lista de artículos se traducen por separado
+- Rastreos de metadatos que bloquean el éxito/failado por idioma
 - Los bloques fallidos se retratan en la próxima carrera sin volver a traducir bloques exitosos
 - La validación de la estructura garantiza los recuentos de encabezado, listas, bloques de código, etc
 
@@ -82,7 +82,7 @@ El sistema implementa retries a tres niveles:
 
 ### Nivel 2 - Etapa (TraducciónRetryService)
 
-- Hasta 3 intentos con 30 segundos retrasos
+- Hasta 3 intentos con retrasos de 30 segundos
 - Recupera toda la solicitud de traducción después de que se agoten los registros de nivel HTTP
 - El enmascaramiento y la restauración del titular se aplican a este nivel
 
@@ -168,17 +168,17 @@ For each target language:
 - **abajo**:
 - **Contenidos**:
   - Contenido fuente hash
-- Estado de bloques por idioma (arreo de booleanos)
+- Estado de bloques por idioma (arrayo de booleanos)
 - Última actualización timetamp
 - **Purpose**: Permite la retranslación parcial de sólo bloques fallidos
 
 ### Almacenamiento de propietarios
 
 - **File**:
-- **Contenidos**: Diccionario de claves para pares de valor de nombre de marcadores
+- **Contenidos**: Diccionario de claves a pares de valor de nombre de marcadores
 - **Purpose**: Provee valores predeterminados para los titulares nombrados a través de la aplicación
 
-## Signal R reporting
+## señalización
 
 ### Abstracción del editor
 
@@ -278,13 +278,13 @@ Cada subservicio es prueba independiente:
 
 - Mock to simulate success/failure
 - Mock to verify reporting
-- Utilice directorios temporales para el archivo I/O
+- Utilice directorios temporales para el archivo I/ O
 - Verificar comportamiento de ahorro por idioma
 
 ### Pruebas de integración
 
-- Gasoducto completo corre con instancia real (local) LibreTranslate
-- Verificar la señal R mensajes se envían a clientes conectados
+- Transductor completo corre con instancia real (local) LibreTranslate
+- verificar los mensajes de señalización se entregan a clientes conectados
 - Prueba de prevención de ejecución simultánea (semaphore)
 - Validar estructura de marcado después de la traducción
 
@@ -299,19 +299,19 @@ Cada subservicio es prueba independiente:
 
 - **Memoria**: El ahorro por idioma evita mantener todos los diccionarios en memoria
 - **Disk I/O**: Los archivos de metadatos añaden una pequeña sobrecabeza pero permiten un trabajo incremental
-- **Network**: El procesamiento secuencial con la lucha evita la abrumadora LibreTranslate
-- **CPU**: SHA-256 El hashing y la validación del regex son rápidos relativos a la latencia de la traducción
+- **Network**: El procesamiento secuencial con el agitamiento evita la abrumadora LibreTranslate
+- **CPU**: SHA-256 la piratería y la validación del regex son rápidos relativos a la latencia de la traducción
 - **SignalR**: Mensajes ligeros, sin compresión de carga útil necesaria para informes típicos
 
 ## Migración del diseño monolítico
 
 El original contenía toda lógica en una clase. La vía migratoria:
 
-1. extracto lógica del país →
+1. Extract country logic →
 2. extracto json lógica →
 3. Extractar lógica de marcado →
-4. Extract Signal R publishing →
-5. extracto retry lógica →
-6. Simplifique el orquestador solo para la delegación
+4. Extracto SignalR publicación →
+5. extracto de la lógica de la retry →
+6. Simplificar al orquestador solo para la delegación
 
 Todas las interfaces existentes () permanecen sin cambios. Los consumidores del oleoducto no ven cambios de ruptura.

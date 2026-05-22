@@ -11,11 +11,11 @@ Bu belge otomatik çeviri hattı için canlı bir test girişi olarak mevcuttur.
 - **LocalizationTranslationService** - varsayılan JSON sözlüğünde eklenen anahtarları ve bunları hedef dillere çevirmektedir.
 - **DocumentsTranslationService** - Çeviriler Markdown doküman dosyaları per-block takip ve metadata ile.
 
-Her alt hizmet, gerçek zamanlı olarak SignalR aracılığıyla bağımsız olarak çalışır ve rapor eder.
+Her alt hizmet, gerçek zamanlı olarak SignalR aracılığıyla bağımsız olarak çalışır ve ilerleme rapor eder.
 
 ## Hizmet ne yapar
 
-Servis bir program üzerinde çalışır ve beş aşamalı bir boru hattı uygular: sunucu doğrulama, ülke senkronizasyonu, JSON söz senkronizasyonu, Markdown dosya çevirisi ve sonuçları devam eder. Her aşama, Signal üzerinde yapısal gerçek zamanlı ilerleme olayları yayıyor R böylece bağlantılı müşteriler iş ilerledikçe takip edebilir.
+Servis bir program üzerinde çalışır ve beş aşamalı bir boru hattı uygular: sunucu doğrulama, ülke senkronizasyonu, JSON söz senkronizasyonu, Markdown dosya çevirisi ve sonuçları devam eder. Her aşama, SignalR üzerinde yapılandırılmış gerçek zamanlı ilerleme olayları yayıyor, böylece bağlantılı müşteriler iş ilerledikçe takip edebilir.
 
 ## Boru aşamaları
 
@@ -29,7 +29,7 @@ Herhangi bir çeviri çalışması başlamadan önce, hizmet tüm ön koşullar�
 - Yapılandırılmış varsayılan dil bu listede mevcut olmalıdır.
 - Herhangi bir desteklenen dil için yerel JSON dosyaları otomatik olarak oluşturulur.
 
-Herhangi bir kontrol başarısız olursa, boru hattı hemen durur ve bir mesaj yayılıyor.
+Herhangi bir çek başarısız olursa, boru hattı hemen durur ve bir mesaj yayılıyor.
 
 ### 2. Aşama - Translateries
 
@@ -45,7 +45,7 @@ Herhangi bir kontrol başarısız olursa, boru hattı hemen durur ve bir mesaj y
 
 Servis, önceki işten saklanan bir snapshot ile mevcut varsayılan yerelleştirme sözlüklerini karşılaştırır:
 
-- **Eklenen anahtarlar** - mevcut varsayılan girişlerde mevcut olan girişler - zaten bu anahtar için bir el girişi olmayan her hedef diline tercüme edilir.
+- **Eklenen anahtarlar** - mevcut varsayılan girişlerde mevcut olan girişler - zaten bu anahtar için bir el girişi olmayan her hedef dilde tercüme edilir.
 - **Removed keys ** - anlık kayıtlarda mevcut olan girişler ancak mevcut varsayılandan yoksundur - her hedef dil sözlüğünden silinir.
 - Kılavuz çevirileri her zaman öncelik alır. Bir hedef sözlüğü zaten bir anahtar için bir değer içeriyorsa, bu giriş kaynağın ne söylediğine bakılmaksızın değişmemiştir.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
@@ -60,9 +60,9 @@ Servis, yapılandırılmış belge köklerine (default: ) ve her kaynak dosyası
 
 1. Kaynak dosyası içeriği okunur ve bir SHA-256 hash hesaplanır.
 2. Kaynak parçalarına bir sonraki bir dosya, per-block çeviri durumu, **incremental re-translation ** sadece başarısız bloklar.
-3. Daha önceki rundan gelen depo ( kaynak dosyasına bir dosyada veya geçici bir geri çekilme yerinde) mevcut hash ile karşılaştırılır.
+3. Daha önceki rundan gelen depo ( kaynak dosyasına bir dosyaya bir sonraki veya geçici bir geri çekilme yerinde) mevcut hash ile karşılaştırılır.
 4. Her hedef dili için, ilgili dosya da yapısal bütünlüğü kontrol edilir.
-5. Eksik olan herhangi bir hedef dosyası, eski bir hash, yapı geçerliliği yok, ya da devre dışı bloklar yeniden geçiş için sıralanır.
+5. Eksik olan herhangi bir hedef dosyası, eski bir hash, yapı geçerliliği yok veya devre dışı bloklar yeniden-translasyon için sıralanır.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
 7. Başarılı bir şekilde tercüme edilen dosyalar kaynakla yapısal parite için geçerlidir (önemli başlıklar, liste öğeleri, kod blokları, alıntılar, bağlantılar, cesur/italic belirteçler ve HTML etiketleri) diske yazılmalıdır.
 8. Bir kaynak için tüm hedef dosyaları başarılı olursa, yeni hash kaynağın yanında depolanır. Eğer kaynağa bir sonraki yazı başarısız olursa (örneğin okuma-sadece dağıtımlarda), hash geçici diziye geri döner.
@@ -70,14 +70,14 @@ Servis, yapılandırılmış belge köklerine (default: ) ve her kaynak dosyası
 
 ### Aşama 5 – StoringResults
 
-Bir konsolidasyon oluşturuldu ve yayınlandı. içerir:
+Bir konsolidasyon toplandı ve yayınlandı. içerir:
 
 - UTC başlar ve zamanları tamamlar.
 - Yerel JSON dosyalarını kurtarın, Markdown dosyaları kurtarın, kaydedilen hash dosyaları ve fallback yazıyor.
 - Operasyon sırasında toplanan herhangi bir depolama hatası.
 - Dil çevirisi istatistikleri (translated count, atladı sayı, hata say).
 
-## Signal Signal R message zarf
+## SignalR mesaj zarfı
 
 Her ilerleme olayı aşağıdaki alanlardan biri olarak teslim edilir:
 
@@ -150,9 +150,9 @@ Boru hattı iki dayanıklılık seviyesini uygular:
 ### Aşama seviyesi retry (TranslationRetry)
 
 - Bir çeviri isteği LibreTranslate'nin iç retries'ten sonra başarısız olursa, 30 saniyelik gecikmelerle 3 ek aşama seviyesindeki retries'e kadar performanslar.
-- Placeholder maskeleme: İsimli yer sahipleri () metinde geçici olarak daha sonra çeviri ve restore etmeden önce güvenli jetonlarla değiştirilir ve hedef dilde doğru gramer sağlar.
+- Placeholder maskeleme: İsimli yer sahipleri () metinde geçici olarak daha sonra çeviri ve restore etmeden güvenli jetonlarla değiştirildi, hedef dilde doğru gramer sağlamak.
 
-### Dil doğrulama
+### Dili doğrulama
 
 - Hedef bir dili tercüme etmeden önce, servis dili çeviri sunucusu tarafından destekleniyor.
 - Desteklenen diller bir uyarı ile atılır, tekrarlanan başarısız girişimleri önlemek.
@@ -160,7 +160,7 @@ Boru hattı iki dayanıklılık seviyesini uygular:
 ### Markdown blok seviyesi retry
 
 - Markdown çevirileri blok-by-block (headings, paragraflar, liste öğeleri).
-- Bireysel bir blok çevirisi başarısız olursa, metadata dosyasında yayınlanmamış ve bir sonraki boru hattında tekrar tekrarlanan olarak işaretlenir.
+- Bireysel bir blok çeviri yapmazsa, metadata dosyasında yayınlanmamış ve bir sonraki boru hattında yeniden katkıda bulunulmaktadır.
 - Servis, her kaynak Markdown dosyasına bir sonraki dosyalarda per-block statüsü izler.
 
 ## Hata kodları
@@ -189,8 +189,8 @@ Server projesi, SignalR merkezine bağlanır ve gerçek zamanlı tüm boru hatla
 ## Tasarım ilkeleri
 
 - **Modularity**: Her çeviri endişesi, kullanılabilirlik ve test edilebilirlik için kendi hizmetinde izole edilmiştir.
-- **Incremental Continuence**: Dictionaries ve Markdown dosyaları hemen çeviriden sonra, hafıza baskısını azaltır ve daha önce geri bildirim sağlar.
+- **Incremental Continuence**: Diksiyonlar ve Markdown dosyaları çeviriden hemen sonra, hafıza baskısını azaltır ve daha erken geri bildirim sağlar.
 - **Resilience **: Çoklu yeniden deneme seviyeleri (HTTP, sahne, blok) geçici başarısızlıkların boru hattını engellememesini sağlar.
-- **State follow**: Per-file metadata () ve hash dosyaları, daha sonraki işlemlerde kesin bir artış çalışması sağlar.
+- **State follow**: Per-file metadata () ve hash dosyaları, daha sonra yapılan kesin artış çalışmaları sağlar.
 - ** Gerçek zamanlı görünürlük**: İzleme ve debugging için SignalR aracılığıyla her önemli operasyon rapor edilir.
-- **Manual translations always have priority over automatic additions.**
+- **Manual çevirileri her zaman otomatik ekler üzerinde önceliklidir.**

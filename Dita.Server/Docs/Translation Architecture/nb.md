@@ -6,19 +6,19 @@ Dette dokumentet beskriver den modulære arkitekturen til Ditas automatiske over
 
 Refabrikkeringen løste flere bekymringer med den opprinnelige monolitiske utforming:
 
-- **Bevaring av bekymringer**: Hvert oversettelsesdomene (land, JSON ordbøker, Markdown) er isolert.
-- **Inkrementell utholdenhet**: Filene lagres per språk umiddelbart etter oversettelse, reduserer minnebruken og gir tidligere resultater.
-- **Resiliens**: Flere reprøvenivåer håndterer forbigående feil uten å blokkere hele rørledningen.
-- **Observerbarhet**: Hver signifikant operasjon er rapportert via SignalR for sanntidsovervåkning.
+- **Bekymring av bekymringer**: Hvert oversettelsesdomene (land, JSON ordbøker, Markdown) er isolert.
+- **Inkrementell utholdenhet**: Filer lagres per språk umiddelbart etter oversettelse, reduserer minnebruken og gir tidligere resultater.
+- **Resilens**: Flere reprøvenivåer håndterer forbigående feil uten å blokkere hele rørledningen.
+- ** Observabilitet**: Hver betydelig operasjon er rapportert via SignalR for sanntidsovervåkning.
 - ** Omfattbarhet**: Nye oversettelsesmål kan legges til ved å implementere et enkelt grensesnitt.
 
 ## Tjenestedekomponering
 
 ### MotorTranslationService (orchestrator)
 
-**Responsibilities**:
+** Ansvarer**:
 - Pipeline livssyklusstyring (start, ferdigstillelse, feilhåndtering)
-- Semaphore-basert konvalutakontroll (forventer overlappende løp)
+- Semaphore-basert konvalusjonskontroll (forventer overlappende løp)
 - Servervalidering (latens, språktilgjengelighet, konfigurasjon)
 - Delegasjon til undertjenester
 
@@ -29,34 +29,34 @@ Refabrikkeringen løste flere bekymringer med den opprinnelige monolitiske utfor
 
 ### LandTranslationService
 
-**Responsibilities**:
+** Ansvarer**:
 - Les fra mappe
 - Synkroniser landnavn i standard ordbok
 - Oversett manglende landnavn per målspråk
 - Lagre hver målleksikon umiddelbart etter oversettelse
 
-**Key atferd**:
+**Key adferd**:
 - Hvis standardspråket er engelsk: landnavn lagret som-er
 - Hvis standardspråk er annet: engelske navn oversatt til standardspråk først
 - Hvert språk behandles uavhengig av sin egen reprøv loop
 
-### Lokaliseringsoverføringstjeneste
+### LokaliseringService
 
-**Responsibilities**:
+** Ansvarer**:
 - Oppdage lagt til/fjernede nøkler ved å sammenligne gjeldende standardordbok med tidligere øyeblikksbilde
 - Oversett lagt til nøkler til hvert målspråk
 - Fjern slettede nøkler fra hvert målspråk
 - Lagre øyeblikksbilde for neste sammenligning
 
-**Key atferd**:
+**Key adferd**:
 - Manuelle oversettelser tar alltid prioritet (aldri overskrevet)
-- Leggde nøkler oversettes og lagres umiddelbart per språk
+- Legge til nøkler oversettes og lagres umiddelbart per språk
 - Fjernede nøkler slettes umiddelbart per språk
-- Snapshot lagres bare etter at alle språk er fullførte
+- Snapshot lagres først etter at alle språk er fullført
 
 ### DokumentoverføringService
 
-**Responsibilities**:
+** Ansvarer**:
 - Gå konfigurert Markdown røtter rekursivt
 - Oppdag endret kildefiler ved hjelp av SHA-256 hashes
 - Spor per-blokk oversettelsesstatus i
@@ -64,11 +64,11 @@ Refabrikkeringen løste flere bekymringer med den opprinnelige monolitiske utfor
 - Valider markørstruktur etter oversettelse
 - Lagre hver målspråkfil uavhengig
 
-**Key atferd**:
+**Key adferd**:
 - Blocknivå granularitet: overskrifter, avsnitt, listeelementer oversettes separat
 - Metadataspor som blokkerer vellykket/feilstilt per språk
-- Mislykkes blokker blir forsøkt på neste løp uten å omsette vellykkede blokker
-- Validering av struktur sikrer overskriftstall, lister, kodeblokker etc
+- Mislykkede blokker blir forsøkt på neste løp uten å omsette vellykkede blokker
+- Validering av struktur sikrer overskriftstall, lister, kodeblokker osv
 
 ## Prøv strategi på nytt
 
@@ -80,16 +80,16 @@ Systemet implementerer retries på tre nivåer:
 - Håndterer nettverksavbrudd, 5xx feil og forbigående feil
 - Bygget i HTTP-klientkonfigurasjonen
 
-### Nivå 2 — Trinn (fleirtyService)
+### Nivå 2 — Stage (TranslationRetryService)
 
 - Opptil 3 forsøk med 30 sekunders forsinkelser
 - Re-driver hele oversettelsesforespørselen etter at HTTP-nivå retries er utmattet
-- Stedholder maskering og restaurering påføres på dette nivået
+- Plassholder maskering og restaurering på dette nivået
 
 ### Nivå 3 — Blokk (DokumentsTranslationService)
 
 - Individuelle markeringsblokker som feiler er merket i metadata
-- Fortsatt automatisk på neste rørledningskjøring
+- Prøvet automatisk på den neste rørledningen
 - Suksessfulle blokker omsettes aldri
 
 ## Datastrøm
@@ -135,7 +135,7 @@ For each target language:
    └─ Save metadata
 ```
 
-### Landnavn oversettelse
+### Oversettelse av landnavn
 
 ```
 [countries.json]
@@ -169,7 +169,7 @@ For each target language:
 - ** Innhold**:
   - Kildeinnhold hash
 - Perspråklig blokkstatus (array of booles)
-- Siste oppdatering tidsstempel
+- Siste oppdatering timestamp
 - **Purpose**: Aktiverer delvis re-translasjon av bare mislykkede blokker
 
 ### Oppbevaring av plassholdere
@@ -178,7 +178,7 @@ For each target language:
 - **Content**: Ordbok over nøkler til plasserer navn-verdi par
 - **Purpose**: Gir standardverdier for navngitte plassholdere på tvers av programmet
 
-## Signal R rapportering
+## SignalR rapportering
 
 ### Utgiver Abstraksjon
 
@@ -231,7 +231,7 @@ services.AddSingleton<TranslationRetryService>(
 
 ### Tilpasset håndtering av plassholder
 
-Implementer for å endre stedsholders syntaks eller lagring:
+Implementer for å endre stedholders syntaks eller lagring:
 
 ```csharp
 public class CustomPlaceholderService : IPlaceholderService
@@ -277,14 +277,14 @@ Innstilling
 Hver undertjeneste er uavhengig testbar:
 
 - Mock å simulere suksess/feil
-- Mock å verifisere rapportering
-- Bruk midlertidige mapper for fil I/O
+- Mock for å bekrefte rapportering
+- Bruk midlertidige mapper for fil I/ O
 - Bekreft atferd på hvert språk
 
 ### Integrasjonsprøver
 
 - Full rørledning kjører med ekte (lokal) LibreTranslate instans
-- Bekreft signal R-meldinger leveres til tilkoblede kunder
+- Bekreft SignalR meldinger leveres til tilkoblede kunder
 - Test samtidig kjøreforebygging (semathore)
 - Valider markørstruktur etter oversettelse
 
@@ -293,11 +293,11 @@ Hver undertjeneste er uavhengig testbar:
 - Trigger oversettelse via API eller planlegger
 - Bekreft alle målspråkfiler opprettes/oppdateres
 - Sjekk metadatafiler inneholder riktig blokkstatus
-- Bekrefte at plasshavere er bevart på tvers av oversettelser
+- Bekrefte at plassholdere bevares på tvers av oversettelser
 
 ## Ytelseshensyn
 
-- **Minne**: Per-språklig lagring hindrer å holde alle ordbøker i minnet
+- **Minne**: Per-språklig lagring forhindrer å holde alle ordbøker i minnet
 - **Disk I/O**: Metadatafiler legger til lite overhead, men aktiverer gradvis arbeid
 - **Nettverk**: Sequential behandling med trottling hindrer overveldende LibreTranslate
 - **CPU**: SHA-256 hashing og regulær validering er rask i forhold til oversettelse latens
@@ -305,12 +305,12 @@ Hver undertjeneste er uavhengig testbar:
 
 ## Migrasjon fra monolitisk design
 
-Den opprinnelige inneholder all logikk i én klasse. Migrasjonsstien:
+Den opprinnelige inneholder all logikk i én klasse. Migrasjonsveien:
 
 1. Utdrag country logikk
-2. Uttrekk JSON logikk
+2. Utdrag JSON logikk
 3. Utdrag Markdown logikk
-4. Pakk ut signal R utgivelse
+4. Utdrag SignalR publisering →
 5. Utdrag reprøv logikk
 6. Forenkle orkestror til kun delegasjon
 

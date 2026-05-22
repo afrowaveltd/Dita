@@ -77,7 +77,9 @@ public class LanguageService : ILanguageService
       try
       {
          string json = File.ReadAllText(JsonFilePath);
-         List<Language>? languages = JsonSerializer.Deserialize<List<Language>>(json);
+         List<Language>? languages = JsonSerializer.Deserialize<List<Language>>(
+            json,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
          _logger.LogDebug("Loaded {Count} languages from {JsonFilePath}", languages?.Count ?? 0, JsonFilePath);
          return languages ?? [];
       }
@@ -119,7 +121,9 @@ public class LanguageService : ILanguageService
    public bool IsRtl(string code)
    {
       if (string.IsNullOrWhiteSpace(code)) return false;
-      Language? language = Languages.FirstOrDefault(l => l.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
+      string normalizedCode = NormalizeToLanguageCode(code);
+      Language? language = Languages.FirstOrDefault(l =>
+         l.Code.Equals(normalizedCode, StringComparison.OrdinalIgnoreCase));
       return language?.Rtl ?? false;
    }
 

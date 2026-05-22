@@ -49,7 +49,7 @@ Refaktoreerimine käsitles esialgse monoliitse disainiga mitmeid probleeme:
 - Pildi salvestamine järgmiseks võrdlemiseks
 
 ** Võtmekäitumine**:
-- Manuaalne tõlge on alati prioriteet (mitte kunagi ülekirjutatud)
+- Käsitsi tõlked on alati prioriteetsed (mitte kunagi üle kirjutatud)
 - Lisatud võtmed tõlgitakse ja salvestatakse kohe keele kaupa
 - Eemaldatud võtmed kustutatakse keele kaupa kohe
 - Snapshot salvestatakse alles pärast kõigi keelte edukat lõpetamist
@@ -88,7 +88,7 @@ Süsteem rakendab korduskatseid kolmel tasandil:
 
 ### Tase 3 – plokk (DocumentsTranslationService)
 
-- Ebaõnnestunud markeerimise plokid on märgitud metaandmetesse
+- Ebaõnnestunud üksikud märgistusplokid on märgitud metaandmetesse
 - Uuendatakse automaatselt järgmisel torujuhtmel
 - Edukaid blokke ei tõlgita kunagi uuesti
 
@@ -154,8 +154,8 @@ For each target language:
 
 ### Pilte
 
-- **JSON **: salvestatud faili vaikesõnastiku kõrval (nimi varieerub vastavalt salvestusteenuse pakkujale)
-- **Eesmärk**: lubab astmelist sünkroonimist, jälgides seda, mis oli eelmises jooksus
+- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
+- **Eesmärk**: Lubab astmelist sünkroonimist, jälgides seda, mis oli eelmises jooksus
 
 ### Räsifailid
 
@@ -168,7 +168,7 @@ For each target language:
 - **Markdown**:
 - **Sisu**:
   - Allika sisu räsi
-- Keelteploki staatus (tõemärkide seeria)
+- Keeleline bloki staatus (tõemärkide seeria)
 - Viimase uuendamise ajatempel
 - **Eesmärk**: Lubab ainult ebaõnnestunud plokkide osalist taastõlkimist
 
@@ -178,7 +178,7 @@ For each target language:
 - **Sisu**: kohatäitja nime- väärtuspaaride võtmete sõnastik
 - **Eesmärk **: pakub määratud kohahoidjate vaikeväärtusi kogu rakenduses
 
-## Signaal R aruandlus
+## SignaaliR aruandlus
 
 ### Kirjastuse abstraktsioon
 
@@ -216,7 +216,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 
 ### Kohandatud kordusproovide poliitika
 
-Konstruktori parameetrite tühistamine:
+Eemalda konstruktori parameetrid:
 
 ```csharp
 services.AddSingleton<TranslationRetryService>(
@@ -278,13 +278,13 @@ Iga alamteenus on iseseisvalt testitav:
 
 - Mock edu/ebaõnne simuleerimiseks
 - Mood aruandluse kontrollimiseks
-- Faili I/ O ajutiste kataloogide kasutamine
-- Keelepõhise salvestamise käitumise kontrollimine
+- Ajutise kataloogi kasutamine failis I/ O
+- Salvestamiskäitumise kontrollimine keele kaupa
 
 ### Integratsioonikatsed
 
 - Täispikk torujuhe reaalse (kohaliku) LibreTranslate protsessiga
-- Kontrolli signaali R-sõnumid edastatakse ühendatud klientidele
+- Kontrollige, kas SignalR-sõnumid edastatakse ühendatud klientidele
 - Samaaegse katse ärahoidmine (semafor)
 - Märgistuse struktuuri kinnitamine pärast tõlkimist
 
@@ -293,13 +293,13 @@ Iga alamteenus on iseseisvalt testitav:
 - Tõlke käivitamine API või planeerija kaudu
 - Kontrolli, et kõik sihtkeele failid on loodud/uuendatud
 - Kontrolli metaandmete faile korrektse ploki olekuga
-- Kinnitage, et kohatäitjad säilitatakse tõlgete lõikes
+- Kinnitage, et kohahoidjad säilitatakse kogu tõlkes
 
 ## Tulemuslikkuse kaalutlused
 
 - ** Mälu**: keelepõhine salvestamine takistab kõigi sõnaraamatute mällu jätmist
-- **Kisk I/O**: Metaandmete failid lisavad väikseid üldkulusid, kuid võimaldavad lisatööd
-- ** Võrk**: Järjestikune töötlemine koos summutamisega hoiab ära ülekaaluka LibreTranslate'i
+- **Disk I/O**: metaandmete failid lisavad väikseid üldkulusid, kuid võimaldavad lisatööd
+- ** Võrgustik**: Järjestikune töötlemine summutamisega hoiab ära ülekaaluka LibreTranslate'i
 - **CPU**: SHA-256 räsimine ja regexi valideerimine on tõlke latentsuse suhtes kiired
 - **SignalR**: Kerged sõnumid, tüüpilised teated ei vaja kasuliku koormuse tihendamist
 
@@ -310,7 +310,7 @@ Originaal sisaldas kogu loogikat ühes klassis. Migratsioonitee:
 1. Väljavõte riigi loogikast
 2. Eemalda JSON loogika →
 3. Markdowni loogika ekstrakt →
-4. Signaali väljavõtmine R kirjastamine
+4. Väljavõte SignalR kirjastamine →
 5. Proovimise loogika ekstrakt →
 6. Lihtsustada orkestraatorit ainult delegatsioonile
 

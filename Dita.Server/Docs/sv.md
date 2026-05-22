@@ -32,7 +32,7 @@ Monoliten har sammansatts i fyra specialiserade tjänster som samordnas av en l�
 
 En ny administratörssida som ger realtidssynlighet i översättningsledningen:
 
-- Visar alla signaler R händelser när de inträffar
+- Visar alla SignalR-händelser när de inträffar
 - Färgkodade meddelandetyper (blue=started, green=completed, red=error)
 - Anslutningsstatus banner med auto-reconnect
 - Message counter och export till JSON
@@ -58,12 +58,12 @@ Funktioner:
 
 ### Incremental översättning
 
-Markdown filer översätts stegvis:
+Markdown-filer översätts stegvis:
 
 - **Per-language spar**: Varje målspråk sparas omedelbart efter översättning, vilket minskar minnestrycket
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
 - ** Selektiv retry**: Endast misslyckade block översätts på nästa körning
-- **Metadata persistence**: Translation state survives application restarts
+- **Metadata persistens**: Översättningsstaten överlever applikationsstart
 
 ### Förbättrad Retry Logic
 
@@ -71,7 +71,7 @@ Tre nivåer av motståndskraft:
 
 1. **HTTP retry** (LibreTranslateService): 5 attempts with exponential backoff (1s–5s)
 2. **Stage retry** (TranslationRetryService): 3 additional attempts with 30s delays
-3. **Block retry** (DokumentTranslationService): Misslyckade Markdown block hämtas på nästa körning
+3. **Block retry** (DokumentTranslationService): Misslyckade Markdown-block hämtade på nästa körning
 
 ### SignalR-rapportering
 
@@ -112,7 +112,7 @@ Registrerad i:
 - ///
 - ///
 
-Signalen R hub är kartlagd för klientanslutningar.
+SignalR-navet kartläggs för klientanslutningar.
 
 ## Testning
 
@@ -120,8 +120,8 @@ Signalen R hub är kartlagd för klientanslutningar.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Ny testtäckning tillsatt för:
-  - Placeholder Servicefunktionalitet
-  - BackendTranslation Service orchestration
+  - PlaceholderService funktionalitet
+  - BackendTranslationService orkestrering
   - JsonStringLocalizer placeholder indexers
 
 ### Kända begränsningar
@@ -136,7 +136,7 @@ Signalen R hub är kartlagd för klientanslutningar.
 - översättning av landsnamn
 - JSON ordbok synkronisering
 - Markdown översättning
-- Signal R-meddelande publicering
+- SignalR-meddelande publicering
 - Retry logik med placeholder masking
 - Publicera gränssnitt
 - Land service Interface
@@ -148,9 +148,9 @@ Signalen R hub är kartlagd för klientanslutningar.
 ### Uppdaterade tjänster i
 
 - Tillsatt namngiven placeholder support
-- —— Uppdaterad för ny parameter
-- Namngivna placeholder management
-- Placeholder interface
+- Uppdaterad för ny parameter
+- Namngivna platsholder management
+- Placeholder Interface
 
 ### Ny Admin Page i
 
@@ -159,7 +159,7 @@ Signalen R hub är kartlagd för klientanslutningar.
 
 ### Ny dokumentation i
 
-- —— Uppdaterad pipelinedokumentation
+- Uppdaterad pipelinedokumentation
 - Placeholder systemguide
 - Dashboard användning guide
 - Teknisk arkitekturöversikt
@@ -172,7 +172,7 @@ Alla ändringar är additiva:
 - Positionell formatering () fungerar oförändrad
 - Befintligt JSON-ordboksformat är oförändrat
 - Befintlig Markdown struktur är oförändrad
-- Signal R-meddelanden använder samma format
+- SignalR-meddelanden använder samma format
 
 ## Migrationsväg
 

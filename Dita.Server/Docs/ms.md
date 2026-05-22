@@ -2,13 +2,13 @@
 
 ## Selayang Pandang
 
-Dokumen ini meringkaskan semua perubahan yang dibuat ke layanan penerjemahan otomatis Dita, termasuk pemfaktoran ulang arsitektur, fitur baru, perbaikan observabilitas, dan peningkatan lokalisasi.
+Dokumen ini meringkaskan semua perubahan yang dibuat pada layanan penerjemahan otomatis Dita, termasuk pemfaktoran ulang arsitektur, fitur baru, perbaikan observabilitas, dan peningkatan lokalisasi.
 
 ## Perubahan Arsitektur Seni Rupa
 
-### Penerjemahan Hujung Belakang yang Refactored
+### Penerjemahan Ujung Belakang yang Refabel
 
-Monolitik telah diurai menjadi empat layanan khusus yang dikoordinasikan oleh orkestrator ringan:
+Monolitik telah terurai menjadi empat layanan khusus yang dikoordinasikan oleh orkestrator ringan:
 
 - **BackendTranslationService** — Pipeline orchestrator (server validation, stage delegation, error handling)
 - **CountriesTranslationService** — Country name synchronization (English → target language)
@@ -30,11 +30,11 @@ Monolitik telah diurai menjadi empat layanan khusus yang dikoordinasikan oleh or
 
 **Location**: `/Admin/LiveTranslation`
 
-Sebuah halaman admin baru yang menyediakan visibilitas real-time ke dalam pipa terjemahan:
+Halaman admin baru yang menyediakan visibilitas real-time ke dalam pipa terjemahan:
 
-- Freiform Menampilkan semua sinyal Peristiwa-peristiwa seperti yang terjadi
+- Freivis menampilkan semua peristiwa SignalR seperti yang terjadi
 - Tipe pesan berkode warna (biru=dimulai, hijau=dilengkapi, merah=error)
-- Spanduk status sambungan dengan koneksi-sendiri
+- Spanduk status sambungan-sendiri dengan koneksi-sendiri
 - Penghitungan pesan dan ekspor ke JSON
 
 ### Pemegang Tempat yang Dinamakan Dinamakan
@@ -54,7 +54,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 Fitur:
 - Nilai placeholder disediakan pada waktu jalan atau disimpan pada
 - Pemasok/pencadanganan otomatis secara otomatis selama penerjemahan untuk mencegah korupsi
-- Kebelakangan dengan pemegang posisi yang sudah ada
+- Kebelakangan yang kompatibel dengan pemegang tempat kedudukan yang sudah ada
 
 ### Terjemahan Tambahan
 
@@ -65,12 +65,12 @@ Berkas Markdown skyd diterjemahkan secara tokokan:
 - **Selective retry**: Only failed blocks are re-translated on the next run
 - **Metadata persistence**: Translation state survives application restarts
 
-### Logika Coba Lagi yang Dipertingkatkan Logika
+### Logika Coba Lagi yang Dipertingkatkan Logik
 
 Tiga tingkat ketahanan:
 
 1. **HTTP retry** (LibreTranslateService): 5 percobaan dengan eksponensial backoff (1s–5s)
-2. **Stage retry** (TranslationRetryService): 3 additional attempts with 30s delays
+2. **Stage retry** (TranslationRetryService): 3 percobaan tambahan dengan 30s delay
 3. **Block retry** (DocumentsTranslationService): Failed Markdown blocks retried on next run
 
 ### pengirim sinyal melaporkan
@@ -80,7 +80,7 @@ Real-time kemajuan pelaporan untuk semua operasi pipa:
 - Setiap panggung menerbitkan peristiwa
 - Kemajuan per-bahasa yang diterbitkan sebagai peristiwa
 - Peristiwa galat termasuk konteks terperinci (sumber, kode kesalahan, pesan)
-- Jumlah sekuens jaminan pemesanan dalam setiap run
+- Angka sekuens jaminan pemesanan dalam setiap run
 
 ## Perubahan Konfigurasi XAV
 
@@ -112,7 +112,7 @@ Terdaftar dalam :
 - /
 - /
 
-Isyarat hub Ü R dipetakan untuk koneksi klien.
+Hub SignalR dipetakan untuk koneksi klien.
 
 ## Pengujian
 
@@ -120,23 +120,23 @@ Isyarat hub Ü R dipetakan untuk koneksi klien.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Liputan uji coba baru tambahan untuk:
-  - Pemegang tempat Dinas fungsionalitas
-  - Translasi Hujung Belakang [ Gambar di hlm
+  - Fungsi placeholderService
+  - Orkestrasi endendTranslationService
   - Pengindeks tempat pemegang tempat JsonStringLocalizer
 
 ### Batasan Dikenal
 
-- tes orgalia dilewati ketika berjalan dalam paralel karena beberapa contoh tes berbagi file yang sama. Ini berlalu ketika berlari dalam isolasi.
+- tes anikel dilewati ketika berjalan dalam paralel karena beberapa contoh tes berbagi file yang sama. Ini berlalu ketika berlari dalam isolasi.
 
 ## Struktur Berkas Baru
 
 ### Layanan Pelayanan di
 
-- Paip — orkestrator pipa
-- Terjemahan bahasa Jerman
+- Papeline - orkestrator
+- Terjemahan Bahasa Indonesia
 - Pensegerakan kamus JSON
 - Terjemahan terjemahan Markdown
-- Isyarat Penerbitan pesan token
+- Penerbitan pesan SignalR
 - Logika ulang dengan topeng pemegang tempat
 - Internet Penerbit
 - UNESCO
@@ -147,8 +147,8 @@ Isyarat hub Ü R dipetakan untuk koneksi klien.
 
 ### Layanan Pemutakhiran Barang pada
 
-- Andes — Dukungan pemegang tempat bernama
-- — Updated untuk parameter baru
+- Andel — Dukungan pemegang tempat bernama
+- Updated for new parameter
 - Nama - nama manajemen pemegang tempat
 - Antarmuka Pemegang Tempat
 
@@ -159,7 +159,7 @@ Isyarat hub Ü R dipetakan untuk koneksi klien.
 
 ### Dokumentasi Baru Dokumentasi Baru dalam
 
-- — Dokumentasi pipa termutakhir
+- Dokumentasi pipa termutakhir
 - Other — Panduan sistem pemegang tempat
 - Panduan penggunaan Dashboard —
 - Wawasan arsitektur teknis
@@ -172,11 +172,11 @@ Semua perubahan adalah aditif:
 - Pemformatan posisi () berfungsi tidak berubah
 - Format kamus JSON yang ada tidak berubah
 - Struktur Markdown yang ada tidak berubah
-- Isyarat Pesan-pesan using menggunakan format yang sama
+- Pesan-pesan SignalR isyarat Isyarat Isyarat Isyarat je menggunakan format yang sama
 
 ## Path Migrasi
 
-Tidak diperlukan migrasi. Refacturing adalah internal:
+Tidak perlu migrasi. Refacturing adalah internal:
 
 1. Lama dipelihara sebagai referensi dan kemudian diganti
 2. Pendaftaran DI telah diperbarui untuk menggunakan antarmuka baru
@@ -188,7 +188,7 @@ Tidak diperlukan migrasi. Refacturing adalah internal:
 - **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
 - **Better visibility**: Real-time progress helps diagnose slow stages
 
-## Perambahan Masa Depan
+## Peningkatan Masa Depan
 
 Peningkatan direncanakan:
 

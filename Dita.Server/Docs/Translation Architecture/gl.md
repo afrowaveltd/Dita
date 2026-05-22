@@ -31,7 +31,7 @@ A refactorización abordou varias preocupacións co deseño monolítico orixinal
 
 **Responsibilities**:
 - Ler desde o directorio
-- Sincronizar os nomes dos países no dicionario de localización por defecto
+- Sincronizar nomes de país no dicionario de localización por defecto
 - Traducir nomes de país perdidos por idioma obxectivo
 - Gardar todos os dicionarios inmediatamente despois da tradución
 
@@ -66,7 +66,7 @@ A refactorización abordou varias preocupacións co deseño monolítico orixinal
 
 **Key behaviors**:
 - Granularidade de nivel de bloqueo: cabeceiras, parágrafos, artigos de lista son traducidos por separado
-- Trazos de metadatos que bloquean o éxito por idioma
+- Traxes de metadatos que bloquean o éxito por idioma
 - Bloques fallados son retribuídas na seguinte carreira sen volver traducir bloques exitosos
 - A validación de estruturas asegura os recontos de títulos, listas, bloques de código, etc
 
@@ -83,7 +83,7 @@ O sistema usa retries a tres niveis:
 ### Nivel 2 - Etapa (TranslationRetryService)
 
 - Ata 3 intentos con 30 segundos de atraso
-- Re-drive toda a solicitude de tradución despois de que as versións de nivel HTTP estean esgotadas
+- Re-drive toda a solicitude de tradución despois de que se esgotan as versións a nivel HTTP
 - A máscara e a restauración son aplicadas a este nivel
 
 ### Nivel 3 - Bloque (DocumentsTranslationService)
@@ -178,7 +178,7 @@ For each target language:
 - **Contentes**: Dicionario de claves para os pares de valor de nome do titular
 - **Purpose**: proporciona valores por defecto para os localizadores nomeados a través da aplicación
 
-## Sinal R Información
+## Información SignalR
 
 ### Editor de abstracción
 
@@ -274,32 +274,32 @@ Establecer
 
 ### Unidade de probas
 
-Cada sub-servizo pode ser probado de forma independente:
+Cada subservizo pode ser probado de forma independente:
 
 - Mock para simular éxito / fracaso
 - Mock para comprobar a información
-- Use directorios temporais para o ficheiro I/O
+- Usar directorios temporais para o ficheiro I/ O
 - Comprobar o comportamento de aforro por idioma
 
 ### Probas de integración
 
 - Oleoduto completo con instancia LibreTranslate (local)
-- Comprobe o sinal As mensaxes R son enviadas a clientes conectados
-- Prevención concorrente (semaphore)
+- Comprobar que as mensaxes de mensaxería son enviadas a clientes conectados
+- Proba de prevención concorrente (semaphore)
 - Validar a estrutura da marca despois da tradución
 
 ### Probas finais
 
 - Tradución por API ou scheduler
 - Comprobar que todos os ficheiros de idioma de destino son creados / actualizados
-- Comprobar os ficheiros de metadatos que conteñen o estado do bloque correcto
+- Os ficheiros de metadatos conteñen o estado do bloque correcto
 - Os localizadores de seguridade son preservados en traducións
 
 ## Consideracións de rendemento
 
 - **Memory**: Per-language saving prevents holding all dictionaries in memory
-- **Disk I/O**: Metadata files add small overhead but enable incremental work
-- **Network**: O procesamento secuencial con throtling evita a abafadora LibreTranslate
+- **Disk I/O**: Os ficheiros de metadatos engaden un pouco de cabeza pero permiten o traballo incremental
+- **Network**: Sequential processing with throttling prevents overwhelming LibreTranslate
 - **CPU**: SHA-256 hashing and regex validation are fast relative to translation latency
 - **SignalR**: Mensaxes lixeiras, sen compresión de carga necesaria para informes típicos
 
@@ -310,7 +310,7 @@ O orixinal contiña toda a lóxica dunha clase. O camiño da migración:
 1. Extraer lóxica do país
 2. Extraer JSON lóxica
 3. Extraer lóxica Markdown
-4. Extraer sinal R publicación
+4. Extraer SignalR publicación
 5. Extraer lóxica de retry →
 6. Simplificación de orquestras para delegacións
 

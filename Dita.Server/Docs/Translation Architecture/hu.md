@@ -17,7 +17,7 @@ A bírálat az eredeti monolitikus kialakítással kapcsolatban számos aggályt
 ### BackendTranslationService (zenekari)
 
 **Responsibilities**:
-- Pipeline életciklus kezelése (start, complete, hibakezelés)
+- Pipeline életciklus menedzsment (start, complete, hibakezelés)
 - Semaphore- alapú konvaluta ellenőrzés (megakadályozza az átfedő futásokat)
 - Szerver validálása (láthatóság, nyelvi rendelkezésre állás, konfiguráció)
 - Alszolgáltatások átruházása
@@ -37,7 +37,7 @@ A bírálat az eredeti monolitikus kialakítással kapcsolatban számos aggályt
 
 **Key behaviors**:
 - Ha az alapértelmezett nyelv angol: országnevek tárolt as-is
-- Ha az alapértelmezett nyelv más: angol nevek lefordítva alapértelmezett nyelv első
+- Ha az alapértelmezett nyelv más: angol nevek lefordított alapértelmezett nyelv első
 - Minden nyelvet önállóan dolgozunk fel a saját retry hurokkal
 
 ### lokalizationtranslationservice
@@ -58,21 +58,21 @@ A bírálat az eredeti monolitikus kialakítással kapcsolatban számos aggályt
 
 **Responsibilities**:
 - Séta konfigurált Marklown gyökerek rekurzívan
-- A forrásfájlok felderítése SHA- 256 hashesszel
+- A forrásfájlok meghatározása SHA- 256 hashesszel
 - Pálya per- block fordítás állapota
 - A blokk- by-block lefordítása perblock relével
 - Jelölési struktúra jóváhagyása fordítás után
 - Minden célnyelvi fájl mentése függetlenül
 
 **Key behaviors**:
-- Blokkos szintű granularitás: a címeket, a bekezdéseket, a listás tételeket külön kell lefordítani
+- Blokkos szintű granularitás: a címek, bekezdések, listatételek külön fordításra kerülnek
 - Olyan metaadatok, amelyek nyelvenként sikeresek / sikertelenek
-- A sikertelen blokkok újratervezése a következő körben sikertelen blokkok átfordítása nélkül történik
+- A sikertelen blokkok újratervezése a következő körben sikertelen blokkok átfordítása nélkül
 - Szerkezetérvényesítés biztosítja az irányszámok, listák, kódblokkok stb. egyező forrás
 
 ## Visszaállítási stratégia
 
-A rendszer három szinten valósítja meg az ismétléseket:
+A rendszer három szinten hajt végre ismétléseket:
 
 ### Szint - HTTP (LibreTranslateService)
 
@@ -84,13 +84,13 @@ A rendszer három szinten valósítja meg az ismétléseket:
 
 - Legfeljebb 3 kísérlet 30 másodperces késéssel
 - A HTTP- szint remisszió kimerítése után a teljes fordítási kérés újraindítása
-- A helytartó maszkját és helyreállítását ezen a szinten alkalmazzák
+- A helytartó elfedése és helyreállítása ezen a szinten történik
 
 ### Szint - Block (Dokumentumfordítási szolgáltatás)
 
 - A nem megfelelő egyedi jelölőtömbök metaadatokkal vannak jelölve
 - Automatikus visszaállítás a következő csővezetéken
-- Sikeres blokkok soha nem fordítják újra
+- A sikeres blokkokat soha nem fordítják újra
 
 ## Adatáramlás
 
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Jelzés R jelentés
+## A jeladó jelentése
 
 ### Kiadó absztrakció
 
@@ -231,7 +231,7 @@ services.AddSingleton<TranslationRetryService>(
 
 ### A placeHolder egyéni kezelése
 
-A helymeghatározó szintaxisának vagy tárolásának megváltoztatása:
+A helymeghatározó szintaxisának vagy tárolásának módosítása:
 
 ```csharp
 public class CustomPlaceholderService : IPlaceholderService
@@ -276,21 +276,21 @@ Beállítás
 
 Minden alszolgáltatás egymástól függetlenül tesztelhető:
 
-- Gúnyolódik a siker / kudarc szimulálása
+- Gúnyolódik a siker / kudarc szimulálására
 - A jelentéstétel ellenőrzése
-- Ideiglenes könyvtárak használata az I / O fájlhoz
-- A per- nyelvi mentési viselkedés ellenőrzése
+- Ideiglenes könyvtárak használata az I / fájlhoz O
+- Per- nyelvi megtakarítási viselkedés ellenőrzése
 
 ### Integrációs vizsgálatok
 
 - Teljes csővezeték üzemeltetése valódi (helyi) LibreTranslate példával
-- Jelzés ellenőrzése Az R üzeneteket a kapcsolódó ügyfeleknek továbbítják
+- A SignalR üzenetek ellenőrzése az ügyfeleknek
 - Egyidejűleg végzett vizsgálat prevenció (szemafore)
 - Jelölési struktúra jóváhagyása fordítás után
 
 ### Végső vizsgálatok
 
-- Az API-n vagy a menetrenden keresztüli fordítás
+- Az API-n vagy időbeosztáson keresztüli fordítás
 - Minden célnyelvi fájl létrehozása / frissítése
 - A metaadatok fájljainak ellenőrzése megfelelő blokkállapotot tartalmaz
 - A helyfoglalók a fordítások során megőrződnek
@@ -310,7 +310,7 @@ Az eredeti minden logikát tartalmazott egy osztályban. A migrációs út:
 1. Kivonat ország logika →
 2. Kivonat JSON logika →
 3. Extract Marklown logika →
-4. Kivonási jel R kiadás →
+4. Kivonat SignalR kiadás →
 5. Extrahálási logika →
 6. Egyszerűsíteni kell a csak delegálásra szolgáló zenekart
 

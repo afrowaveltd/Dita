@@ -1,6 +1,6 @@
 ﻿# Oversættelse Arkitektur
 
-Dette dokument beskriver den modulære arkitektur af Ditas automatiske oversættelsessystem, indført for at forbedre vedligeholdeligheden, testbarheden og modstandsdygtigheden.
+Dette dokument beskriver den modulære arkitektur af Ditas automatiske oversættelsessystem, indført for at forbedre vedligeholdelighed, testbarhed og modstandsdygtighed.
 
 ## Konstruktionsmål
 
@@ -18,7 +18,7 @@ Refactoring behandlet flere bekymringer med det oprindelige monolitiske design:
 
 **Responsibilities**:
 - Pipeline livscyklusstyring (start, afslutning, fejlhåndtering)
-- Semaphorebaseret koncurrency kontrol (forhindrer overlappende kørsler)
+- Semaphorebaseret concurrency control (forhindrer overlappende kørsler)
 - Servervalidering (latency, sprog tilgængelighed, konfiguration)
 - Delegation til undertjenestegrene
 
@@ -49,7 +49,7 @@ Refactoring behandlet flere bekymringer med det oprindelige monolitiske design:
 - Gem øjebliksbillede til næste sammenligning
 
 **Key behaviors**:
-- Manuelle oversættelser altid tage prioritet (aldrig overskrevet)
+- Manuel oversættelse altid tage prioritet (aldrig overskrevet)
 - Tilføjet nøgler er oversat og gemt per- sprog straks
 - Fjernede nøgler slettes pr. sprog med det samme
 - Snapshot gemmes kun efter alle sprog fuldført med succes
@@ -58,9 +58,9 @@ Refactoring behandlet flere bekymringer med det oprindelige monolitiske design:
 
 **Responsibilities**:
 - Gå konfigureret Markdown rødder rekursivt
-- Detektér ændrede kildefiler ved hjælp af SHA- 256 hashs
+- Detektere ændrede kildefiler ved hjælp af SHA- 256 hashs
 - Track per- block oversættelse status i
-- Oversæt block- by- block med per- block returforsøg
+- Oversæt block- by- block med per- block forsøg igen
 - Validér Marknedstruktur efter oversættelse
 - Gem hver målsprogfil uafhængigt
 
@@ -68,7 +68,7 @@ Refactoring behandlet flere bekymringer med det oprindelige monolitiske design:
 - Block- niveau granularitet: overskrifter, afsnit, liste poster er oversat separat
 - Metadata spor som blokke lykkedes / mislykkedes per sprog
 - Mislykkede blokke genprøves på næste kørsel uden at genoversætte succesfulde blokke
-- Strukturen validering sikrer overskrifter, lister, kodeblokke osv
+- Strukturen validering sikrer overskrift tæller, lister, kode blokke, etc. match kilde
 
 ## Prøv igen strategi
 
@@ -150,7 +150,7 @@ For each target language:
    └─ Save dictionary immediately
 ```
 
-## Statslig persistens
+## Stabilitet
 
 ### Snapshots
 
@@ -178,11 +178,11 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Signal R-rapportering
+## SignalR-rapportering
 
 ### Udgiver abstraktion
 
-afkobling af oversættelsestjenester fra SignorR-specialer:
+afkobling af oversættelsestjenester fra SignorR-specifikke:
 
 ```csharp
 public interface ISignalRPublisher
@@ -210,13 +210,13 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 
 1. Opret en ny grænseflade med
 2. Implementere grænsefladen med domæne-specifik logik
-3. Registrer dig i DI-container
+3. Registrer i DI-container
 4. Injicér i konstruktør
 5. Opkald fra eksisterende faser
 
 ### Brugerdefineret retriepolitik
 
-Parametre for overridning af konstruktionsapparat:
+Parametre for overridning af konstruktionsenheder:
 
 ```csharp
 services.AddSingleton<TranslationRetryService>(
@@ -277,18 +277,18 @@ Indstilling
 Hver deltjeneste kan afprøves uafhængigt:
 
 - Mock at simulere succes / fiasko
-- Mock til at verificere rapportering
+- Model til kontrol af rapportering
 - Brug midlertidige mapper til fil I / O
 - Verificér per- sprog besparende adfærd
 
 ### Integrationstest
 
 - Fuld rørledning med reel (lokal) LibreTranslate instans
-- Verificér signal R-beskeder leveres til tilsluttede kunder
+- Verificér signalR-meddelelser leveres til tilsluttede kunder
 - Test samtidig kørsel forebyggelse (semaphore)
 - Validér Marknedstruktur efter oversættelse
 
-### Ende- to- end test
+### Ende- til- end test
 
 - Trigger oversættelse via API eller Scheduler
 - Verificér alle målsprogfiler er oprettet / opdateret
@@ -310,7 +310,7 @@ Originalen indeholdt al logik i én klasse. Indvandringsvejen:
 1. Uddrag land logik →
 2. Uddrag JSON logik →
 3. Uddrag Markdown logik →
-4. Uddrag signal R offentliggørelse →
+4. Uddrag SignatalR publishing →
 5. Uddrag gentry logik →
 6. Forenkling af orkester til delegationer- kun
 

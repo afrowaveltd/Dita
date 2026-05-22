@@ -2,7 +2,7 @@
 
 ## Yleiskatsaus
 
-Tässä asiakirjassa on yhteenveto kaikista muutoksista, jotka on tehty Ditan automaattiseen käännöspalveluun, mukaan lukien arkkitehtuurin korjaus, uudet ominaisuudet, havaintokyvyn parannukset ja lokalisointi parannukset.
+Tässä asiakirjassa esitetään yhteenveto kaikista muutoksista, jotka on tehty Ditan automaattiseen käännöspalveluun, mukaan lukien arkkitehtuurin refaktorointi, uudet ominaisuudet, havaintokyvyn parannukset ja lokalisointiparannukset.
 
 ## Arkkitehtuurin muutokset
 
@@ -12,8 +12,8 @@ Monoliitti on hajotettu neljään erikoispalveluun, joita koordinoi kevyt orkest
 
 - **BackendTranslationService**
 - **CountriesTranslationService**
-- **LocalizationTranslationService** ..
-- **DocumentsTranslationService** ..
+- **LocalizationTranslationService** JSONin sanakirjan synkronointi (lisätyt/poistetut avaimet)
+- **DocumentsTranslationService**
 - **SignalRPublisher ** ..
 - **TranslationRetryService**
 
@@ -32,14 +32,14 @@ Monoliitti on hajotettu neljään erikoispalveluun, joita koordinoi kevyt orkest
 
 Uusi admin sivu, joka tarjoaa reaaliaikaista näkyvyyttä käännös putki:
 
-- Näyttää kaikki signaalit R-tapahtumat niiden ilmaantuessa
+- Näyttää kaikki SignalR-tapahtumat niiden ilmaantuessa
 - Värikoodatut viestityypit (sininen=aloitettu, vihreä=valmis, punainen=virhe)
 - Connection status banner auto-reconnect
 - Viestilaskuri ja vienti JSONille
 
 ### Nimetyt paikanhaltijat
 
-Lokalisointijärjestelmä tukee nyt nimettyä paikkaa () parantaa kieliopin eri kielillä:
+Lokalisointijärjestelmä tukee nyt nimettyä paikkaa () parantaa kieliopillisuutta eri kielillä:
 
 ```csharp
 // Usage in code
@@ -60,10 +60,10 @@ Ominaisuudet:
 
 Markdown-tiedostot käännetään asteittain:
 
-- **Per-kielen säästäminen**: Jokainen kohdekieli tallennetaan heti käännöksen jälkeen, mikä vähentää muistipainetta
+- **Kielen säästäminen**: Jokainen kohdekieli tallennetaan heti käännöksen jälkeen, mikä vähentää muistipainetta
 - **Lock-tason seuranta**: kappaleita käännös tila lohko
 - ** Valikoiva uusintatutkimus**: Vain epäonnistuneet lohkot käännetään uudelleen seuraavalla juoksulla
-- **Metadatan pysyvyys**: Käännöstila kestää sovelluksen uudelleenkäynnistyksen
+- ** Metatietojen pysyvyys**: Käännöstila kestää sovelluksen uudelleenkäynnistykset
 
 ### Parannettu uudelleen-logiikka
 
@@ -71,7 +71,7 @@ Kestävyyden kolme tasoa:
 
 1. **HTTP uusintayritys** (LibreTranslateService): 5 yritystä, joilla on eksponentiaalinen backoff (1s
 2. **Stage retry** (TranslationRetryService): 3 uutta yritystä 30-luvun viiveellä
-3. **Kokeile uudelleen** (AsiakirjatKäännöspalvelu): Epäonnistuivat Markdown lohkot yritettiin seuraavan juoksun
+3. **Kellon uudelleenyrittäminen** (DocumentsTranslationService): Epäonnistuneet Markdown-lohkot löytyivät seuraavalla juoksulla
 
 ### SignalR-raportointi
 
@@ -112,7 +112,7 @@ Kirjattu:
 - /
 - /
 
-Signaali R-keskus on kartoitettu asiakasyhteyksiä varten.
+SignalR-keskus on kartoitettu asiakasyhteyksiä varten.
 
 ## Testaus
 
@@ -120,13 +120,13 @@ Signaali R-keskus on kartoitettu asiakasyhteyksiä varten.
 
 - **243/244 koetta ** (1 ohitettu tiedostojen samanaikaisen käytön vuoksi)
 - Uusi testin kattavuus lisätty:
-  - Paikka Palvelutoiminto
-  - BackendKäännös Palvelun orkesteri
+  - PlaceholderService -toiminto
+  - BackendTranslationService orkesteri
   - JsonStringLocalizer-paikkahakemistot
 
 ### Tunnetut rajoitukset
 
-- testi ohittaa, kun ajaa rinnakkain, koska useita testi tapauksia jakaa saman tiedoston. Se kulkee eristyksissä.
+- testi ohittaa, kun ajaa rinnakkain, koska useita testi tapauksia jakaa saman tiedoston. Se kulkee, kun ajaa eristyksissä.
 
 ## Uusi tiedostorakenne
 
@@ -136,19 +136,19 @@ Signaali R-keskus on kartoitettu asiakasyhteyksiä varten.
 - Maa
 - JSONin sanakirjan synkronointi
 - Markdown käännös
-- Signaali R-viestin julkaiseminen
+- SignalR-viestien julkaiseminen
 - Yritä logiikkaa paikanpidin naamiointi
 - Julkaisijan käyttöliittymä
 - — Country service interface
 - Lokalisointipalvelun käyttöliittymä
-- asiakirjapalvelun käyttöliittymä
+- — Document service interface
 - Orkesterin käyttöliittymä (päivitetty)
 - — Per-file translation metadata
 
 ### Päivitetyt palvelut
 
 - Lisätty nimetty paikka haltija tuki
-- ... Päivitetty uutta parametria varten
+- Uusi parametri päivitetty
 - — Named placeholder management
 - ..
 
@@ -159,45 +159,45 @@ Signaali R-keskus on kartoitettu asiakasyhteyksiä varten.
 
 ### Uusi dokumentaatio
 
-- ... Päivitetyt putkijohtoasiakirjat
+- päivitetyt putkijohtoasiakirjat
 - paikanpidinjärjestelmän opas
 - Dashboard-käyttöohje
 - Tekninen arkkitehtuuri
 
 ## Takautuva yhteensopivuus
 
-Kaikki muutokset ovat additiivisia:
+Kaikki muutokset ovat lisäaineita:
 
 - Olemassa oleva lokalisointikoodi () toimii ennallaan
 - Sijaintimuoto () toimii ennallaan
 - JSONin nykyinen sanakirjamuoto ei muutu
 - Olemassa oleva Markdown-rakenne ei muutu
-- Signaali R-viestit käyttävät samaa muotoa
+- SignalR-viestit käyttävät samaa muotoa
 
 ## Muuttopolku
 
 Siirtoa ei tarvita. Korjauskerroin on sisäinen:
 
-1. Vanha säilytettiin viitteenä ja sitten korvattiin
+1. Vanha säilytettiin viitteenä ja korvattiin
 2. DI-rekisteröinnit päivitettiin käyttämään uusia rajapintoja
 3. Kaikki nykyiset kuluttajat eivät näe muutoksia
 
 ## Suorituskyvyn parantaminen
 
 - ** Muistinkäyttö**: Tiedostot tallennettu per kieli heti sen sijaan, että pitäisit kaikki muistissa
-- **Nopeuden lisäys juoksut**: Vain muutetut tai epäonnistuneet merkintälohkot käännetään uudelleen
+- **Nopeat kiihdytysajot**: Vain muutetut tai epäonnistuneet merkintälohkot käännetään uudelleen
 - ** Näkyvyyden parantaminen**: Reaaliaikainen kehitys auttaa diagnosoimaan hitaita vaiheita
 
 ## Tulevaisuuden parannukset
 
 Suunnitellut parannukset:
 
-1. **AI hienosäätö** 5 sanaa
-2. **Admin-tunnistus** ..
+1. **AI hienosäätö**
+2. **Admin-tunnistus**
 3. ** Dictionary editor ** .....
 4. ** Kääntämistilastot** ..
 5. ** Oma paikanhaltija syntaksi**
 
 ## Yhteystiedot
 
-Käännöspalveluun liittyvissä kysymyksissä on tutustuttava kunkin moduulin hakemiston yksityiskohtaisiin asiakirjoihin tai ota yhteyttä kehitystiimiin.
+Käännöspalvelun kysymyksiä tai ongelmia varten katso kunkin moduulin hakemiston yksityiskohtaiset asiakirjat tai ota yhteyttä kehitystiimiin.

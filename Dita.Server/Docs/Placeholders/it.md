@@ -13,7 +13,7 @@ I segnaposto utilizzano la sintassi curly-brace all'interno dei valori del dizio
 }
 ```
 
-A differenza dei segnaposto posizionali (, ), i segnaposto sono **language-agnostic** — i traduttori possono riordinarli a corrispondere la grammatica in lingua di destinazione senza rompere il codice.
+A differenza dei segnaposto posizionali (, ), i segnaposto sono **language-agnostic** — i traduttori possono riordinarli a corrispondere alla grammatica in lingua di destinazione senza rompere il codice.
 
 ## Stoccaggio
 
@@ -127,8 +127,8 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 Quando il servizio di traduzione automatico incontra il testo con i segnaposto nominati:
 
 1. **Prima traduzione ** I segnaposto sono mascherati con gettoni sicuri () per impedire al motore di traduzione di modificarli.
-2. **During translation**: The translation engine processes only the translatable text.
-3. **Dopo la traduzione**: I nomi dei segnaposto originali () vengono ripristinati nelle loro posizioni corrette.
+2. **Durante traduzione ** Il motore di traduzione elabora solo il testo traslabile.
+3. **Dopo la traduzione** I nomi dei segnaposto originali () vengono ripristinati nelle loro posizioni corrette.
 
 ### Esempio
 
@@ -149,7 +149,7 @@ Questo assicura che:
 
 1. ** Utilizzare nomi descrittivi**: è meglio di o
 2. **Ottimo segnaposto minimo**: Troppi segnaposto rendono la traduzione più difficile
-3. **I tipi attesi**: I commenti nel file JSON aiutano i traduttori a comprendere il contesto
+3. **Document expected types**: Comments in the JSON file help translators understand context
 4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime
 5. **Utilizzare i valori memorizzati per i valori predefiniti**: Per la configurazione che raramente cambia (nome app, email di supporto)
 6. **Validate placeholders**: Use `ExtractPlaceholders()` to verify all expected placeholders are provided
@@ -162,7 +162,7 @@ Entrambi usano il servizio di riprovazione, quindi tutte le traduzioni del dizio
 
 ## Compatibilità del retro
 
-Il codice esistente utilizzando segnaposto posizionale o nessun segnaposto continua a funzionare invariato:
+Il codice esistente utilizzando i segnaposto posizionali o nessun segnaposto continua a funzionare invariato:
 
 ```csharp
 // Still works exactly as before

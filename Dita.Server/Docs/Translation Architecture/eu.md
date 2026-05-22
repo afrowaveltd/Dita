@@ -1,15 +1,15 @@
 ﻿# Itzulpenaren arkitektura
 
-Dokumentu honek Ditaren itzulpen automatikoko arkitektura modularra deskribatzen du, mantengarritasuna, probagarritasuna eta erresilientzia hobetzeko sortua.
+Dokumentu honek Ditaren itzulpen automatikoko arkitektura modularra azaltzen du, mantengarritasuna, probagarritasuna eta erresilientzia hobetzeko sortua.
 
 ## Diseinuaren helburuak
 
-Jatorrizko diseinu monolitikoari hainbat kezka azaldu zitzaizkion:
+Errefaktoreak hainbat kezka azaldu zituen jatorrizko diseinu monolitikoan:
 
 - ** Kezkak bereiztea**: Itzulpen-domeinu bakoitza (kontakizunak, JSON hiztegiak, Markdown) isolaturik dago.
 - **Erresistentzia handia**: Fitxategiak hizkuntza bakoitzeko gordetzen dira itzulpenaren ondoren, memoriaren erabilera murriztuz eta aurreko emaitzak emanez.
 - **Erresilientzia**: saiakera anitzek hutsegite iragankorrak kudeatzen dituzte hodi osoa blokeatu gabe.
-- **Erreserbagarritasuna**: Eragiketa esanguratsu guztiak SignalR bidez jakinarazten dira denbora errealeko monitorizaziorako.
+- **Erreserbagarritasuna**: Eragiketa esanguratsu oro denbora errealeko monitorizaziorako seinalearen bidez jakinarazten da.
 - ** Hedapena**: Itzulpen-helburu berriak gehi daitezke interfaze bakar bat inplementatuz.
 
 ## Zerbitzua deskonposatzea
@@ -154,7 +154,7 @@ For each target language:
 
 ### argazkiak
 
-- **JSON**: hiztegi lehenetsiaren ondoko fitxategi batean gordetzen da (izena biltegi-hornitzailearen arabera aldatzen da)
+- **JSON**: Hiztegi lehenetsiaren ondoko fitxategi batean gordeta (izena aldatu egiten da biltegi-hornitzailearen arabera)
 - **Purpose**: sinkronizazio inkrementala gaitzen du aurreko exekuzioan zegoenaren jarraipena eginez
 
 ### Hash fitxategiak
@@ -178,7 +178,7 @@ For each target language:
 - **Edukia**: Leku-markaren balio-bikoteen gakoen hiztegia
 - **Purpose**: Aplikazio osoan izendatutako leku-markaren balio lehenetsiak ematen ditu
 
-## Seinalea R txostena
+## Seinale-informazioa
 
 ### Argitaratzailearen abstrakzioa
 
@@ -278,13 +278,13 @@ Azpizerbitzu bakoitza independenteki egiazta daiteke:
 
 - Arrakasta/failure simulatzea
 - Mock txostena egiaztatzeko
-- Erabili aldi baterako direktorioak I/O fitxategian
+- Erabili aldi baterako direktorioak I/ O
 - Egiaztatu hizkuntza bakoitzeko portaera
 
 ### Integrazio-probak
 
 - Kanalizazio osoa benetako (lokala) LibreTranslate instantziarekin
-- Egiaztatu seinalea R mezuak konektatutako bezeroei ematen zaizkie
+- Ziurtatu SignalR mezuak konektatutako bezeroei ematen zaizkiela
 - Probako exekuzio-aurrebista (semaforoa)
 - Balidatu Markdown egitura itzulpenaren ondoren
 
@@ -298,8 +298,8 @@ Azpizerbitzu bakoitza independenteki egiazta daiteke:
 ## Errendimendu-neurriak
 
 - **Memoria**: Hizkuntza bakoitzeko aurrezkiak memoriako hiztegi guztiak gordetzea eragozten du
-- **Disk I/O**: Metadatuen fitxategiek gainbegirada txikia gehitzen dute, baina lan inkrementala gaitu
-- **Sarea**: sekuentzia-prozesaketa trontaketarekin LibreTranslate izugarria saihesten da
+- **Disk I/O**: Metadatuen fitxategiek buru txiki bat gehitzen dute, baina lan gehikuntzazkoa gaitzen dute
+- **Sarea**: Prozesamendu sekuentziala, trotling-arekin, LibreTranslate izugarria saihesten du
 - **CPU**: SHA-256 hashing eta berrgex balidazioa azkarrak dira itzulpenen latentziari dagokionez
 - **SignalR**: Mezu arinak, ez da ordain-konpresiorik behar ohiko txostenetarako
 
@@ -310,7 +310,7 @@ Jatorrizkoak logika osoa zuen klase batean. Migrazioaren bide-izena:
 1. Erauzi herrialdearen logika
 2. Erauzi JSON logika →
 3. Erauzi Markdown logika →
-4. Erauzi seinalea R Argitaratzea
+4. Erauzi SignalR argitalpena →
 5. Erauzi saiakeraren logika →
 6. Orkestra-zuzendaria delegaziora soildu
 

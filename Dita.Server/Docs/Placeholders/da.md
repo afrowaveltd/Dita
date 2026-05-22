@@ -102,7 +102,7 @@ public interface IPlaceholderService
 
 ### Udvidelsesmetoder
 
-For nemheds skyld, når du arbejder med:
+For nemheds skyld ved arbejde med:
 
 ```csharp
 public static class StringLocalizerExtensions

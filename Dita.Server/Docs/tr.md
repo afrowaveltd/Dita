@@ -12,8 +12,8 @@ Monolithic, hafif bir orkestracı tarafından koordine edilen dört özel hizmet
 
 - **BackendTranslationService** - Boru orkestrası (server validasyon, aşama delegasyonu, hata işleme)
 - **CountriesTranslationService** - Ülke adı senkronizasyon (İngilizce → hedef dili)
-- **LocalizationTranslationService** – JSON söz senkronizasyonu (added/removed anahtarları)
-- **DocumentsTranslationService** - Markdown belgeleri blok seviyesindeki izleme ile çeviri
+- **LocalizationTranslationService** - JSON söz senkronizasyonu (added/removed anahtarları)
+- **DocumentsTranslationService** - Markdown doküman çevirisi blok seviyesindeki izleme ile
 - **SignalRPublisher** - SignalR ile gerçek zamanlı ilerleme raporlama
 - **TranslationRetryService** – Aşama düzeyinde retry with placeholder protection
 
@@ -32,14 +32,14 @@ Monolithic, hafif bir orkestracı tarafından koordine edilen dört özel hizmet
 
 Çeviri hattına gerçek zamanlı görünürlük sağlayan yeni bir yönetici sayfası:
 
-- Tüm Sinyalleri Gösteriyor Onlar meydana geldiği gibi R olayları
+- Görünüşe göre tüm SignalR olayları gösterir
 - Renkli kodlanmış mesaj türleri (mavi = başlangıç, yeşil = tamamlanmamış, kırmızı = terörizm)
 - Bağlantı durumu otomatik bağlantı ile
 - Mesaj sayacı ve JSON'a ihracat
 
 ### Add Placeholders
 
-Yerelleştirme sistemi artık farklı dillerde gelişmiş grammatiksellik için adı verilen yer sahipleri () destekler:
+Yerelleştirme sistemi artık farklı dillerde gelişmiş grammatiksellik için isim sahibileri () destekliyor:
 
 ```csharp
 // Usage in code
@@ -63,7 +63,7 @@ Markdown dosyaları kademeli olarak tercüme edilir:
 - **Per-dil tasarrufu**: Her hedef dili hemen çeviriden sonra kurtarılır, hafıza basıncının azaltılması
 - **Block- seviyesi takip**: blok başına çeviri statüsü izler
 - **Seçmeli retry**: Sadece başarısız bloklar bir sonraki runda yeniden canlanıyor
-- **Metadata kalıcılık**: Çeviri devleti uygulama yeniden başlar
+- **Metadata kalıcılık**: Çeviri devleti başvuru yeniden başlar
 
 ### Geliştirilmiş Retry Logic
 
@@ -71,7 +71,7 @@ Markdown dosyaları kademeli olarak tercüme edilir:
 
 1. **HTTP retry** (LibreTranslateServ): Üst üste 5 girişim (1s-5s)
 2. **Stage retry** (TranslationRetryService): 30 gecikmeli 3 girişim
-3. **Block retry** (DocumentsTranslationService): Başarısız Markdown blokları bir sonraki runda tekrarladı
+3. **Block retry** (DocumentsTranslationService): Bir sonraki runda Markdown blokları tekrar tekrarladı
 
 ### SignalR raporlama
 
@@ -112,7 +112,7 @@ Kayıt:
 - /
 - /
 
-Signal R hub müşteri bağlantıları için haritalandı.
+SignalR merkezi müşteri bağlantıları için haritalandı.
 
 ## Test Testi Test Testi
 
@@ -120,8 +120,8 @@ Signal R hub müşteri bağlantıları için haritalandı.
 
 - **243/244 testleri geçer** (1 test ortamında mevcut dosya erişimi nedeniyle atılır)
 - Yeni test kapsamı eklendi:
-  - Placeholder Servis işlevselliği
-  - BackendTranslation Hizmet orkestrası
+  - placeholderservice functionality functionality functionality
+  - BackendTranslationService orkestration
   - JsonStringLocalizer yer sahipleri indexers
 
 ### Bilinen Sınırlar
@@ -133,10 +133,10 @@ Signal R hub müşteri bağlantıları için haritalandı.
 ### Hizmetler
 
 - - Boru orkestrası
-- - Ülke adı çeviri
+- Ülke adı çeviri
 - – JSON söz senkronizasyonu
 - - Markdown çeviri
-- - Signal R Mesaj yayın yayın yayınlama
+- - SignalR mesaj yayınlama
 - -Yer sahibi maskeleme ile İlişki mantığı
 - - Yayıncı arayüzü
 - Ülke hizmetleri arayüzü
@@ -148,7 +148,7 @@ Signal R hub müşteri bağlantıları için haritalandı.
 ### Güncelleme Hizmetlerinde
 
 - - adı verilen yer sahibi desteği
-- – Yeni parametre için Güncelleme
+- - Yeni parametre için Güncelleme
 - - Named placeholder management
 - - Placeholder arayüzü
 
@@ -159,7 +159,7 @@ Signal R hub müşteri bağlantıları için haritalandı.
 
 ### Yeni Dokümantasyon
 
-- – Güncelleme boru belgeleri
+- - Güncelleme boru belgeleri
 - - Placeholder sistemi rehberi
 - – Dashboard kullanımı rehberi
 - - Teknik mimarlık genel bakış
@@ -172,7 +172,7 @@ Tüm değişiklikler katkıda bulunur:
 - Pozisyonal formatlama () değişmeden çalışır
 - JSON sözlük formatının mevcut olması değişmemiştir
 - Markdown yapısı mevcut değildir
-- Signal Signal R mesajları aynı formatı kullanır
+- SignalR mesajları aynı formatı kullanır
 
 ## Göç Yolu
 
@@ -185,14 +185,14 @@ Hiçbir göç gerekli değildir. Refaksiyon içseldir:
 ## Performans İyileştirmeleri
 
 - **Redük hafıza kullanımı**: Dosyalar her şeyi hafızada tutmak yerine hemen dil kurtardı
-- **Faster artal koşmak**: Sadece değişmiş / Markdown blokları yeniden-translated
+- **Faster artımlı çalışır**: Sadece değişmiş / Markdown blokları yeniden-translated
 - **Better görünürlük**: Gerçek zamanlı ilerleme yavaş aşamaları teşhis etmeye yardımcı olur
 
 ## Future
 
 Planlanan gelişmeler:
 
-1. **AI fine-tuning** – Post-makin çeviri incelemesi > 5 kelime
+1. **AI fine-tuning** - Post-makin çeviri incelemesi > 5 kelime
 2. **Yönetim** - Restrict admin sayfaları yetkili kullanıcılar için
 3. **Dictionary editörü** - Web UI yerelleştirme anahtarlarını yönetmek için
 4. **Translation istatistiklerini ** - Çeviri sayılarını gösteren grafikler ve zaman içinde hata oranları gösterir

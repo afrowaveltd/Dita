@@ -7,7 +7,7 @@ Dieses Dokument existiert als Live-Test-Eingabe für die automatische Übersetzu
 Die Übersetzungspipeline wurde in eine modulare Architektur umstrukturiert, mit vier spezialisierten Subservices, die von einem leichten Orchester koordiniert werden:
 
 - **BackendTranslationService** — Orchestriert die gesamte Pipeline, verwaltet die Servervalidierung und Delegierte arbeiten an Sub-Services.
-- **CountriesTranslationService** — Synchronisiert die Ländernamen aus den per-language Wörterbüchern.
+- **CountriesTranslationService** — Synchronisiert Ländernamen aus per-language Wörterbüchern.
 - **LocalizationTranslationService** — Erkennt hinzugefügte/entfernte Schlüssel im Standard-JSON-Wörterbuch und übersetzt sie in Zielsprachen.
 - **DocumentsTranslationService** — Übersetzt Markdown-Dokumentationsdateien mit Per-Block-Tracking und Metadaten.
 
@@ -15,7 +15,7 @@ Jeder Subservice arbeitet unabhängig und meldet Fortschritt über SignalR in Ec
 
 ## Was der Service tut
 
-Der Dienst läuft in einem Zeitplan und führt eine fünfstufige Pipeline aus: Servervalidierung, Ländersynchronisation, JSON Wörterbuch Synchronisation, Markdown-Dateiübersetzung und die Ergebnisse bleiben. Jede Stufe gibt strukturierte Echtzeit-Fortschrittsereignisse über Signal ab R, damit verbundene Kunden bei der Arbeit mitmachen können.
+Der Dienst läuft auf einem Zeitplan und führt eine fünfstufige Pipeline aus: Servervalidierung, Ländersynchronisation, JSON Wörterbuchsynchronisation, Markdown-Dateiübersetzung und die Ergebnisse weiterhin. Jede Stufe sendet strukturierte Echtzeit-Fortschrittsereignisse über SignalR aus, so dass verbundene Kunden bei einem Arbeitsablauf mitkommen können.
 
 ## Rohrleitungsstufen
 
@@ -49,10 +49,10 @@ Der Dienst vergleicht das aktuelle Standard-Sortisations-Wörterbuch mit einem S
 - **Entfernte Schlüssel** — Einträge im Snapshot, aber abwesend aus dem aktuellen Standard — werden aus jedem Zielsprachewörterbuch gelöscht.
 - Manuelle Übersetzungen nehmen immer Priorität. Wenn ein Zielwörterbuch bereits einen Wert für einen Schlüssel enthält, bleibt dieser Eintrag unabhängig davon, was die Quelle sagt, unverändert.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
-- Fällt eine Übersetzung für eine bestimmte Sprache aus, so rettet der Dienst automatisch. Nur persistente Fehler (z.B. ununterstützte Sprache) bewirken, dass Sprache übersprungen wird.
+- Fällt eine Übersetzung für eine bestimmte Sprache aus, so rettet der Dienst automatisch. Nur persistente Fehler (z.B. ununterstützte Sprache) bewirken, dass die Sprache übersprungen wird.
 - Nach dem Start wird das aktuelle Standardwörterbuch als neuer Snapshot für den nächsten Vergleich gespeichert.
 
-Alle Wörterbücher werden immer mit alphabetisch sortierten Schlüsseln gespeichert und JSON für die menschliche Lesbarkeit identifiziert.
+Alle Wörterbücher werden immer mit alphabetisch sortierten Schlüsseln gespeichert und JSON für die menschliche Lesbarkeit eingezeichnet.
 
 ### stufe 4 — übersetzenmarkdownfiles
 
@@ -63,10 +63,10 @@ Der Dienst führt die konfigurierten Dokumentationswurzeln (Standard: ) und vera
 3. Der gespeicherte Hash aus dem vorherigen Lauf (in einer Datei neben der Quelldatei oder in einem temporären Fallback-Standort) wird mit dem aktuellen Hash verglichen.
 4. Für jede Zielsprache wird die entsprechende Datei auch auf strukturelle Integrität überprüft.
 5. Jede Zieldatei, die fehlt, hat einen veralteten Hash, versagt Strukturvalidierung oder enthält untranslatierte Blöcke wird für die Re-Translation gelöscht.
-6. **Jede Zielsprache wird unabhängig übersetzt und gespeichert** — wenn Tschechisch gelingt, aber Französisch scheitert, wird die tschechische Datei noch auf Festplatte geschrieben.
+6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
 7. Erfolgreich übersetzte Dateien werden für Strukturparität mit der Quelle validiert (gleiche Überschriftenzählungen, Listenpositionen, Codeblöcke, Blockquoten, Links, fett/italienische Marker und HTML-Tags), bevor sie auf Festplatte geschrieben werden.
-8. Wenn alle Zieldateien für eine Quelle erfolgreich sind, wird der neue Hash neben der Quelle gespeichert. Wenn das Schreiben neben der Quelle ausfällt (z.B. bei Nur-Einstellungen), fällt der Hash zurück in das temporäre Verzeichnis.
-9. Wenn eine Zielübersetzung nicht validiert wird, markiert die Metadaten diese Blöcke als untranslatiert, so dass sie auf dem nächsten Lauf abrufen.
+8. Wenn alle Zieldateien für eine Quelle erfolgreich sind, wird der neue Hash neben der Quelle gespeichert. Wenn das Schreiben neben der Quelle ausfällt (z.B. in Nur-Einstellungen), fällt der Hash zurück in das temporäre Verzeichnis.
+9. Wenn eine Zielübersetzung eine Validierung ausfällt, markiert die Metadaten diese Blöcke als unübersetzt, so dass sie auf dem nächsten Lauf wieder abgerufen werden.
 
 ### Stufe 5 — StoringErgebnisse
 
@@ -75,16 +75,16 @@ Ein Konzern wird zusammengebaut und veröffentlicht. Es umfasst:
 - UTC laufen Start- und Fertigzeitstempel.
 - Anzahl der gespeicherten lokalen JSON-Dateien, gespeicherte Markdown-Dateien, gespeicherte Hash-Dateien, und Fallback Hash schreibt.
 - Alle während des Laufs gesammelten Speicherfehler.
-- Perlanguage Übersetzungsstatistiken (übersetzte Anzahl, übersprungene Anzahl, Fehlerzahl).
+- Per-Sprache Übersetzungsstatistiken (übersetzte Anzahl, übersprungene Anzahl, Fehlerzahl).
 
-## Signal R Nachricht Hülle
+## SignalR Nachrichtenübermittlung
 
 Jedes Fortschrittsereignis wird wie a mit folgenden Feldern ausgeliefert:
 
 Feld
 |-------|------|-------------|
 Korrelationskennung für den aktuellen Pipelinelauf
-Monotonzähler innerhalb eines Laufs, beginnend bei 1
+Monotonzähler innerhalb eines Durchlaufs, beginnend bei 1
 Semantische Art der Nachricht
 Pipeline-Stufe die Nachricht gehört
 UTC-Zeit, als die Nachricht ausgesandt wurde
@@ -145,27 +145,27 @@ Wenn eine Stufe ausfällt, werden die restlichen Stufen übersprungen, eine Nach
 
 ## Übersetzung retry logic
 
-Die Pipeline implementiert zwei Niveaus der Widerstandsfähigkeit:
+Die Pipeline implementiert zwei Ebenen der Widerstandsfähigkeit:
 
 ### Bühnenretry (TranslationRetryService)
 
-- Versäumt eine Übersetzungsanfrage nach LibreTranslates internen Retries, führt die bis zu 3 zusätzliche Stufen-Retries mit 30-Sekunden-Verzögerung durch.
-- Maskierung der Platzhalter: Namete Platzhalter () im Text werden vor der Übersetzung vorübergehend durch sichere Token () ersetzt und nachher wiederhergestellt, um eine korrekte Grammatik in Zielsprachen zu gewährleisten.
+- Wenn eine Übersetzungsanfrage nach LibreTranslates internen Retries scheitert, führt die bis zu 3 zusätzliche Stufen-Level-Retries mit 30-Sekunden Verzögerungen.
+- Platzhalter-Massage: Namete Platzhalter () im Text werden vorübergehend durch sichere Token () vor der Übersetzung ersetzt und nachher wiederhergestellt, um eine korrekte Grammatik in Zielsprachen zu gewährleisten.
 
 ### Sprachvalidierung
 
 - Vor dem Übersetzen auf eine Zielsprache wird der Dienst die Sprache vom Übersetzungsserver unterstützt.
 - Ununterstützte Sprachen werden mit einer Warnung übersprungen und wiederholte gescheiterte Versuche verhindern.
 
-### Markdown-Block-Level-Retry
+### Markdown Block-Level-Retry
 
 - Markdown-Übersetzungen werden Block-by-Block (Positionen, Absätze, Listenpositionen) durchgeführt.
-- Wenn ein einzelner Block die Übersetzung ausfällt, wird er in der Metadatendatei als untranslatiert markiert und auf dem nächsten Pipeline-Laufwerk abruft.
+- Wenn ein einzelner Block die Übersetzung ausfällt, wird er in der Metadatendatei als untranslatiert markiert und auf dem nächsten Pipeline-Laufwerk abgerufen.
 - Der Service Tracks per-Sprache, per-Block-Status in Dateien neben jeder Quelle Markdown-Datei.
 
 ## Fehlercodes
 
-Fehler werden mit einem einheitlichen enum in Reichweiten gemeldet:
+Fehler werden mit einem einheitlichen enum gruppiert in Bereiche gemeldet:
 
 Reichweite
 |-------|----------|
@@ -175,7 +175,7 @@ Reichweite
 4000–4999
 5000–5999
 
-Jeder Fehler in einem Bericht trägt die Quellkennung (Sprachcode, Dateipfad oder Bühnenname), den Fehlercode und eine human lesbare Nachricht.
+Jeder Fehler in einem Bericht trägt die Quellkennung (Sprachcode, Dateipfad oder Phasenname), den Fehlercode und eine human lesbare Nachricht.
 
 ## Live-Übersetzung Dashboard
 
@@ -191,6 +191,6 @@ Das Server-Projekt beinhaltet eine Admin-Seite, die sich mit dem SignalR-Hub ver
 - **Modularität**: Jedes Übersetzungsproblem ist in seinem eigenen Dienst für Aufrechterhaltung und Testbarkeit isoliert.
 - **Incremental persistence**: Dictionaries and Markdown files are saved per-language immediately after translation, reducing memory pressure and providing earlier feedback.
 - **Resilience**: Multiple retry levels (HTTP, stage, block) ensure transient failures do not block the pipeline.
-- **State Tracking**: Per-Datei-Metadaten () und Hash-Dateien ermöglichen eine präzise inkrementelle Arbeit an nachfolgenden Laufzeiten.
-- ** Echtzeitsicht**: Jede signifikante Operation wird über SignalR zur Überwachung und Debugging gemeldet.
-- **Manuelle Übersetzungen haben immer Vorrang vor automatischen Ergänzungen. **
+- **State-Tracking**: Per-Datei-Metadaten () und Hash-Dateien ermöglichen eine präzise Inkrementalarbeit auf nachfolgenden Laufwerken.
+- ** Echtzeitsicht**: Jeder signifikante Betrieb wird über SignalR zur Überwachung und Debugging gemeldet.
+- **Viele Übersetzungen haben immer Vorrang vor automatischen Ergänzungen.**

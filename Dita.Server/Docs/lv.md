@@ -2,7 +2,7 @@
 
 ## Pārskats
 
-Šajā dokumentā apkopotas visas izmaiņas, kas veiktas Dita automātiskās tulkošanas dienestā, ieskaitot arhitektūras refaktūru, jaunas funkcijas, novērošanas uzlabojumus un lokalizācijas uzlabojumus.
+Šajā dokumentā apkopotas visas izmaiņas, kas veiktas Dita automātiskās tulkošanas pakalpojumu, ieskaitot arhitektūras refaktoru, jaunas funkcijas, novērošanas uzlabojumus, un lokalizācijas uzlabojumus.
 
 ## Arhitektūras izmaiņas
 
@@ -10,18 +10,18 @@
 
 Monolīts ir sadalīts četros specializētos pakalpojumos, kurus koordinē vieglais orķestrators:
 
-- **Atpakaļtulkošanas pakalpojums** – Cauruļvadu orķestris (servera apstiprināšana, estrādes deleģēšana, kļūdu apstrāde)
-- **CountriesTranslationService** – Valodu nosaukumu sinhronizācija (angļu → mērķvaloda)
+- **Atpakaļtulkošanas pakalpojums** – Cauruļvadu orķestrators (servera apstiprināšana, skatuves delegācija, kļūdu apstrāde)
+- **CountriesTranslationService** – Valsts nosaukumu sinhronizācija (angļu → mērķvaloda)
 - **LocalizationTranslationService** — JSON vārdnīcas sinhronizācija (pievienotie/atceltie taustiņi)
 - **DokumentiTulkošanas pakalpojums** – Novilkumu dokumentēšanas tulkojums ar bloka līmeņa izsekošanu
 - **SignalRPublizer** – reāllaika progresa ziņojumi, izmantojot SignalR
-- **TulkojumsRetryService** – Stage-level retritting with placeholder seservation
+- **TulkojumsRetryService** – Skatuves līmeņa atkārtota meklēšana ar viettura saglabāšanu
 
 ### Ieguvumi
 
 - ** Bažu nošķiršana**: Katrs pakalpojums apstrādā vienu tulkošanas domēnu
 - ** Noturība**: Mazākas klases ir vieglāk saprast un pārbaudīt
-- **Terminalitāte**: Jaunus tulkošanas mērķus var pievienot, izmantojot saskarnes īstenošanu
+- **Tīrība**: Jaunus tulkošanas mērķus var pievienot, izmantojot saskarnes īstenošanu
 - **Uzticamība**: Neatkarīgi pakalpojumi nodrošina labāku defektu izolāciju
 
 ## Jaunas iespējas
@@ -32,7 +32,7 @@ Monolīts ir sadalīts četros specializētos pakalpojumos, kurus koordinē vieg
 
 Jauna admin lapa, kas nodrošina reāllaika redzamību tulkošanas cauruļvadā:
 
-- Rāda visu signālu R notikumi, kad tie notiek
+- Parāda visus signāluR notikumus, kad tie notiek
 - Krāsu kodificēti ziņojumu tipi (zils=startēts, zaļš=pabeigts, sarkans=kļūds)
 - Savienojuma statusa baneris ar automātisko savienojumu
 - Ziņu skaitītājs un eksports uz JSON
@@ -61,7 +61,7 @@ Iezīmes:
 Atzīmēšanas faili tiek tulkoti pakāpeniski:
 
 - **Ietaupījums uz vienu valodu**: Katra mērķa valoda tiek saglabāta uzreiz pēc tulkošanas, samazinot atmiņas spiedienu
-- **Bloklīmeņa izsekošana**: celiņi tulkošanas statusu par bloku
+- **Bloka līmeņa izsekošana**: celiņi tulkošanas statusu uz bloku
 - ** Selektīva pārskatīšana**: Nākamās palaišanas laikā atkārtoti tiek tulkoti tikai neveiksmīgie bloki
 - **Metadatu noturība**: Tulkošanas stāvoklis pārdzīvo programmu pārstartēšanu
 
@@ -71,7 +71,7 @@ Trīs izturētspējas līmeņi:
 
 1. **HTTP atkārtojums** (LibreTranslateService): 5 mēģinājumi ar eksponenciālu dublējumu (1s–5s)
 2. **Stage retritry** (TulkojumsRestryService): 3 papildu mēģinājumi ar 30s aizkavēšanos
-3. ** Block retritry** (Dokumentu tulkošanas dienests): Neizdevās novilkt blokus, kas tika retridetēti pēc nākamās palaišanas
+3. **Block retritry ** (DocumentsTulkojumsService): neizdevās iezīmēt blokus, kas tika pārkārtoti nākamajā izpildījumā
 
 ### SignāluR ziņošana
 
@@ -112,7 +112,7 @@ Reģistrēta:
 - /
 - /
 
-Signāls R mezgls tiek kartēts klientu pieslēgumiem.
+SignalR centrmezgls tiek kartēts klientu pieslēgumiem.
 
 ## Testēšana
 
@@ -120,13 +120,13 @@ Signāls R mezgls tiek kartēts klientu pieslēgumiem.
 
 - **243/244 testi iziet** (1 izlaists sakarā ar vienlaicīgu piekļuvi failiem testa vidē)
 - Jauns testa pārklājums pievienots:
-  - Vietas turētājs Pakalpojumu funkcionalitāte
-  - AizmugureTulkojums Pakalpojumu organizēšana
+  - PlaceholderService funkcionalitāte
+  - BackendTranslationService orķestrācija
   - JsonStringLocalizer vietturu indeksētāji
 
 ### Zināmie ierobežojumi
 
-- tests ir izlaists, ja darbojas paralēli, jo vairākas testa instances ir kopīgs pats fails. Tas iet, kad skrien izolēti.
+- tests ir izlaists, ja darbojas paralēli, jo vairākas testa instances koplieto vienu un to pašu failu. Tas iet, kad skrien izolēti.
 
 ## Jauna faila struktūra
 
@@ -136,7 +136,7 @@ Signāls R mezgls tiek kartēts klientu pieslēgumiem.
 - — Valsts nosaukuma tulkojums
 - — JSON vārdnīca sinhronizācija
 - — Marķējuma tulkošana
-- — Signāls R ziņojumu izdošana
+- — SignalR ziņojumu publicēšana
 - — Mēģināt vēlreiz loģiku ar vietturu maskēšanu
 - — Publicētāja saskarne
 - — Valsts pakalpojumu saskarne
@@ -148,7 +148,7 @@ Signāls R mezgls tiek kartēts klientu pieslēgumiem.
 ### Pakalpojumu atjaunināšana
 
 - — Pievienotais vietturu atbalsts
-- — Atjaunots jaunam parametram
+- — Atjaunināts attiecībā uz jaunu parametru
 - — Norādīta viettura vadība
 - — viettura saskarne
 
@@ -172,7 +172,7 @@ Visas izmaiņas ir papildinošas:
 - Pozicionālais formatējums () darbojas nemainīgs
 - Esošais JSON vārdnīcas formāts nav mainīts
 - Esošā iezīmēšanas struktūra nemainās
-- Signāls R ziņojumi lietot to pašu formātu
+- SignalR ziņojumi izmanto to pašu formātu
 
 ## Migrācijas ceļš
 
@@ -185,14 +185,14 @@ Migrācija nav nepieciešama. Refaktors ir iekšējais:
 ## Darbības uzlabojumi
 
 - ** Reduced memory use**: Faili, kas saglabāti katrai valodai nekavējoties, nevis visu tur atmiņā
-- ** Pamata pakāpe trases**: Pārtulkoti tiek tikai mainīti/neizslēgti iezīmēšanas bloki
+- **Faster inkrementālās palaišanas**: Pārtulkoti tiek tikai mainīti/neizslēgti iezīmēšanas bloki
 - **Labāka redzamība**: Reālā laika progress palīdz diagnosticēt lēnas stadijas
 
 ## Turpmākie uzlabojumi
 
 Plānotie uzlabojumi:
 
-1. **AI precizēšana** — frāžu post-mašīntulkošana > 5 vārdi
+1. **AI precizēšana** – pēcmehānisma tulkojuma pārskats frāzēm > 5 vārdi
 2. **Admin autentifikācija** – Ierobežojiet admin lapas pilnvarotiem lietotājiem
 3. **Dictionary redaktor** – Web UI lokalizācijas atslēgu pārvaldībai
 4. **Tulkojumu statistika** – Tabulas, kurās redzams tulkojumu skaits un kļūdu īpatsvars laika gaitā

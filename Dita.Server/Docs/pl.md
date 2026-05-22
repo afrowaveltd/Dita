@@ -2,7 +2,7 @@
 
 ## Przegląd
 
-Niniejszy dokument podsumowuje wszystkie zmiany wprowadzone do usługi tłumaczenia automatycznego Dita, w tym refakturowanie architektury, nowe funkcje, poprawę obserwacji oraz ulepszenie lokalizacji.
+Niniejszy dokument podsumowuje wszystkie zmiany wprowadzone do usługi tłumaczenia automatycznego Dita, w tym refakturowanie architektury, nowe funkcje, poprawę widoczności i ulepszenie lokalizacji.
 
 ## Zmiany architektury
 
@@ -30,9 +30,9 @@ Monolit został podzielony na cztery specjalistyczne usługi koordynowane przez 
 
 **Location**: `/Admin/LiveTranslation`
 
-Nowa strona administracyjna, która zapewnia real- time widoczność w rurociągu tłumaczeniowym:
+Nowa strona admin, która zapewnia real- time widoczność do rurociągu tłumaczenia:
 
-- Wyświetla wszystkie sygnały Zdarzenia R w miarę ich występowania
+- Wyświetla wszystkie zdarzenia SignalR w miarę ich występowania
 - Kolorowe typy wiadomości (niebieski = rozpoczęty, zielony = zakończony, czerwony = błąd)
 - Baner stanu połączenia z auto- reconnect
 - Licznik wiadomości i eksport do JSON
@@ -78,7 +78,7 @@ Trzy poziomy odporności:
 Real- time progress reporting for all gapes operations:
 
 - Każdy etap publikuje wydarzenia
-- Postęp językowy opublikowany jako wydarzenia
+- Per- postęp językowy opublikowany jako wydarzenia
 - Zdarzenia błędów obejmują szczegółowy kontekst (źródło, kod błędu, wiadomość)
 - Numery sekwencji gwarantują zamawianie w ramach każdej operacji
 
@@ -112,7 +112,7 @@ Zarejestrowany w:
 - /
 - /
 
-Sygnał R-hub jest przeznaczony na połączenia z klientami.
+Głowica SignalR jest przyporządkowana do połączeń z klientami.
 
 ## Badanie
 
@@ -120,8 +120,8 @@ Sygnał R-hub jest przeznaczony na połączenia z klientami.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Dodano nowy zakres badań dla:
-  - Placeholder Funkcjonalność usługi
-  - Tłumaczenie Orchestracja serwisowa
+  - Funkcje PlaceholderService
+  - translationservice orchestration
   - JsonStringLocalizer indexers
 
 ### Znane ograniczenia
@@ -136,7 +136,7 @@ Sygnał R-hub jest przeznaczony na połączenia z klientami.
 - - Tłumaczenie nazwy kraju
 - - Synchronizacja słownika JSON
 - - Tłumaczenie Markdown
-- - Sygnał Publikacja wiadomości R
+- - Wydawnictwo wiadomości SignalR
 - - Retry logika z maskowania uchwytu
 - - Interfejs wydawcy
 - - Interfejs usług krajowych
@@ -172,7 +172,7 @@ Wszystkie zmiany są addytywne:
 - Formowanie pozycyjne () działa bez zmian
 - Istniejący format słownika JSON jest niezmieniony
 - Istniejąca struktura markdown pozostaje niezmieniona
-- Sygnał Komunikaty R używają tego samego formatu
+- Komunikaty SignalR używają tego samego formatu
 
 ## Ścieżka migracyjna
 
@@ -192,7 +192,7 @@ Migracja nie jest wymagana. Refaktoring jest wewnętrzny:
 
 Planowane ulepszenia:
 
-1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
+1. * * * AI fine- tuning * * * - Przegląd tłumaczenia maszynowego frazy > 5 słów
 2. **Admin authentication** — Restrict admin pages to authorized users
 3. **Dictionary editor** — Web UI for managing localization keys
 4. **Translation statistics** — Charts showing translation counts and error rates over time
@@ -200,4 +200,4 @@ Planowane ulepszenia:
 
 ## Kontakt
 
-W przypadku pytań lub problemów z serwisem tłumaczeniowym należy zapoznać się ze szczegółową dokumentacją w katalogu każdego modułu lub skontaktować się z zespołem ds. rozwoju.
+W przypadku pytań lub problemów związanych z tłumaczeniem prosimy zapoznać się ze szczegółową dokumentacją w katalogu każdego modułu lub skontaktować się z zespołem ds. rozwoju.

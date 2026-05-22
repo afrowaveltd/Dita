@@ -4,7 +4,7 @@ Dita tukee **nimettyjä paikanpitäjiä** lokalisointijonoissa, jolloin dynaamis
 
 ## Syntaksi
 
-Paikanhaltijat käyttävät kihara-arkku syntaksia sisällä JSON sanakirjassa arvot:
+Paikalleottajat käyttävät kihara-arkku syntaksi sisällä JSON sanakirja arvot:
 
 ```json
 {
@@ -13,13 +13,13 @@ Paikanhaltijat käyttävät kihara-arkku syntaksia sisällä JSON sanakirjassa a
 }
 ```
 
-Toisin kuin paikanhaltijat (, ), nimetyt paikanhaltijat ovat **kieli-agnostikko** . Kääntäjät voivat tilata ne uudelleen vastaamaan kohdekielen kielioppia rikkomatta koodia.
+Toisin kuin paikanhaltijat (, ,), nimetyt paikanhaltijat ovat **kieli-agnostinen** . Kääntäjät voivat tilata ne uudelleen vastaamaan kohdekielen kielioppia rikkomatta koodia.
 
 ## Varastointi
 
 Nimetyillä paikanhaltijoilla on kaksi arvolähdettä:
 
-### 1. Ajoaika-arvot (suositellaan dynaamisia tietoja varten)
+### 1. Ajankohdat (suositellaan dynaamisia tietoja)
 
 Siirrä arvot suoraan, kun haet paikallista merkkijonoa:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Säilytetyt arvot (puolistaattisessa konfiguraatiossa)
+### 2. Tallennetut arvot (puolistaattisessa konfiguraatiossa)
 
 Hakemistossa on tiedosto:
 
@@ -126,13 +126,13 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 Kun automaattinen käännöspalvelu kohtaa tekstin nimetty paikka haltijat:
 
-1. **Ennen käännöstä**: Paikan haltijat ovat naamioitu turvallisia kuponkia () estää käännös moottorin muuttaa niitä.
+1. **Ennen käännöstä**: Paikan haltijat ovat naamioitu turvallisia rahakkeita () estää käännösmoottorin muuttaa niitä.
 2. **Käännöksen aikana**: Käännös moottori käsittelee vain käännettävä teksti.
-3. ** Käännöksen jälkeen**: Alkuperäiset paikanhaltijan nimet () palautetaan oikeisiin asentoihinsa.
+3. ** Käännöksen jälkeen**: Alkuperäiset paikanhaltijan nimet () palautetaan oikeissa paikoissaan.
 
 ### Esimerkki
 
-Lähde:
+Lähde (englanti):
 
 Valmistettu käännettäväksi:
 
@@ -148,8 +148,8 @@ Näin varmistetaan, että
 ## Parhaat käytännöt
 
 1. **Käytä kuvailevia nimiä**: on parempi tai
-2. ** Säilytä paikat minimaalisesti**: Liian monta paikkaa haltijat tehdä käännös vaikeampaa
-3. **Dokumentti-odotustyypit**: JSON-tiedoston kommentit auttavat kääntäjiä ymmärtämään kontekstia
+2. **Pidä paikat minimaalisesti**: Liian monta paikkaa haltijat tehdä käännös vaikeampaa
+3. **Odotetut asiakirjat**: JSON-tiedoston kommentit auttavat kääntäjiä ymmärtämään kontekstia
 4. ** Määrittele ajoajan arvot**: Todella dynaamisille tiedoille (käyttäjien nimet, määrät, päivämäärät), läpäisyarvot ajohetkellä
 5. **Käytä tallennettuja arvoja oletusarvoille**: Asetukseen, joka harvoin muuttuu (sovelluksen nimi, tukisähköposti)
 6. ** Validaattipaikan haltijat**: Käyttö tarkistaa kaikki odotetut paikanhaltijat toimitetaan
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Nimetty paikan haltija API on additive ... se ei riko olemassa olevaa käyttöä.
+Nimetty paikan haltija API on additiivinen ... se ei riko olemassa olevaa käyttöä.

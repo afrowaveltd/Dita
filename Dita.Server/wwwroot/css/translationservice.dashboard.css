@@ -7,8 +7,8 @@
   display: flex;
   flex-direction: column;
   min-height: 760px;
-  height: 100vh;
-  padding: clamp(18px, 2vw, 30px);
+  height: calc(100vh - var(--dita-nav-height, 60px) - var(--dita-footer-height, 60px) - (var(--dita-dashboard-shell-gap, 14px) * 2));
+  padding: clamp(14px, 1.35vw, 24px);
   color: var(--ts-text);
   background:
     linear-gradient(135deg, var(--ts-bg-accent) 0%, transparent 34%),
@@ -38,13 +38,13 @@
   flex: 0 0 auto;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: clamp(14px, 1.6vw, 24px);
+  margin-bottom: clamp(12px, 1.2vw, 18px);
 }
 
 .translation-dashboard-header h1 {
   margin: 0;
   color: var(--ts-heading);
-  font-size: 2.35rem;
+  font-size: clamp(1.8rem, 1.8vw, 2.15rem);
   line-height: 1.05;
   letter-spacing: 0;
 }
@@ -60,7 +60,7 @@
 
 .translation-subtitle {
   max-width: 780px;
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   color: var(--ts-muted);
 }
 
@@ -110,7 +110,7 @@
   display: grid;
   grid-template-columns: minmax(260px, 1.35fr) repeat(4, minmax(150px, 1fr));
   gap: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .translation-dashboard-grid {
@@ -244,7 +244,7 @@
 .translation-metric-card {
   display: grid;
   align-content: space-between;
-  min-height: 150px;
+  min-height: 132px;
   padding: 18px;
 }
 
@@ -428,7 +428,7 @@
   gap: 14px;
   padding: 13px;
   border: 1px solid var(--ts-event-border);
-  border-left: 4px solid var(--ts-event-accent);
+  border-inline-start: 4px solid var(--ts-event-accent);
   border-radius: 10px;
   background: var(--ts-event-bg);
 }
@@ -436,16 +436,16 @@
 .translation-event.is-error,
 .translation-event.is-stagefailed,
 .translation-event.is-pipelinefailed {
-  border-left-color: var(--ts-danger);
+  border-inline-start-color: var(--ts-danger);
 }
 
 .translation-event.is-stagecompleted,
 .translation-event.is-pipelinecompleted {
-  border-left-color: var(--ts-complete);
+  border-inline-start-color: var(--ts-complete);
 }
 
 .translation-event.is-stagestarted {
-  border-left-color: var(--ts-primary);
+  border-inline-start-color: var(--ts-primary);
 }
 
 .translation-event-meta {

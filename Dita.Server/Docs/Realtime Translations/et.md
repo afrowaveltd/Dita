@@ -15,7 +15,7 @@ Iga alamteenus töötab iseseisvalt ja annab edusammudest teada SignalR-i kaudu 
 
 ## Mida teenistus teeb
 
-Teenus töötab ajakava järgi ja käivitab viieastmelise torustiku: serveri valideerimine, riigi sünkroniseerimine, JSON sõnastiku sünkroniseerimine, Markdowni failitõlge ja tulemuste püsimine. Iga etapp kiirgab struktureeritud reaalajas edenemissündmusi signaali kaudu R nii, et ühendatud kliendid saaksid töö edenedes kaasa minna.
+Teenus töötab ajakava järgi ja käivitab viieastmelise torustiku: serveri valideerimine, riigi sünkroniseerimine, JSON sõnastiku sünkroniseerimine, Markdowni failitõlge ja tulemuste püsimine. Iga etapp kiirgab struktureeritud reaalajas edusamme SignalR-i kaudu, et ühendatud kliendid saaksid töö edenedes kaasa minna.
 
 ## Torustiku etapid
 
@@ -45,11 +45,11 @@ Riikide nimesid hoitakse sünkroonis kirjutuskaitstud kataloogist () lokaliseeri
 
 Teenus võrdleb aktiivset vaikimisi lokaliseerimissõnaraamatut eelmisest tööst salvestatud hetkepildiga:
 
-- ** Lisatud võtmed ** – kirjed, mis on aktiivses vaikeväärtuses, kuid puuduvad hetkepildist, tõlgitakse igasse sihtkeelde, millel pole veel selle võtme käsitsi kirjet.
-- ** Eemaldatavad klahvid ** – hetkepildis esinevad kirjed, mis aga vaikeväärtuses puuduvad, kustutatakse igast sihtkeele sõnaraamatust.
-- Manuaalsed tõlked on alati prioriteetsed. Kui sihtsõnastik sisaldab juba võtme väärtust, jäetakse see kirje muutmata olenemata sellest, mida allikas ütleb.
+- ** Lisatud võtmed ** – kirjed, mis on aktiivses vaikeväärtuses, kuid puuduvad hetkepildist, tõlgitakse igasse sihtkeelde, millel ei ole veel selle võtme käsitsi kirjet.
+- ** Eemaldatavad võtmed ** – hetketõmmises esinevad kirjed, mis aga vaikeväärtuses puuduvad, kustutatakse igast sihtkeele sõnaraamatust.
+- Manuaalsed tõlked on alati prioriteetsed. Kui märksõnastik sisaldab juba võtme väärtust, jäetakse see kirje muutmata olenemata sellest, mida allikas ütleb.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
-- Kui tõlge ei õnnestu konkreetses keeles, proovib teenus automaatselt uuesti. Ainult püsivad vead (nt toetuseta keel) põhjustavad selle keele vahelejätmise.
+- Kui tõlge ei vasta konkreetsele keelele, proovib teenus automaatselt uuesti. Ainult püsivad vead (nt toetamata keel) põhjustavad selle keele vahelejätmise.
 - Pärast käivitamist salvestatakse aktiivne vaikesõnastik järgmise võrdluse uue pildina.
 
 Kõik sõnaraamatud on alati salvestatud tähestikuliselt sorteeritud võtmetega ja inimloetavuse jaoks treppitud JSON-iga.
@@ -62,9 +62,9 @@ Teenus käitab seadistatud dokumentatsiooni juuri (vaikimisi): ja töötleb iga 
 2. A `.translation-meta.json` file next to the source tracks per-language, per-block translation status, enabling **incremental re-translation** of only failed blocks.
 3. Eelmisest tööst salvestatud räsi (hoiti lähtefaili kõrval asuvas failis või ajutises varuasukohas) võrreldakse praeguse räsiga.
 4. Iga sihtkeele puhul kontrollitakse ka vastava faili struktuurilist terviklikkust.
-5. Iga sihtfail, mis puudub, on aegunud räsi, ei suuda struktuuri valideerimist või sisaldab tõlkimata plokke, on järjekorda tõlkimiseks.
+5. Igasugune sihtfail, mis puudub, on aegunud räsiga, ei suuda struktuuri valideerimist või sisaldab tõlkimata plokke, on järjekorda tõlkimiseks.
 6. **Iga sihtkeel tõlgitakse ja salvestatakse iseseisvalt** – kui tšehhi keel õnnestub, kuid prantsuse keel ebaõnnestub, kirjutatakse tšehhi fail ikkagi kettale.
-7. Edukalt tõlgitud failid valideeritakse struktuurse pariteedi jaoks allikaga (võrdsed pealkirjad, loendiüksused, koodiplokid, plokid, lingid, rasvased / kursilised markerid ja HTML-sildid) enne nende kirjutamist kettale.
+7. Edukalt tõlgitud failid valideeritakse struktuurse pariteedi jaoks allikaga (võrdsed pealkirjade arvud, loendi elemendid, koodiplokid, plokid, lingid, rasvased / kursilised markerid ja HTML-sildid) enne, kui need kirjutatakse kettale.
 8. Kui kõik allika sihtfailid õnnestuvad, salvestatakse uus räsi allika kõrvale. Kui allika kõrval kirjutamine ebaõnnestub (näiteks kirjutuskaitstud rakendustes), langeb räsi tagasi ajutisesse kataloogi.
 9. Kui mõni sihttõlge ebaõnnestub valideerimisel, märgib metaandmed need plokid tõlkimata, nii et neid otsitakse järgmisel käivitamisel uuesti.
 
@@ -75,15 +75,15 @@ Konsolideeritud dokument koostatakse ja avaldatakse. See hõlmab järgmist:
 - UTC käivitamise ja lõpetamise ajatemplid.
 - Salvestatud lokaadi JSON-failide loend, salvestatud Markdown-failid, salvestatud räsifailid ja varundatud räsikirjad.
 - Töö käigus kogutud salvestusvead.
-- Keeltepõhine tõlkestatistika (tõlgitud arv, vahelejäetud arv, vigade arv).
+- Keelepõhine tõlkestatistika (tõlgitud arv, vahelejäetud arv, vigade arv).
 
-## Signaal R-teate ümbris
+## SignalR-teate ümbris
 
 Iga edusündmus esitatakse a-na järgmiste väljadega:
 
 väli
 |-------|------|-------------|
-Torujuhtme jooksva sõidu korrelatsiooniidentifikaator
+Käimasoleva torujuhtmejooksu korrelatsiooni tunnuskood
 Monotoonne loendur jooksu sees, alustades punktist 1
 Teate semantiline tüüp
 Torustiku etapp, kuhu teade kuulub
@@ -150,7 +150,7 @@ Torujuhe rakendab kahte vastupidavuse taset:
 ### Etapitaseme proovimine (TranslationRetryService)
 
 - Kui tõlkepäring pärast LibreTranslate'i sisemisi korduskatseid ebaõnnestub, teeb tõlkepäring kuni 3 täiendavat etapitaseme korduskatset 30-sekundilise viivitusega.
-- Kohahoidja mask: Nimega kohahoidjad () asendatakse tekstis ajutiselt turvamärkidega () enne tõlkimist ja taastatakse hiljem, tagades õige grammatika sihtkeeltes.
+- Kohahoidja maskeerimine: nimelised kohahoidjad () asendatakse enne tõlkimist ajutiselt turvamärkidega () ja taastatakse hiljem, tagades õige grammatika sihtkeeltes.
 
 ### Keele valideerimine
 
@@ -188,9 +188,9 @@ Serveri projekt sisaldab administraatori lehte, mis ühendab SignalR-i jaoturiga
 
 ## Projekteerimispõhimõtted
 
-- **Modulaarsus**: iga tõlkeprobleem on hooldatavuse ja testitavuse huvides eraldiseisev.
-- ** Järkjärguline püsivus**: Sõnaraamatud ja Markdowni failid salvestatakse keele kaupa kohe pärast tõlkimist, vähendades mälurõhku ja andes varasemat tagasisidet.
+- **Modulaarsus**: iga tõlkeprobleem on hooldatavuse ja testitavuse osas oma teenistuses isoleeritud.
+- ** Järkjärguline püsivus**: Sõnaraamatud ja Markdowni failid salvestatakse keele kaupa kohe pärast tõlkimist, vähendades mälurõhku ja pakkudes varasemat tagasisidet.
 - ** Vastupidavus **: mitu kordusproovimise taset (HTTP, etapp, plokk) tagavad, et mööduvad rikked ei blokeeri torustikku.
-- ** Riigi jälgimine**: Failipõhised metaandmed () ja räsifailid võimaldavad järgnevatel jooksudel täpset järkjärgulist tööd.
+- **Riikide jälgimine **: failide kaupa metaandmed () ja räsifailid võimaldavad täpset järkjärgulist tööd järgnevatel jooksudel.
 - **Nähtavus reaalajas**: Igast olulisest operatsioonist teatatakse SignalR-i kaudu seireks ja silumiseks.
 - **Manual translations always have priority over automatic additions.**

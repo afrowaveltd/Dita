@@ -16,11 +16,11 @@
     <PackageReference Include="Afrowave.SharedTools.Api" Version="0.0.3" />
     <PackageReference Include="Afrowave.SharedTools.Models" Version="1.4.0-alpha" />
     <PackageReference Include="MailKit" Version="4.16.0" />
-    <PackageReference Include="Markdig" Version="1.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.9" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.5" />
+    <PackageReference Include="Markdig" Version="1.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.10" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 

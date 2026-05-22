@@ -156,7 +156,7 @@ Zapewnia to, że:
 
 ## Integracja z automatycznym tłumaczeniem
 
-Automatycznie obsługuje konserwację uchwytów podczas połączeń LibreTranslate. Nie jest konieczna dodatkowa konfiguracja.
+Automatycznie obsługuje konserwację uchwytu podczas połączeń LibreTranslate. Nie jest konieczna dodatkowa konfiguracja.
 
 Zarówno korzystać z usługi ponownego testowania, więc wszystkie tłumaczenia słownika JSON w przejrzysty sposób wspierać o nazwie placeholders.
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Nazwa placeholder API jest addytywna - nie narusza istniejącego zastosowania.
+Nazwa API placeholder jest addytywna - nie narusza istniejącego zastosowania.

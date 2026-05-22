@@ -9,7 +9,7 @@ Refaktoring riešil niekoľko obáv s pôvodným monolitický dizajn:
 - ** Oddelenie obáv**: Každá prekladateľská doména (krajiny, slovníky JSON, Markdown) je izolovaná.
 - ** Prírastková perzistencia **: Súbory sú uložené v jednom jazyku ihneď po preklade, zníženie používania pamäte a poskytovanie skorších výsledkov.
 - ** Odolnosť**: Viaceré úrovne opakovania zvládajú prechodné poruchy bez blokovania celého potrubia.
-- ** Pozorovateľnosť **: Každá významná operácia sa oznamuje prostredníctvom SignalR pre monitorovanie v reálnom čase.
+- ** Pozorovateľnosť**: Každá významná operácia je hlásená prostredníctvom SignalR pre monitorovanie v reálnom čase.
 - ** Extenzibilita **: Nové prekladateľské ciele možno pridať zavedením jedného rozhrania.
 
 ## Rozklad služieb
@@ -52,21 +52,21 @@ Refaktoring riešil niekoľko obáv s pôvodným monolitický dizajn:
 - Manuálne preklady majú vždy prednosť (nikdy neprepísané)
 - Pridané klávesy sú okamžite preložené a uložené v jednom jazyku
 - Odstránené klávesy sú okamžite vymazané v jednom jazyku
-- Snapshot je uložený až po úspešnom dokončení všetkých jazykov
+- Snapshot sa uloží až po úspešnom dokončení všetkých jazykov
 
 ### DokumentyPrekladService
 
 ** Povinnosti**:
 - Name
 - Detekovať zmenené zdrojové súbory pomocou SHA-256 hašés
-- Track per-block stav prekladu v
-- preložiť blok podľa bloku s opakovaním na blok
+- Stav track per-block prekladu v
+- preložiť blok podľa bloku s opakovaným preskúšaním podľa bloku
 - Overiť Markdown štruktúru po preklade
 - Uložiť každý súbor cieľového jazyka nezávisle
 
 **Kľúčové správanie**:
-- Zrnitá veľkosť blokov: nadpisy, odseky, položky zoznamu sa prekladajú samostatne
-- Stopy metaúdajov, ktoré zablokovali/nezlyhali podľa jazyka
+- Zrnitá veľkosť bloku: nadpisy, odseky, položky zoznamu sa prekladajú samostatne
+- Stopy metaúdajov, ktoré zablokovali/zlyhali podľa jazyka
 - Zlyhané bloky sú znovu získané na ďalšom spustení bez opätovného prenosu úspešných blokov
 - Validácia štruktúry zabezpečuje počet okruhov, zoznamy, bloky kódov atď. zodpovedajúceho zdroja
 
@@ -76,9 +76,9 @@ Systém zavádza dotrukcie na troch úrovniach:
 
 ### Úroveň 1
 
-- Až 5 pokusov s exponenciálnym ústupom (1s, 2s, 3s, 4s, 5s)
+- Až 5 pokusov s exponenciálnym spätným účinkom (1s, 2s, 3s, 4s, 5s)
 - Ovláda timeouty siete, chyby 5xx a prechodné poruchy
-- Vstavaný do konfigurácie klienta HTTP
+- Zabudované do konfigurácie klienta HTTP
 
 ### Úroveň 2
 
@@ -154,14 +154,14 @@ For each target language:
 
 ### Snímky
 
-- **JSON**: uložené v súbore vedľa predvoleného slovníka (meno sa mení podľa poskytovateľa úložiska)
+- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
 - **Purpose**: Umožňuje prírastkovú synchronizáciu sledovaním toho, čo bolo prítomné v predchádzajúcom behe
 
 ### Hash súbory
 
 - ** Markdown**: vedľa zdrojového súboru
 - **Fallback**: ak je primárne miesto iba na čítanie
-- **Purpose**: Odhaľuje zmeny zdrojov, aby sa predišlo zbytočnému opätovnému prekladu
+- **Purpose**: Odhaľuje zmeny zdrojov, aby sa predišlo zbytočnej retranslácii
 
 ### Prekladové metaúdaje
 
@@ -170,15 +170,15 @@ For each target language:
   - Zdrojový obsah haš
 - Stav bloku na jeden jazyk (pole booleanov)
 - Časová pečiatka poslednej aktualizácie
-- **Purpose**: Umožňuje čiastočnú retransláciu iba neúspešných blokov
+- **Purpose**: Povolí čiastočnú retransláciu iba neúspešných blokov
 
 ### Uskladňovanie miesta
 
 - ** File **:
 - **Obsah**: Slovník kľúčov pre páry s menovkou
-- **Purpose**: Poskytuje predvolené hodnoty pre pomenovaných držiteľov v rámci aplikácie
+- **Purpose**: Poskytuje predvolené hodnoty pre pomenovaných držiteľov stanov v rámci celej aplikácie
 
-## Signál R podávanie správ
+## Hlásenie signáluR
 
 ### Vydavateľská abstrakcia
 
@@ -198,7 +198,7 @@ public interface ISignalRPublisher
 - Poradové čísla sú jedinečné na-run cez
 - Klienti môžu odhaliť medzery alebo zmeny poradia
 
-### Mapovanie nábojov
+### Mapovanie náboja
 
 ```csharp
 app.MapHub<LocalizationHub>("/hubs/localization");
@@ -209,7 +209,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 ### Pridanie nového prekladateľského cieľa
 
 1. Vytvoriť nové rozhranie s
-2. Implementovať rozhranie s logikou konkrétnej domény
+2. Implementovať rozhranie s logikou špecifickej pre doménu
 3. Registrácia v kontajneri DI
 4. Vstreknite do konštruktéra
 5. Výzva po existujúcich fázach
@@ -231,7 +231,7 @@ services.AddSingleton<TranslationRetryService>(
 
 ### Custom placenther manipulation
 
-Implementovať zmeniť syntax alebo skladovanie držiteľa miesta:
+Implementovať s cieľom zmeniť syntax alebo skladovanie držiteľa miesta:
 
 ```csharp
 public class CustomPlaceholderService : IPlaceholderService
@@ -278,14 +278,14 @@ Každá čiastková služba je nezávisle otestovateľná:
 
 - Mock simulovať úspech/zlyhanie
 - Mock na overenie hlásenia
-- Použiť dočasné adresáre pre súbor I/O
+- Použiť dočasné adresáre pre súbor I/ O
 - Overiť správanie v jednotlivých jazykoch
 
 ### Integračné skúšky
 
 - Full ropovod beh s reálnym (lokálne) LibreTranslate instance
-- Overiť signál R správy sú dodávané pripojeným klientom
-- Test súbežnej prevencie (semafore)
+- Overiť SignalR správy sú dodávané pripojeným klientom
+- Test súbežne spustiť prevenciu (semafore)
 - Overiť Markdown štruktúru po preklade
 
 ### Koncové testy
@@ -298,8 +298,8 @@ Každá čiastková služba je nezávisle otestovateľná:
 ## Úvahy o výkonnosti
 
 - **Pamätník**: Ukladanie podľa jazyka zabraňuje uchovaniu všetkých slovníkov v pamäti
-- **Disk I/ O **: Súbory metaúdaje pridávajú malé režijné náklady, ale umožňujú prírastkovú prácu
-- **Network**: Sekvenčné spracovanie s brzdením zabraňuje drveniu LibreTranslát
+- **Disk I/O**: Súbory metadát pridávajú malé režijné náklady, ale umožňujú prírastkovú prácu
+- **Sieť**: Postupné spracovanie s thrkotanie zabraňuje ohromujúci LibreTranslát
 - **CPU**: SHA-256 overenie hashingu a regexu sú rýchle v porovnaní s latenciou prekladu
 - **SignalR**: Ľahké správy, žiadna kompresia užitočného zaťaženia potrebná pre typické hlásenia
 
@@ -310,7 +310,7 @@ Originál obsahoval celú logiku v jednej triede. Cesta prechodu:
 1. Vyberte krajinu logiku →
 2. Extrahovať JSON logiku →
 3. Extrahovať Markdown logiku →
-4. Výťahový signál R vydavateľstvo →
+4. Vydávanie extraktu SIGNÁL →
 5. Logická extrakcia →
 6. Zjednodušiť orchestra len na delegáciu
 

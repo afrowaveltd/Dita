@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## Sintaksis
 
-Pemegang paket menggunakan sintaks curly-brace dalam nilai kamus JSON:
+Placeholder menggunakan sintaks curly-brace dalam nilai kamus JSON:
 
 ```json
 {
@@ -17,7 +17,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 ## Penyimpanan
 
-Pemilik tempat bernama memiliki dua sumber nilai:
+Pemilik placeholder bernama memiliki dua sumber nilai:
 
 ### 1. Nilai runtime (disarankan untuk data dinamis)
 
@@ -35,9 +35,9 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Nilai tersimpan (untuk konfigurasi semi-static)
+### 2. Nilai tersimpan (untuk konfigurasi semi-statis)
 
-Mengelola berkas di direktori:
+Mengelola berkas dalam direktori:
 
 ```json
 {

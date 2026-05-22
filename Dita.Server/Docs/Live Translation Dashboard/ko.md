@@ -2,17 +2,17 @@
 
 Live Translation Dashboard는 자동 번역 파이프라인에 실시간 가시성을 제공하는 관리자 페이지입니다. SignalR 허브에 연결하고 모든 파이프라인 이벤트를 표시합니다.
 
-## 사이트 맵
+## 사이트맵
 
 `/Admin/LiveTranslation`
 
 > Note: Authentication and authorization are not yet implemented. Future versions will restrict this page to admin users only.
 
-## 제품 설명
+## 제품 정보
 
 ### 실시간 이벤트 스트림
 
-모든 신호 번역 파이프라인의 R 이벤트는 라이브 업 테이블에 표시됩니다
+번역 파이프라인의 모든 SignalR 이벤트는 생방송 테이블에 표시됩니다
 
 - **Sequence number** - 각 파이프라인 내의 Monotonic 카운터
 - **Timestamp** — 이벤트가 수신될 때 현지 시간
@@ -24,7 +24,7 @@ Live Translation Dashboard는 자동 번역 파이프라인에 실시간 가시�
 
 ### 색깔 기호화
 
-색깔: 백색
+색깔: 회색
 |-------|---------|
 블루 ()
 녹색 ()
@@ -47,7 +47,7 @@ Live Translation Dashboard는 자동 번역 파이프라인에 실시간 가시�
 - **Export JSON ** - 분석을위한 JSON 파일로 모든 수신 된 메시지를 다운로드
 - **Message 카운터 ** -이 세션에서받은 총 이벤트 수를 표시합니다
 
-## 주요 특징 R 허브
+## SignalR 허브
 
 대시보드는 다음과 같습니다:
 
@@ -91,14 +91,14 @@ interface LocalizationHubMessage {
 
 ### 기타
 
-- **지역화 Hub** () - 모든 연결된 클라이언트에 메시지를 방송하는 SignalR 허브
+- **LocalizationHub** () - 모든 연결된 클라이언트에 메시지를 방송하는 SignalR 허브
 - **ISignalRPublisher** — 번역 서비스에 대한 허브에 대한 애정
 - **SignalRPublisher** - 모노토닉 시퀀스와 방송을 증가하는 기본 구현
 
 ### 회사연혁
 
-- 부트 스트랩과 순수한 HTML / JS 5 스타일링
-- Microsoft SignalR JavaScript 클라이언트 라이브러리 사용 (CDN에서로드 됨)
+- Pure HTML/JS 와 부트 스트랩 5 스타일링
+- Microsoft SignalR JavaScript 클라이언트 라이브러리를 사용하여 (CDN에서로드 됨)
 - 이벤트 피드에 필요한 서버 측 렌더링 없음
 
 ### 페이지 구조
@@ -144,9 +144,9 @@ Dita.Server/Pages/Admin/
 1. SignalR 허브 URL이 서버()과 클라이언트() 사이 일치한다는 것을 확인합니다
 2. 스케줄러를 검증합니다
 3. 서버 로그에서 번역 파이프라인 오류
-4. 자주 묻는 질문 WebSocket 메시지의 네트워크 탭
+4. WebSocket 메시지에 대한 브라우저 네트워크 탭 확인
 
-### 메시지는 주문 중
+### 메시지는 주문 중입니다
 
 필드는 단일 실행 내에서 주문을 보장합니다. 메시지가 순서로 나타낸 경우, 그것은 나타냅니다:
 - 다중 파이프라인은 overlapping를 달립니다 (semaphore 자물쇠 때문에 일어나지 마십시오)

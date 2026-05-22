@@ -100,7 +100,7 @@ public interface IPlaceholderService
 }
 ```
 
-### Laiendusmeetodid
+### Laiendamismeetodid
 
 Mugavuse huvides töötades :
 
@@ -126,7 +126,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 Kui automaattõlketeenus kohtab teksti nimega kohahoidjatega:
 
-1. ** Enne tõlkimist**: Kohahoidjad on maskeeritud ohutute märkidega (), et tõlkemootor ei saaks neid muuta.
+1. ** Enne tõlkimist**: Kohahoidjad on maskeeritud turvamärkidega (), et tõlkemootor ei saaks neid muuta.
 2. ** Tõlke ajal**: Tõlkemootor töötleb ainult tõlgitavat teksti.
 3. **Pärast tõlkimist**: Algsed kohatäitjate nimed () taastatakse õigetes asukohtades.
 
@@ -149,7 +149,7 @@ Sellega tagatakse, et:
 
 1. ** Kasuta kirjeldavaid nimetusi **: on parem kui või
 2. **Hoida kohatäitjad minimaalsed**: Liiga palju kohatäitjaid muudab tõlkimise raskemaks
-3. **Dokumendi eeldatavad tüübid**: JSON-faili kommentaarid aitavad tõlkijatel konteksti mõista
+3. ** Dokumendi eeldatavad liigid**: JSON-faili kommentaarid aitavad tõlkijatel konteksti mõista
 4. ** Käitamisaja väärtused**: Tõeliselt dünaamiliste andmete (kasutajanimed, loendused, kuupäevad) puhul läbimisväärtused tööajal
 5. ** Kasuta vaikeväärtuste puhul salvestatud väärtusi**: Seadistamine, mis harva muutub (rakenduse nimi, e-posti tugi)
 6. **Kindlaksmääratud kohatäitjad**: Kasutamine, et kontrollida kõigi eeldatavate kohaomanike olemasolu

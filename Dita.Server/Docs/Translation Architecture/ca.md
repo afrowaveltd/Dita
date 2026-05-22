@@ -1,15 +1,15 @@
 ﻿# Arquitectura de traducció
 
-Aquest document descriu l' arquitectura modular del sistema de traducció automàtica de la Dita, introduït per millorar la facilitat, la prova i la resistència.
+Aquest document descriu l' arquitectura modular del sistema de traducció automàtica de la Dita, introduït per millorar la mantébilitat, la prova i la resistència.
 
 ## Dissenya objectius
 
-El refavorisme ha tractat diverses preocupacions amb el disseny monoliètic original:
+El refavorisme ha tractat diverses preocupacions amb el disseny monolètic original:
 
 - **Separation of concerns**: Each translation domain (countries, JSON dictionaries, Markdown) is isolated.
 - **Incremental persistence**: Files are saved per-language immediately after translation, reducing memory usage and providing earlier results.
 - **Resilitat **: Múltiples nivells reintentar errors transitoris sense bloquejar tota la canonada.
-- ** Obsservabilitat **: Cada operació significativa es presenta mitjançant senyalR per monitoritzar en temps real.
+- **Observability**: Every significant operation is reported via SignalR for real-time monitoring.
 - **Extenibilitat **: Es poden afegir nous objectius de traducció executant una única interfície.
 
 ## Descomposició del servei
@@ -18,7 +18,7 @@ El refavorisme ha tractat diverses preocupacions amb el disseny monoliètic orig
 
 **Responsibilities**:
 - Gestió de cicles de vida de conducte (inici, compleció, gestió d' errors)
-- Control d'injustència basat en el Semaphore (revisió sobrepassades)
+- Control d'injustència basat en el Smaphore (revisió sobrepassades)
 - Validació del servidor (lateència, disponibilitat del llenguatge, configuració)
 - Delegació als subserves
 
@@ -49,7 +49,7 @@ El refavorisme ha tractat diverses preocupacions amb el disseny monoliètic orig
 - Desa la instantània per a la comparació següent
 
 **Key behaviors**:
-- Les traduccions manuals sempre tenen prioritat (no sobreescrit)
+- Les traduccions manuals sempre tenen prioritat (no sobreescrites)
 - S' han afegit les tecles es tradueixen i s' han desat per llengua immediatament
 - S' han eliminat les tecles per idioma immediatament
 - La instantània es desa només després de que tots els idiomes tinguin èxit
@@ -62,13 +62,13 @@ El refavorisme ha tractat diverses preocupacions amb el disseny monoliètic orig
 - Estat de la traducció per blocada
 - Tradueix bloc- a través del bloc amb per bloc torneu- ho a intentar
 - Valida l' estructura Markdown després de la traducció
-- Desa independentment de cada fitxer idioma de destí
+- Desa de forma independent cada fitxer d' idioma de destí
 
 **Key behaviors**:
 - Granularitat de bloc: capçaleres, paràgrafs, elements de llista es tradueixen per separat
 - Les peces de metadades que els blocs han fallat/ ha fallat per llengua
 - Els blocs erronis es retribueixen a la propera execució sense tornar a indexar els blocs d'èxit
-- La validació de l' estructura assegura els comptadors de capçaleres, llistes, blocs de codi, etc. coincideix amb font
+- La validació de l' estructura assegura els comptadors de capçaleres, llistes, blocs de codi, etc. coincideix amb el codi font
 
 ## Reintenta l' estratègia
 
@@ -84,9 +84,9 @@ El sistema implementa reintents a tres nivells:
 
 - Tres intents amb 30 segons retards
 - Torna a desar la petició de traducció sencera després que les reintents HTTP de nivell s' hagin acabat
-- Màscara de substitució i restauració d' aquest nivell
+- Màscara de reserva i restauració s' aplica a aquest nivell
 
-### Bloc de nivell 3 (Documents AdvancedService)
+### Bloc de nivell 3 (Documents AdvancedrService)
 
 - Marca els blocs individuals que no estan marcats en metadades
 - Reordenat automàticament a l' execució de canonada següent
@@ -154,7 +154,7 @@ For each target language:
 
 ### Instantànies
 
-- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
+- ** JSON **: Emmagatzemat en un fitxer al costat del diccionari per omissió (nom varia pel proveïdor d' emmagatzematge)
 - **Purpose**: Enables incremental sync by tracking what was present in the previous run
 
 ### Fitxers de resum
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Senyal Informe R
+## Informe de senyalR
 
 ### Abstracció de l' editor
 
@@ -278,26 +278,26 @@ Cada subserveble és independent:
 
 - Falsa a simular èxit/faliure
 - MEX per verificar l' informe
-- Usa directoris temporals per al fitxer I/ S
+- Usa directoris temporals per al fitxer I/ O
 - Verifica el comportament de desat per idioma
 
 ### Comprovacions d' integració
 
 - Execució completa de canonada amb una instància real (local) Libretrape
-- Verifica senyal Els missatges R són enviats als clients connectats
+- Verifica els missatges senyalR als clients connectats
 - Prova la prevenció d' execució recurrent (semaphore)
 - Valida l' estructura Markdown després de la traducció
 
-### Comprovacions d' acabament finals
+### Comprovacions finals a final
 
 - Activa la traducció mitjançant API o planificador
-- Verifica tots els fitxers d' idioma destí es creen/ s' actualitzen
+- Verifica tots els fitxers d' idioma destí es creen/ actualitzats
 - Comprova els fitxers de metadades contenen un estat de bloc correcte
-- Confirmar que els marcadors es conservan a través de les traduccions
+- Confirma la substitució es preserva a través de les traduccions
 
 ## Les consideracions de rendiment
 
-- ** Memoriy **: En canvi en llengua evita mantenir tots els diccionaris en memòria
+- ** Memoriy **: En el desat en llengua evita mantenir tots els diccionaris en memòria
 - **Disk I/O**: Metadata files add small overhead but enable incremental work
 - **Network**: Sequential processing with throttling prevents overwhelming LibreTranslate
 - **CPU**: SHA-256 hashing and regex validation are fast relative to translation latency
@@ -309,9 +309,9 @@ L'original conté tota lògica en una classe. La ruta de migració:
 
 1. Extraieu la lògica del país
 2. Extreu la lògica JSON eka
-3. Extreu la lògica " markdown "
-4. Extreu senyal Re publicació bibliography
+3. Extreu la lògica de markdown KFormula
+4. Extreu la publicació de senyalsR bibliography
 5. Extreu la lògica reintentar
 6. Simplifiqueu orquestrator a només de delegació
 
-Totes les interfícies existents () segueixen sense canvis. Els consumidors de la canonada no veuen canvis trencar.
+Totes les interfícies existents () continuen sense canvis. Els consumidors de la canonada no veuen canvis trencar.

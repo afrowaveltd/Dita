@@ -1,10 +1,10 @@
 ﻿# Vertimo raštu architektūra
 
-Šiame dokumente aprašoma modulinė "Ditos" automatinio vertimo sistemos architektūra, kuri buvo įdiegta siekiant pagerinti priežiūros galimybes, stabilumą ir atsparumą.
+Šiame dokumente aprašoma modulinė "Ditos" automatinio vertimo sistemos architektūra, įdiegta siekiant pagerinti išlaikymo galimybę, stabilumą ir atsparumą.
 
 ## Konstrukcijos tikslai
 
-Atsisakymas buvo skirtas kelioms problemoms, susijusioms su originaliu monolitiniu modeliu:
+Rikant buvo atkreiptas dėmesys į kelias problemas, susijusias su pradiniu monolitiniu modeliu:
 
 - **Separation of concerns**: Each translation domain (countries, JSON dictionaries, Markdown) is isolated.
 - **Incremental persistence**: Files are saved per-language immediately after translation, reducing memory usage and providing earlier results.
@@ -18,7 +18,7 @@ Atsisakymas buvo skirtas kelioms problemoms, susijusioms su originaliu monolitin
 
 **Responsibilities**:
 - Vamzdynų gyvavimo ciklo valdymas (pradžia, užbaigimas, klaidų valdymas)
-- Semaforinė concurrence kontrolė (užkertant kelią persidengiantiems važiavimams)
+- Semaphore pagrįstas concurrence kontrolė (užkertant kelią persidengiančių veikia)
 - Serverio patvirtinimas (vėlavimas, kalbos prieinamumas, konfigūracija)
 - Delegavimas teikiant subpaslaugas
 
@@ -32,7 +32,7 @@ Atsisakymas buvo skirtas kelioms problemoms, susijusioms su originaliu monolitin
 **Responsibilities**:
 - Skaityti iš aplanko
 - Sinchronizuoti šalių pavadinimus į numatytąjį locale žodyną
-- Praleistų šalių pavadinimai pagal paskirties kalbą
+- NAME OF TRANSLATORS
 - Išsaugoti kiekvieno tikslo žodyną iš karto po vertimo
 
 **Key behaviors**:
@@ -60,15 +60,15 @@ Atsisakymas buvo skirtas kelioms problemoms, susijusioms su originaliu monolitin
 - @ info: whatsthis
 - Detektuoti pakeistus pradinio kodo failus naudojant SHA-256 brūkšnelius
 - Takelio per- block vertimo būsena
-- Translate block- by- block su per- block retry
+- NAME OF TRANSLATORS
 - @ info: tooltip
 - @ info: tooltip
 
 **Key behaviors**:
 - Bloko lygio detalumas: antraštės, dalys, sąrašo straipsniai verčiami atskirai
 - Name
-- NAME OF TRANSLATORS
-- Konstrukcijos patvirtinimas užtikrina pozicijų skaičių, sąrašus, kodų blokus ir t. t. rungtynių šaltinį
+- @ info: whatsthis
+- Struktūros patvirtinimas užtikrina pozicijų skaičių, sąrašus, kodų blokus ir t. t. rungtynių šaltinį
 
 ## Tęsti strategiją
 
@@ -88,7 +88,7 @@ Sistemoje atliekami bandymai trimis lygmenimis:
 
 ### 3 lygis - blokas (DocumentTranslationService)
 
-- Atskiri žymėjimo blokai, kurie neatitinka metaduomenų
+- Atskiri žymėjimo blokai, kurių metaduomenys neatitinka reikalavimų
 - @ info: tooltip
 - Sėkmingas blokai niekada iš naujo išversti
 
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Signalas R pranešimas
+## SignalR pranešimas
 
 ### Leidėjo ėmimas
 
@@ -278,13 +278,13 @@ Kiekviena subpaslauga yra nepriklausomai tikrinama:
 
 - Mock, siekiant imituoti sėkmę / nesėkmę
 - Mock to patikrinti ataskaitų
-- I / O failui naudoti laikinus katalogus
+- I failui naudoti laikinus aplankus / S
 - Patikrinti per- kalbos taupymo elgesį
 
 ### Integracijos bandymai
 
 - Full touch run with real (local) Librelaw instance
-- Patikrinti signalą R pranešimai pristatomi prijungtiems klientams
+- SionalR žinutės pristatomos prijungtiems klientams
 - Testų atlikimas vienu metu (semaforas)
 - @ info: tooltip
 
@@ -307,10 +307,10 @@ Kiekviena subpaslauga yra nepriklausomai tikrinama:
 
 Originale buvo visa logika vienoje klasėje. Migracijos kelias:
 
-1. Ekstrahuoti šalies logiką →
+1. Šalies logika →
 2. Ekstraktas JSON loginis →
 3. Ekstrakto žymėjimo logika →
-4. Ekstrahavimo signalas R leidyba →
+4. Ekstrahuoti SionalR leidybą →
 5. Ekstrahuoti pakartotinai logika →
 6. Paprastesnis orchestratorius tik delegacijai
 

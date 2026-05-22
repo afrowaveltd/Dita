@@ -15,7 +15,7 @@ La traduko dukto estis restrukturita en modulan arkitekturon kun kvar specialeca
 
 ## Kion la servo faras
 
-La servo kuras en horaro kaj efektivigas kvin-fazan dukton: servila validumado, landosinkronigo, JSON-vorta sinkronigado, Markdown dosiertraduko, kaj persistante la rezultojn. Ĉiu stadio elsendas strukturitajn realtempajn progresojn super Signalo R tiel kiu ligis klientojn povas sekvi kiel laborenspezo.
+La servo kuras en horaro kaj efektivigas kvin-fazan dukton: servila validumado, landosinkronigo, JSON-vorta sinkronigado, Markdown dosiertraduko, kaj persistante la rezultojn. Ĉiu stadio elsendas strukturitajn realtempajn progresojn super SignalR tiel ke ligitaj klientoj povas sekvi antaŭen kiel laborenspezoj.
 
 ## Duliniaj stadioj
 
@@ -59,12 +59,12 @@ La servo komparas la nunan defaŭltan lokalizilvortaron kun momentfoto stokita d
 La servo piediras la formitan dokumentarradikojn (defaŭlto: ) kaj prilaboras ĉiun fontdosieron rekursive:
 
 1. La fonta dosierenhavo estas legita kaj SHA-256 hah estas komputita.
-2. A `.translation-meta.json` file next to the source tracks per-language, per-block translation status, enabling **incremental re-translation** of only failed blocks.
+2. Paĝo plej proksime al la fonttrakoj per-lingvo, per-bloka traduko statuso, ebliga  **incremental re-traduko ** de nur malsukcesaj blokoj.
 3. La stokita hah de la antaŭa kuro (konservita en dosiero plej proksime al la fontdosiero, aŭ en provizora senrezigna loko) estas komparita kun la nuna hash.
 4. Por ĉiu cellingvo, la ekvivalenta dosiero ankaŭ estas kontrolita por struktura integreco.
 5. Ĉiu celdosiero kiu maltrafas, havas malmodernan hah, malsukcesas strukturan validadon, aŭ enhavas netradukitajn blokojn estas ripetitaj por re-traduko.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
-7. Sukcesaj tradukitaj dosieroj estas konfirmitaj por struktura egaleco kun la fonto (egalaj titoloj, listeroj, kodblokoj, blokocitoj, ligiloj, aŭdacaj/itaj signoj, kaj HTML-etikedoj) antaŭ ol ili estas skribitaj al disko.
+7. Sukcese tradukitaj dosieroj estas konfirmitaj por struktura egaleco kun la fonto (egalaj titoloj, listeroj, kodblokoj, blokocitoj, ligiloj, aŭdacaj/itaj signoj, kaj HTML-etikedoj) antaŭ ol ili estas skribitaj al disko.
 8. Se ĉiuj celdosieroj por fonto sukcesas, la nova hah estas stokita plej proksime al la fonto. Se skribo plej proksime al la fonto malsukcesas (ekzemple en leg-restriktitaj deplojoj), la hah falas reen al la provizora adresaro.
 9. Se ĉiu celtraduko malsukcesas validumadon, la metadatenoj markas tiujn blokojn kiel netradukitaj tiel ili estas retried sur la venonta kuro.
 
@@ -77,7 +77,7 @@ Firmigita estas kunvenita kaj publikigita. Ĝi inkludas:
 - Ĉiuj stokaderaroj kolektitaj dum la kuro.
 - Per-lingva traduko statistiko (tradukita kalkulo, skiita kalkulo, erarkalkulo).
 
-## Signalo Signalo R-mesaĝo
+## SignalR-mesaĝo
 
 Ĉiu progresokazaĵo estas farita kiel kun la sekvaj kampoj:
 
@@ -150,7 +150,7 @@ La dukto efektivigas du nivelojn de rezistemo:
 ### Scenejo-nivela reiro (Translation RetryService)
 
 - Se traduko peto malsukcesas post la internaj retries de LibreTranslate, la rezultas ĝis 3 kromaj scennivelaj retries kun 30-dua prokrastoj.
-- Lokulo maskanta: Nomita lokposedantoj () en teksto provizore estas anstataŭigitaj kun sekuraj ĵetonoj () antaŭ traduko kaj reestigita poste, certigante ĝustan gramatikon en cellingvoj.
+- Placeholder masking: Nomita lokposedantoj () en teksto provizore estas anstataŭigitaj kun sekuraj ĵetonoj () antaŭ traduko kaj reestigita poste, certigante ĝustan gramatikon en cellingvoj.
 
 ### Lingvo validumado
 

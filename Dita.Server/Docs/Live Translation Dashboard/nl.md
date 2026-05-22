@@ -12,14 +12,14 @@ Het Live Translation Dashboard is een admin pagina die real-time zichtbaarheid b
 
 ### Real-time activiteitsstream
 
-Alle signalen R gebeurtenissen uit de vertaalpijplijn worden weergegeven in een live-updating tabel:
+Alle SignalR gebeurtenissen van de vertaalpijplijn worden weergegeven in een live-updating tabel:
 
 - **Sequence number**
 - **Timestamp** Lokale tijd toen de gebeurtenis werd ontvangen
 - **Preview ID**
 - **Stage** "Twee" podiumbadge (CheckServers, TranslateCountries, etc.)
 - **Type** Berichttype badge (StageStart, Voortgang, StadiumVoltooid, enz.)
-- **Berichten**
+- **Bericht**
 - **Details**
 
 ### Kleurcodering
@@ -36,18 +36,18 @@ Wit (standaard)
 Een status banner bovenaan toont:
 - **Connecting**
 - **Connected**
-- **Reconnecting** Verbinding verloren, poging om opnieuw verbinding te maken
+- **Reconnecting**
 - **Verbinding verbroken**
 
-De verbinding maakt gebruik van automatische herverbinding met exponentiële backoff: 0s, 2s, 5s, 10s, 30s.
+De verbinding maakt gebruik van automatische herverbinding met exponentiële backoff: 0s, 2, 5, 10, 30s.
 
 ### Controles
 
-- **Clear Feed** Verwijdert alle weergegeven berichten en resetten de teller
+- **Clear Feed**
 - **Export JSON** Downloads alle ontvangen berichten als JSON-bestand voor analyse
 - **Message teller**
 
-## Signaal R-hub
+## SignalR-hub
 
 Het dashboard verbindt met:
 
@@ -91,9 +91,9 @@ Waarschuwingsbadge
 
 ### Backend
 
-- **Locatie Hub** ()
+- **LocalisatieHub** ()
 - **ISignalRpublisher**
-- **SignalRpublisher**
+- **SignalRpubsher**
 
 ### Frontend
 
@@ -109,11 +109,11 @@ Dita.Server/Pages/Admin/
 └── LiveTranslation.cshtml.cs     — Page model (empty, data comes via SignalR)
 ```
 
-## Gebruik tijdens de ontwikkeling
+## Gebruik tijdens ontwikkeling
 
 1. Start de Dita. Servertoepassing
 2. Navigeren naar
-3. Trigger een vertaling uitvoeren (wacht op de planner of bel de API)
+3. Een vertaling uitvoeren starten (wacht op de agenda of bel de API)
 4. Gebeurtenissen in realtime bekijken
 5. Gebruik de knop Exporteren om een volledig spoor voor debuggen vast te leggen
 
@@ -141,10 +141,10 @@ Geplande verbeteringen voor het dashboard:
 
 ### Gebeurtenissen verschijnen niet
 
-1. Controleer of de SignalR-hub-URL overeenkomt met de server () en client ()
+1. Controleer of de SignalR hub URL overeenkomt met de server () en client ()
 2. Controleer of de scheduler is ingeschakeld in
 3. Kijk naar server logs voor vertaalpijplijn fouten
-4. Browser controleren Netwerktabblad voor WebSocket-berichten
+4. Tabblad browsernetwerk controleren op WebSocket-berichten
 
 ### Berichten zijn niet in orde
 

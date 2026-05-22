@@ -2,7 +2,7 @@
 
 ## Amharc ar gach eolas
 
-Déanann an doiciméad seo achoimre ar na hathruithe go léir a rinneadh ar an tseirbhís aistriúcháin uathoibríoch Dita, lena n-áirítear athfhachtóir ailtireachta, gnéithe nua, feabhsuithe inbhraiteachta, agus feabhsuithe logánaithe.
+Déanann an doiciméad seo achoimre ar na hathruithe go léir a rinneadh ar an tseirbhís aistriúcháin uathoibríoch Dita, lena n-áirítear athfhreagras ailtireachta, gnéithe nua, feabhsuithe inbhraiteachta, agus feabhsuithe logánaithe.
 
 ## Ailtireacht Athruithe
 
@@ -10,10 +10,10 @@ Déanann an doiciméad seo achoimre ar na hathruithe go léir a rinneadh ar an t
 
 Rinneadh an monailiteach a dhianscaoileadh i gceithre sheirbhís speisialaithe arna gcomhordú ag ceoltóir éadrom:
 
-- **BackendTranslationService** - Ceolfhoireann na Píblíne (bailíochtú tromchúiseach, toscaireacht stáitse, láimhseáil earráide)
+- **Seirbhís Aistrithe Teorann ** — Ceolfhoireann na Píblíne (bailíochtú seachtrach, toscaireacht stáitse, láimhseáil earráide)
 - ** Seirbhís Aistrithe ** - Sioncrónú ainm Tír (Béarla → sprioctheanga)
 - ** Seirbhís Aistrithe Íoslaghdaithe ** - Sioncrónú Foclóra JSON (eochairfhocail bhreise / aistrithe)
-- **Seirbhís Aistrithe ** - Clárú doiciméadú Marcáil le rianú leibhéal bloc
+- **DocumentsTranslationService** — tiontú doiciméadú Markdown le rianú leibhéal bloc
 - **SignalRPublisher ** - Tuairisciú ar dhul chun cinn fíor-ama trí SignalR
 - **AistriúchánRetryService** — Atriail ar leibhéal na Céime le caomhnú na sealbhóirí áite
 
@@ -32,12 +32,12 @@ Rinneadh an monailiteach a dhianscaoileadh i gceithre sheirbhís speisialaithe a
 
 Leathanach admin nua a sholáthraíonn infheictheacht fíor-ama isteach sa phíblíne aistriúcháin:
 
-- Taispeáin gach Comharthaíocht R imeachtaí mar a tharlaíonn siad
+- Taispeáin gach imeacht SignalR mar a tharlaíonn siad
 - Cineálacha teachtaireachta dath-chódaithe (gorm = tús, glas = iomlán, dearg = error)
 - Banner stádas Ceangal le auto-reconnect
 - Teachtaireacht gcuntar agus onnmhairiú go dtí JSON
 
-### Ainmnithe sealbhóirí Áite
+### Gearáin agus Cur i bhFeidhm
 
 Tacaíonn an córas logánaithe anois le sealbhóirí áite ainmnithe () le haghaidh gramadaí feabhsaithe i dteangacha éagsúla:
 
@@ -63,15 +63,15 @@ Comhaid Markdown aistrithe incriminteach:
 - **Sábháil teanga **: Tá gach sprioc teanga a shábháil díreach tar éis an aistriúcháin, ag laghdú brú cuimhne
 - **Block-leibhéal rianú **: rianta stádas aistriúcháin in aghaidh an bhloc
 - ** Fiosrúchán roghnach **: Níl ach bloic theip ath-aistrithe ar an chéad reáchtáil eile
-- ** Fanacht Metadata **: Maireann staid an Aistriúcháin atosú iarratas
+- ** Fanacht sonraí **: Atosaigh an t-iarratas a mhaireann stát aistriúcháin
 
 ### Scríbhneoir Feabhsaithe
 
 Trí leibhéal athléimneachta:
 
-1. ** HTTP retry** (LibreTranslateService): 5 iarrachtaí le backoff exponential (1s–5s)
+1. ** Fiosrúchán HTTP ** (Seirbhís Ríomhphoist): 5 iarrachtaí le cúlú exponential (1s–5s)
 2. ** Stóráil ** (Seirbhís Aistrithe): 3 iarrachtaí breise le 30 moill
-3. **Glasáil ** (Seirbhís Aistrithe Doiciméid): Failed Markdown bloic retried ar an chéad reáchtáil eile
+3. **Glasáil ** (Seirbhís Aistrithe Doiciméid): Failed Markdown blocks retried ar an chéad reáchtáil eile
 
 ### Tuairisciú SignalR
 
@@ -84,7 +84,7 @@ Tuairisciú dul chun cinn fíor-ama do gach oibríocht píblíne:
 
 ## Athruithe Cumraíochta
 
-### riachtanais uisce: measartha
+### appsettings.json
 
 Gan athruithe a bhriseadh. Leanann an chumraíocht atá ann cheana ag obair:
 
@@ -112,7 +112,7 @@ Cláraithe i:
 - / Baile
 - / Baile
 
-An Comharthaíocht Tá mol R mapáilte ag do naisc chliaint.
+Tá an mol SignalR mapáilte ag do naisc chliaint.
 
 ## Tástáil
 
@@ -120,8 +120,8 @@ An Comharthaíocht Tá mol R mapáilte ag do naisc chliaint.
 
 - **243/244 tástálacha ag dul ar aghaidh ** (1 scipeáil mar gheall ar rochtain chomhthráthach comhad i dtimpeallacht tástála)
 - Chuir New test coverage leis:
-  - Suí iomlánach Feidhmiúlacht seirbhíse
-  - Clár na dToghthóirí Seirbhís orchestration
+  - Feidhmiúlacht PlaceholderService
+  - Ceolfhoireann na Seirbhíse Aistrithe
   - JsonStringLocalizer placeholder innéacsanna
 
 ### Teorainneacha a Fhiosrú
@@ -136,19 +136,19 @@ An Comharthaíocht Tá mol R mapáilte ag do naisc chliaint.
 - — aistriúchán ainm Tíre
 - - Sioncrónú foclóir JSON
 - - Aistriúchán Markdown
-- — Comharthaíocht R teachtaireacht foilsitheoireachta
+- - Foilsiú teachtaireacht SignalR
 - - loighic Retry le masc sealbhóir áite
 - — Comhéadan foilsitheoir
 - — Comhéadan seirbhíse Tír
 - - Comhéadan seirbhíse áitiúil
 - — Comhéadan seirbhíse doiciméad
-- - Comhéadan Orchestrator (suas)
+- - Comhéadan orchestrator (suas)
 - — meiteashonraí aistriúcháin Per-file
 
 ### Seirbhísí Nuashonraithe i
 
 - — Tacaíocht do shealbhóirí áite ainmnithe Added
-- — — — — Nuashonraithe le haghaidh paraiméadar nua
+- - Nuashonraithe le haghaidh paraiméadar nua
 - — Bainistíocht sealbhóirí áite ainmnithe
 - — Comhéadan páirtithe leasmhara
 
@@ -159,7 +159,7 @@ An Comharthaíocht Tá mol R mapáilte ag do naisc chliaint.
 
 ### Doiciméadú nua i
 
-- — — — — Doiciméid phíblíne nuashonraithe
+- - Doiciméadú píblíne nuashonraithe
 - — Treoir maidir le córas páirtithe leasmhara
 - – Treoir úsáide Painéal na nIonstraimí
 - — Forbhreathnú ar ailtireacht theicniúil
@@ -172,7 +172,7 @@ Tá gach athrú breiseán:
 - Formáidiú Postal () oibreacha gan athrú
 - Níl aon athrú ar fhormáid fhoclóra JSON atá ann cheana
 - Níl aon athrú ar struchtúr reatha Markdown
-- Comharthaíocht R teachtaireachtaí a úsáid an fhormáid chéanna
+- Úsáideann teachtaireachtaí SignalR an fhormáid chéanna
 
 ## Imirce Conair
 
@@ -185,7 +185,7 @@ Níl aon imirce ag teastáil. Is é an fhrithsheasmhacht inmheánach:
 ## Amharc ar gach eolas
 
 - ** Úsáid chuimhne laghdaithe **: Comhaid shábháil in aghaidh an-teanga láithreach in ionad a shealbhú go léir i gcuimhne
-- **Faster incriminteach Ritheann **: Níl ach athrú / fabraic Markdown bloic ath-aistrithe
+- ** Ritheann incriminteach tubaiste **: Níl ach athrú / fabraic Markdown bloic ath-aistrithe
 - ** infheictheacht níos fearr **: Cuidíonn dul chun cinn fíor-ama céimeanna mall a dhiagnose
 
 ## Feabhsúcháin sa Todhchaí
@@ -194,9 +194,9 @@ Feabhsuithe pleanáilte:
 
 1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
 2. **Admin fíordheimhnithe ** - Leathanaigh admin srianta d'úsáideoirí údaraithe
-3. ** Eagarthóir grafach ** - Chomhéadain Gréasáin chun eochracha logánaithe a bhainistiú
+3. ** Eagarthóir Béarla ** - Chomhéadain Gréasáin chun eochracha logánaithe a bhainistiú
 4. ** Staidreamh aistriúcháin ** — Cairteanna a léiríonn comhaireamh aistriúcháin agus rátaí earráide le himeacht ama
-5. **Fiontar na sealbhóirí áite Saincheaptha ** - Tacaíocht le haghaidh formáidí malartacha do shealbhóirí áite
+5. **Fiontar na sealbhóirí áite Saincheaptha ** — Tacaíocht le haghaidh formáidí malartacha do shealbhóirí áite
 
 ## Déan teagmháil linn
 

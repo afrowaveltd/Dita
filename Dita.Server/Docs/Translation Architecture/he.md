@@ -9,12 +9,12 @@
 - **Separation of concerns**: Each translation domain (countries, JSON dictionaries, Markdown) is isolated.
 - ** התעקשות מוגברת**: קבצים נשמרים בשפה מיד לאחר התרגום, צמצום השימוש בזיכרון ומספקים תוצאות קודמות.
 - ** עמידות **: רמות מרובות של retry מטפלות בכישלונות transient מבלי לחסום את כל הצינור.
-- **Observability**: Every significant operation is reported via SignalR for real-time monitoring.
+- **Observability**: כל פעולה משמעותית מדווחת באמצעות SignalR עבור ניטור בזמן אמת.
 - ** אפשרות **: ניתן להוסיף מטרות תרגום חדשות על ידי יישום ממשק יחיד.
 
-## השירות
+## המונחים:
 
-### שירות תרגום חוזר (orchestrator)
+### Backend Translationion Service (orchestrator)
 
 ** אחריות **
 - ניהול מחזור חיים פיפיר (start, השלמת, טיפול שגיאה)
@@ -32,7 +32,7 @@
 ** אחריות **
 - קרא מהבמאי
 - שמות מדינה לסנכרון לתוך מילון ברירת המחדל
-- תרגום השמות החסרים לשפת היעד
+- תרגום שמות המדינה החסרים לשפת היעד
 - שמור את כל מילון היעד מיד לאחר התרגום
 
 **Key behaviors**:
@@ -59,18 +59,18 @@
 ** אחריות **
 - הליכה להגדיר מחדש את השורשים
 - Detect שינה קבצים מקור באמצעות SHA-256 hashes
-- עקבו אחרי Per-block Translation Status
-- תרגום בלוק-על-ידי-בלוק עם retry
+- המונחים: per-block Translation Status
+- תרגום בלוק-by-block with per-block retry
 - מבנה גילוח לאחר התרגום
 - שמור את כל קובץ שפת היעד באופן עצמאי
 
 **Key behaviors**:
-- גרפיות ברמת בלוק: כותרות, פסקאות, פריטים ברשימה מתורגם בנפרד
-- מסלולים של מטא-נתונים אשר חוסמים הצליחו / מזוהים לשפה
+- גרפיות ברמת בלוק: כותרות, פסקאות, פריטים ברשימה מתורגמים בנפרד
+- מסלולים של מטא-נתונים שחוסנים הצליחו / מזוהים לשפה
 - בלוקים כושלים משוחזרים לריצה הבאה מבלי לעבור מחדש בלוקים מוצלחים
 - אימות מבנה מבטיח ספירות כותרות, רשימות, בלוקים קוד וכו '
 
-## אסטרטגיות Retry
+## אסטרטגיית Retry
 
 המערכת מיישמת חזרות בשלושה רמות:
 
@@ -80,9 +80,9 @@
 - דפי רשת Timeouts, 5xx שגיאות, וכישלונות חולפים
 - נבנה לתוך תצורה של לקוח HTTP
 
-### רמה 2 - שלב (תרגום חופשי)
+### דרגה 2 - שלב (תרגום חופשי)
 
-- עד 3 ניסיונות עם 30 שניות
+- עד 3 ניסיונות עם עיכובים של 30 שניות
 - להפעיל מחדש את כל בקשת התרגום לאחר HTTP-level Retries מותשת
 - המסיכה והשיקום מוחלים ברמה זו
 
@@ -154,8 +154,8 @@ For each target language:
 
 ### תמונות
 
-- **JSON**: מאוחסן בקובץ ליד מילון ברירת המחדל (שם משתנה על ידי ספק אחסון)
-- **Purpose**: Enables incrementalSync על ידי מעקב אחר מה שהיה נוכח בגמר
+- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
+- **Purpose**: Enables incrementalSync על ידי מעקב אחר מה שהיה נוכח בריצה הקודמת
 
 ### קבצים
 
@@ -178,7 +178,7 @@ For each target language:
 - **contents **: מילון מפתחות למקם שם-ערך זוגות
 - **Purpose**: מספק ערכי ברירת מחדל עבור בעלי מקומות שונים ברחבי היישום
 
-## אותות דיווח
+## דיווח SignalR
 
 ### המונחים:
 
@@ -231,7 +231,7 @@ services.AddSingleton<TranslationRetryService>(
 
 ### מטפל במקום
 
-יישום שינוי מס או אחסון של בעלי המקום:
+יישום שינוי syntax או אחסון:
 
 ```csharp
 public class CustomPlaceholderService : IPlaceholderService
@@ -278,14 +278,14 @@ public class CustomPlaceholderService : IPlaceholderService
 
 - הצצה להצלחה / Filure
 - Mock כדי לאמת את הדיווח
-- השתמש במדריכים זמניים לקובץ I/O
+- השתמש במדריכים זמניים לקובץ I/ O O
 - בדוק את התנהגות החיסכון בשפה
 
 ### בדיקות אינטגרציה
 
 - צינורות מלאים לרוץ עם אמת (local) Libreתרגםe
-- לבדוק אותות הודעות R מועברות ללקוחות מחוברים
-- מבחן למניעת ריצה נוכחית (semaphore)
+- בדוק הודעות SignalR מועברות ללקוחות מחוברים
+- מבחן מניעה זמנית (semaphore)
 - מבנה גילוח לאחר התרגום
 
 ### בדיקות מקצה לקצה
@@ -299,7 +299,7 @@ public class CustomPlaceholderService : IPlaceholderService
 
 - **Memory**: Per-language saving prevents holding all dictionaries in memory
 - **דיסק I/O**: קבצי Metadata מוסיפים ראש קטן אך מאפשרים עבודה מצטברת
-- **רשת **: עיבוד חיוני עם התכוטשות מונע ליברי תרגום מוחלט
+- ** Network**: עיבוד חיוני עם התכווט מונע Libreתרגם
 - **CPU**: SHA-256 hashing and regation הם מהירים יחסית לתרגום
 - **SignalR**: הודעות משקל אור, אין דחיסת תשלום הדרושה לדיווחים טיפוסיים
 
@@ -310,7 +310,7 @@ public class CustomPlaceholderService : IPlaceholderService
 1. לוגיקה המדינה
 2. לוגיקה JSON
 3. המונחים:
-4. תגית: Signal הוצאה לאור
+4. הוצאה לאור:
 5. חידוש לוגיקה
 6. לצטט את התזמורת למשלחת בלבד
 

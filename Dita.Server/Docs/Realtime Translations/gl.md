@@ -15,7 +15,7 @@ Cada sub-servizo opera de forma independente e informa de progreso a través de 
 
 ## O que fai o servizo
 
-O servizo funciona nun horario e executa un oleoduto de cinco etapas: validación do servidor, sincronización do país, sincronización do dicionario JSON, tradución de ficheiros Markdown e persistindo os resultados. Cada etapa emite eventos de progreso en tempo real estruturados en sinal. R para que os clientes conectados poidan seguir o traballo.
+O servizo funciona nun horario e executa un oleoduto de cinco etapas: validación do servidor, sincronización do país, sincronización do dicionario JSON, tradución de ficheiros Markdown e persistindo os resultados. Cada etapa emite eventos de progreso en tempo real estruturados sobre SignalR para que os clientes conectados poidan seguir a medida que avanza o traballo.
 
 ## Fases da Pipelina
 
@@ -24,7 +24,7 @@ O servizo funciona nun horario e executa un oleoduto de cinco etapas: validació
 Antes de iniciar calquera traballo de tradución, o servizo verifica que todas as condicións previas están satisfeitas
 
 - A sección de configuración debe estar presente e válida.
-- O servidor LibreTranslate debe responder cunha latencia aceptable.
+- O servidor debe responder dentro dunha latencia aceptable.
 - A lista de idiomas dispoñibles no servidor de tradución.
 - O idioma predeterminado debe estar presente nesta lista.
 - Os ficheiros JSON que faltan para calquera idioma compatible créanse automaticamente.
@@ -36,7 +36,7 @@ Se falla algunha comprobación, o oleoduto detense inmediatamente e emítese unh
 Os nomes dos países mantéñense sincronicamente desde un catálogo de só lectura () ata os dicionarios JSON.
 
 - Se o idioma por defecto da aplicación é o inglés, cada nome do país almacénase sen tradución.
-- Se a lingua por defecto é calquera outra lingua, primeiro se traduce o nome do país a esa lingua, e o resultado convértese na entrada do dicionario por defecto.
+- Se a lingua por defecto é calquera outra lingua, primeiro se traduce o nome do país nesa lingua, e o resultado convértese na entrada do dicionario por defecto.
 - After the default dictionary is updated, each missing country entry in every target language dictionary is translated and saved **immediately per language**.
 - As entradas xa traducidas son conservadas sen modificacións.
 - Se unha tradución falla, o servizo repítese ata tres veces con atrasos de 30 segundos antes de pasar á seguinte lingua.
@@ -49,7 +49,7 @@ O servizo compara o actual dicionario de localización por defecto cunha instant
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
 - As traducións sempre teñen prioridade. Se un dicionario de destino xa contén un valor para unha clave, esta entrada non cambia independentemente do que di a fonte.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
-- Se unha tradución falla nun idioma específico, o servizo repítese automaticamente. Só os erros persistentes (por exemplo, a linguaxe non soportada) fan que esa linguaxe sexa ignorada.
+- Se unha tradución falla nun idioma específico, o servizo repítese automaticamente. Só os erros persistentes (por exemplo, a linguaxe non soportada) fan que esa linguaxe se borre.
 - Despois da execución, o dicionario por defecto actual gárdase como a nova instantánea para a seguinte comparación.
 
 Todos os dicionarios almacénanse sempre con chaves ordenadas alfabeticamente e JSON indentado para lexibilidade humana.
@@ -66,7 +66,7 @@ O servizo percorre as raíces da documentación configurada (default:) e procesa
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
 7. Os ficheiros traducidos con éxito son validados para a paridade estrutural coa fonte (contas de cabeceira iguais, artigos de lista, bloques de código, citas de bloqueo, ligazóns, marcadores audaces e etiquetas HTML) antes de que sexan escritos en disco.
 8. Se todos os ficheiros de destino para un éxito fonte, o novo hash almacénase xunto á fonte. Se escribir xunto á fonte falla (por exemplo, nas implementacións de só lectura), o hash volve ao directorio temporal.
-9. Se calquera tradución de destino falla de validación, os metadatos marcan eses bloques como non traducidas, polo que son retribuidos na seguinte carreira.
+9. Se calquera tradución de destino falla de validación, os metadatos marcan eses bloques como non traducidos, polo que son recuperados na seguinte carreira.
 
 ### Fase 5 - Resultados
 
@@ -75,9 +75,9 @@ Un libro consolidado está editado e publicado. Inclúe:
 - UTC hora de inicio e finalización.
 - Contadores de arquivos JSON gardados, arquivos Markdown gardados, hash gardados e hash escribir.
 - Erros de almacenamento recollidos durante a execución.
-- Estatísticas de tradución por lingua (conteo traducido, conta saltada, conta de erro).
+- Estatísticas de tradución por lingua (conteo traducido, conta de patróns, conta de erro).
 
-## Sinal R Mensaxe de Entroido
+## Mensaxe de SignalR
 
 Cada evento de progreso entrégase como a cos seguintes campos:
 
@@ -150,7 +150,7 @@ O gasoduto desenvolve dous niveis de resistencia:
 ### Retry Level (Tradución)
 
 - Se unha solicitude de tradución falla despois das repeticións internas de LibreTranslate, o resultado é de ata 3 repeticións de nivel adicional con 30 segundos de atraso.
-- Máscaras locais: Os localizadores nomeados () no texto son substituídos temporalmente por tokens seguros () antes da tradución e restaurados despois, garantindo unha gramática correcta nas linguas obxectivo.
+- Enmascaramento do marcador de posición: Os propietarios de lugares nomeados () no texto son temporalmente substituídos por tokens seguros () antes da tradución e restaurados despois, asegurando unha correcta gramática nas linguas obxectivo.
 
 ### Validación lingüística
 
@@ -193,4 +193,4 @@ O proxecto Server inclúe unha páxina de administración na que se conecta ao h
 - **Resilience**: Multiple retry levels (HTTP, stage, block) ensure transient failures do not block the pipeline.
 - **State tracking**: Per-file metadata (`.translation-meta.json`) and hash files enable precise incremental work on subsequent runs.
 - **Real-time visibility**: Every significant operation is reported via SignalR for monitoring and debugging.
-- As traducións manuais sempre teñen prioridade sobre as adicións automáticas. ****
+- **Manual translations always have priority over automatic additions.**

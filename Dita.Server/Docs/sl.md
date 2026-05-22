@@ -2,7 +2,7 @@
 
 ## Pregled
 
-Ta dokument povzema vse spremembe v Dita avtomatsko prevajanje storitev, vključno z arhitekturo refaktoring, nove značilnosti, izboljšanje opaznosti, in lokalizacije izboljšave.
+Ta dokument povzema vse spremembe v Dita avtomatsko prevajanje storitev, vključno z arhitekturo refaktoring, nove značilnosti, izboljšanje opaznosti in izboljšanje lokalizacije.
 
 ## Spremembe arhitekture
 
@@ -11,10 +11,10 @@ Ta dokument povzema vse spremembe v Dita avtomatsko prevajanje storitev, vključ
 Monolit je razpadel na štiri specializirane storitve, ki jih koordinira lahki orkestrator:
 
 - **BackendTranslationService** — Pipeline Orchestrator (potrjevanje strežnika, odrska delegacija, ravnanje z napakami)
-- **Storitve prevajanja** — Sinhronizacija imena države (angleščina → ciljni jezik)
+- **CountriesTranslationService** — Sinhronizacija imena države (angleščina → ciljni jezik)
 - **LokalizationTranslationService** — Sinhronizacija slovarja JSON (dodane/odvzete tipke)
 - **DokumentiPrevajanjeService** — Prevajanje dokumentacije za označevanje s sledenjem ravni blokov
-- **SignalRP Publisher** – Poročanje o napredku v realnem času prek SignalR
+- **SignalRP Publisher** – poročanje o napredku v realnem času prek SignalR
 - **TranslationRetryService** – Stage-level retry with placeholder shranjevanje
 
 ### Koristi
@@ -32,7 +32,7 @@ Monolit je razpadel na štiri specializirane storitve, ki jih koordinira lahki o
 
 Nova admin stran, ki zagotavlja v realnem času vidnost v prevajalski cevovod:
 
-- Prikazuje vse signale r dogodki, kot se pojavijo
+- Prikazuje vse dogodke SignalR, ko se pojavijo
 - Barvno kodirane vrste sporočil (modra=začeta, zelena=dokončana, rdeča=napaka)
 - Napis stanja povezave z samodejno ponovno povezavo
 - Števec sporočil in izvoz v JSON
@@ -63,7 +63,7 @@ Markdown datoteke so prevedene postopoma:
 - ** Varčevanje po jeziku**: Vsak ciljni jezik se shrani takoj po prevodu, kar zmanjšuje spominski pritisk
 - **Sledenje ravni bloka**: status prevajanja skladb na blok
 - **Selektivna ponovna preiskava**: Pri naslednjem zagonu se ponovno prevedejo samo neuspešni bloki
-- ** Vztrajnost metapodatkov**: Prevajalsko stanje preživi ponovni zagon programa
+- ** Obstojnost metapodatkov**: Prevajalsko stanje preživi ponovno zaganjanje programov
 
 ### Izboljšana logika ponovnih poskusov
 
@@ -71,7 +71,7 @@ Tri stopnje odpornosti:
 
 1. **HTTP retry** (LibreTranslateService): 5 poskusov z eksponentnim zaostankom (1s-5s)
 2. **Stage retry** (translationRetryService): 3 dodatni poskusi s 30-imi zamudami
-3. **Block retry** (DocumentsTranslationService): Na naslednjem zaganjanju so se ponovno poskusili bloki Markdown
+3. **Block retry** (DokumentsTranslationService): Neuspeh Markdown blokov, ki se vrnejo v naslednjem teku
 
 ### Poročanje o signalih
 
@@ -112,7 +112,7 @@ Registrirano v:
 - /
 - /
 
-Signal R center je začrtan za povezave strank.
+Center SignalR je nastavljen za povezave s strankami.
 
 ## Testiranje
 
@@ -120,8 +120,8 @@ Signal R center je začrtan za povezave strank.
 
 - **243/244 testov, ki so opravili ** (1 preskočili zaradi sočasnega dostopa do datoteke v preskusnem okolju)
 - Dodana nova preskusna pokritost za:
-  - Placeholder Funkcionalnost storitve
-  - HrbtenicaPrevajanje Servisna orkestracija
+  - Funkcija PlaceholderService
+  - backendtranslationservice orkestracija
   - JsonStringLocalizer, indekserji
 
 ### Znane omejitve
@@ -136,8 +136,8 @@ Signal R center je začrtan za povezave strank.
 - — Prevod imena države
 - — Sinhronizacija slovarja JSON
 - – Markdown prevod
-- — Signal R objava sporočil
-- – Ponovno preizkusite logiko z maskiranjem imetnika
+- — Založništvo sporočil SignalR
+- — Znova preizkusite logiko z zakritjem imetnika
 - — Založniški vmesnik
 - — Vmesnik državnih storitev
 - — Vmesnik storitev lokalizacije
@@ -168,11 +168,11 @@ Signal R center je začrtan za povezave strank.
 
 Vse spremembe so aditivne:
 
-- Obstoječa lokacijska koda () dela nespremenjena
+- Obstoječa koda lokalizacije () dela nespremenjena
 - Formatiranje položaja () dela nespremenjeno
 - Obstoječa oblika slovarja JSON je nespremenjena
 - Obstoječa struktura Markdown je nespremenjena
-- Signal Sporočila R uporabljajo isti format
+- Sporočila SignalR uporabljajo isti format
 
 ## Migracijska pot
 
@@ -185,7 +185,7 @@ Selitev ni potrebna. Refaktoriranje je notranje:
 ## Izboljšanje učinkovitosti
 
 - **Zmanjšana uporaba pomnilnika**: Datoteke shranjene na jezik takoj, namesto da bi imele vse v pomnilniku
-- **Pospešek Teki**: Prevedeni so samo spremenjeni/neuspešni Markdown bloki
+- ** Postopna hitrost**: Prevedeni so samo spremenjeni/neuspešni Markdown bloki
 - ** Boljša vidljivost**: Napredek v realnem času pomaga diagnosticirati počasne faze
 
 ## Prihodnje izboljšave
@@ -196,7 +196,7 @@ Načrtovane izboljšave:
 2. **Admin overovitev** – Omeji admin strani pooblaščenim uporabnikom
 3. **Dictionary editor** — Web UI za upravljanje ključev lokalizacije
 4. **Statistika prevajanja** – grafi, ki prikazujejo število prevodov in stopnje napak skozi čas
-5. **Carinska sintaksa imetnika** – Podpora za nadomestne oblike imetnika
+5. **Carinska sintaksa imetnika** – Podpora za alternativne oblike imetnikov
 
 ## Stik
 

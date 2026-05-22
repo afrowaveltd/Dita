@@ -2,7 +2,7 @@
 
 Detta dokument finns som en levande testingång för den automatiska översättningsledningen. Alla ändringar i denna fil utlöser återöversättning av alla målspråksfiler på nästa schemalagda körning.
 
-## Arkitekturöversikt
+## Arkitektöversikt
 
 Översättningsledningen har omstrukturerats till en modulär arkitektur med fyra specialiserade undertjänster som samordnas av en lätt orkestrator:
 
@@ -15,7 +15,7 @@ Varje undertjänst fungerar oberoende och rapporterar framsteg via SignalR i rea
 
 ## Vad tjänsten gör
 
-Tjänsten körs på ett schema och utför en femstegs pipeline: server validering, landsynkronisering, JSON ordbok synkronisering, Markdown filöversättning och kvarstår resultaten. Varje steg avger strukturerade händelser i realtid över Signal R så att uppkopplade kunder kan följa med som arbete fortsätter.
+Tjänsten körs på ett schema och utför en femstegs pipeline: server validering, landsynkronisering, JSON ordbok synkronisering, Markdown filöversättning och kvarstår resultaten. Varje steg avger strukturerade realtidsframstegshändelser över SignalR så att uppkopplade kunder kan följa med som arbete fortsätter.
 
 ## Pipeline stadier
 
@@ -38,7 +38,7 @@ Landsnamn hålls i synkronisering från en lättläst katalog () i lokaliseringe
 - Om applikationsstandardspråket är engelska lagras varje landsnamn som utan översättning.
 - Om standardspråket är något annat språk översätts det engelska landsnamnet först till det språket, och resultatet blir inträdet i standardordboken.
 - After the default dictionary is updated, each missing country entry in every target language dictionary is translated and saved **immediately per language**.
-- Redan översatta poster bevaras utan ändring.
+- Redan översatta poster bevaras utan modifiering.
 - Om en översättning misslyckas går tjänsten upp till 3 gånger med 30 sekunders förseningar innan du flyttar till nästa språk.
 
 ### Steg 3 - TranslateJsonFiles
@@ -77,7 +77,7 @@ En konsoliderad monteras och publiceras. Det inkluderar:
 - Alla lagringsfel som samlats in under loppet.
 - Översättningsstatistik per språk (översatt räkning, hoppad räkning, felräkning).
 
-## Signal R-meddelandekuvert
+## SignalR meddelandekuvert
 
 Varje utvecklingsevenemang levereras som ett med följande fält:
 
@@ -87,7 +87,7 @@ Korrelationsidentifierare för den aktuella rörledningen
 Monotonic räknare inom en körning, börjar vid 1
 Semantisk typ av meddelande
 Pipeline scenen meddelandet tillhör
-UTC-tid när meddelandet släpptes
+UTC-tid när meddelandet avges
 Om meddelandet representerar ett feltillstånd
 Mänsklig läsbar sammanfattning
 Stegspecifik nyttolast (rapportera objekt eller null)
@@ -100,7 +100,7 @@ Värde
 1
 2
 3
-4.4 4
+4
 5.5
 6
 
@@ -112,7 +112,7 @@ Värde
 1
 2
 3
-4.4 4
+4
 5.5
 
 ### Typiskt meddelandeflöde
@@ -150,12 +150,12 @@ Rörledningen genomför två nivåer av motståndskraft:
 ### Stegnivå retry (TranslationRetryService)
 
 - Om en översättningsbegäran misslyckas efter LibreTranslates interna retries, utför upp till 3 ytterligare steg-nivå retries med 30 sekunders förseningar.
-- Placeholder masking: Namngivna platshållare () i texten ersätts tillfälligt med säkra tokens () före översättning och återställs därefter, vilket säkerställer korrekt grammatik på målspråk.
+- Placeholder masking: Namngivna platshållare () i text ersätts tillfälligt med säkra tokens () före översättning och återställs efteråt, vilket säkerställer korrekt grammatik i målspråk.
 
 ### Språkvalidering
 
 - Innan du översätter till ett målspråk kontrollerar tjänsten språket stöds av översättningsservern.
-- Ostödda språk hoppas över med en varning, vilket förhindrar upprepade misslyckade försök.
+- Osupporterade språk hoppas med en varning, vilket förhindrar upprepade misslyckade försök.
 
 ### Markdown block-nivå retry
 
@@ -191,6 +191,6 @@ Server-projektet innehåller en administratörssida som ansluter till SignalR-na
 - **Modularity**: Each translation concern is isolated in its own service for maintainability and testability.
 - **Inkrementell uthållighet**: Ordböcker och Markdown filer sparas per språk omedelbart efter översättning, minska minnestrycket och ge tidigare återkoppling.
 - **Resiliens**: Flera retrynivåer (HTTP, scen, block) säkerställer att övergående misslyckanden inte blockerar rörledningen.
-- **State tracking**: Per-fil metadata () och hashfiler möjliggör exakt stegvis arbete på efterföljande körningar.
+- **State tracking**: Per-file metadata (`.translation-meta.json`) and hash files enable precise incremental work on subsequent runs.
 - ** Realtidssynlighet**: Varje betydande operation rapporteras via SignalR för övervakning och felsökning.
-- **Manual translations always have priority over automatic additions.**
+- **Manliga översättningar har alltid prioritet framför automatiska tillägg.**

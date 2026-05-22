@@ -12,7 +12,7 @@ Live Translation Dashboard, otomatik çeviri hattına gerçek zamanlı görünü
 
 ### Gerçek zamanlı etkinlik akışı
 
-Tüm Sinyaller Çeviri hattından R olayları canlı bir masada gösteriliyor:
+Çeviri hattından gelen tüm SignalR olayları canlı bir tabloda gösteriliyor:
 
 - **Sequence number** – Monotonik sayacı her boru hattının içinde
 - **Timestamp** - Olay alındığı zaman
@@ -39,15 +39,15 @@ En üst şovlarda bir durum bayrağı:
 - **Reconnecting** – Bağlantı kaybetti, yeniden bağlantı kurmaya çalıştı
 - **Dis bağlantılı** - Bağlantı kapalı
 
-Bağlantı, üst üste otomatik yeniden bağlantı kullanır: 0s, 2s, 5s, 10s, 30s.
+Bağlantı üst üste otomatik yeniden bağlantı kullanır: 0s, 2s, 5s, 10s, 30s.
 
 ### Kontroller
 
-- **Clear Feed** - Tüm görüntülenen mesajları kaldırır ve karşıtlığı sıfırlar
+- **Clear Feed** - Tüm görüntülenen mesajları çıkarın ve sayacı sıfırlar
 - **Export JSON ** - Tüm mesajları analiz için bir JSON dosyası olarak indirin
 - **Message counter** - Bu oturumda alınan toplam olayları göster
 
-## Signal Signal R hub
+## SignalR hub
 
 Panel birbirine bağlanır:
 
@@ -91,7 +91,7 @@ Uyarı
 
 ### Backend
 
-- **Localization Hub** () - SignalR tüm bağlantılı müşterilere mesajları yayınlayan merkezi
+- **LocalizationHub** () – SignalR hub, tüm bağlantılı müşterilere mesajları yayınlayan
 - **ISignalRPublisher** - Çeviri hizmetlerinde kullanılmak için merkezin üzerinden
 - **SignalRPublisher** - monoton bir sırayı artıran ve yayınları artıran Varsayılan uygulama
 
@@ -122,7 +122,7 @@ Dita.Server/Pages/Admin/
 Panel için planlanmış gelişmeler:
 
 - **Authentication** - Rolt access to users with the role
-- **Filtering** - Sahneye göre filtre olayları, tipi veya ID koşmak
+- **Filtering** - Sahneye göre filtre olayları, tipi veya ID çalıştırın
 - **Hetorical çalışır** - Tamamlanan bir veritabanı veya log dosyasından çalışır
 - **Statistics ** - Çeviri sayılarını gösteren grafikler, hata oranları ve zamanla gecikmeler
 - **Manual triggers** - Belirli boru hatları aşamalarına manuel olarak başlamak için Düğmeler
@@ -144,10 +144,10 @@ Panel için planlanmış gelişmeler:
 1. SignalR merkez URL'nin sunucu () ve müşteri arasındaki maçları kontrol edin ()
 2. Programcıyı teyit etmek, etkinleştirilir
 3. Çeviri hatları hataları için sunucu loglarına bakın
-4. Check browser WebSocket mesajları için ağ sekme
+4. WebSocket mesajları için tarayıcı Ağı sekmesi
 
 ### Mesajlar sipariş dışında
 
 Alan tek bir koşu içinde sipariş etmeyi garanti eder. Eğer mesajlar sırayla ortaya çıkarsa, işaret edebilir:
-- Birden çok boru hattı çakılıyor ( semaphore kilit nedeniyle gerçekleşmelidir)
+- Birden fazla boru hattı çakılıyor ( semaphore kilit nedeniyle gerçekleşmelidir)
 - Tarayıcı oluşturma sorunları (sayfayı ferahlatıcı)

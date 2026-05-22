@@ -1,6 +1,6 @@
 ﻿# Terjemahan Live Dashboard
 
-Ubuntu Live Translation Dashboard adalah sebuah halaman admin yang menyediakan visibilitas real-time ke dalam pipa penerjemahan otomatis. Ini terhubung ke hub SignalR dan menampilkan semua peristiwa pipa saat mereka terjadi.
+Terjemahan Live Dashboard adalah sebuah halaman admin yang menyediakan visibilitas real-time ke dalam pipa penerjemahan otomatis. Ini terhubung ke hub SignalR dan menampilkan semua peristiwa pipa saat mereka terjadi.
 
 ## URL
 
@@ -12,12 +12,12 @@ Ubuntu Live Translation Dashboard adalah sebuah halaman admin yang menyediakan v
 
 ### Aliran acara real-time
 
-Isyarat Kejadian-kejadian dari pipa terjemahan ditampilkan dalam tabel yang sedang berlangsung:
+Semua peristiwa SignalR dari jaringan pipa penerjemahan ditampilkan dalam tabel yang sedang berlangsung:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
 - **Run ID** — Shortened GUID for correlation
-- **Stage** — Lencana tahap baris pipa (CheckServers, TranslateCountries, dll.)
+- **Stage** — Lencana tahap garis pipa (CheckServers, TranslateCountries, dll.)
 - **Type** — Message type badge (StageStarted, Progress, StageCompleted, etc.)
 - **Message** — Human-readable description
 - **Details** — Full JSON payload of the event data
@@ -36,10 +36,10 @@ Putih putih(default)
 Sebuah panji status di atas menunjukkan:
 - **Connecting** — Establishing SignalR connection
 - **Connected** — Receiving events normally
-- **Reconnecting** — Connection lost, attempting to reconnect
+- **Penghubung** — Koneksi terputus, mencoba menyambung kembali
 - **Disconnected** — Connection closed
 
-Sambungan menggunakan koneksi otomatis dengan eksponen backoff: 0s, 2s, 5s, 10s, 30s.
+Sambungan tersebut menggunakan koneksi otomatis dengan backoff eksponen: 0s, 2s, 5s, 10s, 30s.
 
 ### Pengendalian
 
@@ -47,9 +47,9 @@ Sambungan menggunakan koneksi otomatis dengan eksponen backoff: 0s, 2s, 5s, 10s,
 - **Export JSON** — Downloads all received messages as a JSON file for analysis
 - **Message counter** — Shows total number of events received in this session
 
-## Isyarat hub
+## Hub SignalR jelai
 
-Dashboard menghubungkan ke:
+Dashboard terhubung ke:
 
 ```javascript
 const connection = new signalr.HubConnectionBuilder()
@@ -85,20 +85,20 @@ Lencana merah
 Lencana Hijau
 Lencana merah
 Lencana informasi
-Lencana Peringatan Umunia
+Lencana peringatan terhadap penyakit
 
 ## Implementasi teknis
 
 ### Bagian Belakang
 
-- **Lokalisasi Hub** () — SignalR hub yang menyiarkan pesan ke semua klien yang terhubung
+- **LocalizationHub** (`/hubs/localization`) — SignalR hub that broadcasts messages to all connected clients
 - **ISignalRPublisher** — Abstraction over the hub for use in translation services
 - **SignalRPublisher** — Default implementation that increments a monotonic sequence and broadcasts
 
 ### Frontend
 
 - HTML/JS murni dengan Bootstrap 5 styling
-- Wourdon menggunakan pustaka klien JavaScript Microsoft SignalR (dimuat dari CDN)
+- Wourics menggunakan pustaka klien JavaScript Microsoft SignalR (dimuat dari CDN)
 - Tidak ada penerapan sisi-server yang diperlukan untuk feed acara
 
 ### Struktur halaman
@@ -113,7 +113,7 @@ Dita.Server/Pages/Admin/
 
 1. Mulailah Dita. Aplikasi server X
 2. Navigasi ke
-3. Pemicu sebuah penterjemahan (baik menunggu penjadwal atau memanggil API)
+3. Pemicu sebuah jangka terjemahan (baik menunggu penjadwal atau memanggil API)
 4. Acara Watch Watch muncul dalam waktu nyata
 5. Memanfaatkan butang Ekspor untuk menangkap jejak penuh untuk debug
 
@@ -132,7 +132,7 @@ Peningkatan direncanakan untuk dashboard:
 
 ## Penerjemahan Masalah
 
-### Papan dasbor menunjukkan " failed to connect"
+### Dashboard menunjukkan " failed to connect"
 
 1. Mengesahkan server sedang berjalan dan dapat diakses
 2. Periksa konsol peramban untuk CORS atau galat jaringan
@@ -142,9 +142,9 @@ Peningkatan direncanakan untuk dashboard:
 ### Peristiwa - peristiwa tidak muncul
 
 1. Periksa bahwa URL hub SignalR cocok antara server () dan klien ()
-2. Simak jadwal diaktifkan dalam
+2. Verifikasi jadwal diaktifkan dalam
 3. Log log server untuk kesalahan pipa terjemahan
-4. Pelayar Web Penayangan jaringan untuk pesan WebSocket
+4. Periksa tab jaringan peramban bagi pesan WebSocket
 
 ### Pesanan di luar perintah
 

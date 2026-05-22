@@ -19,7 +19,7 @@ A diferenza dos localizadores posicionais (, ), os localizadores nomeados son **
 
 As persoas interesadas teñen dúas fontes de valores:
 
-### 1. Tempo de execución (recomendado para datos dinámicos)
+### Valores de tempo de execución (recomendados para datos dinámicos)
 
 Pasar valores directamente ao recuperar a cadea localizada:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Valores almacenados (para configuración semiestática)
+### Valores almacenados (para configuración semiestática)
 
 Xestiona un ficheiro no directorio:
 
@@ -128,7 +128,7 @@ Cando o servizo de tradución automática atopa texto cos localizadores:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
-3. **Despois da tradución**: Os nomes orixinais dos propietarios de lugares () son restaurados nas súas posicións correctas.
+3. **Tradución**: Os nomes orixinais dos propietarios () son restaurados nas súas posicións correctas.
 
 ### Exemplo
 
@@ -141,7 +141,7 @@ Traducido ao checo:
 Resultado final:
 
 Isto asegura que:
-- Os propietarios nunca foron traducidos ou corrompidos
+- Os autores nunca foron traducidos ou corrompidos
 - A gramática da lingua obxectivo pode reorganizar libremente o texto que o rodea
 - O mesmo modelo funciona correctamente en todos os idiomas
 

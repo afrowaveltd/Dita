@@ -19,7 +19,7 @@ Contrairement aux détenteurs de place (, ), les détenteurs de place nommés so
 
 Les détenteurs de places désignés ont deux sources de valeurs:
 
-### 1. Valeurs temps d'exécution (recommandé pour les données dynamiques)
+### 1. Valeurs temps d ' exécution (recommandé pour les données dynamiques)
 
 Passez les valeurs directement lors de la récupération de la chaîne localisée :
 
@@ -128,7 +128,7 @@ Lorsque le service de traduction automatique rencontre du texte avec des détent
 
 1. **Avant traduction**: Les porte-places sont masqués avec des jetons sûrs () pour empêcher le moteur de traduction de les modifier.
 2. **Au cours de la traduction**: Le moteur de traduction ne traite que le texte traduisable.
-3. **Après la traduction**: Les noms de lieux originaux () sont restaurés dans leurs positions correctes.
+3. **Après traduction**: Les noms de lieux originaux () sont restaurés dans leurs positions correctes.
 
 ### Exemple
 
@@ -151,14 +151,14 @@ Cela garantit que:
 2. ** Garder au minimum les détenteurs de place**: Trop de placeholders rendent la traduction plus difficile
 3. **Types de documents attendus**: Les commentaires dans le fichier JSON aident les traducteurs à comprendre le contexte
 4. **Préférez les valeurs d'exécution**: Pour les données réellement dynamiques (noms d'utilisateur, nombres, dates), passez les valeurs à l'exécution
-5. **Utilisez les valeurs stockées pour les valeurs par défaut** : Pour une configuration qui change rarement (nom de l'application, support du courriel)
+5. **Utiliser les valeurs stockées pour les valeurs par défaut** : Pour la configuration qui change rarement (nom de l'application, support de l'email)
 6. **Titres de valeurs**: Utilisation pour vérifier tous les détenteurs de place prévus sont fournis
 
 ## Intégration avec traduction automatique
 
 La gestion automatique de la conservation des emplacements lors des appels LibreTrail. Aucune configuration supplémentaire n'est nécessaire.
 
-Le et les deux utilisent le service de réessayer, donc toutes les traductions du dictionnaire JSON prennent en charge de façon transparente les détenteurs de place nommés.
+Le et les deux utilisent le service de réessayer, donc toutes les traductions du dictionnaire JSON prennent en charge de manière transparente les détenteurs de place nommés.
 
 ## Compatibilité arrière
 

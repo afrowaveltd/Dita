@@ -4,7 +4,7 @@ Tiu dokumento priskribas la modulan arkitekturon de la aŭtomata traduko sistemo
 
 ## Dezajnoceloj
 
-La remarkado traktis plurajn konzernojn kun la origina monolita dezajno:
+La rektoro traktis plurajn konzernojn kun la origina monolita dezajno:
 
 - **Separation of concerns**: Each translation domain (countries, JSON dictionaries, Markdown) is isolated.
 - **Incremental persistence**: Files are saved per-language immediately after translation, reducing memory usage and providing earlier results.
@@ -57,7 +57,7 @@ La remarkado traktis plurajn konzernojn kun la origina monolita dezajno:
 ### Dokumentoj TranslationService
 
 **Responsibilities**:
-- Piediro formita Markdown radikoj rekursive
+- Piediro formis Markdown radikojn rekursive
 - Detect ŝanĝis fontdosierojn uzantajn SHA-256 hashes
 - Tra-bloka traduko statuso en
 - Traduki bloko-post-bloko kun per-bloka retry
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Signalo Signalo R raportanta
+## SignalR raportanta
 
 ### Fidante abstraktadon
 
@@ -278,13 +278,13 @@ la scenaro
 
 - Mock por simuli sukceson/malsukceson
 - Mock por konfirmi raportadon
-- Uzu provizorajn adresarojn por dosiero I/O
+- Uzu provizorajn adresarojn por dosiero mi / O
 - Determini per-lingvan ŝparadkonduton
 
 ### Integriĝaj testoj
 
 - Plena dukto kuras kun reala (loka) LibreTranslat kazo
-- Signalo Signalo R mesaĝoj estas liveritaj al ligitaj klientoj
+- Verify SignalR mesaĝoj estas liveritaj al ligitaj klientoj
 - Testo samtempa kuropreventado (semaphore)
 - Valida Markdown strukturo post traduko
 
@@ -310,8 +310,8 @@ La originalo enhavis ĉiun logikon en unu klaso. La migrado vojo:
 1. Ekstraktado de la lando
 2. Ekstraktado de JSON
 3. Ekstraktado Markdown logiko
-4. Ekstraktado R-eldonejo
+4. Ekstraktado SignalR-eldonado
 5. Ekstraktado Retry logiko
 6. Simpligi orkestron al delegacio-restriktita
 
-Ĉiuj ekzistantaj interfacoj () restas senŝanĝaj. Konsumantoj de la dukto vidas neniujn rompante ŝanĝojn.
+Ĉiuj ekzistantaj interfacoj () restas senŝanĝaj. Konsumantoj de la dukto vidas neniujn rompoŝanĝojn.

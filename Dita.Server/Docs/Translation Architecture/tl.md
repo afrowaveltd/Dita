@@ -1,16 +1,16 @@
 ﻿# Arkitektura sa Pagsasalin
 
-Inilalarawan ng dokumentong ito ang arkitekturang modular ng automatikong sistema ng pagsasalin ni Dita, na ipinakilala upang pagbutihin ang pagpapanatili, pagiging maaasahan, at katatagan.
+Inilalarawan ng dokumentong ito ang arkitekturang modular ng awtomatikong sistema ng pagsasalin ni Dita, na ipinakilala upang pagbutihin ang pagpapanatili, pagiging maaasahan, at katatagan.
 
 ## Magdisenyo ng mga tunguhin
 
-Binanggit ng muling paggawa ang ilang pagkabahala sa orihinal na disenyong monolito:
+Tinalakay ng muling paggawa ang ilang pagkabahala sa orihinal na disenyong monolito:
 
 - ** Paghahati ng mga alalahanin**: Ang bawat lugar ng pagsasalin (mga bansa, mga diksyunaryo ng JSON, Markdown) ay nakabukod.
 - **Incremental persistence**: Files are saved per-language immediately after translation, reducing memory usage and providing earlier results.
-- ** Resilience**: Ang maraming antas ng retry ay humahawak ng pansamantalang mga kabiguan nang hindi hinahadlangan ang buong tubo.
-- **Hindi maaasahan**: Ang bawat mahalagang operasyon ay iniulat sa pamamagitan ng SignalR para sa real-time monitoring.
-- **Extensibilidad**: Ang mga bagong puntirya ng pagsasalin ay maaaring idagdag sa pamamagitan ng pagpapatupad ng isang interface.
+- **Resilience**: Multiple retry levels handle transient failures without blocking the entire pipeline.
+- **Observity**: Ang bawat mahalagang operasyon ay iniulat sa pamamagitan ng SignalR para sa real-time monitoring.
+- **Extensibility**: New translation targets can be added by implementing a single interface.
 
 ## Pagkabigo sa Paglilingkod
 
@@ -31,8 +31,8 @@ Binanggit ng muling paggawa ang ilang pagkabahala sa orihinal na disenyong monol
 
 ** Pananagutan**:
 - Basahin mula sa directory
-- Ilagay ang pangalan ng bansa sa diksiyonaryong default lome
-- Isinalin ang nawawalang mga pangalan ng bansa sa bawat target na wika
+- Ilagay ang mga pangalan ng bansa sa diksyunaryong default lome
+- Isinalin ang nawawalang mga pangalan ng lalawigan sa bawat target na wika
 - Iligtas agad ang bawat target na diksyunaryo pagkatapos ng pagsasalin
 
 **Key asal**:
@@ -43,14 +43,14 @@ Binanggit ng muling paggawa ang ilang pagkabahala sa orihinal na disenyong monol
 ### pagsalin sa lokalisasyon
 
 ** Pananagutan**:
-- Idinagdag pa ni Diagnosis/removed keys sa pamamagitan ng paghahambing ng kasalukuyang default dictionary sa nakaraang speciation
+- Idinagdag ng Diagnosis/removed keys sa pamamagitan ng paghahambing ng kasalukuyang default diksiyonaryo sa nakaraang speciation
 - Isinalin ang idinagdag na mga key sa bawat puntiryang wika
 - Alisin ang mga key sa bawat wika
 - Mag - ipon ng litrato para sa susunod na paghahambing
 
 **Key asal**:
 - Ang mga opisyal na salin ay laging inuuna (hindi kailanman labis ang pagkakasulat)
-- Ang mga add key ay isinalin at inipreserba agad-agad
+- Ang mga add key ay isinalin at inipreserba agad - agad
 - Tinatanggal agad ang mga natanggal na key
 - Naliligtas lamang ang Snapshot matapos na matagumpay na makompleto ang lahat ng wika
 
@@ -67,12 +67,12 @@ Binanggit ng muling paggawa ang ilang pagkabahala sa orihinal na disenyong monol
 **Key asal**:
 - Block-level granularity: mga pamagat, parapo, talaan ng mga bagay ay isinasalin nang hiwalay
 - Mga riles ng metadata na hinalinhan ng mga bloke/niliko sa bawat wika
-- Ang mga bigong block ay muling ibinibigkas sa susunod na pagtakbo nang hindi muling isinasalin ang matagumpay na mga blocks
-- Ang istrukturang aksiyunal ay tumitiyak ng mga paulong aspeto, talaan, mga blokeng kodigo, atbp. source
+- Ang mga bigong block ay muling ibinibigkas sa susunod na pagtakbo nang hindi muling isinasalin ang matagumpay na mga block
+- Ang istrukturang aksiyunal ay tumitiyak ng mga heading count, listahan, code blocks, atbp. core source
 
 ## Mabigat na estratehiya
 
-Ang mga gamit sa sistema ay muling ginagamit sa tatlong antas:
+Ang mga kagamitan sa sistema ay muling ginagamit sa tatlong antas:
 
 ### antas 1 — http (libre translateservice)
 
@@ -83,7 +83,7 @@ Ang mga gamit sa sistema ay muling ginagamit sa tatlong antas:
 ### Level 2 — Stage (TranslationRertryService)
 
 - Hanggang 3 pagtatangka na may 30-pangalawang pagkaantala
-- Muling-trigger ang buong kahilingan sa pagsasalin matapos maubos ang HTTP-level retries
+- Muling-bisa ang buong kahilingan sa pagsasalin matapos maubos ang HTTP-level retries
 - Ipinapahid sa antas na ito ang paggamit at pagsasauli ng takip ng lugar
 
 ### Level 3 — Bloke (DocumentsTranslationService)
@@ -154,12 +154,12 @@ For each target language:
 
 ### Mga Snapshot
 
-- **JSON**: Nakaimbak sa isang file na katabi ng default dictionary (ang pangalan ay iba - iba sa pamamagitan ng storage provider)
+- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
 - **Purpose**: Enables incremental sync by tracking what was present in the previous run
 
-### Mga talaksan ng hash
+### Mga talaksang hash
 
-- ** Markdown**: katabi ng source file
+- **Markdown**: katabi ng source file
 - **Fallback**: kung ang pangunahing lokasyon ay basahin-lamang
 - **Purpose**: Detects source changes to avoid unnecessary re-translation
 
@@ -175,10 +175,10 @@ For each target language:
 ### Pag - iimbak ng lugar
 
 - **File**:
-- **Contents**: Dictionary of keys to place-holder na pangalan-halagang pares
-- **Purpose**: Naglalaan ng default na halaga para sa pinangalanang mga may hawak ng lugar sa ibayo ng aplikasyon
+- **Contents**: Dictionary of keys to placeme-halagang pares
+- **Purpose**: Naglalaan ng default na mga halaga para sa pinangalanang mga may hawak ng lugar sa ibayo ng aplikasyon
 
-## Tanda Pag - uulat ng R
+## Pag - uulat ng SignalR
 
 ### Maling Akala
 
@@ -195,7 +195,7 @@ public interface ISignalRPublisher
 ### Mga garantiya ng Pag - aalinlangan
 
 - Ang mga mensahe sa loob ng iisang pagtakbo ay monotonikal na sunud - sunod
-- Ang mga numero ng Sequence ay kakaibang per-run sa pamamagitan ng
+- Ang mga numero ng Sequence ay natatangi kada-run sa pamamagitan ng
 - Natutukoy ng mga client ang mga puwang o muling pagsasaayos
 
 ### Pag - aayos ng Hub
@@ -209,7 +209,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 ### Pagdaragdag ng bagong target sa pagsasalin
 
 1. Gumawa ng bagong interface kasama ng
-2. Itakda ang interface ng domain-specific logic
+2. Ilagay ang interface ng domain-specific logic
 3. Muling Pag - aasawa sa DaI container
 4. Ipasok sa gusali
 5. Tumawag pagkatapos ng umiiral na mga yugto
@@ -278,30 +278,30 @@ Ang bawat sub-service ay independiyenteng masusubok:
 
 - Sinisikap na gayahin ang tagumpay/failure
 - Pakikipagsapalaran na tiyakin ang pag - uulat
-- Gumamit ng pansamantalang mga direktoryo para sa talaksang I/O
+- Gumamit ng pansamantalang mga direktoryo para sa talaksang I/ O
 - Pare-verify per-wika na nagliligtas ng pag-uugali
 
 ### Mga pagsubok sa pandarayuhan
 
-- Buong tubo na pinangangasiwaan ng tunay (local) na LibreTranslate
-- Panibagong Tanda Ang mga mensahe ng R ay inihahatid sa magkakaugnay na mga kliyente
+- Buong tubo na pinatatakbo ng tunay (local) na LibreTranslate na halimbawa
+- Ang mga mensaheng SignalR ay inihahatid sa magkakaugnay na mga kliyente
 - Subukin kasabay ng pag - iwas (semaphore)
 - Paunlarin ang istrakturang Markdown pagkatapos ng pagsasalin
 
-### Wakas-to-end na mga pagsubok
+### Wakas-to-end tests
 
 - Trigger na pagsasalin sa pamamagitan ng API o iskedyul
-- Salain ang lahat ng target na language files ay nilikha/updated
+- Salain ang lahat ng target na language files ay nilikha/update
 - Tingnan ang mga talaksang metadata na naglalaman ng tamang kalagayan ng block
 - Ang tapat na mga may - ari ng lugar ay iniingatan sa iba't ibang salin
 
 ## Mga Pag - iingat
 
-- **Memory**: Per-language saving prevents holding all dictionaries in memory
-- **Disk I/O**: Ang mga talaksang metadata ay nagdaragdag ng maliit sa itaas subalit nagpapangyari sa inkremental na gawain
-- **Network**: Ang pagpoproseso ng Sequential na may throtling ay humahadlang sa labis - labis na LibreTranslate
-- **CPU**: Ang SHA-256 hashing at regex appearance ay mabilis na nauugnay sa pagsasalin ng latency
-- **SingnalR**: Mga mensahe ng magaan na timbang, walang sahod na dala - dala ang compression na kailangan para sa karaniwang mga ulat
+- **Memory**: Ang pag - iingat ng wika ay humahadlang sa pagmememorya ng lahat ng diksyunaryo
+- **Disk I/O**: Metadata files add small overhead but enable incremental work
+- **Network**: Hinahadlangan ng proseso ng pag - aayos sa pamamagitan ng pag - uumpog ang LibreTranslate
+- **CPU**: Ang SHA-256 hashing at regex aficiation ay mabilis na nauugnay sa pagsasalin ng latency
+- **SignalR**: Mga mensahe ng magaan na timbang, walang sahod na dala - dala ang compression na kailangan para sa karaniwang mga ulat
 
 ## Pandarayuhan mula sa disenyo ng monolito
 
@@ -310,7 +310,7 @@ Ang orihinal ay naglalaman ng lahat ng lohika sa isang klase. Ang landas sa pand
 1. Ilabas ang lohika ng lalawigan →
 2. Pag - unawa sa lohika →
 3. Kumuha ng Markdown logic →
-4. Pag - aalis ng Tanda R na naglalathala →
+4. Paglalathala ng SignalR →
 5. Kumuha ng recry logic →
 6. Simpleng orkestra sa delegasyon-lamang
 

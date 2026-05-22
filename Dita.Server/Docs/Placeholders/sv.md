@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## Syntax
 
-Placeholders använder curly-brace syntaxen inuti JSON ordbok värden:
+Placeholders använder curly-brace syntax inuti JSON ordbok värden:
 
 ```json
 {
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Lagrade värden (för halvstatisk konfiguration)
+### Lagrade värden (för halvstatisk konfiguration)
 
 Hanterar en fil i katalogen:
 
@@ -48,7 +48,7 @@ Hanterar en fil i katalogen:
 }
 ```
 
-Lagrade värden fungerar som ** standarder** och är överbelagda av runtime-värden.
+Lagrade värden fungerar som ** standarder** och är överdrivna av runtime-värden.
 
 ## API referens
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Den namngivna platshållaren API är additiv - det bryter inte befintlig användning.
+Den namngivna platshållaren API är tillsats - det bryter inte befintlig användning.

@@ -9,7 +9,7 @@ Die Refactoring befasste sich mit dem ursprünglichen monolithischen Design:
 - **Separation of concerns**: Each translation domain (countries, JSON dictionaries, Markdown) is isolated.
 - **Incremental persistence**: Files are saved per-language immediately after translation, reducing memory usage and providing earlier results.
 - **Resilienz**: Mehrere Retry Levels behandeln transiente Fehler, ohne die gesamte Pipeline zu blockieren.
-- ** Reservierung**: Jeder signifikante Betrieb wird über SignalR zur Echtzeitüberwachung gemeldet.
+- **Verbrauchbarkeit**: Jeder signifikante Betrieb wird über SignalR zur Echtzeitüberwachung gemeldet.
 - **Extensibility**: New translation targets can be added by implementing a single interface.
 
 ## Service Zersetzung
@@ -25,7 +25,7 @@ Die Refactoring befasste sich mit dem ursprünglichen monolithischen Design:
 **Does NOT contain**:
 - Übersetzungslogik
 - Datei I/O für bestimmte Formate
-- Retry-Logik
+- Retry Logik
 
 ### LänderTranslationService
 
@@ -33,7 +33,7 @@ Die Refactoring befasste sich mit dem ursprünglichen monolithischen Design:
 - Lesen Sie das Verzeichnis
 - Ländernamen in das Standard-Sortenwörterbuch synchronisieren
 - Übersetzen fehlende Ländernamen pro Zielsprache
-- Speichern Sie jedes Zielwörterbuch unmittelbar nach der Übersetzung
+- Jedes Zielwörterbuch sofort nach der Übersetzung speichern
 
 **Key behaviors**:
 - Wenn Standardsprache Englisch ist: Ländernamen gespeichert als-is
@@ -43,7 +43,7 @@ Die Refactoring befasste sich mit dem ursprünglichen monolithischen Design:
 ### LokalisierungTranslationService
 
 **Responsibilities**:
-- Erkennen Sie hinzugefügte / gelöschte Schlüssel durch Vergleich der aktuellen Standardwörter mit vorheriger Snapshot
+- Erkennen Sie hinzugefügte / gelöschte Tasten, indem Sie das aktuelle Standardwörterbuch mit vorheriger Snapshot vergleichen
 - Hinzufügen von Schlüsseln in jede Zielsprache übersetzen
 - Entfernen Sie gelöschte Tasten aus jeder Zielsprache
 - Snapshot für den nächsten Vergleich speichern
@@ -57,7 +57,7 @@ Die Refactoring befasste sich mit dem ursprünglichen monolithischen Design:
 ### DokumenteTranslationService
 
 **Responsibilities**:
-- Walk konfiguriert Markdown Wurzeln wiederkehrend
+- Walk konfigurierte Markdown Wurzeln rekursiv
 - Erkennen Sie geänderte Quelldateien mit SHA-256 hashes
 - Track per-Block Übersetzungsstatus in
 - Block-by-Block mit per-Block-Retry
@@ -65,12 +65,12 @@ Die Refactoring befasste sich mit dem ursprünglichen monolithischen Design:
 - Jede Zielsprachedatei unabhängig voneinander speichern
 
 **Key behaviors**:
-- Block-Level-Granulat: Überschriften, Absätze, Listenartikel werden getrennt übersetzt
+- Block-Level-Granulat: Überschriften, Absätze, Listenpositionen werden getrennt übersetzt
 - Metadaten-Tracks, die pro Sprache erfolgreich/verfehlt blockieren
 - Versäumte Blöcke werden auf dem nächsten Lauf zurückgerufen, ohne erfolgreiche Blöcke neu zu übersetzen
-- Strukturvalidierung gewährleistet Überschriftenzählungen, Listen, Codeblöcke usw. Übereinstimmungsquelle
+- Strukturvalidierung gewährleistet Überschriftenzählungen, Listen, Codeblöcke, etc
 
-## Retry-Strategie
+## Retry Strategie
 
 Das System implementiert Retries auf drei Ebenen:
 
@@ -152,9 +152,9 @@ For each target language:
 
 ## Staatliche Beharrlichkeit
 
-### Spritzen
+### Fingern
 
-- **JSON**: In einer Datei neben dem Standardwörterbuch gespeichert (Name variiert je nach Speicheranbieter)
+- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
 - **Purpose**: Ermöglicht Inkrementalsync durch Tracking, was im vorherigen Lauf vorhanden war
 
 ### Hash Dateien
@@ -168,7 +168,7 @@ For each target language:
 - **Markdown**: `{sourceFile}.translation-meta.json`
 - **Contents**:
   - Quelle Inhalt hash
-- Per-Sprache Block Status (array of booleans)
+- Per-Sprache Block Status (Array von Booleans)
 - Letzte Aktualisierung Zeitstempel
 - **Purpose**: Ermöglicht eine teilweise Umschaltung nur fehlgeschlagener Blöcke
 
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Liefert Standardwerte für benannte Platzhalter über die Anwendung
 
-## Signal R Berichterstattung
+## Meldung von Signalen
 
 ### Verlagsabstraktion
 
@@ -278,29 +278,29 @@ Jeder Subservice ist unabhängig testbar:
 
 - Mock zu simulieren Erfolg/Verleugnung
 - Mock zur Überprüfung der Berichterstattung
-- Verwenden Sie temporäre Verzeichnisse für Datei I/O
+- Verwenden Sie temporäre Verzeichnisse für die Datei I/ O
 - Verifizieren Sie per-Sprache Sparverhalten
 
 ### Integrationstests
 
 - Vollständige Pipeline mit realer (lokaler) LibreTranslate-Instanz
-- Signal verifizieren R-Nachrichten werden an angeschlossene Kunden geliefert
-- Test gleichzeitige Vorbeugung (Semaphore)
+- Verify SignalR-Nachrichten werden an verbundene Clients geliefert
+- Test gleichzeitiger Laufverhütung (Semaphore)
 - Gültige Markdown-Struktur nach Übersetzung
 
 ### End-to-End-Tests
 
-- Trigger-Übersetzung über API oder Scheduler
+- Triggerübersetzung über API oder Scheduler
 - Überprüfen Sie alle Zielsprachendateien erstellt/aktualisiert
 - Metadaten-Dateien überprüfen korrekten Blockstatus
 - Feste Platzhalter werden über Übersetzungen erhalten
 
 ## Leistungsbeurteilungen
 
-- **Memory**: Per-language-Spartie verhindert das Halten aller Wörterbücher im Speicher
-- **Disk I/O**: Metadaten-Dateien hinzufügen kleine Overhead aber ermöglichen inkrementelle Arbeit
-- **Netzwerk**: Sequenzielle Verarbeitung mit Drosselung verhindert überwältigende LibreTranslate
-- **CPU**: SHA-256 Hashing und Regex-Validierung sind schnell relativ zur Translation Latenz
+- **Memory**: Per-language Speicher verhindert das Halten aller Wörterbücher im Speicher
+- **Disk I/O**: Metadaten-Dateien addieren kleine Overhead, ermöglichen aber inkrementelle Arbeit
+- **Netzwerk**: Sequentielle Verarbeitung mit Drosselung verhindert überwältigend LibreTranslate
+- **CPU**: SHA-256 Hashing und Regex Validierung sind schnell relativ zur Translation Latenz
 - **SignalR**: Leichte Nachrichten, keine Nutzlastkompression für typische Berichte erforderlich
 
 ## Migration von monolithischem Design
@@ -310,8 +310,8 @@ Das Original enthielt alle Logik in einer Klasse. Der Migrationspfad:
 1. Länderlogik extrahieren →
 2. JSON Logik extrahieren →
 3. Markdown-Logik →
-4. Löschen von Signal R Publishing →
-5. Retry Logik entfernen →
+4. Auszug SignalR Publishing →
+5. Wiederherstellungslogik →
 6. Vereinfachen Sie den Orchestrator nur delegieren
 
 Alle vorhandenen Schnittstellen () bleiben unverändert. Verbraucher der Pipeline sehen keine Bruchänderungen.

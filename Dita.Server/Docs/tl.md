@@ -1,4 +1,4 @@
-﻿# Sumaryo ng mga Pagbabago sa Automatikong Paglilingkod sa Pagsasalin
+﻿# Sumaryo ng mga Pagbabago sa Awtomatikong Paglilingkod sa Pagsasalin
 
 ## ipaliwanag
 
@@ -12,8 +12,8 @@ Ang monolito ay nabulok sa apat na pantanging serbisyo na pinagtutugma ng isang 
 
 - **BackendTranslationService** — Pipeline orkestrator (seryeng may bisa, delegasyon sa entablado, pangangasiwa sa pagkakamali)
 - ** CountriesTranslationService** — Pangalan ng Bansa na coordination (Ingles → target na wika)
-- **LocalizationTranslationService** — Diksiyonaryo ng JSON na nagdurugtong (dagdag/removed keys)
-- **DocumentsTransationService** — Markdown dokumentasyon na may block-level tracking
+- **LocalizationTranslationService** — Diksyunaryo ng JSON
+- **DocumentsTranslationService** — Markdown dokumentasyon na may block-level tracking
 - **SignalRPublisher** — Real-time na pagsulong na nag-uulat sa pamamagitan ng SignalR
 - **TranslationRestryService** — Stage-level retry na may placeholder preserve
 
@@ -21,7 +21,7 @@ Ang monolito ay nabulok sa apat na pantanging serbisyo na pinagtutugma ng isang 
 
 - ** Paghahati ng mga alalahanin**: Bawat serbisyo ay nangangasiwa sa isang lugar na may iisang salin
 - ** Nakakapanatili**: Mas madaling unawain at subukin ang mas maliliit na klase
-- **Extensibilidad**: Maaaring idagdag ang mga bagong puntirya ng pagsasalin sa pamamagitan ng pagpapatupad ng mga bahagi ng katawan
+- **Extensibility**: New translation targets can be added via interface implementation
 - **Reliability**: Independent services provide better fault isolation
 
 ## Bagong mga Katangian
@@ -30,10 +30,10 @@ Ang monolito ay nabulok sa apat na pantanging serbisyo na pinagtutugma ng isang 
 
 **Location**: `/Admin/LiveTranslation`
 
-Isang bagong admin page na nagbibigay ng real-time na imahe sa transaksyon:
+Isang bagong admin page na nagbibigay ng real-time na pagtanaw sa transaksyon:
 
-- Ipinakikita ang Lahat ng Tanda Mga trahedya habang nagaganap ang mga ito
-- Kulay-coded na mga uri ng mensahe (blue=stated, green=fulled, red=error)
+- Ipinakikita ang lahat ng mga pangyayaring SignalR habang nagaganap ang mga ito
+- Kulay-coded na mga uri ng mensahe (blue=started, green=fulled, red=error)
 - Pag-uugnay ng status baner sa auto-renect
 - Kontra ng Mensahe at iniluluwas sa JSON
 
@@ -63,15 +63,15 @@ Ang mga Markdown file ay isinalin nang inkremental:
 - **Per-wikang nagliligtas**: Ang bawat puntiryang wika ay natitipid karaka - raka pagkatapos ng pagsasalin, binabawasan ang presyon ng memorya
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
 - **Selective retry**: Mga bigong block lamang ang muling isinalin sa susunod na run
-- ** Ang pagtitiyaga ng mag - asawa**: Ang estado ng pagsasalin ay nakaligtas sa aplikasyon ng mga restart
+- **Metadata persistence**: Translation state survives application restarts
 
 ### Nakakulong Lohika
 
 Tatlong antas ng pakikibagay:
 
 1. **HTTP retry** (LibreTranslateService): 5 pagtatangka na may exponential backoff (1s–5s)
-2. **Stage retry** (TranslationRertryService): 3 karagdagang pagtatangka na may 30s na pagkaantala
-3. **Block retry** (DocumentsTranslationService): Sawi ang pag-link ng mga block sa susunod na run
+2. **Stage retry** (TranslationRertryService): 3 karagdagang mga pagtatangka na may 30s na pagkaantala
+3. **Block retry** (DocumentsTranslationService): Sawi Markdown blocks retrick run
 
 ### Pag - uulat ng Tanda
 
@@ -79,7 +79,7 @@ Real-time na pag-uulat para sa lahat ng mga operasyon ng pipeline:
 
 - Ang bawat yugto ay naglalathala ng mga pangyayari
 - Per-wikang pagsulong na inilathala bilang mga pangyayari
-- Kasama sa mga pagkakamali ang detalyadong konteksto (oras, maling kodigo, mensahe)
+- Kabilang sa mga pagkakamali ang detalyadong konteksto (oras, maling kodigo, mensahe)
 - Ang mga numerong panukat ay gumagarantiya ng kaayusan sa bawat pagtakbo
 
 ## Mga Pagbabago sa Pag - aayos
@@ -112,16 +112,16 @@ Isinunod sa :
 - /
 - /
 
-Ang Tanda Ang sentro ng mga kliyente ay isinasa - mapa para sa mga ugnayan ng kliyente.
+Ang sentro ng SignalR ay may mapa para sa mga ugnayan ng kliyente.
 
 ## Pagsubok
 
 ### Pagsubok sa Kalagayan
 
-- **243/244 na pagsubok na pumasa** (1ffed dahil sa concurrent file access sa test environment)
+- **243/244 na mga pagsubok na pumasa** (1ffed dahil sa concurrent file access sa test environment)
 - Idinagdag pa ang bagong pagsubok:
-  - May - ari ng Lugar Kasangkapan sa Paglilingkod
-  - Pagbabalik Paglilingkod Bilang orkestra
+  - Kakayahang gumawa ng Lugar
+  - Ang orkestra ng orkestra na backendTranslation
   - json frylocalizer placeholder indexers
 
 ### Alam na mga Kahinaan
@@ -136,10 +136,10 @@ Ang Tanda Ang sentro ng mga kliyente ay isinasa - mapa para sa mga ugnayan ng kl
 - Bansa na salin ng pangalan
 - — Diksiyonaryo ng JSON
 - — Saling Markdown
-- — Tanda R na naglalathala ng mensahe
+- — Paglalathala ng mensahe ng SignalR
 - — Panimulang lohika na may maskarang placeholder
 - — pagitan ng mamamahayag
-- Ang serbisyo ng bansa
+- — Ang paglilingkod sa ibang bansa
 - — Paglilipat ng serbisyo sa lokalisasyon
 - — Serbisyo ng dokumento
 - — Orkestrator interface (nakaraan)
@@ -147,7 +147,7 @@ Ang Tanda Ang sentro ng mga kliyente ay isinasa - mapa para sa mga ugnayan ng kl
 
 ### Naunang mga Serbisyo
 
-- — Karagdagang pangalan na placeholder support
+- — Karagdagang pinangalanang placeholder support
 - — Isinaayos para sa bagong parameter
 - — Ipinangalanang pangangasiwa sa mga humahawak ng lugar
 - — Paglalagay ng Lugar sa ibabaw
@@ -164,7 +164,7 @@ Ang Tanda Ang sentro ng mga kliyente ay isinasa - mapa para sa mga ugnayan ng kl
 - — Gabay na gabay sa paggamit ng Dashboard
 - — Technical architecture
 
-## Pasubaling Bahagi
+## Pasubaling Pakikipagtulungan
 
 Lahat ng pagbabago ay may kaugnayan:
 
@@ -172,7 +172,7 @@ Lahat ng pagbabago ay may kaugnayan:
 - Ang Positional formatting () ay hindi nagbabago
 - Ang umiiral na anyo ng diksyunaryo sa JSON ay hindi nagbabago
 - Hindi nagbabago ang istraktura ng Markdown
-- Tanda Ang R na mga mensahe ay gumagamit ng parehong format
+- Ang mga mensaheng SignalR ay gumagamit ng iisang format
 
 ## Landas ng Pandarayuhan
 
@@ -184,7 +184,7 @@ Hindi na kailangan ang pandarayuhan. Ang muling paggawa ay panloob:
 
 ## Pagsulong sa Pagganap
 
-- **Republikang gamit sa memorya**: Nagtipid ang mga talaksan ng per-wika kaagad sa halip na alalahanin ang lahat
+- **Republikang gamit sa memorya**: Ang mga talaksan ay nakaipon ng per-wika kaagad sa halip na alalahanin ang lahat
 - **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
 - ** Mas Mabuting Tingnan**: Ang real-time na pag-unlad ay tumutulong upang masuri ang mga mabagal na yugto
 
@@ -192,12 +192,12 @@ Hindi na kailangan ang pandarayuhan. Ang muling paggawa ay panloob:
 
 Isinaplanong mga pagsulong:
 
-1. **AIpino-tuning** — Post-machine translation review para sa mga pariralang > 5 salita
+1. **AI pinong-tuning** — Post-machine translation review para sa mga pariralang > 5 salita
 2. **Admin realityation** — Magtakda ng mga pahinang admin sa awtorisadong mga gumagamit
 3. ** Diksiyonaryong editor** — Web UI para sa pangangasiwa ng mga susi sa lokalisasyon
-4. **Translation statistics** — Charts na nagpapakita ng halaga ng pagsasalin at maling bilis sa paglipas ng panahon
+4. **Translation statistic** — Charts na nagpapakita ng halaga ng pagsasalin at maling bilis sa paglipas ng panahon
 5. **Custom placeholder Institusyong** — Suporta sa kahaliling mga format ng placeholder
 
 ## Makipag - ugnayan
 
-Para sa mga tanong o isyu sa pagsasalinwika, pakisuyong tukuyin ang detalyadong dokumentasyon sa bawat directory ng module o makipag-ugnayan sa development team.
+Para sa mga tanong o isyu tungkol sa pagsasalin, pakisuyong tukuyin ang detalyadong dokumento sa direktoryo ng bawat module o makipag - ugnayan sa pangkat na gumagawa nito.

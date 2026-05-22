@@ -1,4 +1,4 @@
-﻿# Ainmnithe Placeholders in Localization
+﻿# Sealbhóirí Áite Ainmnithe in Localization
 
 Tacaíonn Dita ** ainmnithe placeholders ** i teaghráin logánaithe, rud a ligeann luachanna dinimiciúla a chur isteach ag runtime agus gramadaí ceart a chaomhnú ar fud na dteangacha.
 
@@ -13,13 +13,13 @@ Tacaíonn Dita ** ainmnithe placeholders ** i teaghráin logánaithe, rud a lige
 }
 ```
 
-Murab ionann agus sealbhóirí áite suite (, ), tá sealbhóirí áite ainmnithe ** teanga agnostic ** - Is féidir le haistritheoirí iad a athordú chun gramadach sprioc-teanga a mheaitseáil gan an cód a bhriseadh.
+Murab ionann agus sealbhóirí áite suite (, ), tá sealbhóirí áite ainmnithe ** teanga-agnostic ** - Is féidir le haistritheoirí iad a athordú a mheaitseáil gramadach sprioc-teanga gan briseadh an cód.
 
 ## Stóráil
 
 Tá dhá fhoinse luachanna ag sealbhóirí áite ainmnithe:
 
-### 1. Luachanna Runtime (molta le haghaidh sonraí dinimiciúla)
+### 1. luachanna runtime (molta le haghaidh sonraí dinimiciúla)
 
 Pá luachanna go díreach nuair a retrieving an teaghrán localized:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. 2. 2. Luachanna a stóráil (do chumraíocht leath-statach)
+### 2. Luachanna a stóráil (do chumraíocht leath-statach)
 
 An Bainistíonn comhad san eolaire:
 
@@ -48,7 +48,7 @@ An Bainistíonn comhad san eolaire:
 }
 ```
 
-Feidhmíonn luachanna stóráilte mar ** réamhshocraithe ** agus tá siad ró-bhríoch ag luachanna runtime.
+Feidhmíonn luachanna a stóráil mar ** réamhshocraithe ** agus tá siad ró-bhródaithe ag luachanna runtime.
 
 ## Tagairt API
 
@@ -128,7 +128,7 @@ Nuair a bhíonn an tseirbhís aistriúcháin uathoibríoch téacs le sealbhóir�
 
 1. **Roghnaigh aistriúchán **: Tá sealbhóirí Áiteanna maisithe le comharthaí sábháilte () chun cosc a chur ar an inneall aistriúcháin ó iad a mhodhnú.
 2. **During translation**: Próisis an t-inneall aistriúcháin ach an téacs inaistrithe.
-3. **Tar éis aistriúchán **: Ainmneacha sealbhóra bunaidh () a chur ar ais ina seasamh ceart.
+3. **Tar éis aistriúchán **: Ainmneacha sealbhóirí áite bunaidh () a chur ar ais ina seasamh ceart.
 
 ### Samplaí
 
@@ -149,7 +149,7 @@ Cinntíonn sé seo:
 
 1. ** Ainmneacha tuairisciúla a úsáid **: Is fearr ná nó
 2. ** sealbhóirí áite beag **: Too go leor sealbhóirí áit a dhéanamh aistriúcháin níos deacra
-3. **Doiciméad ag súil le cineálacha **: Comments in JSON comhad cabhrú le haistritheoirí tuiscint comhthéacs
+3. **Cáipéisí a bhfuiltear ag súil leo **: Comments in JSON comhad cabhrú aistritheoirí tuiscint comhthéacs
 4. ** Luachanna runtime **: Le haghaidh sonraí fíor dinimiciúil (ainmneacha úsáideora, comhaireamh, dátaí), luachanna pas ag runtime
 5. ** Luachanna stóráilte a úsáid le haghaidh mainneachtainí **: I gcás cumraíochta a athraíonn annamh (ainm iarratais, r-phost tacaíochta)
 6. ** sealbhóirí áite incháilithe **: Soláthraítear úsáid chun na sealbhóirí áite a bhfuiltear ag súil leo a fhíorú
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Is é an sealbhóir API ainmnithe breiseán — ní bhriseann sé úsáid atá ann cheana.
+Is é an sealbhóir API ainmnithe breiseán — ní bhriseann sé úsáid atá ann cheana féin.

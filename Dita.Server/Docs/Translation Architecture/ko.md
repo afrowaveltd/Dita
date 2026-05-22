@@ -4,12 +4,12 @@
 
 ## 디자인 목표
 
-Refactoring는 본래 monolithic 디자인을 가진 몇몇 관심사를 해결했습니다:
+Refactoring는 본래 monolithic 디자인에 몇몇 관심사를 해결했습니다:
 
 - **문의 분리 **: 각 번역 도메인(countries, JSON dictionaries, Markdown)은 격리되어 있습니다.
 - **Incremental 지속 **: 파일은 번역 후 즉시 저장되며 메모리 사용량을 줄이고 이전 결과를 제공합니다.
 - **Resilience**: 전체 파이프라인을 차단하지 않고 여러 가지 재량 레벨을 처리하십시오.
-- ** 객실 **: 모든 중요한 가동은 순간 감시를 위한 SignalR를 통해 보고됩니다.
+- **Observability**: 모든 중요한 가동은 실시간 모니터링을 위한 SignalR을 통해 보고됩니다.
 - ** 예외 **: 새로운 번역 대상은 단일 인터페이스를 구현하여 추가 할 수 있습니다.
 
 ## 서비스 decomposition
@@ -36,7 +36,7 @@ Refactoring는 본래 monolithic 디자인을 가진 몇몇 관심사를 해결�
 - 번역 후 각 타겟 사전을 즉시 저장
 
 ** 키 동작 **:
-- 기본 언어는 영어로 된 경우: 국가 이름은 as-is에 저장됩니다
+- 기본 언어는 영어로 된 경우 : 국가 이름은 as-is에 저장됩니다
 - 기본 언어가 다른 경우: 기본 언어로 번역된 영어 이름
 - 각 언어는 독립적으로 자신의 리트리 루프로 처리됩니다
 
@@ -45,7 +45,7 @@ Refactoring는 본래 monolithic 디자인을 가진 몇몇 관심사를 해결�
 ** 책임 **:
 - 이전 스냅 샷으로 현재 기본 사전을 비교하여 추가 / 제거 키를 감지
 - 각 대상 언어에 추가된 키
-- 각 대상 언어에서 삭제된 키를 제거
+- 각 대상 언어에서 삭제 된 키를 제거
 - 다음에 대한 snapshot 저장
 
 ** 키 동작 **:
@@ -67,7 +67,7 @@ Refactoring는 본래 monolithic 디자인을 가진 몇몇 관심사를 해결�
 ** 키 동작 **:
 - Block-level granularity: headings, 단락, 목록 항목은 별도로 번역됩니다
 - Metadata는 언어 당 성공 / 실패
-- 실패한 블록은 성공적인 블록을 다시 번역하지 않고 다음 실행에 의존합니다
+- 실패 블록은 성공적인 블록을 다시 번역하지 않고 다음 실행에 의존합니다
 - 구조 검증은 계산, 목록, 코드 블록 등을 보장
 
 ## Retry 전략
@@ -154,7 +154,7 @@ For each target language:
 
 ### 스냅샷
 
-- **JSON**: 기본 사전 옆에 있는 파일에 저장 (이름은 저장 공급자에 따라 다름)
+- **JSON **: 기본 사전 옆에 파일에 저장 (이름은 저장 공급자에 따라 다릅니다)
 - **Purpose**: 이전 실행에 존재하는 것을 추적하여 incremental sync를 활성화
 
 ### Hash 파일
@@ -178,7 +178,7 @@ For each target language:
 - **콘텐츠**: 키의 사전을 위주로 name-value 쌍
 - **Purpose**: application을 통하여 name placeholders의 기본값을 제공합니다
 
-## 주요 특징 R 보고
+## SignalR 보고
 
 ### 게시자 요약
 
@@ -274,17 +274,17 @@ public class CustomPlaceholderService : IPlaceholderService
 
 ### 단위 시험
 
-각 sub-service는 자주적으로 testable 입니다:
+각 sub-service는 자주적으로 시험할 수 있습니다:
 
 - 성공 / 실패 시뮬레이션
 - 보고 확인하기
-- 파일 I/O에 대한 임시 이사 사용
+- 파일 I/ ₢ 킹
 - Per-language 저축 행동을 검증
 
 ### 통합 시험
 
 - 전체 파이프라인은 실제 (현지) LibreTranslate 인스턴스로 실행됩니다
-- 인증번호 R 메시지는 연결된 클라이언트에 전달됩니다
+- Verify SignalR 메시지는 연결된 클라이언트에 전달됩니다
 - 시험 동시 뛰기 예방 (semaphore)
 - 번역 후 Markdown 구조 검증
 
@@ -298,8 +298,8 @@ public class CustomPlaceholderService : IPlaceholderService
 ## 성과 고려사항
 
 - **Memory**: Per-language 저축은 기억에 있는 모든 사전을 붙드는 것을 막습니다
-- ** 디스크 I/O **: Metadata 파일은 작은 오버 헤드를 추가하지만 증가 작업
-- **Network**: throttling을 사용한 순차적 처리는 압도적인 LibreTranslate를 방지합니다
+- **Disk I/O**: Metadata 파일은 작은 오버헤드를 추가하지만 증가 작업을 활성화
+- **네트워크**: throttling을 사용한 순차 처리는 압도적인 LibreTranslate를 방지합니다
 - **CPU**: SHA-256 해싱 및 regex 유효성 검사는 번역 지연시 빠른 상대입니다
 - **SignalR**: 경량 메시지, 일반적인 보고서에 필요한 페이로드 압축 없음
 
@@ -310,7 +310,7 @@ public class CustomPlaceholderService : IPlaceholderService
 1. 추출 국가 논리 →
 2. JSON 논리 추출 →
 3. 추출물 Markdown 논리 →
-4. 공급 능력 R 출판 →
+4. SignalR 출판 →
 5. 추출물 retry 논리 →
 6. 관현악을 간단히 합니다
 

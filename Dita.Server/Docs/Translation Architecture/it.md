@@ -9,14 +9,14 @@ Il refactoring ha affrontato diverse preoccupazioni con il design monolitico ori
 - **Separazione delle preoccupazioni**: Ogni dominio di traduzione (conti, dizionari JSON, Markdown) è isolato.
 - ** Persistenza fondamentale ** I file vengono salvati per lingua immediatamente dopo la traduzione, riducendo l'utilizzo della memoria e fornendo risultati precedenti.
 - **Resilience**: I livelli di retry multipli gestiscono fallimenti transitori senza bloccare l'intero gasdotto.
-- **Observability**: Every significant operation is reported via SignalR for real-time monitoring.
+- **Observability**: Ogni operazione significativa viene segnalata tramite SignalR per il monitoraggio in tempo reale.
 - **Extensibility**: New translation targets can be added by implementing a single interface.
 
 ## Decomposizione del servizio
 
 ### BackendTranslationService (orchestratore)
 
-**Responsibilities**:
+** Responsabilità **
 - Gestione del ciclo di vita pipeline (start, completamento, gestione degli errori)
 - Semaphore-based concurrency control (previene sovrapposizioni piste)
 - Convalida del server (latenza, disponibilità della lingua, configurazione)
@@ -25,11 +25,11 @@ Il refactoring ha affrontato diverse preoccupazioni con il design monolitico ori
 ** NON contiene **
 - Traduzione logica
 - File I/O per formati specifici
-- Logica della ricerca
+- Recuperare la logica
 
 ### Servizi di traduzione
 
-**Responsibilities**:
+** Responsabilità **
 - Leggi dalla directory
 - Sincronizzare i nomi dei paesi nel dizionario locale predefinito
 - Tradurre nomi di paese mancanti per lingua di destinazione
@@ -42,7 +42,7 @@ Il refactoring ha affrontato diverse preoccupazioni con il design monolitico ori
 
 ### LocalizzazioneTranslationService
 
-**Responsibilities**:
+** Responsabilità **
 - Rilevare i tasti aggiunti / rimossi confrontando il dizionario predefinito corrente con l'istantanea precedente
 - Tradurre i tasti aggiunti in ogni lingua di destinazione
 - Rimuovere i tasti cancellati da ogni lingua di destinazione
@@ -56,7 +56,7 @@ Il refactoring ha affrontato diverse preoccupazioni con il design monolitico ori
 
 ### DocumentiServizio di traduzione
 
-**Responsibilities**:
+** Responsabilità **
 - Passeggiata configurato Markdown radici ricorrenti
 - Rileva i file di origine modificati utilizzando le hash SHA-256
 - Traccia lo stato di traduzione per blocco in
@@ -67,7 +67,7 @@ Il refactoring ha affrontato diverse preoccupazioni con il design monolitico ori
 **Key behaviors**:
 - Granularità a livello di blocco: voci, paragrafi, elementi di elenco sono tradotti separatamente
 - Le tracce dei metadati che bloccano successo/fallito per lingua
-- I blocchi falliti vengono riattivati sulla prossima corsa senza ritrasformare i blocchi di successo
+- I blocchi falliti vengono riattivati sulla prossima corsa senza ritrasmettere blocchi di successo
 - La validazione della struttura garantisce conteggi delle voci, liste, blocchi di codice, ecc
 
 ## Strategia di recupero
@@ -89,7 +89,7 @@ Il sistema implementa i ripetitori a tre livelli:
 ### Livello 3 — Blocco (Servizio di traduzione dei documenti)
 
 - Blocchi singoli Markdown che non riescono sono contrassegnati in metadati
-- Recuperato automaticamente sul prossimo processo di tubazione
+- Retried automaticamente sul prossimo processo di pipeline
 - I blocchi di successo non sono mai ritraslati
 
 ## Flusso di dati
@@ -154,7 +154,7 @@ For each target language:
 
 ### Istantanee
 
-- **JSON**: memorizzato in un file accanto al dizionario predefinito (il nome varia da provider di archiviazione)
+- **JSON**: Stored in a file next to the default dictionary (name varies by storage provider)
 - **Purpose**: Consente la sincronizzazione incrementale tracciando ciò che era presente nel run precedente
 
 ### File Hash
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dizionario delle chiavi per le coppie di valore dei nomi dei segnaposto
 - **Purpose**: Fornisce valori predefiniti per i segnaposto nominati in tutta l'applicazione
 
-## Segnale R reporting
+## Report SignalR
 
 ### Astrazione editoriale
 
@@ -278,40 +278,40 @@ Ogni sotto-servizio è testabile in modo indipendente:
 
 - Mock per simulare successo/fallimento
 - Mock per verificare la segnalazione
-- Utilizzare directory temporanee per file I/O
+- Utilizzare directory temporanee per file I/ O
 - Verificare il comportamento di salvataggio per lingua
 
 ### Test di integrazione
 
 - Funzionamento completo con l'istanza reale (locale) LibreTranslate
-- Verificare il segnale I messaggi R vengono consegnati ai client collegati
+- Verificare che i messaggi SignalR siano consegnati ai client collegati
 - Test di prevenzione corrente (semaphore)
 - Convalida la struttura Markdown dopo la traduzione
 
 ### Prove finali
 
-- Traduzione del trigger tramite API o scheduler
+- Traduzione di trigger tramite API o scheduler
 - Verificare tutti i file di lingua di destinazione sono creati/aggiornamento
 - Controllare i file metadati contengono stato corretto del blocco
-- I segnaposto confermati sono conservati tra le traduzioni
+- I segnaposto di conferma sono conservati tra le traduzioni
 
 ## Considerazioni di performance
 
 - **Memory**: Il salvataggio in lingua impedisce di tenere tutti i dizionari in memoria
-- **Disk I/O**: Metadata files add small overhead but enable incremental work
-- **Rete**: L'elaborazione sequenziale con il throttling impedisce la schiacciante LibreTranslate
+- **Disk I/O**: i file Metadata aggiungono un piccolo overhead ma consentono un lavoro incrementale
+- **Rete ** L'elaborazione sequenziale con il throttling impedisce schiacciante LibreTranslate
 - **CPU**: SHA-256 hashing e la convalida regex sono veloci rispetto alla latenza di traduzione
-- **SignalR**: Messaggi leggeri, nessuna compressione di carico utile necessaria per i rapporti tipici
+- **SignalR**: Messaggi leggeri, nessuna compressione di payload necessaria per i rapporti tipici
 
 ## Migrazione dal design monolitico
 
 L'originale conteneva tutta la logica in una classe. Il percorso di migrazione:
 
 1. Estrarre la logica del paese →
-2. Estrarre JSON logica →
+2. Estrarre la logica JSON →
 3. Estrarre Markdown logica →
-4. Segnale di estratto R publishing →
-5. Estrarre la logica retry →
+4. Estratto SegnaleR pubblicazione →
+5. Estrarre la logica di recupero →
 6. Semplificare l'orchestratore solo per le delegazioni
 
 Tutte le interfacce esistenti () rimangono invariate. I consumatori della pipeline non vedono cambiamenti di rottura.

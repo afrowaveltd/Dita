@@ -1,6 +1,6 @@
 ﻿# Prevodna plošča v živo
 
-The Live Translation Dashboard je admin stran, ki zagotavlja v realnem času vidljivost v avtomatski prevod cevovod. Povezuje se z vozliščem SignalR in prikazuje vse plinovodne dogodke, ko se pojavijo.
+The Live Translation Dashboard je admin stran, ki zagotavlja v realnem času vidljivost v avtomatski prevajalski cevovod. Povezuje se z vozliščem SignalR in prikazuje vse plinovodne dogodke, ko se pojavijo.
 
 ## URL
 
@@ -12,15 +12,15 @@ The Live Translation Dashboard je admin stran, ki zagotavlja v realnem času vid
 
 ### Tok dogodkov v realnem času
 
-Vsi signali R dogodki iz prevajalskega cevovoda so prikazani v tabeli, ki posodablja življenje:
+Vsi dogodki SignalR iz prevajalskega cevovoda so prikazani v tabeli za live updating:
 
 - **Sequence number** – monotoni števec znotraj vsakega cevovoda
 - **Časovni žig** – krajevni čas prejema dogodka
 - **Zaženi ID** – Skrajšan grafični vmesnik za korelacijo
-- **Stage** — Pipeline scenska značka (CheckServers, TranslateCountries itd.)
-- **Vrsta** — Značka vrste sporočila (začeta, napredek, dokončana faza itd.)
-- **Sporočilo** – opis, ki ga je mogoče brati
-- **Podrobnosti** – Polna korist JSON za podatke o dogodku
+- **Stage** — Pipeline scenska značka (CheckServers, TranslateCountries, etc.)
+- **Vrsta** – Značka vrste sporočila (začeta, napredek, dokončana faza itd.)
+- **Sporočilo** – opis, ki ga je mogoče prebrati pri človeku
+- **Podrobnosti** – Polna korist JSON podatkov o dogodku
 
 ### Barvno kodiranje
 
@@ -45,9 +45,9 @@ Povezava uporablja samodejno ponovno povezavo z eksponentno backoff: 0s, 2s, 5s,
 
 - ** Počisti vir** – odstrani vsa prikazana sporočila in ponastavi števec
 - **Izvoz JSON** – Prenese vsa prejeta sporočila kot datoteko JSON za analizo
-- **Message števec** – Prikazuje skupno število dogodkov, prejetih v tej seji
+- ** Message števec** – Prikazuje skupno število dogodkov, prejetih v tej seji
 
-## Signal R vozlišče
+## Vozlišče SignalR
 
 Armaturna plošča je povezana z:
 
@@ -91,7 +91,7 @@ Opozorilna značka
 
 ### Hrbtenica
 
-- **Lokalizacija Hub** () – vozlišče SignalR, ki prenaša sporočila vsem povezanim strankam
+- **LokalizacijaHub** () — vozlišče SignalR, ki prenaša sporočila vsem povezanim strankam
 - **ISignalRP Publisher** – Povzetek o vozlišču za uporabo v prevajalskih storitvah
 - **SignalRP Publisher** – Privzeta izvedba, ki povečuje monotonsko zaporedje in oddaje
 
@@ -143,11 +143,11 @@ Načrtovane izboljšave armaturne plošče:
 
 1. Preverite, ali se URL vozlišča SignalR ujema med strežnikom () in odjemalcem ()
 2. Preverjanje razporeda je omogočeno v
-3. Oglejte si dnevnike strežnikov za napake v prevajalskem cevovodu
-4. Preveri brskalnik Omrežni zavihek za sporočila WebSocket
+3. Poglejte dnevnike strežnikov za napake v prevajalskem cevovodu
+4. Preveri zavihek Omrežje brskalnika za sporočila WebSocket
 
 ### Sporočila so neustrezna
 
 Polje zagotavlja naročanje znotraj enega teka. Če so sporočila nepravilna, lahko navede:
 - Večkratni pretoki cevovodov se prekrivajo (ne bi smeli biti posledica ključavnice semaforja)
-- Vprašanja v zvezi z upodabljanjem brskalnika (poizkusi osveževati stran)
+- Brskanje reproduciranja (poskus osveževanja strani)

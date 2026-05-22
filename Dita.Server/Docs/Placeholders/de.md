@@ -1,6 +1,6 @@
 ﻿# Bezeichnete Platzhalter in der Lokalisierung
 
-Dita unterstützt **bezeichnete Platzhalter** in Lokalisierungsstrings, so dass dynamische Werte zur Laufzeit eingefügt werden können, während korrekte Grammatik über Sprachen erhalten bleibt.
+Dita unterstützt **named placeholders** in Lokalisierungsstrings, so dass dynamische Werte zur Laufzeit eingefügt werden können, während korrekte Grammatik über Sprachen erhalten bleibt.
 
 ## Syntax
 
@@ -19,7 +19,7 @@ Im Gegensatz zu Positions-Platzhaltern (, ), benannte Platzhalter sind **sprach-
 
 Namete Platzhalter haben zwei Wertequellen:
 
-### ANHANG Laufzeitwerte (erstellt für dynamische Daten)
+### 1. Laufzeitwerte (empfohlen für dynamische Daten)
 
 Passwerte direkt beim Abrufen der lokalisierten Zeichenfolge:
 
@@ -126,9 +126,9 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 Wenn der automatische Übersetzungsservice auf Text mit benannten Platzhaltern trifft:
 
-1. **Vorübersetzung**: Platzhalter sind mit sicheren Token () maskiert, um zu verhindern, dass die Übersetzungsmaschine sie ändert.
+1. **Vorübersetzung**: Platzhalter werden mit sicheren Token () maskiert, um zu verhindern, dass die Übersetzungsmaschine sie ändert.
 2. **During translation**: The translation engine processes only the translatable text.
-3. **Nach der Übersetzung**: Originale Platzhalternamen () werden in ihren richtigen Positionen wiederhergestellt.
+3. **Nach der Übersetzung**: Original-Platzhalternamen () werden in ihren richtigen Positionen wiederhergestellt.
 
 ### Beispiel
 
@@ -140,7 +140,7 @@ Vorbereitet für Übersetzung:
 
 Endergebnis:
 
-Dies gewährleistet, dass
+Dies sorgt dafür, dass
 - Platzhalter werden nie übersetzt oder beschädigt
 - Zielsprach Grammatik kann den umliegenden Text frei umstellen
 - Die gleiche Vorlage funktioniert in allen Sprachen richtig
@@ -149,7 +149,7 @@ Dies gewährleistet, dass
 
 1. **Use descriptive names**: `{userName}` is better than `{0}` or `{name}`
 2. **Keep placeholders minimal**: Too many placeholders make translation harder
-3. **Dokument erwartete Typen**: Kommentare in der JSON-Datei helfen Übersetzern, Kontext zu verstehen
+3. **Document expected types**: Comments in the JSON file help translators understand context
 4. ** Laufzeitwerte vorgeben**: Für wirklich dynamische Daten (Benutzernamen, Zählungen, Termine), Passwerte zur Laufzeit
 5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
 6. **Validate placeholders**: Use `ExtractPlaceholders()` to verify all expected placeholders are provided
@@ -162,7 +162,7 @@ Die und beide nutzen den Retry-Service, so dass alle JSON Wörterbuch Übersetzu
 
 ## Rückwärtskompatibilität
 
-Vorhandener Code mit Positionshaltern oder Platzhaltern funktioniert weiterhin unverändert:
+Vorhandener Code mit Platzhaltern oder Platzhaltern funktioniert weiterhin unverändert:
 
 ```csharp
 // Still works exactly as before
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Die benannte Placeholder API ist additiv – sie bricht nicht die bestehende Nutzung.
+Die benannte Placeholder API ist additiv — es bricht nicht die bestehende Nutzung.

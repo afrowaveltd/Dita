@@ -2,7 +2,7 @@
 
 ## Overzicht
 
-Dit document geeft een samenvatting van alle wijzigingen die zijn aangebracht in de automatische vertaaldienst Dita, waaronder architectuurrefactoring, nieuwe functies, opmerkzaamheidsverbeteringen en lokalisatieverbeteringen.
+Dit document geeft een samenvatting van alle wijzigingen die zijn aangebracht aan de automatische vertaaldienst Dita, waaronder architectuurrefactoring, nieuwe functies, opmerkzaamheidsverbeteringen en lokalisatieverbeteringen.
 
 ## Architectuurwijzigingen
 
@@ -32,7 +32,7 @@ De monolithische is samengesteld uit vier gespecialiseerde diensten, gecoördine
 
 Een nieuwe admin pagina die real-time zichtbaarheid biedt in de vertaalpijplijn:
 
-- Toont alle signalen R gebeurtenissen zoals deze zich voordoen
+- Toont alle SignalR-gebeurtenissen als ze optreden
 - Kleurgecodeerde berichtentypen (blauw=gestart, groen=voltooid, rood=fout)
 - Verbindingsstatusbanner met automatisch opnieuw verbinden
 - Berichten teller en exporteren naar JSON
@@ -51,8 +51,8 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-Functies:
-- Plaatshouderwaarden verstrekt op runtime of opgeslagen in
+Kenmerken:
+- Plaatshouderwaarden opgegeven op runtime of opgeslagen in
 - Automatische masking / restauratie tijdens de vertaling om corruptie te voorkomen
 - Achterwaarts compatibel met bestaande positiehouders
 
@@ -63,7 +63,7 @@ Markdown-bestanden worden stapsgewijs vertaald:
 - **Pertaal opslaan**: Elke doeltaal wordt onmiddellijk na vertaling opgeslagen, waardoor de geheugendruk wordt verminderd
 - **Block-level tracking**: tracks vertaalstatus per blok
 - **Selectieve herhaling**: Alleen mislukte blokken worden opnieuw vertaald op de volgende run
-- **Metadata persistentie**: Translation state overleeft toepassing herstart
+- **Data persistentie**: Translation state overleeft toepassing herstart
 
 ### Verbeterde herhalingslogica
 
@@ -71,7 +71,7 @@ Drie niveaus van veerkracht:
 
 1. **HTTP retry** (LibreTranslateService): 5 pogingen met exponentiële backoff (1s
 2. **Stage retry** (TranslationRetryService): 3 extra pogingen met 30s vertraging
-3. **Block retry** (DocumentsTranslationService): Opmaak blokken opnieuw opgehaald bij volgende run mislukt
+3. **Block retry** (DocumentsTranslationService): mislukt Markdown blokken opnieuw opgehaald op volgende run
 
 ### SignalR-rapportage
 
@@ -112,7 +112,7 @@ Geregistreerd in:
 - '
 - '
 
-Het signaal R hub is in kaart gebracht voor client verbindingen.
+De SignalR-hub is in kaart gebracht voor clientverbindingen.
 
 ## Testen
 
@@ -120,13 +120,13 @@ Het signaal R hub is in kaart gebracht voor client verbindingen.
 
 - **243/244 tests slagen** (1 overgeslagen vanwege gelijktijdige bestandstoegang in testomgeving)
 - Nieuwe testdekking toegevoegd voor:
-  - Plaatshouder Dienstfunctionaliteit
-  - BackendVertaling Dienstorkestratie
+  - PlaatshouderDienstfunctionaliteit
+  - BackendTranslationService orkestation
   - JsonStringLocalizer plaatshouder indexers
 
 ### Bekende beperkingen
 
-- test wordt overgeslagen bij parallel draaien omdat meerdere test instanties hetzelfde bestand delen. Het gaat voorbij als het in afzondering loopt.
+- test wordt overgeslagen bij parallel draaien omdat meerdere test instanties hetzelfde bestand delen. Het gaat voorbij als het in isolatie loopt.
 
 ## Nieuwe bestandsstructuur
 
@@ -136,7 +136,7 @@ Het signaal R hub is in kaart gebracht voor client verbindingen.
 - Landnaam vertaling
 - JSON woordenboeksynchronisatie
 - Vertaling markeren
-- Signaal R bericht publiceren
+- Bericht publiceren
 - Retry logica met plaatshouder maskering
 - Uitgever
 - Country service interface
@@ -148,7 +148,7 @@ Het signaal R hub is in kaart gebracht voor client verbindingen.
 ### Bijgewerkte diensten in
 
 - Toegevoegd naam plaatshouder ondersteuning
-- Wat? Bijgewerkt voor nieuwe parameter
+- Bijgewerkt voor nieuwe parameter
 - Benoemde plaatshouder management
 - Plaatshouder interface
 
@@ -159,12 +159,12 @@ Het signaal R hub is in kaart gebracht voor client verbindingen.
 
 ### Nieuwe documentatie in
 
-- Wat? Bijgewerkte pijpleidingdocumentatie
+- Bijgewerkte documentatie over pijpleidingen
 - Plaatshouder systeem gids
 - Dashboard gebruikshandleiding
 - Technische architectuur overzicht
 
-## Compatibiliteit achterwaarts
+## Compatibiliteit achteraf
 
 Alle wijzigingen zijn additief:
 
@@ -172,7 +172,7 @@ Alle wijzigingen zijn additief:
 - Positional formatting () werkt ongewijzigd
 - Bestaande JSON woordenboekformaat is ongewijzigd
 - Bestaande Markdown structuur is ongewijzigd
-- Signaal R-berichten gebruiken hetzelfde formaat
+- SignalR-berichten gebruiken hetzelfde formaat
 
 ## Migratiepad
 
@@ -184,16 +184,16 @@ Geen migratie vereist. De refactoring is intern:
 
 ## Prestatieverbeteringen
 
-- **Verminderd geheugengebruik**: Bestanden per taal onmiddellijk opgeslagen in plaats van alles in het geheugen te houden
-- **Faster incremental loopt**: Alleen gewijzigde/gefaalde Markdown blokken worden opnieuw vertaald
+- **Verminderd geheugengebruik**: Bestanden opgeslagen per-taal onmiddellijk in plaats van het houden van alle in het geheugen
+- **Faster incremental runs**: Alleen gewijzigde/gefaalde Markdown blokken worden opnieuw vertaald
 - ** Beter zicht**: Real-time vooruitgang helpt diagnose langzame stadia
 
 ## Toekomstige verbeteringen
 
 Geplande verbeteringen:
 
-1. **AI fine-tuning**  5 woorden
-2. **Admin authenticatie**
+1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
+2. **Admin-authenticatie**
 3. **Dictionary editor**
 4. **Vertaalstatistieken**
 5. **Aangepaste placeholder syntax** Ondersteuning voor alternatieve plaatshouderformaten

@@ -5,7 +5,6 @@ using Dita.Shared.Localization.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -122,7 +121,9 @@ public class DocumentsTranslationService(
         Guid runId)
     {
         string sourceContent = await File.ReadAllTextAsync(sourceFile);
-        string sourceHash = ComputeHash(sourceContent);
+        string sourceHash = MarkdownTranslationMetadata.ComputeSourceHash(sourceContent);
+        List<MarkdownTranslatableBlock> sourceBlocks = _markdownParserService.ExtractTranslatableBlocks(sourceContent);
+        string sourceDisplayPath = GetDisplayPath(sourceFile);
 
         // Load metadata for partial translation tracking
         MarkdownTranslationMetadata? metadata = MarkdownTranslationMetadata.Load(sourceFile);
@@ -131,7 +132,9 @@ public class DocumentsTranslationService(
         if (!sourceChanged)
         {
             // Check if any language is missing or has untranslated blocks
-            bool needsTranslation = targetLanguages.Any(lang => !metadata!.IsFullyTranslated(lang));
+            bool needsTranslation = targetLanguages.Any(lang =>
+                !File.Exists(GetTargetFilePath(sourceFile, lang))
+                || !metadata!.IsFullyTranslated(lang, sourceBlocks.Count));
             if (!needsTranslation)
             {
                 report.SkippedFiles++;
@@ -141,10 +144,6 @@ public class DocumentsTranslationService(
 
         report.SourceFilesChanged++;
         _logger.LogInformation("Processing Markdown file: {SourceFile} (changed={Changed})", sourceFile, sourceChanged);
-
-        // Extract translatable blocks
-        List<MarkdownTranslatableBlock> sourceBlocks = _markdownParserService.ExtractTranslatableBlocks(sourceContent);
-        string sourceDisplayPath = GetDisplayPath(sourceFile);
 
         await _signalRPublisher.PublishMessageAsync(
             runId,
@@ -165,7 +164,11 @@ public class DocumentsTranslationService(
         var newMetadata = new MarkdownTranslationMetadata
         {
             SourceHash = sourceHash,
-            LanguageBlockStatus = []
+            LanguageBlockStatus = !sourceChanged && metadata != null
+                ? metadata.LanguageBlockStatus.ToDictionary(
+                    entry => entry.Key,
+                    entry => entry.Value.ToList())
+                : []
         };
 
         bool anyLanguageSucceeded = false;
@@ -173,12 +176,13 @@ public class DocumentsTranslationService(
         foreach (string targetLanguage in targetLanguages)
         {
             string displayLanguage = GetLocalizedLanguageName(targetLanguage);
-            string targetFilePath = Path.Combine(
-                Path.GetDirectoryName(sourceFile) ?? string.Empty,
-                $"{targetLanguage}.md");
+            string targetFilePath = GetTargetFilePath(sourceFile, targetLanguage);
 
             // Check if we can skip this language
-            if (!sourceChanged && metadata != null && metadata.IsFullyTranslated(targetLanguage) && File.Exists(targetFilePath))
+            if (!sourceChanged
+                && metadata != null
+                && metadata.IsFullyTranslated(targetLanguage, sourceBlocks.Count)
+                && File.Exists(targetFilePath))
             {
                 _logger.LogDebug("Skipping '{TargetLanguage}' for '{SourceFile}' - already fully translated.", targetLanguage, sourceFile);
 
@@ -439,10 +443,11 @@ public class DocumentsTranslationService(
         return relativePath.Replace(Path.DirectorySeparatorChar, '/');
     }
 
-    private static string ComputeHash(string content)
+    private static string GetTargetFilePath(string sourceFilePath, string targetLanguage)
     {
-        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(content));
-        return Convert.ToHexString(bytes);
+        return Path.Combine(
+            Path.GetDirectoryName(sourceFilePath) ?? string.Empty,
+            $"{targetLanguage}.md");
     }
 
     private async Task WriteStoredHashAsync(string sourceFilePath, string hash, StoringReport storingReport, MarkdownTranslationsReport report)

@@ -4,17 +4,17 @@ Ta dokument opisuje modularno arhitekturo Ditinega avtomatskega prevajalskega si
 
 ## Cilji oblikovanja
 
-V refaktoriji je bilo obravnavanih več pomislekov glede prvotnega monolitnega načrta:
+Refaktoriranje je obravnavalo več pomislekov glede prvotnega monolitnega načrta:
 
 - ** Ločitev pomislekov**: Vsaka prevajalska domena (države, slovarji JSON, Markdown) je izolirana.
 - ** Vztrajnost mišic**: Datoteke so shranjene na jezik takoj po prevodu, zmanjšanje uporabe pomnilnika in zagotavljanje zgodnejših rezultatov.
-- **Odpornost**: Večkratni nivoji ponovnih poskusov ne ovirajo celotnega cevovoda.
-- ** Opazljivost**: Vsaka pomembna operacija se poroča preko SignalR za spremljanje v realnem času.
+- **Odpornost**: Večkratne stopnje ponovnega poskusa obvladujejo prehodne napake, ne da bi blokirali celoten cevovod.
+- **Opazljivost**: O vsaki pomembni operaciji se poroča prek sistema SignalR za spremljanje v realnem času.
 - ** Obsežnost**: Nove prevajalske cilje lahko dodamo z uvedbo enotnega vmesnika.
 
 ## Razgradnja storitve
 
-### HrbtenicaPrevajanjeService (orgestrator)
+### BackendTranslationService (orkestrator)
 
 ** Odgovornosti**:
 - Upravljanje življenjskega cikla cevovodov (začetek, dokončanje, ravnanje z napakami)
@@ -50,27 +50,27 @@ V refaktoriji je bilo obravnavanih več pomislekov glede prvotnega monolitnega n
 
 ** Ključno vedenje**:
 - Ročni prevodi imajo vedno prednost (nikoli prepisan)
-- Dodane tipke so prevedene in shranjene na jezik takoj
+- Dodani ključi so prevedeni in shranjeni na jezik takoj
 - Odvzete tipke se izbrišejo na jezik takoj
 - Snapshot je shranjen šele potem, ko so vsi jeziki uspešno zaključeni
 
 ### Storitev prevajanja dokumentov
 
 ** Odgovornosti**:
-- Korak nastavljen Markdown korenine rekurzivno
-- Zaznaj spremenjene izvorne datoteke z uporabo SHA-256 hashes
+- Sprehod nastavljen Markdown korenine rekurzivno
+- Zaznajte spremenjene izvorne datoteke z uporabo SHA-256 hashes
 - Stanje prevajanja po bloku v
-- Prevedi blok-po-blok z retriiranjem na-blok
+- Prevedi blok po blokih z retriiranjem po blokih
 - Potrdi strukturo Markdown po prevodu
 - Shrani vsako ciljno jezikovno datoteko neodvisno
 
 ** Ključno vedenje**:
 - Razpredelnica 1
 - Metapodatkovne skladbe, ki blokirajo uspelo/neuspelo na jezik
-- Neuspeli bloki se ponovno preizkusijo ob naslednjem zagonu brez ponovnega prenosa uspešnih blokov
+- Neuspešni bloki se ponovno preizkusijo ob naslednjem zagonu brez ponovnega prenosa uspešnih blokov
 - Validacija strukture zagotavlja štetje naslovov, sezname, kodne bloke itd
 
-## Znova poskusi strategijo
+## Ponovno poskusi strategijo
 
 Sistem izvaja na treh ravneh:
 
@@ -80,10 +80,10 @@ Sistem izvaja na treh ravneh:
 - Ravna z zamiki v omrežju, 5xx napakami in prehodnimi napakami
 - Vgrajen v odjemalca HTTP
 
-### Raven 2 – faza (storitev prevajanjaRetryService)
+### Raven 2 – faza (Storitev prenosa)
 
 - Do 3 poskusi s 30-sekundnimi zamudami
-- Ponovno poganja celoten zahtevek za prevod po HTTP-nivo retries so izčrpani
+- Ponovno poganja celotno prošnjo za prevod po HTTP-nivo retries so izčrpani
 - Na tej ravni se uporablja prikrivanje in obnova držal
 
 ### Raven 3 – blok (DokumentiPrevajanjeService)
@@ -154,8 +154,8 @@ For each target language:
 
 ### Posnetki
 
-- **JSON**: Shranjeno v datoteki poleg privzetega slovarja (ime se razlikuje po ponudniku shranjevanja)
-- **Purpose**: Omogoča postopno sinhronizacijo s sledenjem tistemu, kar je bilo prisotno v prejšnjem zagonu
+- ** JSON**: Shranjeno v datoteki poleg privzetega slovarja (ime se razlikuje glede na ponudnika shranjevanja)
+- **Purpose**: Omogoča postopna sinhronizacija s sledenjem tistemu, kar je bilo prisotno v prejšnjem zagonu
 
 ### Datoteke Hash
 
@@ -175,12 +175,12 @@ For each target language:
 ### Prostorsko skladiščenje
 
 - **Datoteka**:
-- **Vsebine**: Slovar ključev za pare z imenom imetnika
-- **Podatki**: Zagotavlja privzete vrednosti za imenovane imetnike po vsej vlogi
+- **Vsebina**: Slovar ključev za pare z imenom imetnika
+- **Podatek**: Zagotavlja privzete vrednosti za imenovane imetnike po vsej vlogi
 
-## Signal R poročanje
+## Poročanje o signalih
 
-### Abstrakcija založnika
+### Izvleček založnika
 
 storitve ločenega prevajanja iz specifikacij SignalR:
 
@@ -278,29 +278,29 @@ Vsaka podstoritev je neodvisno preizkušena:
 
 - Mock za simuliranje uspeha/neuspeha
 - Opomni za preverjanje poročanja
-- Uporabi začasne mape za datoteko I/O
+- Uporabi začasne mape za datoteko I/ I O
 - Preverjanje vedenja varčevanja na jezik
 
 ### Testi vključevanja
 
 - Polno delovanje cevovoda z realnim (lokalni) LibrePrevajanje primer
-- Preveri signal R sporočila se dostavijo povezanim strankam
+- Preverjanje sporočil SignalR se dostavi povezanim strankam
 - Preskus sočasne preventive s tekom (semafor)
 - Potrdi strukturo Markdown po prevodu
 
 ### Preskusi med koncema
 
-- Sprožitveno prevajanje preko API ali programerja
-- Preveri vse ciljne jezikovne datoteke so ustvarjeni/posodobljeni
+- Sprožite prevajanje preko API ali programerja
+- Preveri vse ciljne jezikovne datoteke so ustvarjene/posodobljene
 - Preveri metapodatkovne datoteke vsebujejo pravilno stanje bloka
 - Potrdite, da so vsi prevodi ohranjeni
 
 ## Preučevanje učinkovitosti
 
 - **Spomin**: Varčevanje v jeziku preprečuje shranjevanje vseh slovarjev v pomnilniku
-- **Disk I/ O**: Metapodatkovne datoteke dodajajo majhne režijske stroške, vendar omogočajo postopna dela
-- **Network**: Zaporedna obdelava z gnečo preprečuje veliko LibrePrevajanje
-- **CPU**: SHA-256 validacija hashing in regex sta hitra glede na latenco prevajanja
+- **Disk I/O**: Metapodatkovne datoteke dodajajo majhne režijske stroške, vendar omogočajo postopna dela
+- ** Mreža**: Zaporedna obdelava z brenčanjem preprečuje veliko LibrePrevajanje
+- **CPU**: SHA-256 hashing in regex validacija sta hitra glede na latenco prevajanja
 - **SignalR**: Lahka sporočila, za tipična poročila ni potrebno stiskanje tovora
 
 ## Migracija iz monolitnega oblikovanja
@@ -310,7 +310,7 @@ Original je vseboval vso logiko v enem razredu. Selitvena pot:
 1. Izvleci logiko države →
 2. Izvlecite JSON logiko →
 3. Izvleci logiko Markdown →
-4. Ekstraktni signal R založništvo →
+4. Extract SignalR založništvo →
 5. Ekstraktna logika ponovnega preizkusa →
 6. Poenostavitev orkestra na samo delegacijo
 

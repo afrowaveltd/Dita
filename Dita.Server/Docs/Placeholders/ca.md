@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Valors emmagatzemats (per configuració semi- astàtic)
+### 2. S' han emmagatzemat els valors emmagatzemats (per configuració semi- astàtic)
 
 El fitxer gestiona un fitxer en el directori:
 
@@ -128,7 +128,7 @@ Quan el servei de traducció automàtic troba text amb variables de nom:
 
 1. **Abans de traducció **: Els paràmetres de substitució són emmascalats amb fitxes segures () per evitar que el motor de traducció els modifica.
 2. **Dinir traducció **: Els processos de motor de traducció només són el text translatable.
-3. **After translation**: Original placeholder names (`{name}`) are restored in their correct positions.
+3. ** Després de la traducció **: Els noms de substitució originals () es restauraran en les seves posicions correctes.
 
 ### Exemple
 
@@ -149,7 +149,7 @@ Això assegura que:
 
 1. **Usa noms descriptius ** És millor que o
 2. **Keep placeholders minimal**: Too many placeholders make translation harder
-3. **Document expected types**: Comments in the JSON file help translators understand context
+3. **Documents esperats ** Comentaris al traductor d'ajuda JSON
 4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime
 5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
 6. **Validate placeholders**: Use `ExtractPlaceholders()` to verify all expected placeholders are provided
@@ -158,7 +158,7 @@ Això assegura que:
 
 La conservació de substitució gestiona automàticament durant les crides de Libretrate. No cal configuració addicional.
 
-Les i ambdós usen el servei reintentar- ho, de manera que totes les traduccions del diccionari JSON suport transparentment amb marcadors de substitució.
+Les i ambdós usen el servei reintentar- ho, de manera que totes les traduccions del diccionari JSON suport transparentment de les traduccions anomenades variables de substitució.
 
 ## Compatibilitat enrere
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-L' API de posició de nom és additiu libno es trenca l' ús existent.
+L' API de marcadors de substitució s' afegeix initiu no trenca l' ús existent.

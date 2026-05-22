@@ -19,7 +19,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 ফটোর মান:
 
-### ১. সময়ের মান প্রয়োগের জন্য Run stelf-test
+### ১. সময়ের মান (Inective) ক্ষেত্রে বিপর্যয় সংক্রান্ত তথ্য পূরণ করা হয়েছে
 
 স্থানীয় পংক্তি পুনরুদ্ধারের সময় ব্যবহারযোগ্য মান নির্বাচন করুন:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### ২. সংরক্ষিত মান সংরক্ষণের জন্য ধার্য করা হবে (সেচ্যাটিক কনফিগারেশন)
+### ২. সংরক্ষিত মান সংরক্ষণ করা হবে (সেমি-স্ট্যাটিক কনফিগারেশন)
 
 ডিরেক্টরির মধ্যে ফাইল পরিচালনার সুবিধা উপস্থিত রয়েছে:
 
@@ -102,7 +102,7 @@ public interface IPlaceholderService
 
 ### এক্সটেনশন
 
-শপথ তাদের , যারা সকল কর ্ মনির ্ বাহ করে , কেয়ামত অবশ ্ যই হবে ।
+যারা স ্ বচ ্ ছলতায় ও অভাবের সময় ব ্ যয় করে
 
 ```csharp
 public static class StringLocalizerExtensions
@@ -124,7 +124,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## অনুবাদের আচরণ
 
-সি. পি. এল. - র স্বয়ংক্রিয় অনুবাদ সার্ভিস যখন placessএর সঙ্গে লেখা চিহ্নিত করে:
+স্বয়ংক্রিয় অনুবাদ সার্ভিস যখন placessএর সঙ্গে লেখা থাকে:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
@@ -136,7 +136,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 অনুবাদ করার জন্য প্রস্তুত:
 
-অনুবাদক:
+চেক- এ অনুবাদক:
 
 চূড়ান্ত ফলাফল:
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Part API দ্বারা উল্লেখ করা হয়েছে — এটি ব্যবহার করা হচ্ছে না ।.
+Part API দ্বারা চিহ্নিত মান বর্তমানে উপস্থিত রয়েছে — এটি ব্যবহার করা হচ্ছে না।.

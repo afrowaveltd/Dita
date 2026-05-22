@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## ไวยากรณ์
 
-ตําแหน่งผู้ถือครองจะใช้ไวยากรณ์แบบบิดเบี้ยวภายในพจนานุกรม Json:
+วางผู้ถือหลักใช้ไวยากรณ์แบบบิดเบี้ยวภายในพจนานุกรม Json:
 
 ```json
 {
@@ -19,7 +19,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 ผู้ถือครองสถานที่มีชื่อ มีสองแหล่งของค่า:
 
-### 1 ค่าเวลาทํางาน (แนะนําให้ใช้กับข้อมูลไดนามิก)
+### 1. ค่าเวลาทํางาน (แนะนําให้ใช้กับข้อมูลแบบไม่ตายตัว)
 
 ผ่านค่าโดยตรง เมื่อมีการดึงข้อมูลข้อความภายในเครื่อง:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2 เก็บค่าที่ตั้งไว้ (สําหรับการปรับแต่งกึ่งปกติ)
+### 2 จัดเก็บค่า (สําหรับการปรับแต่งกึ่งปานกลาง)
 
 จัดการแฟ้มในไดเรกทอรี:
 
@@ -128,7 +128,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
-3. ** ภายหลังการแปล **: ชื่อเดิมของผู้ถือสถานที่ () ถูกนํากลับมาในตําแหน่งที่ถูกต้องอีกครั้ง.
+3. **After translation**: Original placeholder names (`{name}`) are restored in their correct positions.
 
 ### ตัวอย่าง
 
@@ -158,7 +158,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 การรักษาตําแหน่งอัตโนมัติ ระหว่างการโทรแบบ LibreTransate ไม่จําเป็นต้องมีการปรับแต่งเพิ่มเติม.
 
-ทั้ง สอง ฉบับ นี้ และ ทั้ง ใช้ การ บริการ ใหม่ ดัง นั้น ฉบับ แปล ทั้ง หมด ของ เจ สัน จึง ให้ การ สนับสนุน อย่าง โปร่งใส แก่ ผู้ ถือ ตําแหน่ง.
+ทั้ง สอง ฉบับ นี้ ใช้ การ บริการ ใหม่ ดัง นั้น ฉบับ แปล ทั้ง หมด ของ เจ สัน จึง ให้ การ สนับสนุน อย่าง โปร่งใส แก่ ผู้ มี ตําแหน่ง.
 
 ## ความเข้ากันได้แบบย้อนกลับ
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-มี การ เพิ่ม ชื่อ สถาน ที่ ที่ มี ชื่อ ว่า เอ พี ไอ เข้า มา — มัน ไม่ ได้ ทําลาย การ ใช้ อยู่ แล้ว.
+มี การ เพิ่ม ชื่อ สถาน ที่ ที่ มี ชื่อ ว่า เอ พี ไอ เข้า ไป — มัน ไม่ ได้ ทําลาย การ ใช้ อยู่ แล้ว.

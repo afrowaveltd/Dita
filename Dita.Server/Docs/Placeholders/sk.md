@@ -1,10 +1,10 @@
 ﻿# Pomenovaní držitelia miest v lokalizácii
 
-Dita supports **named placeholders** in localization strings, allowing dynamic values to be inserted at runtime while preserving correct grammar across languages.
+Dita podporuje ** pomenovaných umiestovateľov** v lokalizačných reťazcoch, čo umožňuje vkladanie dynamických hodnôt v čase behu pri zachovaní správnej gramatiky v jazykoch.
 
 ## Syntax
 
-Držiaky používajú syntax kučeravého race vnútri slovníkových hodnôt JSON:
+Umiestnenia používajú syntax kučeravého race vnútri slovníkových hodnôt JSON:
 
 ```json
 {
@@ -13,15 +13,15 @@ Držiaky používajú syntax kučeravého race vnútri slovníkových hodnôt JS
 }
 ```
 
-Na rozdiel od polohových držiteľov miest (, ), menovaných lokátorov sú ** jazyk-agnostik** .
+Na rozdiel od polohových držiteľov miest (, ), pomenovaní lokátori sú ** jazykovo-agnostik** .
 
 ## Skladovanie
 
 Pomenovaní držitelia miest majú dva zdroje hodnôt:
 
-### 1. Prevádzkové hodnoty (odporúčané pre dynamické údaje)
+### 1. Runtime hodnoty (odporúčané pre dynamické dáta)
 
-Prešli hodnoty priamo pri získavaní lokalizovaného reťazca:
+Prejdite hodnoty priamo pri získavaní lokalizovaného reťazca:
 
 ```csharp
 // In a Razor page or controller
@@ -128,7 +128,7 @@ Keď sa automatická prekladateľská služba stretne s textom s pomenovanými u
 
 1. **Pred prekladom**: Držiaky sú maskované bezpečnými žetónmi (), aby sa prekladateľský motor nemenil.
 2. **Počas prekladu**: Prekladateľský nástroj spracúva iba prekladateľný text.
-3. **Po preklade**: Pôvodné mená držiteľa () sú obnovené v správnej pozícii.
+3. **Po preklade**: Pôvodné mená držiteľa () sú obnovené v ich správnej pozícii.
 
 ### Príklad
 
@@ -142,17 +142,17 @@ Konečný výsledok:
 
 Tým sa zabezpečí, že:
 - Držitelia miesta nie sú nikdy preložený alebo poškodený
-- Gramatika v cieľovom jazyku môže voľne zmeniť rozsah okolitého textu
+- Cieľový jazyk gramatika môže prestaviť okolitý text voľne
 - Rovnaká šablóna funguje správne vo všetkých jazykoch
 
 ## Osvedčené postupy
 
 1. **Use descriptive names**: `{userName}` is better than `{0}` or `{name}`
 2. ** Udržujte minimálne pozície**: Príliš veľa prekladateľov sťažuje preklad
-3. ** Očakávané typy dokumentu**: Komentáre v súbore JSON pomáhajú prekladateľom pochopiť kontext
-4. ** Pozri hodnoty času**: Pre skutočne dynamické dáta (názvy užívateľov, počty, dátumy), prejsť hodnoty v priebehu
-5. ** Používajte uložené hodnoty pre štandardné**: Pre konfiguráciu, ktorá sa zriedka mení (meno aplikácie, e-mail podpory)
-6. ** Overiť držiteľov miest**: Použiť na overenie všetkých očakávaných lokátorov sú poskytnuté
+3. ** Očakávané typy dokumentu**: Komentáre v súbore JSON pomôcť prekladateľom pochopiť kontext
+4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime
+5. ** Používajte uložené hodnoty pre predvolené hodnoty**: Pre konfiguráciu, ktorá sa zriedka mení (meno aplikácie, e-mail podpory)
+6. ** Overiť držiteľov miest**: Použiť na overenie všetkých predpokladaných umiestnení
 
 ## Integrácia s automatickým prekladom
 
@@ -162,7 +162,7 @@ Obaja používajú retry službu, takže všetky preklady JSON slovníka transpa
 
 ## Spätná kompatibilita
 
-Existujúci kód používajúci pozičné umiestňovače alebo žiadny umiestňovač naďalej funguje nezmenený:
+Existujúci kód s použitím pozičných držiteľov miest alebo žiadnych držiteľov miest naďalej funguje nezmenený:
 
 ```csharp
 // Still works exactly as before

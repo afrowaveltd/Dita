@@ -1,6 +1,6 @@
 ﻿# Genoemde Plaatshouders in Localization
 
-Dita ondersteunt **named placeholders** in localisatie strings, waardoor dynamische waarden kunnen worden ingevoegd op runtime met behoud van de juiste grammatica in verschillende talen.
+Dita ondersteunt **named placeholders** in lokalisatie strings, waardoor dynamische waarden kunnen worden ingevoegd op runtime met behoud van de juiste grammatica in verschillende talen.
 
 ## Syntaxis
 
@@ -21,7 +21,7 @@ Genoemde plaatshouders hebben twee waardenbronnen:
 
 ### 1. Runtime waarden (aanbevolen voor dynamische gegevens)
 
-Geef waarden direct door bij het ophalen van de gelokaliseerde tekenreeks:
+Geef waarden direct door bij het ophalen van de gelokaliseerde string:
 
 ```csharp
 // In a Razor page or controller
@@ -68,7 +68,7 @@ LocalizedString text = localizer["SomeKey", new Dictionary<string, string>
 }];
 ```
 
-### IplaceholderService
+### IPlaatshouderDienst
 
 ```csharp
 public interface IPlaceholderService
@@ -124,11 +124,11 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## Vertaalgedrag
 
-Wanneer de automatische vertaaldienst tekst tegenkomt met de genoemde plaatshouders:
+Wanneer de automatische vertaaldienst tekst tegenkomt met genoemde plaatshouders:
 
 1. **Voor vertaling**: Plaatshouders worden gemaskeerd met veilige tokens () om te voorkomen dat de vertaalmachine ze te wijzigen.
 2. **Tijdens de vertaling**: De vertaalmachine verwerkt alleen de vertaalbare tekst.
-3. **Na vertaling**: Oorspronkelijke plaatshouder namen () worden hersteld in hun juiste posities.
+3. **Na vertaling**: Originele plaatshouder namen () worden hersteld in hun juiste posities.
 
 ### Voorbeeld
 
@@ -149,14 +149,14 @@ Dit garandeert dat:
 
 1. ** Gebruik beschrijvende namen**: is beter dan of
 2. **Houd plaatshouders minimaal**: Te veel plaatshouders maken vertaling moeilijker
-3. **Document verwachte types**: Reacties in het JSON-bestand helpen vertalers de context te begrijpen
-4. **Voorkeur runtime waarden**: Voor echt dynamische gegevens (gebruikersnamen, tellingen, data), pas waarden op runtime
+3. **Verwachte typen documenten**: Opmerkingen in het JSON-bestand helpen vertalers de context te begrijpen
+4. **Voorkeur runtime waarden**: Voor werkelijk dynamische gegevens (gebruikersnamen, tellingen, data), pas waarden op runtime
 5. ** Gebruik opgeslagen waarden voor standaardwaarden**: Voor configuratie die zelden verandert (app name, support email)
 6. **Validatieplaatshouders**: Gebruik om alle verwachte plaatshouders te controleren worden verstrekt
 
 ## Integratie met automatische vertaling
 
-De zorgt automatisch voor behoud van plaatshouder tijdens LibreTranslate oproepen. Er is geen extra configuratie nodig.
+Tijdens LibreTranslate-gesprekken wordt het behoud van de plaatshouder automatisch behandeld. Er is geen extra configuratie nodig.
 
 De en beide maken gebruik van de retry service, dus alle JSON woordenboek vertalingen transparant ondersteunen benoemde plaatshouders.
 

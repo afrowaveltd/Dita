@@ -1,6 +1,6 @@
 ﻿# Tulkošanas dashboard Live
 
-Live Translation Dashboard ir admin lapa, kas nodrošina reālā laika redzamību automātiskās tulkošanas cauruļvadā. Tas savienojas ar SignalR centrmezglu un parāda visus cauruļvadu notikumus, kad tie notiek.
+Live Translation Dashboard ir admin lapa, kas nodrošina reālā laika redzamību uz automātisko tulkošanas cauruļvada. Tas savienojas ar SignalR mezglu un parāda visus cauruļvadu notikumus, kad tie notiek.
 
 ## URL
 
@@ -12,15 +12,15 @@ Live Translation Dashboard ir admin lapa, kas nodrošina reālā laika redzamīb
 
 ### Reālā laika notikumu plūsma
 
-Visi signāli R notikumi no tulkošanas cauruļvada tiek parādīti tiešraides tabulā:
+Visi SignalR notikumi no tulkošanas cauruļvada tiek parādīti tiešraides tabulā:
 
 - ** kārtas numurs** – Monotoniskais skaitītājs katrā cauruļvada posmā
 - **Laikmets** – Vietējais laiks, kad pasākums tika saņemts
 - **Palaists ID** – saīsināta saskarne korelācijai
-- **Stage** – Cauruļvadu posmu žetons (CheckServers, TranslateCountries, u.c.)
-- **Type** – Ziņojuma tipa žetons (StageStarted, Progress, StageCompleted, u.c.)
+- **Stage** – Cauruļvadu žetons (CheckServers, TranslateCountries, u.c.)
+- **Type** – Ziņojuma tipa žetons (StageStarted, Progress, StageCompleted, utt.)
 - **Ziņojums** – Cilvēkiem salasāms apraksts
-- **Detalizēts** – Notikuma datu pilna JSON derīgā krava
+- **Detalizētie** – Notikuma datu pilna JSON derīgā krava
 
 ### Krāsu kods
 
@@ -39,7 +39,7 @@ Stāvokļa baneris augšā rāda:
 - **Atvienošana** — zaudēts savienojums, mēģinot atjaunot savienojumu
 - **Atvienots** – Savienojums slēgts
 
-Savienojumā tiek izmantota automātiska savienošana ar eksponenciālu dublējumu: 0s, 2s, 5s, 10s, 30s.
+Savienojumā tiek izmantota automātiskā savienošana ar eksponenciālo aizmuguri: 0s, 2s, 5s, 10s, 30s.
 
 ### Kontrole
 
@@ -47,7 +47,7 @@ Savienojumā tiek izmantota automātiska savienošana ar eksponenciālu dublēju
 - ** Eksports JSON** – Lejupielādē visus saņemtos ziņojumus kā JSON failu analīzei
 - **Ziņu skaitītājs** – Parāda šajā sesijā saņemto notikumu kopējo skaitu
 
-## Signāls R r rūda
+## SignālaR rumba
 
 Panelis savienojas ar:
 
@@ -91,7 +91,7 @@ Brīdinājuma žetons
 
 ### Aizmugure
 
-- ** Lokalizācija Hub** () – SignalR centrmezgls, kas pārraida ziņojumus visiem pieslēgtajiem klientiem
+- **LocalizationHub** () – SignalR centrmezgls, kas pārraida ziņojumus visiem pieslēgtajiem klientiem
 - **IsignalRPublizer** – Abstrakcija pa centru izmantošanai tulkošanas pakalpojumos
 - **SignalRPubliseer** – Noklusētā implementācija, kas palielina monotonu secību un pārraides
 
@@ -124,7 +124,7 @@ Plānotie paneļa uzlabojumi:
 - **Autentifikācija** – Ierobežot piekļuvi lietotājiem ar lomu
 - **Filtering** – Filtrēt notikumus pēc posma, tipa, vai palaist ID
 - ** Historikas trases** — Skats pabeigts no datubāzes vai žurnāla faila
-- **Statistika** – Diagrammas, kas parāda tulkojumu skaitu, kļūdu īpatsvaru un latentumu laika gaitā
+- **Statistika** – Diagrammas, kurās redzams tulkojumu skaits, kļūdu īpatsvars un latentums laika gaitā
 - **Manuālie trigeri** – Pogas konkrētu cauruļvada posmu palaišanai ar roku
 - ** Konfigurācija** – Rediģēt tieši no paneļa
 - **Valodu pārvaldība** — Skatīt un rediģēt atbalstītās valodas
@@ -135,7 +135,7 @@ Plānotie paneļa uzlabojumi:
 ### Dashboard rāda "Neticami pieslēgties"
 
 1. Pārbaudīt serveri darbojas un pieejams
-2. Pārbaudīt pārlūka konsoli priekš CORS vai tīkla kļūdām
+2. Pārbaudīt pārlūka konsole priekš CORS vai tīkla kļūdām
 3. Apstiprināt
 4. Pārliecinieties, ka ugunsmūris bloķē WebSocket savienojumus
 
@@ -144,7 +144,7 @@ Plānotie paneļa uzlabojumi:
 1. Pārbaudiet, vai SignalR centrmezgla URL atbilst starp serveri () un klientu ()
 2. Pārbaudīt ieslēgto plānotāju
 3. Aplūkot servera žurnālus tulkošanas cauruļvadu kļūdas
-4. Pārlūks Tīkla cilne WebSocket ziņojumiem
+4. Pārlūkprogrammas tīkla cilne WebSocket ziņojumiem
 
 ### Vēstules nav kārtībā
 

@@ -32,7 +32,7 @@ Monolitoa lau zerbitzu espezializatutan banatu da, orkestratzaile arin batek koo
 
 Administratzaile-orri berri bat, denbora errealeko ikusgaitasuna eskaintzen duena itzulpen-kanalizazioan:
 
-- Seinale guztiak bistaratzen ditu R gertaerak gertatzen diren heinean
+- Gertatzen diren seinale-gertaera guztiak bistaratzen ditu
 - Kolorez kodetutako mezu motak (urdina=hasiera, berdea=osoa, gorria=errorea)
 - Konexio-egoeraren bandera automatikoki berriro konektatzeko
 - Mezu-kontagailua eta JSON-era esportatzea
@@ -63,7 +63,7 @@ Markdown fitxategiak goitik behera itzulita daude:
 - **Hizkuntza-aurrezpena**: Helburuko hizkuntza bakoitza berehala gordetzen da itzulpenaren ondoren, memoriaren presioa murriztuz
 - **Block-level tracking**: pistak itzultzeko egoera blokeko
 - **Hautatutako saiakera**: Huts egin duten blokeak bakarrik itzultzen dira hurrengo lasterketan
-- **Metadataren iraupena**: Itzulpen-egoerak aplikazioa berrabiarazten du
+- **Metadataren iraupena**: Itzulpen-egoerak bizirik irauten du aplikazioa berrabiarazten
 
 ### Erretorearen logika hobetua
 
@@ -71,7 +71,7 @@ Hiru erresilientzia maila:
 
 1. **HTTP retry** (LibreTranslateService): 5 saiakera atzeraldi esponentzialarekin (1s-5s)
 2. **Stage retry** (TranslationRetryService): 3 saiakera gehiago 30eko atzerapenarekin
-3. **Block retry** (DokumentuakTranslationService): Huts egin du Markdowneko blokeak berriro martxan jartzean
+3. **Block retry** (DokumentuakTranslationService): Huts egin du Markdowneko blokeek hurrengo exekuzioan
 
 ### Seinale-informazioa
 
@@ -112,7 +112,7 @@ Hemen erregistratua:
 - /
 - /
 
-Seinalea R gunea bezeroen konexioetarako mapatuta dago.
+SignalR zentroa bezeroen konexioetarako mapatuta dago.
 
 ## Proba
 
@@ -120,8 +120,8 @@ Seinalea R gunea bezeroen konexioetarako mapatuta dago.
 
 - **243/244 probak pasatzen** (1 saltatuta probako inguruneko fitxategi-sarbidea dela eta)
 - Probaren estaldura berria gehitu zaio:
-  - Placeholder Zerbitzuaren funtzionaltasuna
-  - Atzerapena Zerbitzuaren orkestrazioa
+  - PlaceholderService funtzionalitatea
+  - Orkesta zerbitzua
   - JsonStringLocalizer leku-marka indexatzaileak
 
 ### Muga ezagunak
@@ -136,7 +136,7 @@ Seinalea R gunea bezeroen konexioetarako mapatuta dago.
 - - Herrialde-izenen itzulpena
 - - JSON hiztegiaren sinkronizazioa
 - - Markdown itzulpena
-- - Seinalea R mezua argitaratuta
+- - SignalR mezua argitaratuta
 - - Probatu logika leku-markaren maskararekin
 - - Argitaratzailearen interfazea
 - — Herrialdeko zerbitzu interfazea
@@ -159,7 +159,7 @@ Seinalea R gunea bezeroen konexioetarako mapatuta dago.
 
 ### Dokumentazio berria
 
-- - Kanalizazioko dokumentazioa eguneratua
+- - kanalizazioaren dokumentazio eguneratua
 - -Jarduera-sistemaren gida
 - - Arbel-erabileraren gida
 - - Arkitektura teknikoaren ikuspegi orokorra
@@ -172,7 +172,7 @@ Aldaketa guztiak gehigarriak dira:
 - Posizioaren formatua () aldatu gabe funtzionatzen du
 - JSON hiztegi-formatua ez da aldatu
 - Dagoen Markdown egitura aldatu gabe dago
-- Seinalea R mezuek formatu bera erabiltzen dute
+- Seinale-mezuek formatu bera erabiltzen dute
 
 ## Migrazio-bidea
 
@@ -185,14 +185,14 @@ Ez da migraziorik behar. Berreraikitzea barnekoa da:
 ## Errendimenduaren hobekuntzak
 
 - **Memoriaren erabilera murriztua**: Fitxategiak berehala gordetzen dira memorian gorde ordez
-- **Faster gehikuntza lasterketak**: Markdowneko bloke aldatuak edo hondatuak bakarrik itzultzen dira
+- **Faster igoera-eskerrak**: Markdowneko bloke aldatuak edo hondatuak bakarrik itzultzen dira
 - **Ikuspen hobea**: Denbora errealeko aurrerapenak fase motelak diagnostikatzen laguntzen du
 
 ## Etorkizuneko hobekuntzak
 
 Hobekuntza planifikatuak:
 
-1. **AI fine-tuning** — Post-machine itzulpenaren berrikuspena esaldietarako > 5 hitz
+1. **AI fine-tuning** — Post-machine itzulpenaren berrikuspena esaldientzat > 5 hitz
 2. **Admin autentifikazioa** - Mugatu admin orriak baimendutako erabiltzaileentzat
 3. **Egunkaria** — Web UI lokalizazio-gakoak kudeatzeko
 4. **Itzulpen-estatistikak** - Itzulpen-kopuruak eta errore-tasak erakusten dituzten diagramak denboran zehar

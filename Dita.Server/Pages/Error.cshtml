@@ -1,34 +1,37 @@
 @page
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<ErrorModel> t
+
 @model ErrorModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = t["Error"];
 }
 
 <section class="dita-page-header">
-    <p class="dita-eyebrow">Something went wrong</p>
-    <h1 class="text-danger">Error.</h1>
+    <p class="dita-eyebrow">@t["Something went wrong"]</p>
+    <h1 class="text-danger">@t["Error."]</h1>
 </section>
 
 <div class="dita-panel">
-    <h2 class="text-danger">An error occurred while processing your request.</h2>
+    <h2 class="text-danger">@t["An error occurred while processing your request."]</h2>
 
     @if (Model.ShowRequestId)
     {
         <p>
-            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            <strong>@t["Request ID:"]</strong> <code>@Model.RequestId</code>
         </p>
     }
 
-    <h3>Development Mode</h3>
+    <h3>@t["Development Mode"]</h3>
     <p>
-        Swapping to the <strong>Development</strong> environment displays detailed information about the error that occurred.
+        @t["Swapping to the"] <strong>@t["Development"]</strong> @t["environment displays detailed information about the error that occurred."]
     </p>
     <p>
-        <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-        It can result in displaying sensitive information from exceptions to end users.
+        <strong>@t["The Development environment shouldn't be enabled for deployed applications."]</strong>
+        @t["It can result in displaying sensitive information from exceptions to end users."]   
     </p>
     <p>
-        For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-        and restarting the app.
+        @t["For local debugging, enable the"] <strong>@t["Development"]</strong> @t["environment by setting the"] <strong>ASPNETCORE_ENVIRONMENT</strong> @t["environment variable to"] <strong>@t["Development"]</strong>
+        @t["and restarting the app."]
     </p>
 </div>

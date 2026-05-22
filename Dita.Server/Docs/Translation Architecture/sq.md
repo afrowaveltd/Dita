@@ -1,6 +1,6 @@
 ﻿# Arkitektura e përkthimit
 
-Ky dokument përshkruan arkitekturën modulare të sistemit automatik të përkthimit të Ditës, e cila u fut në përmirësimin e mirëmbajtjes, provës dhe elasticitetit.
+Ky dokument përshkruan arkitekturën modulare të sistemit automatik të përkthimit të Ditës, e cila u fut në përmirësimin e qëndrueshmërisë, të provës dhe të elasticitetit.
 
 ## Përdor synime
 
@@ -17,7 +17,7 @@ Riprodhimi trajtoi disa shqetësime me projektin origjinal monolitik:
 ### TranslationService (orchestrator)
 
 **Responsibilities**:
-- Menaxhimi i ciklit të jetës së tubacionit (fillimi, plotësimi, trajtimi i gabimeve)
+- Menaxhimi i ciklit të jetës së tubacionit (fillimi, plotësimi, trajtimi i gabimit)
 - Kontrolli i depozitimit me bazë Semafore (parandalimet mbivendosjen)
 - Server
 - Delegacioni
@@ -60,13 +60,13 @@ Riprodhimi trajtoi disa shqetësime me projektin origjinal monolitik:
 - Ec
 - Detec ndryshuar file burim duke përdorur crashes SHA-256
 - Gjurmo gjendjen e përkthimit në bllok
-- Përkthe bllokun nga blloku me riprovo
+- Përkthe bllokun në bllok me riprovo
 - Rregullon strukturën e shënuar mbas përkthimit
 - Ruaj
 
 **Key behaviors**:
 - Blloqe niveli
-- Gjurmët e Metadatës që bllokojnë me sukses/dështuar për gjuhë
+- Gjurmët e Metadatës që bllokojnë me sukses/shkelur për gjuhë
 - Blloqet e kryera në vazhdim do të ripërkthehen pa ripërkthyer blloqet e suksesshme
 - Struktura
 
@@ -77,7 +77,7 @@ Sistemi zbaton retries në tre nivele:
 ### Niveli 1 HTTP (Libre TranslatesService)
 
 - Deri në 5 përpjekje me mbështetje eksponenciale (1s, 2s, 3s, 4s, 5s)
-- Trajtimi i kohës së rrjetit, gabimet 5x dhe dështimet e përkohshme
+- Trajton kohën e skadimit të rrjetit, 5x gabimet dhe dështimet e përkohshme
 - Ndërtuar në konfigurimin e klientit HTTP
 
 ### Faza e Nivelit 2
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Sinjali Raportim
+## SinjalR raporton
 
 ### Abstraksioni
 
@@ -195,7 +195,7 @@ public interface ISignalRPublisher
 ### Sekuenca garanton
 
 - Mesazhet brenda një zbatimi të vetëm janë të sekuencuara monotonalisht
-- Numri i sekuencës është unik për-shpërnda
+- Sekuenca është unike
 - Klientët mund të zbulojnë boshllëqet ose riorganizimin
 
 ### Hub
@@ -276,15 +276,15 @@ Rregullimi
 
 Çdo nën-shërbim është i pavarur
 
-- Të qeshura për të simuluar suksesin/shkretërimin
+- Të tallen për të simuluar suksesin/shkretërimin
 - Të tallen për të verifikuar raportimin
-- Përdor directories e përkohshme për file I/O
+- Përdor directories e përkohshme për file I/ O
 - Verifikimi i sjelljes shpëtuese për çdo gjuhë
 
 ### Testet e integrimit
 
 - Tubacioni i plotë shkon me instancat reale (locale) Libre Translate
-- Verifikimi Dërgohen mesazhe tek klientë të lidhur
+- Janë dërguar mesazhe të verifikuara për klientët e lidhur
 - Test
 - Rregullon strukturën e shënuar mbas përkthimit
 
@@ -310,7 +310,7 @@ Origjinali përmbante çdo logjikë në një klasë. Rruga e migrimit:
 1. Nxirr logjikën e vendit →
 2. Nxirr logjikën JSON →
 3. Nxirr logjikën e shënimit →
-4. Nxirr →
+4. Nxirr
 5. Nxirr logjikën e riprovoj →
 6. Simulo orkestruesin vetëm me delegacion
 

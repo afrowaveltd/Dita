@@ -50,7 +50,7 @@
 
 **Key behaviors**:
 - मैन्युअल अनुवाद हमेशा प्राथमिकता लेते हैं (कभी कभी ओवरराइट नहीं)
-- जोड़ा गया चाबियाँ तुरंत अनुवादित और सहेजी जाती हैं
+- जोड़ा गया कुंजी तुरंत अनुवादित और सहेजे गए हैं
 - हटाए गए कुंजी को तुरंत प्रति भाषा में हटा दिया जाता है
 - सभी भाषाओं को सफलतापूर्वक पूरा करने के बाद स्नैपशॉट को बचाया जाता है
 
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## संकेत रिपोर्टिंग
+## सिग्नलआर रिपोर्टिंग
 
 ### प्रकाशक अमूर्तता
 
@@ -278,13 +278,13 @@ public class CustomPlaceholderService : IPlaceholderService
 
 - सफलता / विफलता का अनुकरण करने के लिए मॉक
 - Mock रिपोर्टिंग सत्यापित करने के लिए
-- फ़ाइल I/O के लिए अस्थायी निर्देशिका का उपयोग करें
+- फ़ाइल I के लिए अस्थायी निर्देशिका का उपयोग करें / O
 - प्रति भाषा बचत व्यवहार सत्यापित करें
 
 ### एकीकरण परीक्षण
 
 - वास्तविक (स्थानीय) Libretranslate उदाहरण के साथ पूर्ण पाइपलाइन रन
-- सिग्नल सत्यापित करें आर संदेश कनेक्ट ग्राहकों को दिया जाता है
+- सत्यापित सिग्नलआर संदेश कनेक्टेड ग्राहकों को दिया जाता है
 - टेस्ट समवर्ती रन रोकथाम (semaphore)
 - अनुवाद के बाद मार्कडाउन संरचना को मान्य करें
 
@@ -301,7 +301,7 @@ public class CustomPlaceholderService : IPlaceholderService
 - **Disk I/O**: Metadata files add small overhead but enable incremental work
 - **Network**: Sequential processing with throttling prevents overwhelming LibreTranslate
 - **CPU**: SHA-256 hashing and regex validation are fast relative to translation latency
-- **SignalR**: Lightweight messages, no payload compression needed for typical reports
+- **SignalR **: लाइटवेट संदेश, ठेठ रिपोर्ट के लिए कोई पेलोड संपीड़न की आवश्यकता नहीं है
 
 ## मोनोलिथिक डिजाइन से प्रवास
 
@@ -310,7 +310,7 @@ public class CustomPlaceholderService : IPlaceholderService
 1. देश तर्क निकालें →
 2. JSON तर्क निकालें →
 3. Markdown तर्क निकालें →
-4. सिग्नल निकालें आर प्रकाशन →
+4. सिग्नलआर प्रकाशन निकालें →
 5. Retry तर्क निकालें →
 6. प्रतिनिधिमंडल के लिए ऑर्केस्टेटर को सरल बनाएं
 

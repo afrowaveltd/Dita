@@ -1,6 +1,6 @@
 ﻿# Architektura překladu
 
-Tento dokument popisuje modulární architekturu automatického překladového systému Dita, zavedeného za účelem zlepšení únosnosti, testovatelnosti a odolnosti.
+Tento dokument popisuje modulární architekturu automatického překladového systému Dita, který byl zaveden za účelem zlepšení proveditelnosti, ověřitelnosti a odolnosti.
 
 ## Designové cíle
 
@@ -36,7 +36,7 @@ Refaktoring se zabýval několika obavami s původním monolitickým designem:
 - Uložit každý cílový slovník ihned po překladu
 
 **Key behaviors**:
-- Pokud je výchozím jazykem angličtina: názvy zemí uložené as- is
+- Je-li výchozí jazyk anglický: názvy zemí uložené as- je
 - Pokud je výchozí jazyk jiný: Anglická jména přeložena do výchozího jazyka první
 - Každý jazyk je zpracováván nezávisle na své vlastní retry smyčce
 
@@ -44,7 +44,7 @@ Refaktoring se zabýval několika obavami s původním monolitickým designem:
 
 **Responsibilities**:
 - Detekovat přidané / odstraněné klávesy porovnáním aktuálního výchozího slovníku s předchozím snímkem
-- Přeložit přidané klíče do každého cílového jazyka
+- Přeložit přidány klíče do každého cílového jazyka
 - Odstranit smazány klíče z každého cílového jazyka
 - Uložit snímek pro další srovnání
 
@@ -66,9 +66,9 @@ Refaktoring se zabýval několika obavami s původním monolitickým designem:
 
 **Key behaviors**:
 - Granularita na blokové úrovni: položky, odstavce, položky seznamu se překládají odděleně
-- Sledování metadat, které bloky uspěly / selhaly za jazyk
+- Sledování metadat, které bloky uspěly / selhaly na jazyk
 - Neúspěšné bloky jsou znovu vyzkoušeny na další běh bez překládání úspěšných bloků
-- Ověření struktury zajišťuje počet kursů, seznamy, kódové bloky atd. shodný zdroj
+- Ověření struktury zajišťuje počet bodů, seznamy, kódové bloky atd. shodný zdroj
 
 ## Opakovat strategii
 
@@ -84,7 +84,7 @@ Systém retestuje na třech úrovních:
 
 - Až 3 pokusy s 30sekundovým zpožděním
 - Re- řídí celou žádost o překlad poté, co HTTP- úroveň opakování jsou vyčerpány
-- Na této úrovni se používá maskování a obnova desky
+- Na této úrovni se používá maskování a obnova zásobníku
 
 ### Úroveň 3 - blok (DocumentsTranslationService)
 
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Signál Podávání zpráv
+## SignalR hlášení
 
 ### Vydavatel abstrakce
 
@@ -209,7 +209,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 ### Přidání nového překladového cíle
 
 1. Vytvořit nové rozhraní s
-2. Provést rozhraní se specifickou logikou domain-
+2. Provést rozhraní s logikou specifickou pro domácí prostředí
 3. Zaregistrujte se v kontejneru DI
 4. Injikujte do konstruktoru
 5. Hovor z po existujících fázích
@@ -281,10 +281,10 @@ Každá subslužba je nezávisle ověřitelná:
 - Použít dočasné adresáře pro soubor I / O
 - Ověřit chování pro ukládání jazyků
 
-### Integrační zkoušky
+### Zkoušky integrace
 
 - Plný plynovod se skutečnou (místní) instance LibreTranslate
-- Ověřit signál R zprávy jsou doručeny připojeným klientům
+- Ověřit SignalR zprávy jsou dodávány připojeným klientům
 - Zkouška souběžné prevence (semafore)
 - Potvrdit Markdown strukturu po překladu
 
@@ -310,7 +310,7 @@ Originál obsahoval všechny logiky v jedné třídě. Migrační cesta:
 1. Logika extrakce země →
 2. Extrakt JSON logika →
 3. Výtažek Markdown logika →
-4. Výstupní signál R publikování →
+4. extrakt signalr publishing →
 5. Extrakt retry logika →
 6. Zjednodušit orchestrátora pouze pro delegování
 

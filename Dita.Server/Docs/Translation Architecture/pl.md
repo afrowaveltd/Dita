@@ -18,7 +18,7 @@ Refaktoring odniósł się do kilku kwestii w pierwotnej konstrukcji monolityczn
 
 **Responsibilities**:
 - Zarządzanie cyklem życia rurociągów (rozpoczęcie, ukończenie, obsługa błędów)
-- Sterowanie kontraktami oparte na semaforach (zapobiega pokrywaniu się połączeń)
+- Sterowanie kontraktami oparte na semaforach (zapobiega nakładaniu się operacji)
 - Walidacja serwera (opóźnienie, dostępność języka, konfiguracja)
 - Delegacja do podsłużb
 
@@ -57,11 +57,11 @@ Refaktoring odniósł się do kilku kwestii w pierwotnej konstrukcji monolityczn
 ### Dokumenty TranslationService
 
 **Responsibilities**:
-- Walk konfigurowane korzenie markdown rekursywnie
+- Walk skonfigurowane korzenie markdown rekursywnie
 - Wykrywanie zmienionych plików źródłowych przy użyciu sha- 256 hash
-- Status tłumaczenia przeblokowego utworu w
+- Status tłumaczenia przeblokowanego utworu w
 - Przetłumacz block- by- block z powtórzeniem bloku per-
-- Potwierdź strukturę markdown po przetłumaczeniu
+- Sprawdzić strukturę markdown po przetłumaczeniu
 - Zapisz każdy plik języka docelowego niezależnie
 
 **Key behaviors**:
@@ -83,8 +83,8 @@ System wdraża powtórki na trzech poziomach:
 ### Poziom 2 - etap (TranslationRetriService)
 
 - Do 3 prób z 30-sekundowymi opóźnieniami
-- Przekierowuje cały wniosek o tłumaczenie po powtórnych próbach poziomu HTTP są wyczerpane
-- Na tym poziomie stosuje się maskowanie i przywracanie uchwytu
+- Przekierowuje cały wniosek o tłumaczenie po ponownym uruchomieniu HTTP
+- Na tym poziomie stosuje się maskowanie i przywracanie instalacji
 
 ### Poziom 3 - Blok (DocumentTranslationService)
 
@@ -178,7 +178,7 @@ For each target language:
 - **Contents**: Dictionary of keys to placeholder name-value pairs
 - **Purpose**: Provides default values for named placeholders across the application
 
-## Sygnał R sprawozdawczość
+## Zgłaszanie sygnałów
 
 ### Abstrakcja wydawcy
 
@@ -196,7 +196,7 @@ public interface ISignalRPublisher
 
 - Wiadomości w ramach pojedynczego uruchomienia są monotonicznie sekwencjonowane
 - Numery sekwencji są unikalne per- run poprzez
-- Klienci mogą wykryć luki lub przezamawianie
+- Klienci mogą wykrywać luki lub przezamawiać
 
 ### Mapowanie piasty
 
@@ -210,7 +210,7 @@ app.MapHub<LocalizationHub>("/hubs/localization");
 
 1. Utwórz nowy interfejs z
 2. Wdrożenie interfejsu z logiką domain- specific
-3. Zarejestruj się w kontenerze DI
+3. Rejestr w kontenerze DI
 4. Wstrzyknąć do konstruktora
 5. Zaproszenie po istniejących etapach
 
@@ -284,16 +284,16 @@ Każda podusługa jest niezależnie testowana:
 ### Testy integracji
 
 - Pełna gazociąg uruchomić z rzeczywistym (lokalnym) LibreTranslate instancji
-- Weryfikacja sygnału Komunikaty R są dostarczane do podłączonych klientów
+- Weryfikacja wiadomości SignalR są dostarczane do podłączonych klientów
 - Profilaktyka równoczesnego prowadzenia badań (semafora)
-- Potwierdź strukturę markdown po przetłumaczeniu
+- Sprawdzić strukturę markdown po przetłumaczeniu
 
 ### Badania końcowe
 
 - Tłumaczenie za pomocą API lub terminarza
 - Weryfikacja tworzenia / aktualizacji wszystkich plików języka docelowego
 - Sprawdź pliki metadanych zawierają poprawny status bloku
-- Potwierdzani posiadacze miejsc są zachowane w różnych tłumaczeniach
+- Potwierdzający podajniki są zachowywane w różnych tłumaczeniach
 
 ## Uwagi dotyczące wyników
 
@@ -310,7 +310,7 @@ Oryginał zawierał całą logikę w jednej klasie. Ścieżka migracji:
 1. Wyciągnij logikę kraju →
 2. Wyciąg logiki JSON →
 3. Wyciąg logiki Markdown →
-4. Wyciągnij sygnał R publikacji →
+4. Ekstrakt SignalR publikacji →
 5. Wyciąg retry logiki →
 6. Uproszczenie organizatora do delegowania - tylko
 

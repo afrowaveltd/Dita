@@ -19,7 +19,7 @@ Dita תומך **שם בעלי מקומות** בחוזים מקומיים, ומא
 
 לבעלי המקום יש שני מקורות ערכים:
 
-### 1.1 1. ערכי Runtime (recommend for דינמיות)
+### 1 ערכי Runtime (recommend for דינמי)
 
 להעביר ערכים ישירות בעת החזרת המיתרים המקומיים:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. ערכים מאוחסנים (עבור תצורה חצי סטטית)
+### 2.חנויות ערכים (עבור תצורה חצי סטטית)
 
 מנהל קובץ:
 
@@ -149,7 +149,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 1. **Use descriptive names**: `{userName}` is better than `{0}` or `{name}`
 2. ** שמור על בעלי המקום מינימלי ** יותר מדי בעלי מקומות עושים תרגום חזק יותר
-3. **הטיפול הצפוי לסוגים**: הערות בקובץ JSON מסייעות למתרגמים להבין את ההקשר
+3. ** טיפול צפוי לסוגים**: הערות בקובץ JSON מסייעות למתרגמים להבין את ההקשר
 4. ** ערכים זמניים מראש**: עבור נתונים דינמיים באמת (שמות משתמשים, ספירות, תאריכים), להעביר ערכים בזמן ריצה
 5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
 6. ** בעלי מקומות פנויים ** שימוש כדי לאמת את כל בעלי המקום הצפויים מסופקים

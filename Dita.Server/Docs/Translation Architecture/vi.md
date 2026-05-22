@@ -1,24 +1,24 @@
 ﻿# Kiến trúc dịch thuật
 
-Tài liệu này mô tả cấu trúc mô-đun của hệ thống phiên dịch tự động của Dita, đưa đến việc cải thiện khả năng duy trì, kiểm tra và khả năng phục hồi.
+Tài liệu này mô tả cấu trúc mô-đun của hệ thống phiên dịch tự động của Dita, đưa đến việc cải thiện khả năng duy trì, khả năng kiểm tra và khả năng phục hồi.
 
 ## Mục tiêu thiết kế
 
 Giải quyết một số mối quan tâm với thiết kế khối đá nguyên thủy:
 
-- **Sự phân chia các mối quan tâm**: Mỗi khu vực dịch thuật (thư mục, từ điển JSON, Markdown) được biệt lập.
+- **Sự phân chia các mối quan tâm**: Mỗi khu vực dịch thuật (thư mục, từ điển JSON, Markdown) đều bị cô lập.
 - ** Kiên trì gia tăng**: Các tập tin được lưu theo từng ngôn ngữ ngay sau khi dịch, giảm khả năng sử dụng bộ nhớ và cung cấp kết quả sớm hơn.
-- **Sự tương tác**: nhiều mức độ thử nghiệm lại xử lý lỗi tạm thời mà không chặn toàn bộ đường ống.
-- **Obsvity**: Mỗi hoạt động quan trọng được báo cáo qua Tín hiệuR để theo dõi thời gian thực.
+- **Sự tương tác**: nhiều mức độ thử nghiệm xử lý lỗi tạm thời mà không chặn toàn bộ đường ống.
+- **Observable**: mỗi hoạt động quan trọng được báo cáo qua Tín hiệuR để theo dõi thời gian thực.
 - **Extensibility**: New translation targets can be added by implementing a single interface.
 
 ## Phân cách dịch vụ
 
-### Hậu phươngTractionService (người chụp ảnh)
+### Hậu phươngTran hóa
 
 **Có trách nhiệm**:
 - Quản lý vòng đời ống (bắt đầu, hoàn thành, xử lý lỗi)
-- Điều khiển sự nhất trí dựa trên Sêmaphore (trước khi chạy chồng chéo)
+- Kiểm soát sự nhất trí dựa trên Semaphore
 - Xác nhận máy phục vụ (thành thạo, có ngôn ngữ, cấu hình)
 - Ủy nhiệm các dịch vụ phụ
 
@@ -27,7 +27,7 @@ Giải quyết một số mối quan tâm với thiết kế khối đá nguyên
 - Tập tin I/O cho định dạng cụ thể
 - Thử lại logic
 
-### Các quốc gia phiêu lưu
+### Các quốc gia được thám hiểm
 
 **Có trách nhiệm**:
 - Đọc từ thư mục
@@ -38,7 +38,7 @@ Giải quyết một số mối quan tâm với thiết kế khối đá nguyên
 **Key hành vi**:
 - Nếu ngôn ngữ mặc định là tiếng Anh: tên nước được lưu là-is
 - Nếu ngôn ngữ mặc định là khác: tên tiếng Anh được dịch sang ngôn ngữ mặc định trước
-- Mỗi ngôn ngữ được xử lý độc lập với vòng lặp thử lại
+- Mỗi ngôn ngữ được xử lý độc lập với vòng lặp thử nghiệm của riêng mình
 
 ### Công cụ & xoá
 
@@ -57,7 +57,7 @@ Giải quyết một số mối quan tâm với thiết kế khối đá nguyên
 ### Tài liệu mở rộng
 
 **Có trách nhiệm**:
-- Đi bộ lại cấu hình gốc vết mực đệ quy
+- Đi bộ đã cấu hình lại gốc vết mực đệ quy
 - Phát hiện tập tin mã nguồn đã thay đổi sử dụng dad-256 hash
 - Theo dõi trạng thái dịch trên khối
 - Dịch các khối với mỗi lần thử lại
@@ -66,9 +66,9 @@ Giải quyết một số mối quan tâm với thiết kế khối đá nguyên
 
 **Key hành vi**:
 - Độ hạt ngăn cách: tiêu đề, đoạn, mục danh sách được dịch riêng
-- Các dấu vết siêu dữ liệu mà các khối thành công/ thất bại trên mỗi ngôn ngữ
+- Các dấu vết siêu dữ liệu mà các khối thành công/làm hỏng mỗi ngôn ngữ
 - Những khối bị lỗi được khôi phục lại trên lần chạy tiếp theo mà không chuyển đổi những khối thành công
-- Xác thực cấu trúc đảm bảo tiêu điểm, danh sách, mã khối, vân vân. khớp nguồn
+- Xác thực cấu trúc đảm bảo tiêu điểm, danh sách, mã khối, v. v
 
 ## Thử lại chiến lược
 
@@ -76,17 +76,17 @@ Hệ thống thực hiện lại ở ba cấp độ:
 
 ### Cấp 1 — HTTP (LibreTranslateService)
 
-- Đến 5 lần thử lại số mũ (1, 2, 3, 4, 5)
+- Cho đến 5 lần thử lại số mũ (1, 2, 3, 4, 5)
 - Xử lý thời hạn mạng, 5xxx lỗi, và lỗi tạm thời
 - Comment
 
 ### Trình độ 2 — Giai đoạn (Sự giải thích Kinh Thánh)
 
-- Tới 3 lần cố trì hoãn 30 giây
-- Khởi động lại toàn bộ yêu cầu dịch sau khi quá trình khôi phục mức HTTP bị cạn kiệt
-- Việc che giấu và phục hồi vị trí được áp dụng ở cấp độ này
+- Tới 3 lần trì hoãn 30 giây
+- Khởi động lại toàn bộ yêu cầu dịch sau khi quá trình khôi phục cấp HTTP bị cạn kiệt
+- Việc đeo mặt nạ và phục hồi được áp dụng ở cấp độ này
 
-### Cấp 3 — Khối (tài liệu đa chiều)
+### Cấp 3 — Khối (tài liệu đa năng hóa)
 
 - Những khối đánh dấu bị lỗi được đánh dấu bằng siêu dữ liệu
 - Tự động tái định cư trên đường ống tiếp theo chạy
@@ -154,12 +154,12 @@ For each target language:
 
 ### Hình chụp
 
-- **JSON**: được lưu trong tập tin bên cạnh từ điển mặc định (tên khác nhau bởi nhà cung cấp lưu trữ)
+- **JSON**: Đã lưu trong tập tin bên cạnh từ điển mặc định (tên khác nhau bởi nhà cung cấp kho)
 - **Purpost**: Bật đồng bộ tăng dần bằng cách theo dõi những gì đã có trong lần chạy trước
 
 ### Mở tập tin
 
-- ** Markdown**: cạnh tập tin mã nguồn
+- ** Markdown**: cạnh tập tin nguồn
 - **Fallback**: nếu vị trí chính là chỉ đọc
 - **Purpost**: phát hiện các thay đổi nguồn để tránh chuyển đổi không cần thiết
 
@@ -178,11 +178,11 @@ For each target language:
 - ** Các đối số**: Từ điển khóa cho cặp giá trị đặt tên
 - **Purpost**: Cung cấp giá trị mặc định cho các vị trí có tên trên ứng dụng
 
-## Tín hiệu R báo cáo
+## Tín hiệu báo cáo
 
 ### Tính trừu tượng
 
-giải quyết các dịch vụ phiên dịch từ chi tiết Tín hiệu Đỏ:
+giải quyết các dịch vụ dịch thuật từ các chi tiết của tín hiệu:
 
 ```csharp
 public interface ISignalRPublisher
@@ -278,19 +278,19 @@ Mỗi dịch vụ phụ có thể kiểm tra độc lập:
 
 - Mock để mô phỏng thành công/failure
 - Mock để xác minh báo cáo
-- Dùng thư mục tạm thời cho tập tin I/O
+- Dùng thư mục tạm cho tập tin I/ I O
 - Kiểm tra hành vi tiết kiệm điện thoại
 
 ### Thử ra Hợp nhất
 
 - Đường ống dẫn đầy đủ chạy với thực (local) tiến trình LibreTranslate
-- Kiểm tra tín hiệu Name
+- Name
 - Kiểm tra khả năng ngăn chặn chạy song thời (semaphore)
 - Kiểm tra cấu trúc Đánh dấu sau khi dịch
 
 ### Thử ra cuối đến cuối
 
-- Khởi động dịch qua mục hay trình lên lịchName
+- Khởi động dịch qua mục hay trình lên lịch
 - Kiểm tra mọi tập tin ngôn ngữ đích được tạo/ nâng cấp
 - Kiểm tra siêu dữ liệu chứa trạng thái khối đúng
 - Xác nhận giữ chỗ được bảo tồn qua các bản dịch
@@ -298,19 +298,19 @@ Mỗi dịch vụ phụ có thể kiểm tra độc lập:
 ## Xem xét hiệu suất
 
 - **Memory**: Per-language tiết kiệm ngăn chặn tất cả các từ điển trong bộ nhớ
-- **Disk I/O**: Tập tin siêu dữ liệu thêm nhỏ trên đầu nhưng hiệu quả tăng dần
-- **Network**: xử lý hệ thống chặt chẽ với throtling ngăn chặn quá tải LibreTranslate
-- **CPU**: sch-256 hashing và regex chứng thực tương đương với dịch latency
+- **Disk I/O**: tập tin siêu dữ liệu thêm nhỏ trên đầu nhưng hiệu lực công việc tăng dần
+- **Network**: Quá trình xử lý theo chu kỳ với tốc độ gấp rút ngăn chặn quá tải LibreTranslate
+- **CPU**: sn-256 hashing và regex chứng thực tương đương với dịch latency
 - **SignalR**: tin nhắn nhẹ cân, không cần nén lại để báo cáo thông thường
 
 ## Name
 
-Bản gốc bao gồm tất cả các lý luận trong một lớp học. Con đường di cư:
+Bản gốc bao gồm tất cả các lý luận trong một lớp học. Đường di trú:
 
 1. Name
 2. Rút ra logic JSON
 3. Name
-4. Tín hiệu lấy ra Xuất bản R
+4. Xuất bản tín hiệu RainR
 5. Name
 6. Đơn giản hóa dàn nhạc để chỉ phái đoàn
 

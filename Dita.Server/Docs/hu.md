@@ -32,12 +32,12 @@ A monolitikum négy speciális szolgáltatássá bomlott, melyeket egy könnyűs
 
 Egy új adminisztrációs oldal, amely valós idejű láthatóságot biztosít a fordítóvezetékben:
 
-- Minden jel megjelenítése R események
+- Megjeleníti az összes SignalR eseményt, ahogy azok előfordulnak
 - Színezett kódolt üzenettípusok (kék = indítás, zöld = befejezés, piros = hiba)
 - Csatlakozási állapot banner auto- reconnect
 - Üzenetszámláló és exportálás JSON-ba
 
-### Elnevezett táblák
+### Szelepek elnevezése
 
 A lokalizációs rendszer most támogatja a neves plakettezők () a jobb nyelvtanítás különböző nyelveken:
 
@@ -78,7 +78,7 @@ Három szintű ellenálló képesség:
 Az összes csővezeték-üzemeltetésre vonatkozó valós idejű helyzetjelentés:
 
 - Minden szakasz közzéteszi az eseményeket
-- A nyelvi előmenetelt eseményként teszik közzé
+- Rendezvényként publikált nyelvi haladás
 - A hibaesemények közé tartozik a részletes háttér (forrás, hibakód, üzenet)
 - A szekvencia számok garantálják a rendelést minden egyes menetben
 
@@ -112,7 +112,7 @@ Regisztrálva:
 - /
 - /
 
-A jel R-csomópont van feltérképezve az ügyfélkapcsolatokra.
+A SignalR csomópontot feltérképezték az ügyfélkapcsolatokra.
 
 ## Vizsgálat
 
@@ -120,13 +120,13 @@ A jel R-csomópont van feltérképezve az ügyfélkapcsolatokra.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Új vizsgálati lefedettség hozzáadva:
-  - Helyettesítő Szolgáltatási funkciók
-  - Háttér fordítás Szolgáltatási hangszerelés
+  - PlaceholderService funkcionalitás
+  - BackendTranslationService zenekara
   - JsonStringLocalizer plaketter indexek
 
 ### Ismert korlátozások
 
-- a vizsgálat párhuzamos futáskor kimarad, mert több vizsgálati eset is ugyanazt a fájlt használja. Elmúlik, ha egyedül fut.
+- a vizsgálat kimarad, ha párhuzamosan fut, mert több vizsgálati eset ugyanazt a fájlt használja. Elmúlik, ha egyedül fut.
 
 ## Új fájlszerkezet
 
@@ -136,7 +136,7 @@ A jel R-csomópont van feltérképezve az ügyfélkapcsolatokra.
 - - Ország név fordítás
 - - JSON szótár szinkronizálás
 - - Jelölés fordítás
-- - Jelzés. R üzenet közzététele
+- - SignalR üzenetkiadás
 - - A logika visszaállítása a placeholder maszkjával
 - - Publisher interface
 - - Ország szolgáltatás interfész
@@ -159,10 +159,10 @@ A jel R-csomópont van feltérképezve az ügyfélkapcsolatokra.
 
 ### Új dokumentáció
 
-- - A csővezeték aktualizált dokumentációja
+- - Frissített csővezeték dokumentáció
 - - Helyettesítő rendszer útmutató
 - - Dashboard használati útmutató
-- - Technikai architektúra áttekintés
+- - Műszaki architektúra áttekintés
 
 ## Hátrameneti összeegyeztethetőség
 
@@ -172,13 +172,13 @@ Minden módosítás adalékanyag:
 - A pozicionálási forma () változatlan
 - A meglévő JSON szótár formátuma változatlan
 - A meglévő jelzésszerkezet változatlan
-- Jelzés R üzenetek ugyanazt a formátumot használják
+- A SignalR üzenetek ugyanazt a formátumot használják
 
 ## Migrációs útvonal
 
 Nincs szükség migrációra. A kritika belső:
 
-1. A régi maradt, mint egy referencia, majd felváltotta
+1. A régi maradt, mint egy hivatkozás, majd felváltotta
 2. A DI regisztrációkat frissítették az új interfészek használatához
 3. Minden meglévő fogyasztó nem lát változást
 

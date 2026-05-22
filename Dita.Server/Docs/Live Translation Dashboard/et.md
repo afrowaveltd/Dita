@@ -12,7 +12,7 @@ Live Translation Dashboard on administraatori leht, mis pakub reaalajas nähtavu
 
 ### Reaalaja sündmuste voog
 
-Kõik signaalid Tõlketorustiku R-sündmused kuvatakse reaalajas uuendavas tabelis:
+Kõik SignalR sündmused tõlketorustikust kuvatakse reaalajas uuendavas tabelis:
 
 - **Järjenumber** – monotoonne loendur igas torustikus
 - **Ajatempel** – sündmuse saabumise kohalik aeg
@@ -37,7 +37,7 @@ Staatuse bänner ülaosas näitab:
 - **Ühendamine** – SignalR-ühenduse loomine
 - **Ühendatud ** – sündmuste vastuvõtmine tavapäraselt
 - ** Taasühendamine ** - ühendus on kadunud, proovitakse uuesti ühendada
-- ** Lahtiühendatud ** – ühendus suletud
+- ** Disconnected** – ühendus suletud
 
 Ühendus kasutab automaatset taasühendamist eksponentsiaalse varundamisega: 0s, 2s, 5s, 10s, 30s.
 
@@ -47,7 +47,7 @@ Staatuse bänner ülaosas näitab:
 - **Eksport JSON ** - Laadib kõik vastuvõetud sõnumid analüüsimiseks alla JSON-failina
 - ** Sõnumite loendur ** – näitab antud seansil saadud sündmuste koguarvu
 
-## Signaal R hubasus
+## SignalR-i keskus
 
 Armatuurlaud on ühendatud:
 
@@ -91,7 +91,7 @@ Hoiatusmärk
 
 ### Taustaprogramm
 
-- **Lokaliseerimine Hub** () – SignalR-jaotur, mis edastab sõnumeid kõigile ühendatud klientidele
+- **LocalizationHub** () – SignalR-jaotur, mis edastab sõnumeid kõigile ühendatud klientidele
 - **ISignalRPublisher** – tõlketeenuste keskuses kasutatav abstraktsioon
 - **SignalRPublisher** – vaikerakendus, mis suurendab monotoonset jada ja saateid
 
@@ -119,13 +119,13 @@ Dita.Server/Pages/Admin/
 
 ## Edasised parandused
 
-Armatuurlaua kavandatud parandused:
+Armatuurlauale kavandatud parandused:
 
 - **Autentimine ** – Juurdepääsu piiramine kasutajatega
 - **Filtering** — Filter events by stage, type, or run ID
 - ** Ajaloolised jookseb ** - Vaade lõpetatud jookseb andmebaasist või logifailist
 - **Statistika ** - diagrammid, mis näitavad tõlkeloendust, veamäärasid ja latentsust aja jooksul
-- ** Käsitsi käivitatavad ** - nupud konkreetsete torujuhtmete etappide käsitsi käivitamiseks
+- **Käsitsivõtmed** – nupud konkreetsete torujuhtmeetappide käsitsi käivitamiseks
 - ** Konfiguratsioon** – redigeerimine otse armatuurlaualt
 - ** Keelehaldus** – toetatud keelte vaatamine ja redigeerimine
 - ** Sõnastiku eelvaade** – sirvi ja otsi lokaliseerimissõnastikke
@@ -144,7 +144,7 @@ Armatuurlaua kavandatud parandused:
 1. Kontrolli, kas SignalR hub URL sobib serveri () ja kliendi () vahel
 2. Kontrolli, kas planeerija on sisse lülitatud
 3. Vaata serveri logisid tõlkimise torustiku vigade kohta
-4. Kontrollige brauserit Võrgukaart WebSocketi teadete jaoks
+4. Kontrollige veebilehitseja võrgukaarti WebSocketi sõnumite jaoks
 
 ### Sõnumid on korrast ära
 
