@@ -73,7 +73,7 @@ Tres niveis de resistencia:
 2. **Stage retry** (TranslationRetryService): 3 additional attempts with 30s delays
 3. **Block retry** (DocumentsTranslationService): Failed Markdown blocks retried on next run
 
-### Información SignalR
+### información de sinal
 
 Información en tempo real para todas as operacións de gasoduto:
 
@@ -143,7 +143,7 @@ O hub SignalR está mapeado para conexións de clientes.
 - Interface de servizo de localización
 - Interface de servizo de documentos
 - - Interface de orquestra (actualizada)
-- Per-file Translation Metadata
+- Metadatos de tradución por ficheiro
 
 ### Servizos actualizados en
 

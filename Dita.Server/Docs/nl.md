@@ -2,7 +2,7 @@
 
 ## Overzicht
 
-Dit document geeft een samenvatting van alle wijzigingen die zijn aangebracht aan de automatische vertaaldienst Dita, waaronder architectuurrefactoring, nieuwe functies, opmerkzaamheidsverbeteringen en lokalisatieverbeteringen.
+Dit document geeft een samenvatting van alle wijzigingen die zijn aangebracht in de automatische vertaaldienst Dita, waaronder architectuurrefactoring, nieuwe functies, opmerkzaamheidsverbeteringen en lokalisatieverbeteringen.
 
 ## Architectuurwijzigingen
 
@@ -14,7 +14,7 @@ De monolithische is samengesteld uit vier gespecialiseerde diensten, gecoördine
 - **CountriesTranslationService**
 - **LocalisatieVertalingService**
 - **DocumentsTranslationService**
-- **SignalRpublisher**
+- **SignalRbusher**
 - **VertalingRetryService**
 
 ### Voordelen
@@ -51,8 +51,8 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-Kenmerken:
-- Plaatshouderwaarden opgegeven op runtime of opgeslagen in
+Functies:
+- Plaatshouderwaarden verstrekt op runtime of opgeslagen in
 - Automatische masking / restauratie tijdens de vertaling om corruptie te voorkomen
 - Achterwaarts compatibel met bestaande positiehouders
 
@@ -82,7 +82,7 @@ Voortgangsverslagen in realtime voor alle pijpleidingactiviteiten:
 - Foutmeldingen omvatten gedetailleerde context (bron, foutcode, bericht)
 - Sequentienummers garanderen bestellen binnen elke run
 
-## Configuratiewijzigingen
+## Wijzigingen in configuratie
 
 ### apps.json
 
@@ -126,7 +126,7 @@ De SignalR-hub is in kaart gebracht voor clientverbindingen.
 
 ### Bekende beperkingen
 
-- test wordt overgeslagen bij parallel draaien omdat meerdere test instanties hetzelfde bestand delen. Het gaat voorbij als het in isolatie loopt.
+- test wordt overgeslagen bij parallel draaien omdat meerdere test instanties hetzelfde bestand delen. Het gaat voorbij als het in afzondering loopt.
 
 ## Nieuwe bestandsstructuur
 
@@ -137,7 +137,7 @@ De SignalR-hub is in kaart gebracht voor clientverbindingen.
 - JSON woordenboeksynchronisatie
 - Vertaling markeren
 - Bericht publiceren
-- Retry logica met plaatshouder maskering
+- Probeer logica met plaatshouder maskering
 - Uitgever
 - Country service interface
 - Lokalisatie service interface
@@ -164,7 +164,7 @@ De SignalR-hub is in kaart gebracht voor clientverbindingen.
 - Dashboard gebruikshandleiding
 - Technische architectuur overzicht
 
-## Compatibiliteit achteraf
+## Compatibiliteit achterwaarts
 
 Alle wijzigingen zijn additief:
 
@@ -184,7 +184,7 @@ Geen migratie vereist. De refactoring is intern:
 
 ## Prestatieverbeteringen
 
-- **Verminderd geheugengebruik**: Bestanden opgeslagen per-taal onmiddellijk in plaats van het houden van alle in het geheugen
+- **Verminderd geheugengebruik**: Bestanden per taal onmiddellijk opgeslagen in plaats van alles in het geheugen te houden
 - **Faster incremental runs**: Alleen gewijzigde/gefaalde Markdown blokken worden opnieuw vertaald
 - ** Beter zicht**: Real-time vooruitgang helpt diagnose langzame stadia
 
@@ -193,7 +193,7 @@ Geen migratie vereist. De refactoring is intern:
 Geplande verbeteringen:
 
 1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
-2. **Admin-authenticatie**
+2. **Admin authenticatie**
 3. **Dictionary editor**
 4. **Vertaalstatistieken**
 5. **Aangepaste placeholder syntax** Ondersteuning voor alternatieve plaatshouderformaten

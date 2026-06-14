@@ -1,4 +1,4 @@
-﻿# نام گذاری شده در Localization
+﻿# نام: Placeholder in Localization
 
 Dita supports **named placeholders** in localization strings, allowing dynamic values to be inserted at runtime while preserving correct grammar across languages.
 
@@ -21,7 +21,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 ### ۱- مقدار زمان (برای داده های پویا)
 
-ارزش های Pass به طور مستقیم هنگامی که رشته محلی را روشن کنید:
+ارزش های Pass به طور مستقیم هنگامی که رشته محلی را خراب کنید:
 
 ```csharp
 // In a Razor page or controller
@@ -134,7 +134,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 منبع (انگلیسی):
 
-آماده ترجمه:
+آماده برای ترجمه:
 
 ترجمه به چک:
 
@@ -156,7 +156,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## ادغام با ترجمه خودکار
 
-به طور خودکار حفظ مکان دارنده را در طول تماس های LibreTranslate اداره می کند. هیچ پیکربندی اضافی لازم نیست.
+به طور خودکار حفظ مکان دارنده را در طول تماس های LibreTranslate کنترل می کند. هیچ پیکربندی اضافی لازم نیست.
 
 و هر دو از سرویس retry استفاده می کنند، بنابراین تمام ترجمه های فرهنگ لغت JSON به طور شفاف از نام Placeholder پشتیبانی می کنند.
 

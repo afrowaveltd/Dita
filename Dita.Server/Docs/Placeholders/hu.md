@@ -1,10 +1,10 @@
-﻿# A helymeghatározók neve
+﻿# Elnevezett helyfoglalók lokalizációban
 
 Dita supports **named placeholders** in localization strings, allowing dynamic values to be inserted at runtime while preserving correct grammar across languages.
 
 ## Szintaxis
 
-A helyfoglalók a JSON szótár értékein belüli curly- merevítő szintaxist használják:
+Helyzetfoglalók használja a curly- merevítő szintaxist belül JSON szótár értékek:
 
 ```json
 {
@@ -17,7 +17,7 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 ## Tárolás
 
-A "PlaceHolders" két értékforrás:
+A "placeholders" -nek két értékforrása van:
 
 ### 1. Futási idő értékek (dinamikus adatokhoz ajánlott)
 
@@ -50,7 +50,7 @@ A fájl kezelése a könyvtárban:
 
 Stored values act as **defaults** and are overridden by runtime values.
 
-## Az API hivatkozása
+## API-hivatkozás
 
 ### JsonStringLocalizer indexer
 
@@ -124,7 +124,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## Fordítás
 
-Amikor az automatikus fordítási szolgáltatás találkozik szöveges megnevezett helyfoglalók:
+Amikor az automatikus fordítási szolgáltatás találkozik szöveget megnevezett plakettezők:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
@@ -142,7 +142,7 @@ Végső eredmény:
 
 Ez biztosítja, hogy:
 - A helyfoglalókat soha nem fordítják vagy rontják meg
-- Target-language nyelvtan lehet átrendezni a környező szöveget szabadon
+- Cél- nyelv nyelvtan lehet átrendezni a környező szöveget szabadon
 - Ugyanaz a sablon működik helyesen minden nyelven
 
 ## Legjobb gyakorlatok
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-A megnevezett posztoperátor API adalékanyag - nem töri meg a meglévő használat.
+A megnevezett posztoperátor API adalékanyag - nem töri meg a meglévő használatot.

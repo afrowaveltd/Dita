@@ -1,8 +1,8 @@
-﻿# Rezumatul modificărilor la serviciul de traducere automată
+﻿# Rezumatul modificărilor aduse serviciului de traducere automată
 
 ## Prezentare generală
 
-Acest document rezumă toate modificările efectuate la serviciul de traducere automată Dita, inclusiv refactoring arhitectura, noi caracteristici, îmbunătățiri de observare, și îmbunătățiri de localizare.
+Acest document rezumă toate modificările aduse serviciului de traducere automată Dita, inclusiv refactorarea arhitecturii, noi caracteristici, îmbunătăţiri de observabilitate şi îmbunătăţiri de localizare.
 
 ## Modificări de arhitectură
 
@@ -61,8 +61,8 @@ Caracteristici:
 Fișierele Markdown sunt traduse treptat:
 
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
-- **Block-level tracking**: tracks translation status per bloc
-- ** Rejudecarea selectivă **: Doar blocurile eșuate sunt re-traduse pe următoarea cursă
+- **Block-nivel de urmărire**: piese de traducere starea pe bloc
+- ** Rejudecarea selectivă **: Numai blocuri eșuate sunt re-traduse pe următoarea cursă
 - ** Persistenţa datelor**: Starea de traducere supravieţuieşte reluării aplicaţiei
 
 ### Logica remetrică îmbunătățită
@@ -139,10 +139,10 @@ Conexiunea SignalR este cartografiată pentru conexiunile clienţilor.
 - editare mesaj semnal
 - — Retry logic with placeholder masking
 - Interfaţa editorului
-- interfață de serviciu țară
+- Interfața cu serviciul de țară
 - Interfaţa serviciului de localizare
 - Interfața de serviciu document
-- Interfaţa orchestrator (actualizată)
+- Interfață orchestrator (actualizată)
 - — Per-file translation metadata
 
 ### Servicii actualizate în
@@ -185,19 +185,19 @@ Nu este necesară migrarea. Refactorizarea este internă:
 ## Îmbunătățiri ale performanței
 
 - **Redusă utilizarea memoriei**: Fișiere salvate imediat pe limbă în loc să dețină toate în memorie
-- **Faster incremental ruleaza**: Doar blocurile Markdown schimbate/retrase sunt retraduse
+- **Faster incremental ruleaza**: Doar blocurile Markdown modificate/retrase sunt retraduse
 - **O mai bună vizibilitate**: Progresul în timp real ajută la diagnosticarea etapelor lente
 
 ## Îmbunătăţiri viitoare
 
 Îmbunătăţiri planificate:
 
-1. **AI fin- tuning**
-2. **Admin autentificare**
+1. **AI fine- tuning**
+2. **Admin Autentificare**
 3. **Dictionary editor**
 4. **Statistici de traducere**
 5. **Custom placeholder sintaxa**
 
 ## Contact
 
-Pentru întrebări sau probleme cu serviciul de traducere, vă rugăm să consultați documentația detaliată din directorul fiecărui modul sau să contactați echipa de dezvoltare.
+Pentru întrebări sau probleme legate de serviciul de traducere, vă rugăm să consultați documentația detaliată din directorul fiecărui modul sau să contactați echipa de dezvoltare.

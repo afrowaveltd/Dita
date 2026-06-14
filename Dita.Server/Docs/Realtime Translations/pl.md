@@ -35,8 +35,8 @@ Jeżeli jakiekolwiek sprawdzenie nie powiodło się, rurociąg zatrzymuje się n
 
 Nazwy krajów są przechowywane w synchronizacji z katalogu tylko read- () do słowników lokalizacji JSON.
 
-- Jeśli domyślny język aplikacji jest angielski, każda nazwa kraju jest zapisywana bez tłumaczenia.
-- Jeśli domyślny język jest innym językiem, nazwa kraju angielskiego jest najpierw tłumaczona na ten język, a wynik staje się wpisem w domyślnym słowniku.
+- Jeśli domyślny język aplikacji to angielski, każda nazwa kraju jest zapisywana bez tłumaczenia.
+- Jeśli domyślny język jest innym językiem, nazwa kraju angielskiego jest najpierw przetłumaczona na ten język, a wynik staje się wpisem w domyślnym słowniku.
 - After the default dictionary is updated, each missing country entry in every target language dictionary is translated and saved **immediately per language**.
 - Przetłumaczone wpisy są zachowywane bez modyfikacji.
 - Jeśli tłumaczenie się nie powiedzie, usługa powtarza się do 3 razy z 30-sekundowymi opóźnieniami przed przejściem do następnego języka.
@@ -47,10 +47,10 @@ Usługa porównuje bieżący domyślny słownik lokalizacji z migawką zapisaną
 
 - **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
-- Tłumaczenia ręczne zawsze mają pierwszeństwo. Jeśli słownik docelowy zawiera już wartość klucza, ten wpis pozostaje bez zmian niezależnie od tego, co mówi źródło.
+- Tłumaczenia ręczne zawsze mają pierwszeństwo. Jeśli słownik docelowy zawiera już wartość klucza, ten wpis pozostaje niezmieniony niezależnie od tego, co mówi źródło.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
 - Jeśli tłumaczenie nie jest możliwe dla określonego języka, usługa ponownie próbuje działać automatycznie. Tylko trwałe błędy (np. nieobsługiwany język) powodują pominięcie tego języka.
-- Po uruchomieniu, aktualny domyślny słownik jest zapisany jako nowy migawka dla następnego porównania.
+- Po uruchomieniu bieżący domyślny słownik jest zapisany jako nowy migawka dla następnego porównania.
 
 Wszystkie słowniki są zawsze przechowywane z alfabetycznie posortowane klucze i wcięty JSON do czytelności człowieka.
 
@@ -87,9 +87,9 @@ Identyfikator korelacji dla bieżącego przebiegu rurociągu
 Licznik monotoniczny w trakcie biegu, zaczynając od 1
 Semantyczny typ wiadomości
 Etap pipeline wiadomość należy do
-Czas, w którym wiadomość została wyemitowana
+Czas UTC, kiedy wiadomość została wyemitowana
 Czy wiadomość reprezentuje stan błędu
-Podsumowanie do odczytu humanistycznego
+Podsumowanie do odczytu ludzkiego
 Specyficzny dla stanu ładunek (obiekt zgłoszenia lub null)
 
 ### Typy wiadomości
@@ -150,7 +150,7 @@ Gazociąg wdraża dwa poziomy odporności:
 ### Wznowienie stanu (TranslationRetriService)
 
 - Jeśli prośba o tłumaczenie nie powiodła się po wewnętrznych powtórzeniach LibreTranslate, wykonuje do 3 dodatkowych powtórzeń poziomu sceny z 30-sekundowymi opóźnieniami.
-- Maskowanie placeholder: Nazwy placeholders () w tekście są tymczasowo zamieniane na bezpieczne żetony () przed tłumaczeniem i przywrócone później, zapewniając poprawną gramatykę w językach docelowych.
+- Maskowanie placeholder: Nazwy placeholders () w tekście są tymczasowo zamieniane na bezpieczne żetony () przed tłumaczeniem i przywrócone później, zapewniając prawidłową gramatykę w językach docelowych.
 
 ### Walidacja języka
 
@@ -175,13 +175,13 @@ Zakres
 4000- 4999
 5000- 5999
 
-Każdy błąd w raporcie zawiera identyfikator źródłowy (kod językowy, ścieżkę pliku lub nazwę sceny), kod błędu i wiadomość czytelną dla człowieka.
+Każdy błąd w raporcie zawiera identyfikator źródłowy (kod językowy, ścieżkę pliku lub nazwę sceny), kod błędu i wiadomość do odczytu przez człowieka.
 
 ## dashboard tłumaczenie na żywo
 
 Projekt Server zawiera stronę administracyjną, która łączy się z węzłem SignalR i wyświetla wszystkie zdarzenia związane z rurociągiem w czasie rzeczywistym.
 
-- Wyświetla status połączenia, ilość wiadomości i tabelę aktualizacji życia wszystkich zdarzeń.
+- Wyświetla status połączenia, ilość wiadomości oraz tabelę aktualizacji życia wszystkich zdarzeń.
 - Kolorowe wiersze: niebieski na początek etapu, zielony na zakończenie, czerwony na błędy.
 - Obsługuje czyszczenie kanału i eksport wszystkich wiadomości do JSON.
 - Auto- reconnects with wykładniczy backoff if the connection drops.

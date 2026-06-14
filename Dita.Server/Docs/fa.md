@@ -53,7 +53,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ویژگی ها:
 - ارزش های سهامدار ارائه شده در زمان اجرا یا ذخیره شده در
-- ماسک زدن خودکار در طول ترجمه برای جلوگیری از فساد
+- ماسک برداری خودکار در طول ترجمه برای جلوگیری از فساد
 - Backward سازگار با سهامداران فعلی
 
 ### ترجمه مقدماتی
@@ -86,7 +86,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ### تنظیمات
 
-هیچ تغییر شکستی وجود ندارد. پیکربندی موجود همچنان به کار ادامه می دهد:
+هیچ تغییر شکستی پیکربندی موجود همچنان به کار ادامه می دهد:
 
 ```json
 {
@@ -103,7 +103,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ### خدمات جدید
 
-ثبت شده در:
+ثبت شده در :
 
 - /
 - `TranslationRetryService`
@@ -118,15 +118,15 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ### وضعیت آزمون
 
-- **243 / 244 تست عبور ** (1 به دلیل دسترسی فایل همزمان در محیط آزمایش از بین رفته)
+- **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - پوشش تست جدید اضافه شده برای:
   - قابلیت های PlaceholderService
   - BackendTranslation ارکستر
-  - JsonStringLocalizer Placeholder
+  - JsonStringLocalizer indexers
 
 ### محدودیت های شناخته شده
 
-- تست زمانی که به صورت موازی اجرا می شود، از بین می رود، زیرا چندین مورد آزمون همان فایل را به اشتراک می گذارند. هنگامی که در انزوا اجرا می شود.
+- تست زمانی که به طور موازی اجرا می شود، از بین می رود، زیرا چندین مورد آزمون همان فایل را به اشتراک می گذارند. هنگامی که در انزوا اجرا می شود.
 
 ## ساختار فایل جدید
 
@@ -142,7 +142,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 - رابط خدمات کشور
 - – Localization service interface
 - رابط خدمات مستند
-- رابط ارکستر (به روز رسانی)
+- رابط ارکستر (به روز شده)
 - – Per-file Translation meta
 
 ### خدمات به روز رسانی در
@@ -193,9 +193,9 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 بهبود برنامه ریزی شده:
 
 1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
-2. ** تاییدیه مدیریت ** صفحات مدیریت محدود برای کاربران مجاز
+2. ** تأیید اعتبار اداری ** صفحات مدیریت محدود برای کاربران مجاز
 3. **Dictionary editor** — Web UI for managing localization keys
-4. ** آمار ترجمه ** نمودارها نشان دهنده میزان ترجمه و نرخ خطا در طول زمان
+4. ** آمار ترجمه ** نمودارها نشان می دهند که نرخ های ترجمه و خطا در طول زمان
 5. **Custom placeholder syntax** — Support for alternate placeholder formats
 
 ## تماس تلفنی

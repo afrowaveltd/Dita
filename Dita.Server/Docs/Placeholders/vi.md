@@ -13,7 +13,7 @@ Người giữ chỗ sử dụng cú pháp sắc cong trong từ điển JSON:
 }
 ```
 
-Không giống như những người giữ chỗ vị trí (, ), tên người giữ chỗ là **language-asutic** — dịch giả có thể sắp xếp lại họ để phù hợp với ngữ pháp của mục tiêu-laguated mà không vi phạm mã.
+Không giống như những người giữ chỗ vị trí (, ), tên người giữ chỗ là **language-aific** — dịch giả có thể sắp xếp lại họ để phù hợp với ngữ pháp của mục tiêu-laguated mà không vi phạm mã.
 
 ## Lưu trữ
 
@@ -126,7 +126,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 Khi dịch vụ phiên dịch tự động gặp văn bản với tên người giữ chỗ:
 
-1. **Trước khi dịch**: Những người giữ chỗ đeo mặt nạ với dấu hiệu an toàn () để ngăn không cho động cơ phiên dịch sửa đổi.
+1. **Trước khi dịch**: Những người giữ chỗ đeo mặt nạ với những biểu tượng an toàn () để ngăn không cho động cơ phiên dịch sửa đổi.
 2. **Ding Dịch**: Động cơ phiên dịch chỉ xử lý văn bản có thể chuyển đổi.
 3. **Sau khi dịch**: Tên người giữ chỗ gốc () được khôi phục đúng vị trí.
 
@@ -148,17 +148,17 @@ Kết quả cuối cùng:
 ## Thực hành tốt nhất
 
 1. ** Dùng tên mô tả**: tốt hơn hoặc
-2. ** Giữ bộ giữ chỗ nhỏ nhất**: Có quá nhiều người giữ chỗ làm cho việc dịch khó khăn hơn
+2. ** Giữ bộ giữ chỗ nhỏ nhất**: Quá nhiều người giữ chỗ làm cho việc dịch khó khăn hơn
 3. **Document mong đợi loại**: Chú thích trong tập tin JSON giúp dịch thuật hiểu ngữ cảnh
 4. **Prefer giá trị thời gian chạy**: Đối với dữ liệu thực sự năng động (tên người dùng, đếm, ngày), đi qua các giá trị trong lúc chạy
 5. ** Dùng giá trị đã lưu cho các giá trị mặc định**: Để cấu hình mà hiếm khi thay đổi (tên mới, hỗ trợ email)
-6. **Validates placeholds**: Dùng để xác minh tất cả các vị trí giữ chỗ mong đợi
+6. **Validates placeholds**: Dùng để xác minh tất cả các vị trí giữ chỗ mong đợi được cung cấp
 
 ## Hợp nhất với dịch tự động
 
 Tự động quản lý việc bảo quản vị trí trong cuộc gọi của LibreTranslate. Không cần thêm cấu hình.
 
-Cả hai đều sử dụng dịch vụ thử lại, vì vậy tất cả các từ điển JSON dịch thuật một cách trong suốt hỗ trợ tên của người giữ chỗ.
+Cả hai đều sử dụng dịch vụ thử lại, do đó, tất cả các từ điển JSON dịch thuật một cách minh bạch hỗ trợ danh hiệu người giữ chỗ.
 
 ## Tương thích ngược
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Người giữ chỗ tên là ADI thêm vào — nó không phá vỡ cách sử dụng hiện có.
+Người giữ chỗ tên là ATI thêm vào — nó không phá vỡ cách sử dụng hiện có.

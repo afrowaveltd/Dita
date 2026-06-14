@@ -2,13 +2,13 @@
 
 Live Translation Dashboard는 자동 번역 파이프라인에 실시간 가시성을 제공하는 관리자 페이지입니다. SignalR 허브에 연결하고 모든 파이프라인 이벤트를 표시합니다.
 
-## 사이트맵
+## 사이트 맵
 
 `/Admin/LiveTranslation`
 
 > Note: Authentication and authorization are not yet implemented. Future versions will restrict this page to admin users only.
 
-## 제품 정보
+## 제품 설명
 
 ### 실시간 이벤트 스트림
 
@@ -20,11 +20,11 @@ Live Translation Dashboard는 자동 번역 파이프라인에 실시간 가시�
 - **Stage** - Pipeline 단계 배지 (CheckServers, TranslateCountries 등)
 - **Type** - 메시지 유형 배지 (StageStarted, Progress, StageCompleted 등)
 - **Message** - 인간 읽기 쉬운 설명
-- **Details** - 이벤트 데이터의 전체 JSON 페이로드
+- **Details** — 이벤트 데이터의 전체 JSON 페이로드
 
 ### 색깔 기호화
 
-색깔: 회색
+색깔: 백색
 |-------|---------|
 블루 ()
 녹색 ()

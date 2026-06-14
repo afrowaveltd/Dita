@@ -1,6 +1,6 @@
 ﻿# Bezeichnete Platzhalter in der Lokalisierung
 
-Dita unterstützt **named placeholders** in Lokalisierungsstrings, so dass dynamische Werte zur Laufzeit eingefügt werden können, während korrekte Grammatik über Sprachen erhalten bleibt.
+Dita unterstützt **bezeichnete Platzhalter** in Lokalisierungsstrings, so dass dynamische Werte zur Laufzeit eingefügt werden können, während korrekte Grammatik über Sprachen erhalten bleibt.
 
 ## Syntax
 
@@ -142,7 +142,7 @@ Endergebnis:
 
 Dies sorgt dafür, dass
 - Platzhalter werden nie übersetzt oder beschädigt
-- Zielsprach Grammatik kann den umliegenden Text frei umstellen
+- Zielsprach Grammatik kann den umliegenden Text frei umordnen
 - Die gleiche Vorlage funktioniert in allen Sprachen richtig
 
 ## Best Practices
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Die benannte Placeholder API ist additiv — es bricht nicht die bestehende Nutzung.
+Die benannte Placeholder API ist additiv – sie bricht nicht die bestehende Nutzung.

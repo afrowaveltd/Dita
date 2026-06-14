@@ -1,6 +1,6 @@
 ﻿# živý preklad prístrojová doska
 
-Live Translation Dashboard je admin stránka, ktorá poskytuje v reálnom čase viditeľnosť do automatického prekladu potrubia. Spája sa s uzlom SignalR a zobrazuje všetky udalosti súvisiace s potrubím.
+Live Translation Dashboard je admin stránka, ktorá poskytuje v reálnom čase viditeľnosť do automatického prekladu potrubia. Spája sa s uzlom SignalR a zobrazí všetky udalosti súvisiace s potrubím.
 
 ## URL
 
@@ -33,7 +33,7 @@ Biela (predvolená)
 
 ### Stav pripojenia
 
-Stavový banner na vrchu ukazuje:
+Status banner na vrchu ukazuje:
 - **Connecting**
 - **Connected**
 - ** Opätovné pripojenie**
@@ -122,7 +122,7 @@ Dita.Server/Pages/Admin/
 Plánované zlepšenia prístrojovej dosky:
 
 - **Autentifikácia**
-- **Filtering**
+- **Filterovanie**
 - **Historické behy**
 - ** Štatistika**
 - **Manual triggers** — Buttons to manually start specific pipeline stages
@@ -132,10 +132,10 @@ Plánované zlepšenia prístrojovej dosky:
 
 ## Riešenie problémov
 
-### Dashboard ukazuje "Failed to connect"
+### Dashboard zobrazuje "Failed to connect"
 
 1. Overiť, či server beží a je prístupný
-2. Skontrolovať konzolu prehliadača pre CORS alebo sieťové chyby
+2. Skontrolujte konzolu prehliadača pre CORS alebo sieťové chyby
 3. Potvrdiť prítomnosť
 4. Uistite sa, že žiadny firewall blokuje pripojenie WebSocket
 

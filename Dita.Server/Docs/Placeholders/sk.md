@@ -1,10 +1,10 @@
 ﻿# Pomenovaní držitelia miest v lokalizácii
 
-Dita podporuje ** pomenovaných umiestovateľov** v lokalizačných reťazcoch, čo umožňuje vkladanie dynamických hodnôt v čase behu pri zachovaní správnej gramatiky v jazykoch.
+Dita supports **named placeholders** in localization strings, allowing dynamic values to be inserted at runtime while preserving correct grammar across languages.
 
 ## Syntax
 
-Umiestnenia používajú syntax kučeravého race vnútri slovníkových hodnôt JSON:
+Držiaky používajú syntax kučeravého race vnútri slovníkových hodnôt JSON:
 
 ```json
 {
@@ -13,7 +13,7 @@ Umiestnenia používajú syntax kučeravého race vnútri slovníkových hodnôt
 }
 ```
 
-Na rozdiel od polohových držiteľov miest (, ), pomenovaní lokátori sú ** jazykovo-agnostik** .
+Na rozdiel od polohových držiteľov miest (, ), menovaných lokátorov sú ** jazyk-agnostik** .
 
 ## Skladovanie
 
@@ -124,7 +124,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## Prekladové správanie
 
-Keď sa automatická prekladateľská služba stretne s textom s pomenovanými usadlíkmi:
+Keď sa automatická prekladateľská služba stretne s textom s pomenovanými umiestovateľmi:
 
 1. **Pred prekladom**: Držiaky sú maskované bezpečnými žetónmi (), aby sa prekladateľský motor nemenil.
 2. **Počas prekladu**: Prekladateľský nástroj spracúva iba prekladateľný text.
@@ -142,7 +142,7 @@ Konečný výsledok:
 
 Tým sa zabezpečí, že:
 - Držitelia miesta nie sú nikdy preložený alebo poškodený
-- Cieľový jazyk gramatika môže prestaviť okolitý text voľne
+- Gramatika v cieľovom jazyku môže voľne zmeniť rozsah okolitého textu
 - Rovnaká šablóna funguje správne vo všetkých jazykoch
 
 ## Osvedčené postupy
@@ -151,18 +151,18 @@ Tým sa zabezpečí, že:
 2. ** Udržujte minimálne pozície**: Príliš veľa prekladateľov sťažuje preklad
 3. ** Očakávané typy dokumentu**: Komentáre v súbore JSON pomôcť prekladateľom pochopiť kontext
 4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime
-5. ** Používajte uložené hodnoty pre predvolené hodnoty**: Pre konfiguráciu, ktorá sa zriedka mení (meno aplikácie, e-mail podpory)
-6. ** Overiť držiteľov miest**: Použiť na overenie všetkých predpokladaných umiestnení
+5. ** Používajte uložené hodnoty pre predvolené hodnoty**: Pre konfiguráciu, ktorá sa zriedka mení (názov aplikácie, e-mail podpory)
+6. ** Overiť držiteľov miest**: Použiť na overenie všetkých očakávaných lokátorov sú poskytnuté
 
 ## Integrácia s automatickým prekladom
 
-Automaticky manipuluje s uchovaním hráča počas hovorov LibreTranslate. Nie je potrebná ďalšia konfigurácia.
+Automaticky manipuluje s uchovaním miesta počas hovorov LibreTranslate. Nie je potrebná ďalšia konfigurácia.
 
 Obaja používajú retry službu, takže všetky preklady JSON slovníka transparentne podporujú menovaných lokátorov.
 
 ## Spätná kompatibilita
 
-Existujúci kód s použitím pozičných držiteľov miest alebo žiadnych držiteľov miest naďalej funguje nezmenený:
+Existujúci kód používajúci pozičné umiestňovače alebo žiadny umiestňovač naďalej funguje nezmenený:
 
 ```csharp
 // Still works exactly as before

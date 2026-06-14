@@ -63,7 +63,7 @@ Los archivos Markdown se traducen incrementalmente:
 - **Ahorro por idioma**: Cada idioma objetivo se guarda inmediatamente después de la traducción, reduciendo la presión de memoria
 - **Block-level tracking**: tracks translation status per block
 - **Retromisión selectiva**: Sólo bloques fallidos son retraducidos en la siguiente carrera
-- ** Persistir en los metadatos**: Estado de traducción sobrevive a la aplicación
+- ** persistencia de los metadatos**: Estado de traducción sobrevive a la aplicación
 
 ### Logic de reingreso mejorado
 
@@ -126,20 +126,20 @@ El centro SignalR está diseñado para las conexiones de clientes.
 
 ### Limitaciones conocidas
 
-- test se salta cuando se ejecuta en paralelo porque múltiples instancias de prueba comparten el mismo archivo. Pasa cuando corre en aislamiento.
+- test se salta cuando se ejecuta en paralelo porque múltiples instancias de prueba comparten el mismo archivo. Pasa cuando se ejecuta en aislamiento.
 
 ## Nueva estructura de archivos
 
 ### Servicios en
 
-- — orquestador de tuberías
+- - Orquestador de tuberías
 - — Traducción del nombre del país
 - Sincronización del diccionario JSON
 - — Traducción de Markdown
-- — Publicación de mensajes SignalR
+- — Publicación de mensajes de SignalR
 - — Lógica de reingreso con enmascaramiento de marcadores
 - — Interfaz de editor
-- — Interfaz de servicio a los países
+- — Interfaz de servicios a los países
 - — Interfaz de servicios de localización
 - — Interfaz de servicio de documentos
 - — Interfaz de orquestador (actualizado)
@@ -171,7 +171,7 @@ Todos los cambios son aditivos:
 - Código de localización existente () funciona sin cambios
 - El formato de posición () funciona sin cambios
 - El formato de diccionario JSON existente no cambia
-- La estructura de marcado existente no cambia
+- La estructura existente de Markdown no cambia
 - Los mensajes SignalR usan el mismo formato
 
 ## Sendero de migración

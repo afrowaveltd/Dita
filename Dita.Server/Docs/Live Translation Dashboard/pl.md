@@ -1,6 +1,6 @@
 ﻿# dashboard tłumaczenie na żywo
 
-Live Translation Dashboard to strona administracyjna, która zapewnia real- time widoczność do automatycznego rurociągu tłumaczeniowego. Łączy się z węzłem SignalR i wyświetla wszystkie zdarzenia związane z rurociągiem.
+Live Translation Dashboard to strona administracyjna, która zapewnia real- time widoczność do automatycznego rurociągu tłumaczeniowego. Łączy się z węzłem SignalR i wyświetla wszystkie zdarzenia związane z rurociągami.
 
 ## URL
 
@@ -33,13 +33,13 @@ Biały (domyślnie)
 
 ### Status połączenia
 
-Baner stanu na górze pokazuje:
+Baner statusu na górze pokazuje:
 - **Connecting** — Establishing SignalR connection
 - **Connected** — Receiving events normally
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-Połączenie wykorzystuje automatyczne ponowne połączenie z backupem wykładniczym: 0s, 2s, 5s, 10s, 30s.
+Połączenie wykorzystuje automatyczne ponowne połączenie z wymiennikiem wykładniczym: 0s, 2s, 5s, 10s, 30s.
 
 ### Kontrole
 
@@ -113,7 +113,7 @@ Dita.Server/Pages/Admin/
 
 1. Uruchom Ditę. Aplikacja serwera
 2. Przejdź do
-3. Uruchomić tłumaczenie (albo czekać na terminarza lub zadzwonić API)
+3. Uruchom operację tłumaczeniową (poczekaj na terminarza lub zadzwoń do API)
 4. Oglądaj wydarzenia pojawiają się w czasie rzeczywistym
 5. Użyj przycisku Eksportuj, aby uchwycić pełny ślad dla debugowania
 
@@ -143,11 +143,11 @@ Planowane ulepszenia deski rozdzielczej:
 
 1. Sprawdź, czy adres URL węzła SignalR pasuje do serwera () i klienta ()
 2. Weryfikacja terminarza jest włączona w
-3. Spójrz na logi serwerów dla błędów rurociągu tłumaczenia
+3. Sprawdź dzienniki serwerów dla błędów rurociągu tłumaczenia
 4. Sprawdź zakładkę Sieć przeglądarki wiadomości WebSocket
 
 ### Wiadomości nie są w porządku
 
-Pole gwarantuje zamawianie w jednym biegu. Jeżeli wiadomości nie są w porządku, mogą one wskazywać:
+Pole gwarantuje zamawianie w jednym biegu. Jeżeli wiadomości nie są w porządku, mogą wskazywać:
 - Wiele rurociągów działa nakładanie (nie powinno się zdarzyć z powodu blokady semafora)
 - Problemy z renderowaniem przeglądarki (spróbuj odświeżyć stronę)

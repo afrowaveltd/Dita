@@ -14,7 +14,7 @@ Monoliit on lagunenud neljaks eriteenistuseks, mida koordineerib kergekaaluline 
 - **RiigidTranslationService** – Riiginimede sünkroniseerimine (inglise → sihtkeel)
 - **LocalizationTranslationService** — JSON sõnastiku sünkroniseerimine (lisatud/eemaldatud klahvid)
 - **DocumentsTranslationService** – Markdown dokumentatsiooni tõlge koos plokitasandi jälgimisega
-- **SignalRPublisher** – Reaalajas edenemise aruandlus SignalR-i kaudu
+- **SignalRPublisher** – Reaalajaline eduaruandlus SignalR-i kaudu
 - **TranslationRetryService** – etapitaseme proovimine kohahoidja säilitamisega
 
 ### Hüved
@@ -71,7 +71,7 @@ Kolm vastupidavuse taset:
 
 1. **HTTP retry** (LibreTranslateService): 5 katset eksponentsiaalse tagasilöögiga (1s–5s)
 2. ** Lava proovimine ** (TranslationRetryService): 3 täiendavat katset 30-ndate viivitustega
-3. **Ploki uuesti proovimine ** (DocumentsTranslationService): Failed Markdown plokid uuesti proovitud järgmisel käivitamisel
+3. **Ploki proovimine ** (DocumentsTranslationService): Failed Markdown plokid uuesti proovitud järgmisel käivitamisel
 
 ### SignaaliR aruandlus
 
@@ -122,7 +122,7 @@ SignalR jaotur on kaardistatud kliendiühenduste jaoks.
 - Lisatud on uus katseala:
   - Kohapealse teenuse funktsioonid
   - BackendTranslationService orkestreerimine
-  - JsonStringLocalizeri kohaomanike indekseerijad
+  - JsonStringLocalizeri kohahoidjate indekseerijad
 
 ### Tuntud piirangud
 
@@ -184,7 +184,7 @@ Migratsioon ei ole vajalik. Refaktoreerimine on sisemine:
 
 ## Tulemuslikkuse parandamine
 
-- ** Vähendatud mälukasutus**: Failid salvestatakse keele kohta kohe, selle asemel, et hoida kõik mälus
+- ** Vähendatud mälukasutus**: Failid salvestatakse keele kohta kohe, selle asemel, et kõik mälus hoida
 - **Kiired juurdekasvud**: Ainult muudetud/ebaõnnestunud Markdowni plokid tõlgitakse uuesti
 - **Parem nähtavus**: Reaalajas progress aitab diagnoosida aeglaseid etappe
 
@@ -193,7 +193,7 @@ Migratsioon ei ole vajalik. Refaktoreerimine on sisemine:
 Kavandatud parandused:
 
 1. **AI peenhäälestus** – masinajärgne tõlkeülevaade fraasidele > 5 sõna
-2. **Admin autentimine ** – Admin-lehtede piiramine volitatud kasutajatele
+2. **Admin autentimine** – admin-lehtede piiramine volitatud kasutajatele
 3. ** Sõnastikuredaktor** – veebi kasutajaliides lokaliseerimise võtmete haldamiseks
 4. ** Tõlkestatistika** – diagrammid, mis näitavad tõlkimiste arvu ja veamäära aja jooksul
 5. ** Kohatäitja süntaks ** – toetus alternatiivsete kohatäitja vormingutele

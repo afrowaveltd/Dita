@@ -1,6 +1,6 @@
 ﻿# " Live Translation Dashboard "
 
-Ang Live Translation Dashboard ay isang admin page na nagbibigay ng real-time na imahe sa awtomatikong translation pipeline. Nakakabit ito sa sentro ng SignalR at nagtatanghal ng lahat ng mga pangyayari sa tubo habang nagaganap ang mga ito.
+Ang Live Translation Dashboard ay isang admin page na nagbibigay ng real-time na imahe sa awtomatikong translation pipeline. Nakakonekta ito sa sentro ng SignalR at nagtatanghal ng lahat ng mga pangyayari sa tubo habang nagaganap ang mga ito.
 
 ## URL
 
@@ -12,14 +12,14 @@ Ang Live Translation Dashboard ay isang admin page na nagbibigay ng real-time na
 
 ### Tuloy ang real-time na kaganapan
 
-Ang lahat ng mga pangyayari ng SignalR mula sa translation pipeline ay itinatanghal sa isang live-upding table:
+Ang lahat ng mga pangyayaring SignalR mula sa translation pipeline ay itinatanghal sa isang live-upding table:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timstamp** — Lokal na panahon nang tanggapin ang pangyayari
 - **Run ID** — Maikling GUD para sa correlation
 - **Stage** — Pipeline stage badge (Check Profiders, Translate Communities, atbp.)
 - **Type** — Message type badge (StargageStarted, Progress, StageComposted, atbp.)
-- **Message** — Human-readable na paglalarawan
+- **Message** — Human-readable description
 - ** Details** — Buong sahod ng JSON na nakabase sa data ng pangyayari
 
 ### " Coldering " ng kulay
@@ -37,7 +37,7 @@ Isang mataas na baner sa itaas na mga palabas:
 - **Connecting** — Pagtatatag ng SignalR koneksyon
 - **Konnected** — pagtanggap ng mga pangyayaring normal
 - ** Pagkonekta** — Nawala ang koneksyon, sinisikap na muling magkonekta
-- ** Hindi nakonekta** — Nagsara ang koneksyon
+- ** Dinected** — Nagsara ang koneksyon
 
 Ang koneksyon ay gumagamit ng awtomatikong muling pag-uugnay sa exponential backoff: 0s, 2s, 5s, 10s, 30s.
 
@@ -113,7 +113,7 @@ Dita.Server/Pages/Admin/
 
 1. Paandarin ang Pista. Kapalit ng server
 2. Paglalakbay Patungo sa
-3. Trigger ang isang transaksyon run (alinman ay maghintay sa nag-iskedyul o tumawag ng API)
+3. Trigger ng isang translation run (alinman ay maghintay sa nag-iskedyul o tumawag ng API)
 4. Ang mga pangyayari sa pagmamasid ay lumilitaw sa tunay na panahon
 5. Gamitin ang Export button upang kumuha ng isang buong bakas para sa pag - aalis ng sandata
 
@@ -123,7 +123,7 @@ Isinaplanong mga pagsulong para sa dashboard:
 
 - **Authentication** — Restrict access to users with the `Admin` role
 - **Filtering** — Mga pangyayari sa Filter sa pamamagitan ng entablado, tipo, o pagtakbo ng ID
-- ** Ang historikal na pagtakbo** — Ang nakumpletong larawan ay mula sa isang database o log file
+- ** Ang historikal na pagtakbo** — Ang nakumpletong larawan ay mula sa database o log file
 - **Statistics** — Charts na nagpapakita ng halaga ng pagsasalin, maling bilis, at latency sa paglipas ng panahon
 - ** Ang Manual ang nag - uudyok** — Mga Buntot upang manu - manong simulan ang espesipikong mga yugto ng tubo
 - **Configuration** — Edit `AutomaticTranslationSettings` directly from the dashboard
@@ -137,7 +137,7 @@ Isinaplanong mga pagsulong para sa dashboard:
 1. Pare - parehong tumatakbo at madaling makuha ang server
 2. Check browser console para sa mga COR o mga pagkakamali sa network
 3. May katibayan sa
-4. Ang Ensurure no firewall ay ang pagharang sa mga koneksiyon ng WebSocket
+4. Ensure no firewall ay blocking WebSocket koneksyon
 
 ### Hindi lumilitaw ang mga pangyayari
 
@@ -150,4 +150,4 @@ Isinaplanong mga pagsulong para sa dashboard:
 
 Ang larangan ay gumagarantiya ng pag - uutos sa loob lamang ng isang pagtakbo. Kung ang mga mensahe ay lumitaw nang hindi sunud - sunod, maaaring ipahiwatig nito:
 - Ang maramihang tubo ay nagsasanib (hindi dapat mangyari dahil sa semaphore lock)
-- Mga isyu sa pagsasalin ng mga browser (tumatanggi sa nakarerepreskong pahina)
+- Mga isyu tungkol sa pagsasalin ng browser (sari ay nakagiginhawa ang pahina)

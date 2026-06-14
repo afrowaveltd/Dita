@@ -49,7 +49,7 @@ Jungtis naudoja automatinį reconnect su eksponentine nugaros: 0S, 2S, 5S, 10S, 
 
 ## SignalR mazgas
 
-Prietaisų skydelis jungia:
+Prietaisų skydelio jungtis:
 
 ```javascript
 const connection = new signalr.HubConnectionBuilder()
@@ -141,7 +141,7 @@ Planuojami prietaisų skydelio patobulinimai:
 
 ### @ info: whatsthis
 
-1. Patikrinkite, ar SionalR mazgo URL sutampa tarp serverio () ir kliento ()
+1. Patikrinkite, ar SionalR mazgo URL atitinka serverio () ir kliento ()
 2. @ info: whatsthis
 3. Žvilgsnis į serverio žurnalus vertimo vamzdyno klaidoms
 4. Name
@@ -149,5 +149,5 @@ Planuojami prietaisų skydelio patobulinimai:
 ### Laiškai neveikia
 
 Laukas garantuoja užsakymas per vieną kartą. (neprivaloma)
-- Kelių vamzdynų tiesimas iš dalies sutampa (neturėtų įvykti dėl semaforo užrakto)
+- Kelių vamzdynų tiesimas iš dalies sutampantis (neturėtų įvykti dėl semaforo šliuzo)
 - Naršyklės atvaizdavimo problemos (pabandykite atnaujinti puslapį)

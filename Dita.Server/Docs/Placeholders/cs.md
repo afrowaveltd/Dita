@@ -1,4 +1,4 @@
-﻿# Pojmenované pamětihodnosti v lokalizaci
+﻿# Pojmenované paměťové nosiče v lokalizaci
 
 Dita supports **named placeholders** in localization strings, allowing dynamic values to be inserted at runtime while preserving correct grammar across languages.
 
@@ -142,7 +142,7 @@ Konečný výsledek:
 
 Tím se zajistí, že:
 - Placeholders nejsou nikdy přeloženy nebo poškozeny
-- Gramatika cílového jazyka může volně přeskupit okolní text
+- Gramatika cílového jazyka může volně měnit okolní text
 - Stejná šablona funguje správně ve všech jazycích
 
 ## Osvědčené postupy
@@ -158,11 +158,11 @@ Tím se zajistí, že:
 
 Při volání LibreTranslate automaticky zpracovává uchování místa. Není potřeba žádná další konfigurace.
 
-A oba používají retry služby, takže všechny JSON slovník překlady transparentně podporu pojmenované jmenovatele.
+A oba používat retry služby, takže všechny JSON slovník překlady transparentně podporu pojmenované jmenovatele.
 
 ## Zpětná kompatibilita
 
-Stávající kód používající polohové jmenovatele nebo žádné jmenovatele nadále nepracuje beze změny:
+Stávající kód používající polohové jmenovatele nebo žádné jmenovatele nadále funguje beze změny:
 
 ```csharp
 // Still works exactly as before

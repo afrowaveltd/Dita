@@ -134,7 +134,7 @@ Perbaikan yang direncanakan untuk dasbor:
 
 ### Dashboard menampilkan "Gagal menyambung"
 
-1. Verifikasi server sedang berjalan dan dapat diakses
+1. Verifikasi server berjalan dan dapat diakses
 2. Periksa konsol peramban untuk CORS atau galat jaringan
 3. Konfirmasi hadir di
 4. Pastikan tidak ada firewall yang memblokir koneksi WebSocket

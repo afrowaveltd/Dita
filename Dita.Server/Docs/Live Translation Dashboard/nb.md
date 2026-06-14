@@ -1,6 +1,6 @@
 ﻿# Live Oversettelse Dashboard
 
-Live Translation Dashboard er en admin-side som gir sanntidssynlighet i den automatiske oversettelsesrørledningen. Den kobler til SignalR-hub og viser alle pipeline hendelser som de oppstår.
+Live Translation Dashboard er en admin-side som gir sanntid synlighet i den automatiske oversettelsesrørledningen. Den kobler til SignalR-hub og viser alle rørledningshendelser som de oppstår.
 
 ## URL
 
@@ -10,17 +10,17 @@ Live Translation Dashboard er en admin-side som gir sanntidssynlighet i den auto
 
 ## Funksjoner
 
-### sanntids event stream
+### Real-time event stream
 
-Alle SignalR hendelser fra oversettelsesrørledningen vises i en live-updating tabell:
+Alle SignalR hendelser fra oversettelsesrørledningen vises i en live-updatering tabell:
 
 - **Sekvensnummer** — Monotonisk teller innenfor hvert rørledningskjøring
 - **Timestamp** — Lokal tid da hendelsen ble mottatt
-- **Rør ID** — Kortere GUID for korrelasjon
+- **Rør ID** — Forkortet GUID for korrelasjon
 - **Stage** — Pipeline scenemerke (SjekkServere, Oversettere, etc.)
-- ** Type** — Meldingstypemerke (StageStartet, Fremskritt, StageCompleted, etc.)
+- ** Type** — Meldingstypemerket (Stagestartet, Fremskritt, StageCompleted, etc.)
 - ** Melding** — Menneskelesbar beskrivelse
-- **Details** — Full JSON nyttelast av hendelsesdata
+- ** Detaljer** — Full JSON nyttelast av hendelsesdata
 
 ### Fargekoding
 
@@ -36,7 +36,7 @@ Hvit (standard)
 Et status banner øverst viser:
 - **Connecting** — Etablering av signalR-tilkobling
 - **Connected** — Mottak av hendelser normalt
-- **Reconnecting** — Forbindelse tapt, prøver å koble til på nytt
+- **Tilkobling** — Forbindelse tapt, forsøker å koble til på nytt
 - **Disconnected** — Connection closed
 
 Tilkoblingen bruker automatisk reconnect with exponential backoff: 0s, 2s, 5s, 10s, 30s.
@@ -45,7 +45,7 @@ Tilkoblingen bruker automatisk reconnect with exponential backoff: 0s, 2s, 5s, 1
 
 - **Clear Feed** — Removes all displayed messages and resets the counter
 - **Eksporter JSON** — Nedlastinger alle mottatte meldinger som en JSON-fil for analyse
-- **Message teller** — Viser totalt antall hendelser mottatt i denne sesjonen
+- ** Melding teller** — Viser totalt antall hendelser mottatt i denne sesjonen
 
 ## signaler hub
 
@@ -73,7 +73,7 @@ interface LocalizationHubMessage {
 }
 ```
 
-### Hendelsestyper
+### hendelsestyper
 
 Dashboard håndterer alle verdier:
 
@@ -91,14 +91,14 @@ Advarselsmerke
 
 ### Motor
 
-- **LocalizationHub** () — SignalR hub som sender meldinger til alle tilkoblede klienter
+- **LocalizationHub** () — SignalR nav som sender meldinger til alle tilkoblede klienter
 - **ISignalRPublicer** — Abstraksjon over navet for bruk i oversettelsestjenester
-- **SignalRpublicer** - Standard implementering som øker en monoton sekvens og sendinger
+- **SignalRPublisher** — Standard implementering som øker en monoton sekvens og sendinger
 
 ### Frontend
 
 - Ren HTML/JS med Bootstrap 5 styling
-- Bruker Microsoft SignalR JavaScript klientbiblioteket (lastet fra CDN)
+- Bruker Microsoft SignalR JavaScript-klientbiblioteket (lastet fra CDN)
 - Ingen serversiden gjengivelse nødvendig for hendelsesfeed
 
 ### Sidestruktur
@@ -122,17 +122,17 @@ Dita.Server/Pages/Admin/
 Planlagte forbedringer for dashboard:
 
 - **Autentisering** — Begrense tilgangen til brukere med rollen
-- **Filtering** — Filter events by stage, type, or run ID
+- ** Filtrering** — Filtrer hendelser etter trinn, type eller kjøre ID
 - **Historiske kjører** — Vis fullførte kjører fra en database eller loggfil
 - **Statistics** — Kart som viser antall oversettelser, feilpriser og latens over tid
-- **Manuelt utløser** — Knapper for å manuelt starte spesifikke rørledningsstadier
+- **Manuelt utløser** — Knapper for å manuelt starte bestemte rørledningsstadier
 - ** Konfigurasjon** — Rediger direkte fra instrumentbordet
 - ** Språkhåndtering** — Vis og rediger støttede språk
 - **Dokumentær forhåndsvisning** — Bla gjennom og søk i lokale ordbøker
 
 ## Feilsøking
 
-### Dashboard-visninger "Failed å koble til"
+### Dashboard-visninger "Failed to connect"
 
 1. Bekreft at serveren kjører og er tilgjengelig
 2. Sjekk nettleserkonsollen for CORS eller nettverksfeil
@@ -146,8 +146,8 @@ Planlagte forbedringer for dashboard:
 3. Se på serverlogger for oversettelsesrørledningsfeil
 4. Sjekk nettlesernettverksfanen for WebSocket-meldinger
 
-### Meldinger er ute av orden
+### Meldingene er ute av orden
 
-Feltet garanterer bestilling i et enkelt løp. Hvis meldinger vises utenfor rekkefølgen, kan det indikere:
-- Flere rørledninger overlapper (bør ikke skje på grunn av semafor lås)
-- Nettlesergjengivelse problemer (prøve forfriskende siden)
+Feltet garanterer bestilling i et enkelt løp. Hvis meldinger vises ut av orden, kan det indikere:
+- Flere rørledninger kjører overlappende (bør ikke skje på grunn av semaforlås)
+- Nettlesergjengivelse problemer (prøv forfriskende siden)

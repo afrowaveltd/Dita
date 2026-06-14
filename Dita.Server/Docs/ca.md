@@ -8,7 +8,7 @@ Aquest document resumeix tots els canvis fets al servei de traducció automàtic
 
 ### Dorsal de redeestructuració delService
 
-El monolètic s'ha descompat en quatre serveis especialitzats per un lleuger orquestrador:
+El monolitètic s'ha descomposat en quatre serveis especialitzats per un lleuger orquestrador:
 
 - ** Retraducció del KSyrcationService ** Pipolílinetrator (traducció del servidor, delegació de l'escenari, gestió d' errors)
 - **CountriesTranslationService** — Country name synchronization (English → target language)
@@ -52,7 +52,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ```
 
 Característiques:
-- Valors de substitució proporcionats a temps d' execució o desat
+- Valors de substitució proporcionats a l' hora d' execució o desat
 - Màscara automàtica/trestoració durant la traducció per evitar la corrupció
 - Arrere compatible amb les variables de posició existents
 
@@ -200,4 +200,4 @@ Millores planificades:
 
 ## Contacte
 
-Per a preguntes o problemes amb el servei de traducció, si us plau, referiu- vos a la documentació detallada en el directori de cada mòdul o contacteu amb l' equip de desenvolupament.
+Per a preguntes o qüestions amb el servei de traducció, si us plau, referiu- vos a la documentació detallada en el directori de cada mòdul o contacteu amb l' equip de desenvolupament.

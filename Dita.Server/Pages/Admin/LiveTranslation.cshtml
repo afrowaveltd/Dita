@@ -3,27 +3,28 @@
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Dita.Server.Pages.Admin.LiveTranslationModel> t
 @{
     ViewData["Title"] = t["Live Translation Monitor"];
+    ViewData["BodyClass"] = "dita-dashboard-page";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/translationservice.dashboard.css" asp-append-version="true" />
 }
 
-<section class="translation-service-dashboard" data-translation-theme="dark">
+<section class="translation-service-dashboard">
     <header class="translation-dashboard-header">
         <div>
-            <p class="translation-eyebrow">@t["Automatic localization pipeline"]</p>
+            <p class="dita-eyebrow">@t["Automatic localization pipeline"]</p>
             <h1>@t["Live translation monitor"]</h1>
             <p id="lastMessageText" class="translation-subtitle">@t["Waiting for the localization hub snapshot."]</p>
         </div>
         <div class="translation-header-actions">
-            <button class="translation-button" id="clearBtn" type="button">@t["Clear view"]</button>
-            <button class="translation-button translation-button-primary" id="exportBtn" type="button">@t["Export JSON"]</button>
+            <button class="dita-btn" id="clearBtn" type="button">@t["Clear view"]</button>
+            <button class="dita-btn dita-btn-primary" id="exportBtn" type="button">@t["Export JSON"]</button>
         </div>
     </header>
 
     <div class="translation-hero-grid">
-        <article class="translation-panel translation-status-panel">
+        <article class="dita-panel translation-status-panel">
             <div class="translation-status-line">
                 <span class="translation-status-dot" id="connectionDot"></span>
                 <span id="connectionStatusText">@t["Connecting"]</span>
@@ -54,22 +55,22 @@
             </dl>
         </article>
 
-        <article class="translation-panel translation-metric-card">
+        <article class="dita-metric-card">
             <span>@t["Total work"]</span>
             <strong id="totalTranslationsText">0</strong>
             <small>@t["translation units planned"]</small>
         </article>
-        <article class="translation-panel translation-metric-card">
+        <article class="dita-metric-card">
             <span>@t["Completed"]</span>
             <strong id="completedTranslationsText">0</strong>
             <small id="skippedTranslationsText">@t["{count} skipped", 0]</small>
         </article>
-        <article class="translation-panel translation-metric-card translation-danger-card">
+        <article class="dita-metric-card danger">
             <span>@t["Errors"]</span>
             <strong id="errorCountText">0</strong>
             <small id="warningCountText">@t["{count} warnings", 0]</small>
         </article>
-        <article class="translation-panel translation-metric-card">
+        <article class="dita-metric-card">
             <span>@t["Artifacts"]</span>
             <strong id="savedArtifactsText">0</strong>
             <small id="artifactDetailsText">@t["{dictionaries} dictionaries, {docs} docs", new { dictionaries = 0, docs = 0 }]</small>
@@ -77,21 +78,21 @@
     </div>
 
     <section class="translation-dashboard-grid">
-        <article class="translation-panel translation-stage-panel">
-            <div class="translation-panel-heading">
+        <article class="dita-panel translation-stage-panel">
+            <div class="dita-panel-heading">
                 <div>
-                    <p class="translation-eyebrow">@t["Pipeline"]</p>
+                    <p class="dita-eyebrow">@t["Pipeline"]</p>
                     <h2>@t["Stage Overview"]</h2>
                 </div>
-                <span id="messageCountText" class="translation-pill">@t["{count} events", 0]</span>
+                <span id="messageCountText" class="dita-pill">@t["{count} events", 0]</span>
             </div>
             <div id="stageList" class="translation-stage-list"></div>
         </article>
 
-        <article class="translation-panel translation-activity-panel">
-            <div class="translation-panel-heading">
+        <article class="dita-panel translation-activity-panel">
+            <div class="dita-panel-heading">
                 <div>
-                    <p class="translation-eyebrow">@t["Realtime"]</p>
+                    <p class="dita-eyebrow">@t["Realtime"]</p>
                     <h2>@t["Event Stream"]</h2>
                 </div>
                 <div class="translation-stream-tools">
@@ -105,9 +106,9 @@
                         </select>
                     </label>
                     <div class="translation-filter-group" role="group" aria-label="@t["Event filter"]">
-                        <button type="button" class="translation-filter is-active" data-filter="all">@t["All"]</button>
-                        <button type="button" class="translation-filter" data-filter="errors">@t["Errors"]</button>
-                        <button type="button" class="translation-filter" data-filter="progress">@t["Progress"]</button>
+                        <button type="button" class="dita-btn dita-btn-sm translation-filter is-active" data-filter="all">@t["All"]</button>
+                        <button type="button" class="dita-btn dita-btn-sm translation-filter" data-filter="errors">@t["Errors"]</button>
+                        <button type="button" class="dita-btn dita-btn-sm translation-filter" data-filter="progress">@t["Progress"]</button>
                     </div>
                 </div>
             </div>
@@ -123,14 +124,12 @@
         const stageNames = ["Idle", "CheckServers", "TranslateCountries", "TranslateJsonFiles", "TranslateMarkdownFiles", "StoringResults"];
         const i18n = {
             connected: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Connected"].Value)),
-            dark: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Dark"].Value)),
             disconnected: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Disconnected"].Value)),
             dictionariesDocs: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["{dictionaries} dictionaries, {docs} docs"].Value)),
             errorsLower: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["errors"].Value)),
             events: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["{count} events"].Value)),
             failed: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Failed"].Value)),
             idle: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Idle"].Value)),
-            light: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Light"].Value)),
             noEventsInView: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["No events in this view."].Value)),
             noEventsReceived: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["No translation events have been received yet."].Value)),
             noStageData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["No stage data yet."].Value)),
@@ -150,8 +149,6 @@
             StoringResults: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(t["Persist results"].Value))
         };
 
-        const dashboard = document.querySelector(".translation-service-dashboard");
-        const themeLink = document.getElementById("translationThemeLink");
         const eventList = document.getElementById("eventList");
         const stageList = document.getElementById("stageList");
 
@@ -159,8 +156,6 @@
         let messages = [];
         let activeFilter = "all";
         let eventLimit = 5;
-        let currentTheme = "dark";
-
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/localization")
             .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])

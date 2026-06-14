@@ -1,6 +1,6 @@
 ﻿# Élő fordítás műszerfal
 
-A Live Translation Dashboard egy admin oldal, amely valós idejű láthatóságot biztosít az automatikus fordítási csővezetékben. Kapcsolódik a SignalR csomóponthoz, és megjeleníti az összes csővezeték-eseményt, ahogy azok bekövetkeznek.
+A Live Translation Dashboard egy admin oldal, amely valós idejű láthatóságot biztosít az automatikus fordítási csővezetékben. Összekapcsolja a SignalR csomópontot, és az összes csővezeték-eseményt megjeleníti.
 
 ## URL
 
@@ -113,7 +113,7 @@ Dita.Server/Pages/Admin/
 
 1. Indítsd a Dita-t. Szerver alkalmazás
 2. Naiv
-3. A fordítási folyamat kiírása (vagy várni a menetrend vagy hívja az API)
+3. A fordítási folyamat kiírása (vagy várni a menetrend, vagy hívja az API)
 4. Az események valós időben jelennek meg
 5. Használja az Export gombot, hogy rögzítse a teljes nyom hibakeresés
 
@@ -149,5 +149,5 @@ Tervezett javítások a műszerfalon:
 ### Az üzenetek nem működnek
 
 A mező garantálja a rendelést egyetlen futáson belül. Ha az üzenetek nem megfelelően jelennek meg, jelezheti:
-- Többszörös csővezeték egymást átfedő (nem történhet meg miatt szemaforos zár)
+- Többszörös csővezeték egymást átfedő (nem történhet meg a szemaforos zár miatt)
 - Browser rendering problémák (próbálja frissíteni az oldalt)

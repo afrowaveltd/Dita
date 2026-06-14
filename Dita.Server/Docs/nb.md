@@ -2,20 +2,20 @@
 
 ## Oversikt
 
-Dette dokumentet oppsummerer alle endringer som gjøres i Dita automatisk oversettelsestjeneste, inkludert arkitekturomforming, nye funksjoner, observerbarhetsforbedringer og lokaliseringsforbedringer.
+Dette dokumentet oppsummerer alle endringer som gjøres i Dita automatisk oversettelsestjeneste, inkludert arkitektur refaktoring, nye funksjoner, observerbarhetsforbedringer og lokaliseringsforbedringer.
 
 ## Arkitekturendringer
 
 ### Refactored MotorTranslationService
 
-Den monolitiske har blitt demontert til fire spesialiserte tjenester koordinert av en lett orkesterator:
+Den monolitiske har blitt demontert i fire spesialiserte tjenester koordinert av en lett orkesterator:
 
-- **BackendTranslationService** — Rørledningsorkester (servervalidering, fasedelegasjon, feilhåndtering)
+- **BackendTranslationService** — Pipeline orkestertor (servervalidering, fase delegasjon, feilhåndtering)
 - **CountrysTranslationService** — Landsnavnssynkronisering (engelsk → målspråk)
-- **LocalizationTranslationService** — JSON ordboksynkronisering (tilsatt/fjernede nøkler)
-- **DokumentsTranslationService** — Merkedokumentasjon oversettelse med blokknivå sporing
+- **LocalizationTranslationService** — JSON ordbok synkronisering (tilsatt/fjernede nøkler)
+- **DokumenterTranslationService** — Merkedokumentasjon oversettelse med blokknivå sporing
 - **SignalRPublisher** — Rapportering i sanntid via SignalR
-- **TranslationRetryService** — Stagenivå reforsøk med bevaring av plassholder
+- **TranslationRetryService** — Stagenivå retry med plassholderbevaring
 
 ### Fordeler
 
@@ -32,10 +32,10 @@ Den monolitiske har blitt demontert til fire spesialiserte tjenester koordinert 
 
 En ny administratorside som gir sanntid synlighet i oversettelsesrørledningen:
 
-- Viser alle SignalR hendelser som de forekommer
-- Fargekodede meldingstyper (blue=startet, green=completed, red=error)
+- Viser alle SignalR hendelser som de oppstår
+- Fargekodede meldingstyper (blå=startet, grønn=fullført, red=error)
 - Tilkoblingsstatusbanner med auto-tilkobling
-- Meldingsmottaker og eksport til JSON
+- Meldingsbehandler og eksport til JSON
 
 ### Navngitte plassholdere
 
@@ -62,7 +62,7 @@ Merke ned filer oversettes gradvis:
 
 - **Per-språklig lagring**: Hvert målspråk lagres umiddelbart etter oversettelse og reduserer minnetrykket
 - **Block-level sporing**: spor oversettelsesstatus per blokk
-- **Selektiv gjenforsøk**: Bare mislykkede blokker omsettes i neste løp
+- **Selektiv gjenforsøk**: Bare feilblokker omsettes på nytt i neste løp
 - **Metadataholdighet**: Oversettelsestilstand overlever programmet starter på nytt
 
 ### Forbedret reprøv Logic
@@ -70,7 +70,7 @@ Merke ned filer oversettes gradvis:
 Tre nivåer av motstandsdyktighet:
 
 1. **HTTP reprøv** (LibreTranslateService): 5 forsøk med eksponentiell backoff (1s–5s)
-2. **Stage reprøv** (TranslationRetryService): 3 ytterligere forsøk med 30s forsinkelser
+2. **Stage retry** (TranslationRetryService): 3 ytterligere forsøk med 30s forsinkelser
 3. **Block retry** (DokumentsTranslationService): Mislykkes Markdown-blokker på nytt ved neste løp
 
 ### SignalR rapportering
@@ -120,13 +120,13 @@ SignalR hub er kartlagt på klientforbindelser.
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
 - Ny testdekning lagt til for:
-  - StedholderTjenestefunksjonalitet
+  - StedholderService funksjonalitet
   - MotorTranslationService orkester
   - JsonString Localizer plassholder indeksere
 
-### Kjente grenser
+### Kjente begrensninger
 
-- testen hoppes over når den kjører parallelt fordi flere testinstanser deler den samme filen. Den passerer når den kjører i isolasjon.
+- testen hoppes over når du kjører parallelt fordi flere testinstanser deler den samme filen. Den passerer når den kjører i isolasjon.
 
 ## Ny filstruktur
 
@@ -145,7 +145,7 @@ SignalR hub er kartlagt på klientforbindelser.
 - — Orchestrator grensesnitt (oppdatert)
 - — Oversettelsesmetadata per fil
 
-### Oppdaterte Tjenester i
+### Oppdaterte tjenester i
 
 - — Lagt til navngitt stedholderstøtte
 - - Oppdatert for ny parameter
@@ -154,13 +154,13 @@ SignalR hub er kartlagt på klientforbindelser.
 
 ### Ny annonseside i
 
-- — Sanntidsovervåking
+- — Sanntidsovervåkningsside
 - — Sidemodell
 
 ### Ny dokumentasjon i
 
 - — Oppdatert rørledningsdokumentasjon
-- — Stedholderens systemveiledning
+- — Veiledning for stedholdersystem
 - — Dashboard bruk guide
 - — Oversikt over teknisk arkitektur
 
@@ -185,7 +185,7 @@ Ingen migrasjon kreves. Omsetningen er intern:
 ## Effektforbedringer
 
 - **Redusert minnebruk**: Filer lagret per-språk umiddelbart i stedet for å holde alle i minnet
-- **Faster inkremental kjøres**: Bare endret/feilstilte merkeblokker omsettes
+- **Faster inkremental løp**: Bare endret/falske merkeblokker omsettes
 - **Better synlighet**: Real-time fremgang hjelper diagnostisere langsomme stadier
 
 ## Fremtidige forbedringer

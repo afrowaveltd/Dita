@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## Sintaksis
 
-Placeholder menggunakan sintaks curly-brace dalam nilai kamus JSON:
+Pemegang paket menggunakan sintaks curly-brace dalam nilai kamus JSON:
 
 ```json
 {
@@ -19,9 +19,9 @@ Unlike positional placeholders (`{0}`, `{1}`), named placeholders are **language
 
 Pemilik placeholder bernama memiliki dua sumber nilai:
 
-### 1. Nilai runtime (disarankan untuk data dinamis)
+### Nilai runtime (disarankan untuk data dinamis)
 
-Nilai lulus secara langsung ketika mengambil string lokal:
+Nilai lewat secara langsung ketika mengambil string lokal:
 
 ```csharp
 // In a Razor page or controller
@@ -37,7 +37,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ### 2. Nilai tersimpan (untuk konfigurasi semi-statis)
 
-Mengelola berkas dalam direktori:
+Mengelola berkas di direktori:
 
 ```json
 {

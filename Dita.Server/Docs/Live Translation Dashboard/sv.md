@@ -18,8 +18,8 @@ Alla SignalR-händelser från översättningsledningen visas i en live-updating-
 - **Timestamp** – Lokal tid då evenemanget mottogs
 - **Run ID** — Shortened GUID for correlation
 - ** Steg ** - Pipeline scenmärke (CheckServers, TranslateCountries, etc.)
-- **Type** - Meddelande typ märke (StageStarted, Progress, StageCompleted, etc.)
-- **Meddelande** – Mänsklig läsbar beskrivning
+- **Type ** - Meddelande typ märke (StageStarted, Progress, StageCompleted, etc.)
+- **Message** – Mänsklig läsbar beskrivning
 - ** Detaljer** – Full JSON-belastning av händelsedata
 
 ### Färgkodning
@@ -91,7 +91,7 @@ Varning badge
 
 ### Backend
 
-- **LocalizationHub** () - SignalR-nav som sänder meddelanden till alla anslutna kunder
+- **LocalizationHub** () - SignalR-nav som sänder meddelanden till alla uppkopplade kunder
 - **ISignalRPublisher** – Abstraktion över navet för användning i översättningstjänster
 - **SignalRPublisher** - Standard implementering som inkrementerar en monoton sekvens och sändningar
 

@@ -9,6 +9,7 @@
         : CultureInfo.CurrentUICulture.Name;
     string documentDirection = LanguageService.IsRtl(currentCulture) ? "rtl" : "ltr";
     string pageTitle = t[ViewData["Title"] is null ? "Dita" : t[$"{ViewData["Title"]} - Dita"]];
+    string? bodyClass = ViewData["BodyClass"] as string;
 }
 <!DOCTYPE html>
 <html lang="@currentCulture" dir="@documentDirection" data-dita-theme="dark">
@@ -23,7 +24,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body class="@bodyClass">
     <nav class="dita-nav">
         <a class="dita-nav-brand" asp-area="" asp-page="/Index">
             <img src="~/resources/Dita1.png" alt="Dita" asp-append-version="true" />

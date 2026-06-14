@@ -2,7 +2,7 @@
 
 ## Tinjau
 
-Dokumen ini merangkum semua perubahan yang dibuat ke layanan terjemahan otomatis Dita, termasuk penekanan arsitektur, fitur baru, perbaikan pengamatan, dan peningkatan lokalisasi.
+Dokumen ini merangkum semua perubahan yang dibuat ke layanan terjemahan otomatis Dita, termasuk arsitektur memfaktorkan ulang, fitur baru, perbaikan pengamatan, dan peningkatan lokalisasi.
 
 ## Arsitektur Perubahan
 
@@ -30,7 +30,7 @@ Monolitik telah terurai menjadi empat layanan khusus yang dikoordinasikan oleh s
 
 **Location**: `/Admin/LiveTranslation`
 
-Halaman admin baru yang menyediakan visibilitas real-time ke dalam pipeline terjemahan:
+Halaman admin baru yang menyediakan visibilitas real-time ke dalam baris terjemahan:
 
 - Tampilkan semua kejadian SignalR saat mereka terjadi
 - Tipe pesan berkode warna (blue = started, green = completed, red = error)
@@ -137,7 +137,7 @@ Pusat Sinyal dipetakan untuk koneksi klien.
 - - JSON kamus sinkronisasi
 - - Terjemahan Markdown
 - - Sinyal pesan penerbitan
-- - Coba lagi logika dengan placeholder masking
+- - Coba ulang logika dengan placeholder masking
 - - Antar muka penerbit
 - - Antar muka layanan negara
 - - Antarmuka layanan Lokalisasi
@@ -154,7 +154,7 @@ Pusat Sinyal dipetakan untuk koneksi klien.
 
 ### Halaman Admin Baru di
 
-- - Real- waktu halaman monitor
+- - Real- waktu halaman pemantauan
 - - Model halaman
 
 ### Dokumentasi Baru di
@@ -200,4 +200,4 @@ Perbaikan yang direncanakan:
 
 ## Kontak
 
-Untuk pertanyaan atau masalah dengan layanan terjemahan, silakan merujuk ke dokumentasi rinci dalam setiap direktori modul atau kontak tim pengembangan.
+Untuk pertanyaan atau masalah dengan layanan terjemahan, mohon mengacu ke dokumentasi rinci dalam setiap direktori modul atau kontak tim pengembangan.

@@ -14,7 +14,7 @@ Dashboard - це сторінка адміністратора, яка забе�
 
 Усі події SignalR з перехідного трубопроводу відображаються в живому столі:
 
-- **Sequence number** — Monotonic counter within each pipeline run
+- **Sequence номер** — монотонний лічильник в межах кожного трубопроводу
 - **Timestamp** — Local time when the event was received
 - **Run ID** — Shortened GUID for correlation
 - **Stage** — Pipeline stage badge (CheckServers, TranslateCountries, etc.)
@@ -36,8 +36,8 @@ Dashboard - це сторінка адміністратора, яка забе�
 Статус банера вгорі показує:
 - **Connecting** — Establishing SignalR connection
 - **Connected** — Receiving events normally
-- **Відключення** — З’єднання втрачено, спробує від’єднатись
-- **Disconnected** — Замкнено підключення
+- **Reconnecting** — Connection lost, attempting to reconnect
+- **Disconnected** — Connection closed
 
 З'єднання використовує автоматичне відключення з відключенням: 0s, 2s, 5s, 10s, 30s.
 
@@ -91,14 +91,14 @@ interface LocalizationHubMessage {
 
 ### Зареєструватися
 
-- **LocalizationHub** () — SignalR hub, який веде повідомлення до всіх підключених клієнтів
+- **LocalizationHub** () — SignalR hub, який транслює повідомлення всім підключеним клієнтам
 - **ISignalRPublisher** — Abstraction over the hub for use in translation services
 - **SignalRPublisher** — Default implementation that increments a monotonic sequence and broadcasts
 
 ### Фронт
 
-- Чистий HTML / JS з Bootstrap 5 укладання
-- Русский EnglishРусскийУкраїнськаPolskiItalianoEspañol汉语Bahasa Indonesiaहिन्दीPortuguês日本語DeutschFrançaisภาษาไทยελληνικά اللغة العربية
+- Чистий HTML / JS з Bootstrap 5 укладка
+- РусскийУкраїнськаБеларускаяOʻzbek tiliEnglish
 - Не потрібно натиснути на сервер
 
 ### Структура сторінки
@@ -141,7 +141,7 @@ Dita.Server/Pages/Admin/
 
 ### Події не з'являються
 
-1. Перевірте, що URL-адреса SignalR між сервером () і клієнтом ()
+1. Перевірте, що URL-адреса SignalR між сервером () та клієнтом ()
 2. Перевірити графік ввімкнено
 3. Дивитися на серверних колодах для помилок конвеєра
 4. Перевірити вкладку мережі браузера для повідомлень WebSocket

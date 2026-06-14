@@ -1053,7 +1053,7 @@ public static partial class ErrorCodeText
 
     private static string HumanizeErrorCodeName(string name)
     {
-        var parts = Regex.Matches(name, @"[A-Z]+(?![a-z])|[A-Z][a-z0-9]*")
+        var parts = MyRegex().Matches(name)
            .Select(m => NormalizeToken(m.Value))
            .ToArray();
 
@@ -1109,4 +1109,7 @@ public static partial class ErrorCodeText
 
         return true;
     }
+
+    [GeneratedRegex(@"[A-Z]+(?![a-z])|[A-Z][a-z0-9]*")]
+    private static partial Regex MyRegex();
 }

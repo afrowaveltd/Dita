@@ -1,10 +1,10 @@
 ﻿# Preklady v reálnom čase
 
-Tento dokument existuje ako živý skúšobný vstup pre automatické prekladové potrubie. Akákoľvek zmena v tomto súbore aktivuje re-transláciu všetkých súborov cieľového jazyka v ďalšom plánovanom spustení.
+Tento dokument existuje ako živý skúšobný vstup pre automatické prekladateľské potrubie. Akákoľvek zmena v tomto súbore aktivuje re-transláciu všetkých súborov cieľového jazyka v ďalšom plánovanom spustení.
 
 ## Prehľad architektúry
 
-Prekladateľské potrubie bolo reštrukturalizované na modulárnu architektúru so štyrmi špecializovanými podslužbami koordinovanými ľahkým orchesterom:
+Prekladateľské potrubie bolo reštrukturalizované na modulárnu architektúru so štyrmi špecializovanými podslužbami koordinovanými ľahkým orchestrológom:
 
 - **BackendTranslationService** .
 - **CountriesTranslationService** .
@@ -15,7 +15,7 @@ Každá podslužba pracuje nezávisle a podáva správy o pokroku prostredníctv
 
 ## Čo robí služba
 
-Služba funguje podľa plánu a vykonáva päťstupňový ropovod: validácia servera, synchronizácia krajín, synchronizácia slovníka JSON, preklad súboru Markdown a pretrvávajúce výsledky. Každá fáza vyžaruje štruktúrované udalosti pokroku v reálnom čase cez SignalR tak, aby pripojení klienti mohli sledovať ako práca pokračuje.
+Služba funguje podľa plánu a vykonáva päťstupňový ropovod: validácia servera, synchronizácia krajín, synchronizácia slovníka JSON, preklad súboru Markdown a pretrvávajúce výsledky. Každá etapa emituje štruktúrované udalosti pokroku v reálnom čase cez SignalR tak, aby pripojení klienti mohli sledovať ako práca pokračuje.
 
 ## Štádiá potrubia
 
@@ -29,42 +29,42 @@ Pred začatím prekladateľských prác služba overí, či sú splnené všetky
 - Nakonfigurovaný predvolený jazyk musí byť prítomný v tomto zozname.
 - Chýbajúce lokálne súbory JSON pre akýkoľvek podporovaný jazyk sú vytvorené automaticky.
 
-Ak akákoľvek kontrola zlyhá, plynovod sa okamžite zastaví a vydá sa správa.
+Ak niektorá kontrola zlyhá, potrubie sa okamžite zastaví a vyšle správu.
 
 ### Etapa 2
 
 Názvy krajín sú synchronizované z katalógu () iba pre čítanie do slovníkov lokalizácie JSON.
 
 - Ak je predvolený jazyk aplikácie angličtina, názov každej krajiny je uložený ako bez prekladu.
-- Ak je predvolený jazyk iným jazykom, anglické meno krajiny je najprv preložené do tohto jazyka, a výsledok sa stáva záznamom v predvolenom slovníku.
+- Ak je predvolený jazyk iným jazykom, anglické meno krajiny je prvýkrát preložené do tohto jazyka, a výsledok sa stáva záznamom v predvolenom slovníku.
 - Po aktualizácii predvoleného slovníka je každá chýbajúca položka krajiny v každom slovníku cieľového jazyka preložená a uložená **hneď na jazyk**.
 - Už preložené položky sú zachované bez úpravy.
-- Ak preklad zlyhá, služba si vyžiada až 3 krát s 30 sekundovým oneskorením pred prechodom do ďalšieho jazyka.
+- Ak preklad zlyhá, služba sa s 30-sekundovým oneskorením vráti do ďalšieho jazyka.
 
 ### Etapa 3
 
-Služba porovnáva aktuálny predvolený lokalizačný slovník so snímkou uloženým z predchádzajúceho spustenia:
+Služba porovnáva aktuálny predvolený lokalizačný slovník so snímkom uloženým z predchádzajúceho spustenia:
 
 - **Pridané klávesy** .
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
-- Manuálne preklady majú vždy prednosť. Ak cieľový slovník už obsahuje hodnotu pre kľúč, tento záznam zostáva nezmenený bez ohľadu na to, čo zdroj hovorí.
-- **Každý slovník cieľového jazyka sa uloží ihneď po dokončení prekladov**, namiesto čakania na dokončenie všetkých jazykov.
-- Ak preklad zlyhá pre konkrétny jazyk, služba sa automaticky vráti. Iba pretrvávajúce chyby (napr. nepodporovaný jazyk) spôsobujú, že jazyk je preskočený.
-- Po spustení sa uloží aktuálny predvolený slovník ako nový snímok pre ďalšie porovnanie.
+- Manuálne preklady majú vždy prednosť. Ak cieľový slovník už obsahuje hodnotu pre kľúč, tento záznam zostane nezmenený bez ohľadu na to, čo zdroj hovorí.
+- **Každý slovník cieľového jazyka je uložený ihneď po dokončení prekladov**, namiesto čakania na dokončenie všetkých jazykov.
+- Ak preklad zlyhá pre konkrétny jazyk, služba sa automaticky vráti. Iba pretrvávajúce chyby (napr. nepodporovaný jazyk) spôsobujú, že jazyk bude preskočený.
+- Po spustení je aktuálny predvolený slovník uložený ako nový snímok pre ďalšie porovnanie.
 
 Všetky slovníky sú vždy uložené abecedne zoradené kľúče a členité JSON pre ľudskú čitateľnosť.
 
 ### Etapa 4
 
-Služba prechádza nakonfigurované korene dokumentácie (predvolené:) a spracováva každý zdrojový súbor rekurzívne:
+Služba prechádza nakonfigurovanými dokumentačnými koreňmi (predvolené:) a spracováva každý zdrojový súbor rekurzívne:
 
 1. Obsah zdrojového súboru sa prečíta a vypočíta sa SHA-256 hash.
-2. Súbor vedľa zdrojových skladieb na-jazyk, na-blok stavu prekladu, umožňujúci **prírastková re-preklad** iba neúspešných blokov.
+2. Súbor vedľa zdrojových skladieb na-jazyk, na-blok stavu prekladu, čo umožňuje ** ďalšie re-preklad** iba neúspešných blokov.
 3. Uložené hašiš z predchádzajúceho spustenia (zachovaný v súbore vedľa zdrojového súboru, alebo v dočasnom mieste núdzového volania) je porovnaný s aktuálnym hash.
 4. Pre každý cieľový jazyk sa príslušný súbor kontroluje aj pre štrukturálnu integritu.
 5. Akýkoľvek cieľový súbor, ktorý chýba, má zastaraný haš, zlyhá validácia štruktúry, alebo obsahuje nepreložené bloky je fronted pre re-preklad.
 6. **Každý cieľový jazyk je preložený a uložený nezávisle** .
-7. Úspešne preložené súbory sú validované pre štrukturálnu paritu so zdrojom (rovnaké položky nadpisu, zoznam položiek, kódové bloky, blokové citáty, odkazy, tučné / italic značky a HTML značky) pred tým, než sú napísané na disk.
+7. Úspešne preložené súbory sú validované pre štrukturálnu paritu so zdrojom (rovnaké položky záhlavia, zoznam položiek, kódové bloky, blokové citáty, odkazy, tučné / italic značky, a HTML značky) pred tým, než sú napísané na disk.
 8. Ak všetky cieľové súbory pre zdroj uspejú, nový haš sa uloží vedľa zdroja. Ak písanie vedľa zdroja zlyhá (napríklad pri nasadení iba na čítanie), haš sa vráti do dočasného adresára.
 9. Ak akýkoľvek cieľový preklad nezlyhá validáciou, metaúdaje označujú tieto bloky ako nepreložené, takže sú znovu vyskúšané na ďalšom spustení.
 
@@ -73,7 +73,7 @@ Služba prechádza nakonfigurované korene dokumentácie (predvolené:) a spraco
 Konsolidácia sa zhromažďuje a uverejňuje. Zahŕňa:
 
 - UTC beží štart a dokončenie časových pečiatok.
-- Počet uložených lokálnych súborov JSON, uložené súbory Markdown, uložené hašové súbory a hašišové zápisy.
+- Počet uložených lokálnych súborov JSON, uložených súborov Markdown, uložených hash súborov a hašišových zápisov.
 - Akékoľvek chyby pri skladovaní získané počas behu.
 - Prekladové štatistiky za jazyk (preložený počet, preskočený počet, počet chýb).
 
@@ -143,14 +143,14 @@ PipelineCompleted / StoringResults
 
 Ak nejaká fáza zlyhá, zostávajúce fázy sú preskočené, správa je emitované, a nakoniec správa ukončí beh.
 
-## Prekladová logika
+## Logika prekladu
 
 Plynovod využíva dve úrovne odolnosti:
 
 ### Etapa-level retry (PrekladRetryService)
 
-- Ak žiadosť o preklad zlyhá po internom zápise LibreTranslate, vykoná až 3 ďalšie úkony na úrovni stupňa s 30-sekundovým oneskorením.
-- Zakrývanie miesta: Pomenované osoby () v texte sú dočasne nahradené bezpečnými žetónmi () pred prekladom a následne obnovené, čím sa zabezpečí správna gramatika v cieľových jazykoch.
+- Ak žiadosť o preklad zlyhá po internom zápise LibreTranslate, vykoná až 3 ďalšie úkony s 30-sekundovým oneskorením.
+- Zakrývanie miesta: Pomenované osoby () v texte sú dočasne nahradené bezpečnými žetónmi () pred prekladom a potom obnovené, čím sa zabezpečí správna gramatika v cieľových jazykoch.
 
 ### Potvrdenie jazyka
 
@@ -161,7 +161,7 @@ Plynovod využíva dve úrovne odolnosti:
 
 - Preklady Markdown sa vykonávajú podľa jednotlivých blokov (položky, odseky, položky zoznamu).
 - Ak jednotlivý blok zlyhá preklad, je označený ako nepreložený v súbore metaúdajov a znovu nájdený v ďalšom ropovode.
-- Služba sleduje per-language, na-blok stav v súboroch vedľa každého zdroja Markdown súboru.
+- Služba sleduje v jednom jazyku, na jednom bloku stav v súboroch vedľa každého zdroja Markdown súboru.
 
 ## Kódy chýb
 
@@ -179,7 +179,7 @@ Každá chyba v správe obsahuje identifikátor zdroja (jazykový kód, cestu s�
 
 ## živý preklad prístrojová doska
 
-Projekt Server obsahuje admin stránku, na ktorej sa pripojí k uzlu SignalR a zobrazí všetky diaľkové udalosti v reálnom čase.
+Projekt Server obsahuje admin stránku, na ktorej sa pripája do centra SignalR a zobrazuje všetky diaľkové udalosti v reálnom čase.
 
 - Zobrazí stav pripojenia, počet správ a zoznam všetkých udalostí.
 - Farebne kódované riadky: modrá pre začiatok etapy, zelená pre dokončenie, červená pre chyby.
@@ -190,7 +190,7 @@ Projekt Server obsahuje admin stránku, na ktorej sa pripojí k uzlu SignalR a z
 
 - **Modularita**: Každý problém s prekladom je izolovaný vo svojej vlastnej službe pre udržanie a testabilitu.
 - ** Prírastková perzistencia **: Slovníky a Markdown súbory sú uložené v jednom jazyku ihneď po preklade, zníženie tlaku pamäte a poskytovanie skoršej spätnej väzby.
-- **Vzdialenosť**: Viacnásobné úrovne opakovania (HTTP, štádium, blokovanie) zabezpečujú, že prechodné poruchy neblokujú potrubie.
-- **State tracking**: Per-file metadata () a hash súbory umožňujú presnú prírastkovú prácu na následných spustení.
+- ** Odolnosť**: Viacnásobné úrovne opakovania (HTTP, štádium, blokovanie) zabezpečujú, že prechodné poruchy neblokujú potrubie.
+- **State tracking**: Per-file metadata () a hash súbory umožňujú presnú prírastkovú prácu na následných behoch.
 - ** Viditeľnosť v reálnom čase**: Každá významná operácia sa oznamuje prostredníctvom SIGUNR pre monitorovanie a ladenie.
-- ** Manuálne preklady majú vždy prednosť pred automatickými doplneniami. **
+- ** Manuálne preklady majú vždy prednosť pred automatickými doplnkami. **

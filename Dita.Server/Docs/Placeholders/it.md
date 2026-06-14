@@ -4,7 +4,7 @@ Dita supporta **named placeholders** nelle stringhe di localizzazione, permetten
 
 ## Traduzione:
 
-I segnaposto utilizzano la sintassi curly-brace all'interno dei valori del dizionario JSON:
+I segnaposti utilizzano la sintassi curly-brace all'interno dei valori del dizionario JSON:
 
 ```json
 {
@@ -126,7 +126,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 Quando il servizio di traduzione automatico incontra il testo con i segnaposto nominati:
 
-1. **Prima traduzione ** I segnaposto sono mascherati con gettoni sicuri () per impedire al motore di traduzione di modificarli.
+1. **Prima traduzione ** I segnaposto sono mascherati con gettoni sicuri () per evitare che il motore di traduzione li modifichi.
 2. **Durante traduzione ** Il motore di traduzione elabora solo il testo traslabile.
 3. **Dopo la traduzione** I nomi dei segnaposto originali () vengono ripristinati nelle loro posizioni corrette.
 
@@ -149,7 +149,7 @@ Questo assicura che:
 
 1. ** Utilizzare nomi descrittivi**: è meglio di o
 2. **Ottimo segnaposto minimo**: Troppi segnaposto rendono la traduzione più difficile
-3. **Document expected types**: Comments in the JSON file help translators understand context
+3. **I tipi attesi** Osservazioni nel file JSON aiutano i traduttori a capire il contesto
 4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime
 5. **Utilizzare i valori memorizzati per i valori predefiniti**: Per la configurazione che raramente cambia (nome app, email di supporto)
 6. **Validate placeholders**: Use `ExtractPlaceholders()` to verify all expected placeholders are provided

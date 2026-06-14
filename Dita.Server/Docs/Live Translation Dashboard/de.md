@@ -44,8 +44,8 @@ Die Verbindung verwendet eine automatische Wiederverbindung mit exponentiellem B
 ### Kontrolle
 
 - **Clear Feed** — Entfernt alle angezeigten Nachrichten und setzt den Zähler zurück
-- **Export JSON** — Downloadt alle empfangenen Nachrichten als JSON-Datei zur Analyse
-- **Message Counter** — Zeigt die Gesamtzahl der in dieser Sitzung empfangenen Veranstaltungen
+- **Export JSON** — Downloads aller empfangenen Nachrichten als JSON-Datei zur Analyse
+- **Messagezähler** — Zeigt die Gesamtzahl der in dieser Sitzung empfangenen Veranstaltungen
 
 ## SignalR Nabe
 
@@ -58,7 +58,7 @@ const connection = new signalr.HubConnectionBuilder()
     .build();
 ```
 
-### Mitteilungsvertrag
+### Nachrichtenübermittlung
 
 ```typescript
 interface LocalizationHubMessage {
@@ -77,7 +77,7 @@ interface LocalizationHubMessage {
 
 Das Dashboard behandelt alle Werte:
 
-Typ
+Art
 |------|---------|
 Blaue Abzeichen
 Grüne Abzeichen
@@ -125,7 +125,7 @@ Geplante Verbesserungen für das Dashboard:
 - **Filterung** — Filtern von Ereignissen nach Stufe, Typ oder ID
 - **Historical runs** — View completed runs from a database or log file
 - **Statistik** — Diagramme mit Übersetzungszählungen, Fehlerquoten und Latenz im Laufe der Zeit
-- **Manuelle Trigger** — Tasten zum manuellen Start bestimmter Pipeline-Stufen
+- **Manuelle Trigger** — Buttons zum manuellen Start bestimmter Pipeline-Stufen
 - **Konfiguration** — Direkt aus dem Dashboard bearbeiten
 - **Language management** — Unterstützte Sprachen ansehen und bearbeiten
 - **Dictionary Vorschau** — Lokalisierungswörter durchsuchen und suchen

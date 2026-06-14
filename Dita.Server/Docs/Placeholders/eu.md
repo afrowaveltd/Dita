@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Izendatutako leku-markaren APIa gehigarria da, ez du lehendik dagoen erabilera eteten.
+Etiketa-markaren APIa gehigarria da, ez du existitzen den erabilera hausten.

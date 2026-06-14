@@ -156,13 +156,13 @@ Zapewnia to, że:
 
 ## Integracja z automatycznym tłumaczeniem
 
-Automatycznie obsługuje konserwację uchwytu podczas połączeń LibreTranslate. Nie jest konieczna dodatkowa konfiguracja.
+Automatycznie obsługuje konserwację uchwytów podczas połączeń LibreTranslate. Nie jest konieczna dodatkowa konfiguracja.
 
-Zarówno korzystać z usługi ponownego testowania, więc wszystkie tłumaczenia słownika JSON w przejrzysty sposób wspierać o nazwie placeholders.
+Obie strony korzystają z usługi ponownego testowania, więc wszystkie tłumaczenia słownika JSON w przejrzysty sposób wspierać o nazwie placeholders.
 
 ## Zgodność wsteczna
 
-Istniejący kod z wykorzystaniem Positional Placeholders lub bez Placeholders nadal działa bez zmian:
+Istniejący kod z wykorzystaniem uchwytów pozycyjnych lub bez nich nadal działa bez zmian:
 
 ```csharp
 // Still works exactly as before
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Nazwa API placeholder jest addytywna - nie narusza istniejącego zastosowania.
+Nazwa placeholder API jest addytywna - nie narusza istniejącego zastosowania.

@@ -119,13 +119,13 @@ Dita.Server/Pages/Admin/
 
 ## Edasised parandused
 
-Armatuurlauale kavandatud parandused:
+Armatuurlaua kavandatud parandused:
 
 - **Autentimine ** – Juurdepääsu piiramine kasutajatega
 - **Filtering** — Filter events by stage, type, or run ID
 - ** Ajaloolised jookseb ** - Vaade lõpetatud jookseb andmebaasist või logifailist
 - **Statistika ** - diagrammid, mis näitavad tõlkeloendust, veamäärasid ja latentsust aja jooksul
-- **Käsitsivõtmed** – nupud konkreetsete torujuhtmeetappide käsitsi käivitamiseks
+- ** Käsitsi käivitatavad ** - nupud konkreetsete torujuhtmete etappide käsitsi käivitamiseks
 - ** Konfiguratsioon** – redigeerimine otse armatuurlaualt
 - ** Keelehaldus** – toetatud keelte vaatamine ja redigeerimine
 - ** Sõnastiku eelvaade** – sirvi ja otsi lokaliseerimissõnastikke

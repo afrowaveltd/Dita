@@ -2,7 +2,7 @@
 
 ## Toàn cảnh
 
-Tài liệu này tóm tắt tất cả các thay đổi được thực hiện cho dịch vụ dịch thuật tự động Dita, bao gồm việc sửa đổi kiến trúc, tính năng mới, cải tiến khả năng xoá ký tự và cải tiến khu vực.
+Tài liệu này tóm tắt tất cả các thay đổi được thực hiện cho dịch vụ phiên dịch tự động Dita, bao gồm việc sửa đổi kiến trúc, tính năng mới, cải tiến khả năng xoá ký tự và cải tiến bản địa.
 
 ## Thay đổi kiến trúc
 
@@ -11,9 +11,9 @@ Tài liệu này tóm tắt tất cả các thay đổi được thực hiện c
 Khối đá đã bị phân hủy thành bốn dịch vụ chuyên biệt phối hợp bởi một dàn nhạc nhẹ:
 
 - **ReendTranendTervice** — Bộ dàn nhạc ống (máy chủ hợp lệ, đại biểu sân khấu, xử lý lỗi)
-- **CountriesTrancationService** — Quốc gia đồng bộ hóa (ngôn ngữ mục tiêu tiếng Anh)
-- **LocalizationTrancationService** — JSON từ điển đồng bộ hoá (đã thêm/tắt)
-- **DocuchtsTrangService** — Đánh dấu tài liệu hướng dẫn dịch với khả năng theo dõi mức độ ngăn chặn
+- **CountriesTranseService** — Quốc gia đồng bộ hóa (ngôn ngữ đích)
+- **LocalizationTrancationService** — JSON từ điển đồng bộ hoá (đã thêm/tắt khóa)
+- **DocuchtsTrangService** — Đánh dấu tài liệu dịch với khả năng theo dõi mức độ chặn
 - **SignalRPublister** - Tiến trình thực tế thông qua tín hiệuR
 - **Transotion Reervice** - Thử lại giai đoạn với bảo tồn vị trí
 
@@ -33,7 +33,7 @@ Khối đá đã bị phân hủy thành bốn dịch vụ chuyên biệt phối
 Một trang quảng cáo mới cung cấp tầm nhìn thời gian thực vào đường ống dịch thuật:
 
 - Hiển thị mọi sự kiện của tín hiệuR khi nó xảy ra
-- Kiểu thông điệp mã hoá màu (xanh dương = khởi chạy, xanh lá cây = đầy đủ, đỏ = chống khủng bố)
+- Kiểu thông điệp đã mã hóa màu (xanh dương = khởi chạy, xanh lá cây = đầy đủ, đỏ = chống khủng bố)
 - Name
 - Name
 
@@ -69,7 +69,7 @@ Các tập tin đánh dấu được dịch liên tục:
 
 3 mức độ bền bỉ:
 
-1. **HTTP retry** (LibreTranslateService): 5 nỗ lực với reoff mũ (1s–5)
+1. **HTTP retry** (LibreTranslateService): 5 lần cố gắng với reoff mũ (1s–5)
 2. **Stage retry** (TransotionReervice): 3 nỗ lực thêm với 30s trễ
 3. **Block retry** (DocuchtstTrantionService: lỗi đánh dấu các khối tái kết nối vào lần chạy tiếp theo
 
@@ -79,7 +79,7 @@ Tiến triển thời gian thực báo cáo cho tất cả các hoạt động �
 
 - Mỗi giai đoạn xuất bản sự kiện
 - Tiến trình mô tả được công bố là sự kiện
-- Sự kiện lỗi bao gồm văn cảnh chi tiết ( cưới, mã lỗi, thông điệp)
+- Các sự kiện lỗi bao gồm văn cảnh chi tiết ( cưới, mã lỗi, thông điệp)
 - Thêm số dãy
 
 ## Thay đổi cấu hình
@@ -182,7 +182,7 @@ Không cần phải di cư. Giải pháp là nội bộ:
 2. Đăng ký DI đã được cập nhật để sử dụng giao diện mới
 3. Tất cả những người tiêu dùng hiện có đều không thấy thay đổi
 
-## Tăng cường hiệu suất
+## Cải tiến hiệu suất
 
 - ** Dùng bộ nhớ đã yêu cầu**: Tập tin đã lưu trên môi miệng thay vì giữ tất cả trong bộ nhớ
 - **Faster tăng tốc **: Chỉ những khối Đánh dấu bị thay đổi/ hư hỏng được mở lại
@@ -192,10 +192,10 @@ Không cần phải di cư. Giải pháp là nội bộ:
 
 Cải tiến đã lên kế hoạch:
 
-1. **AI fine-tuuning** - Bản thảo dịch sau cỗ máy cho các cụm từ > 5 từ
+1. **AI fine-tuining** - Bản thảo dịch sau cỗ máy cho các cụm từ > 5 từ
 2. ** Trình xác thực giọng nói** — Giới hạn trang mandmin cho người dùng có thẩm quyền
-3. ** Trình biên tập từ điển** — Mạng UI để quản lý các phím định vị
-4. ** Số thống kê quan trọng** — Biểu đồ cho thấy số lượng bản dịch và tỷ lệ lỗi theo thời gian
+3. ** Trình biên tập từ điển** — Mạng UI để quản lý các phím cục bộ
+4. ** Số thống kê quan trọng** — Biểu đồ cho thấy số lượng bản dịch và tỷ lệ sai theo thời gian
 5. **Custom cú pháp giữ chỗ** — Hỗ trợ định dạng vị giữ chỗ khác
 
 ## Contact & mới

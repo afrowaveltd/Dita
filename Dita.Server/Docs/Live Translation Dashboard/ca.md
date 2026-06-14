@@ -12,12 +12,12 @@ El tauler de traducció en directe és una pàgina d' administrador que proporci
 
 ### Flux d' esdeveniments en temps real
 
-Tots els esdeveniments senyalR de la canonada de traducció es mostren en una taula d' obertura en directe:
+Tots els esdeveniments senyalR des de la canonada de traducció es mostren en una taula d' esborrat en directe:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
 - **Run ID** — Shortened GUID for correlation
-- **Strage ** Pipha Pipe Pipeline badge (Comproveu servidors, Tradueix comtats, etc.)
+- **Strage ** Pipon Pipeline (Comproveu servidors, Tradueix comtats, etc.)
 - **Type** — Message type badge (StageStarted, Progress, StageCompleted, etc.)
 - **Message** — Human-readable description
 - ** Detalles ** Full JSON paga la càrrega de les dades de l' esdeveniment
@@ -91,7 +91,7 @@ Placa d' avís
 
 ### Dorsal
 
-- **LocalizationHub ** genionHyb () bELR que emet els missatges a tots els clients connectats
+- **LocalizationHub** (`/hubs/localization`) — SignalR hub that broadcasts messages to all connected clients
 - **ISignalRPublisher** — Abstraction over the hub for use in translation services
 - **SignalRPublisher** — Default implementation that increments a monotonic sequence and broadcasts
 
@@ -143,11 +143,11 @@ Millores planificades per al tauler:
 
 1. Comproveu que l' URL del senyalRG coincideix entre el servidor () i el client ()
 2. Verifica el planificador està habilitat
-3. Mireu els registres del servidor pels errors de canonada de traducció
+3. Mireu els registres del servidor per als errors de canonada de traducció
 4. Comprova la pestanya Xarxa del navegador pels missatges WebSocket
 
 ### Els missatges estan fora de l' ordre
 
 El camp garanteix l'ordre d'una sola sortida. Si els missatges apareixen fora d' ordre, pot indicar:
 - S' està sobreposant múltiples canonades (no hauria de passar degut al bloqueig del mapa)
-- Problemes de representació del navegador (proventeix la pàgina)
+- Problemes de representació del navegador (provent el refresc de la pàgina)

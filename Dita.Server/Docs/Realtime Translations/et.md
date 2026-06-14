@@ -29,7 +29,7 @@ Enne tõlketöö algust kontrollib teenistus, et kõik eeltingimused on täidetu
 - Selles nimekirjas peab olema seadistatud vaikekeel.
 - Iga toetatud keele jaoks puuduvad lokaadi JSON-failid luuakse automaatselt.
 
-Kui kontroll ebaõnnestub, peatub torujuhe kohe ja saadetakse teade.
+Kui mõni kontroll ebaõnnestub, peatub torujuhe kohe ja saadetakse teade.
 
 ### 2. etapp – Tõlgitud riigid
 
@@ -45,11 +45,11 @@ Riikide nimesid hoitakse sünkroonis kirjutuskaitstud kataloogist () lokaliseeri
 
 Teenus võrdleb aktiivset vaikimisi lokaliseerimissõnaraamatut eelmisest tööst salvestatud hetkepildiga:
 
-- ** Lisatud võtmed ** – kirjed, mis on aktiivses vaikeväärtuses, kuid puuduvad hetkepildist, tõlgitakse igasse sihtkeelde, millel ei ole veel selle võtme käsitsi kirjet.
-- ** Eemaldatavad võtmed ** – hetketõmmises esinevad kirjed, mis aga vaikeväärtuses puuduvad, kustutatakse igast sihtkeele sõnaraamatust.
-- Manuaalsed tõlked on alati prioriteetsed. Kui märksõnastik sisaldab juba võtme väärtust, jäetakse see kirje muutmata olenemata sellest, mida allikas ütleb.
+- ** Lisatud võtmed ** – kirjed, mis on aktiivses vaikeväärtuses, kuid puuduvad hetkepildist, tõlgitakse igasse sihtkeelde, millel pole veel selle võtme käsitsi kirjet.
+- ** Eemaldatavad võtmed ** – hetkepildis esinevad kirjed, mis aga vaikeväärtuses puuduvad, kustutatakse igast sihtkeele sõnaraamatust.
+- Manuaalsed tõlked on alati prioriteetsed. Kui sihtsõnastik sisaldab juba võtme väärtust, jäetakse see kirje muutmata olenemata sellest, mida allikas ütleb.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
-- Kui tõlge ei vasta konkreetsele keelele, proovib teenus automaatselt uuesti. Ainult püsivad vead (nt toetamata keel) põhjustavad selle keele vahelejätmise.
+- Kui tõlge ei õnnestu konkreetses keeles, proovib teenus automaatselt uuesti. Ainult püsivad vead (nt toetuseta keel) põhjustavad selle keele vahelejätmise.
 - Pärast käivitamist salvestatakse aktiivne vaikesõnastik järgmise võrdluse uue pildina.
 
 Kõik sõnaraamatud on alati salvestatud tähestikuliselt sorteeritud võtmetega ja inimloetavuse jaoks treppitud JSON-iga.
@@ -64,7 +64,7 @@ Teenus käitab seadistatud dokumentatsiooni juuri (vaikimisi): ja töötleb iga 
 4. Iga sihtkeele puhul kontrollitakse ka vastava faili struktuurilist terviklikkust.
 5. Igasugune sihtfail, mis puudub, on aegunud räsiga, ei suuda struktuuri valideerimist või sisaldab tõlkimata plokke, on järjekorda tõlkimiseks.
 6. **Iga sihtkeel tõlgitakse ja salvestatakse iseseisvalt** – kui tšehhi keel õnnestub, kuid prantsuse keel ebaõnnestub, kirjutatakse tšehhi fail ikkagi kettale.
-7. Edukalt tõlgitud failid valideeritakse struktuurse pariteedi jaoks allikaga (võrdsed pealkirjade arvud, loendi elemendid, koodiplokid, plokid, lingid, rasvased / kursilised markerid ja HTML-sildid) enne, kui need kirjutatakse kettale.
+7. Edukalt tõlgitud failid valideeritakse struktuurse pariteedi jaoks allikaga (võrdsed pealkirjade arvud, loendi elemendid, koodiplokid, plokid, lingid, rasvased / kursilised markerid ja HTML-sildid), enne kui need kirjutatakse kettale.
 8. Kui kõik allika sihtfailid õnnestuvad, salvestatakse uus räsi allika kõrvale. Kui allika kõrval kirjutamine ebaõnnestub (näiteks kirjutuskaitstud rakendustes), langeb räsi tagasi ajutisesse kataloogi.
 9. Kui mõni sihttõlge ebaõnnestub valideerimisel, märgib metaandmed need plokid tõlkimata, nii et neid otsitakse järgmisel käivitamisel uuesti.
 
@@ -75,7 +75,7 @@ Konsolideeritud dokument koostatakse ja avaldatakse. See hõlmab järgmist:
 - UTC käivitamise ja lõpetamise ajatemplid.
 - Salvestatud lokaadi JSON-failide loend, salvestatud Markdown-failid, salvestatud räsifailid ja varundatud räsikirjad.
 - Töö käigus kogutud salvestusvead.
-- Keelepõhine tõlkestatistika (tõlgitud arv, vahelejäetud arv, vigade arv).
+- Keeltepõhine tõlkestatistika (tõlgitud arv, vahelejäetud arv, vigade arv).
 
 ## SignalR-teate ümbris
 
@@ -83,7 +83,7 @@ Iga edusündmus esitatakse a-na järgmiste väljadega:
 
 väli
 |-------|------|-------------|
-Käimasoleva torujuhtmejooksu korrelatsiooni tunnuskood
+Torujuhtme jooksva sõidu korrelatsiooniidentifikaator
 Monotoonne loendur jooksu sees, alustades punktist 1
 Teate semantiline tüüp
 Torustiku etapp, kuhu teade kuulub
@@ -189,8 +189,8 @@ Serveri projekt sisaldab administraatori lehte, mis ühendab SignalR-i jaoturiga
 ## Projekteerimispõhimõtted
 
 - **Modulaarsus**: iga tõlkeprobleem on hooldatavuse ja testitavuse osas oma teenistuses isoleeritud.
-- ** Järkjärguline püsivus**: Sõnaraamatud ja Markdowni failid salvestatakse keele kaupa kohe pärast tõlkimist, vähendades mälurõhku ja pakkudes varasemat tagasisidet.
+- ** Järkjärguline püsivus**: Sõnaraamatud ja Markdowni failid salvestatakse keele kaupa kohe pärast tõlkimist, vähendades mälurõhku ja andes varasemat tagasisidet.
 - ** Vastupidavus **: mitu kordusproovimise taset (HTTP, etapp, plokk) tagavad, et mööduvad rikked ei blokeeri torustikku.
-- **Riikide jälgimine **: failide kaupa metaandmed () ja räsifailid võimaldavad täpset järkjärgulist tööd järgnevatel jooksudel.
-- **Nähtavus reaalajas**: Igast olulisest operatsioonist teatatakse SignalR-i kaudu seireks ja silumiseks.
+- **Riigi jälgimine **: Failipõhised metaandmed () ja räsifailid võimaldavad täpset järkjärgulist tööd järgnevatel jooksudel.
+- **Nähtavus reaalajas**: Igast olulisest toimingust teatatakse SignalR-i kaudu seireks ja silumiseks.
 - **Manual translations always have priority over automatic additions.**

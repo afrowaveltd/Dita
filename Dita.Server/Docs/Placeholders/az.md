@@ -1,10 +1,10 @@
-﻿# Yerlileştirmenin adlanmış yerləri
+﻿# Yerlileştirmenin adlanan yerləri
 
-Dita dəstəkləyir ** xüsusiləşdirilmiş yerləşdiriciləri ** yerlileştirme səfərlərində, dinamik dəyərlər dillər arasında doğru dilləşdirilməsi zamanı işləməyə imkan verir.
+Dita dəstəkləyir **named yerləşdiriciləri** yerlileştirme stringləri, dinamik qiymətləri dillərində düzgün dilləşdirilməsi zamanı işləməyə imkan verir.
 
 ## Axtar
 
-Placeholders JSON sözləri dəstəklərində curly-brace sözləri istifadə edin:
+Placeholders JSON sözlərin dəstəklərində curly-brace sözləri istifadə edin:
 
 ```json
 {
@@ -13,13 +13,13 @@ Placeholders JSON sözləri dəstəklərində curly-brace sözləri istifadə ed
 }
 ```
 
-Mövcudlar (, ), adlandırılmış yerləşdiricilər ** dil-agnostic** — kompaniyalar onları kodu aradan qaldırmadan həyata keçirməyə bilər.
+Mövcudların müxtəlifləri (, ), adı yerləşdiricilər ** dil-agnostic** - əməkdaşlar onları kodu aradan qaldırmadan fəaliyyətə uyğun qarşılaşdırmaq üçün təlim edə bilər.
 
-## Axtarış
+## Saxlama
 
 Add yerləşdiricilərin qiymətləri iki mövzu var:
 
-### 1. Runtime qiymətləri ( dinamik məlumat üçün silinir)
+### 1. Runtime qiymətləri ( dinamik məlumat üçün təqdim edilir)
 
 Yerliləşdirilmiş string retrieving zaman qiymətlərini aparın:
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### 2. Mağazalı qiymətlər (iki effekt üçün)
+### 2. Mağazalı qiymətlər (iki-statik konfiqurasiya)
 
 Kataloqda bir fayl idarə edir:
 
@@ -142,16 +142,16 @@ Son versiya:
 
 Bu bunu təsdiq edir:
 - Qalereya
-- Ətraflı dil xəstəlik məhsulları daxil edə bilər
+- Ətraflı dil xəstəlik məhsulları daxil ola bilər
 - Eyni şablon bütün dillərdə düzgün çalışır
 
 ## Best proqramlar
 
-1. **Fablaşdırma adları**: daha yaxşıdır və yaxşıdır
+1. **Fablaşdırma adları**: daha yaxşıdır və
 2. **Keep placeholders minimal**: Too many placeholders make translation harder
 3. **Document gözəl növü**: JSON faylında məsləhətçilər konfrans anlamaq
-4. **Prefer runtime qiymətləri**: Xüsusi dinamik məlumatlar üçün (kullanıcı adları, sayı, tarixləri), runtime dəyişikliklərini keçmək
-5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
+4. **Prefer runtime qiymətləri**: Xüsusi dinamik məlumatlar üçün (user adları, sayı, tarixləri), runtime qiymətlərini keçmək
+5. ** defaultlar üçün saxlanılmış qiymətləri**: nadir dəyişikliklərin konfiqurasiyası (adı, e-poçt)
 6. **Validate yer sahibləri**: Bütün gözəl mövcudları doğrulamak üçün istifadə edin
 
 ## Avtomatik çeviri ilə inteqrasiya
@@ -160,7 +160,7 @@ LibreTranslate çağırışları zamanı avtomatik olaraq yerləşdirici saxlama
 
 Və hər ikisi retry xidməti istifadə, belə bütün JSON sözlər yerləşdiricilər adlanır.
 
-## Qeydiyyat
+## Daxil ol
 
 Mövcudları istifadə edərək mövcudluq və ya heç bir yer sahibi işləməyə davam edir:
 

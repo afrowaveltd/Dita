@@ -11,7 +11,7 @@ Překladatelské potrubí bylo restrukturalizováno do modulární architektury 
 - **LocalizationTranslationService** — Detects added/removed keys in the default JSON dictionary and translates them into target languages.
 - **DocumentsTranslationService** — Translates Markdown documentation files with per-block tracking and metadata.
 
-Každá subslužba funguje nezávisle a hlásí pokrok prostřednictvím SignalR v reálném čase.
+Každá subslužba funguje nezávisle a v reálném čase hlásí pokrok prostřednictvím SignalR.
 
 ## Co služba dělá
 
@@ -21,19 +21,19 @@ Služba běží podle harmonogramu a provede pětistupňový ropovod: validace s
 
 ### Fáze 1 - Kontrolní servery
 
-Před zahájením jakékoli práce překladu, služba ověřuje, že všechny předpoklady jsou splněny:
+Před zahájením překladu, služba ověřuje, že všechny předpoklady jsou splněny:
 
 - Konfigurační část musí být přítomna a platná.
 - Server LibreTranslate musí reagovat v přijatelné latenci.
-- Seznam jazyků, které jsou k dispozici na překladatelském serveru, je obsazen.
+- Seznam jazyků, které jsou k dispozici na překladatelském serveru, je přiveden.
 - Nakonfigurovaný výchozí jazyk musí být v tomto seznamu.
 - Chybějící locale JSON soubory pro jakýkoli podporovaný jazyk jsou vytvořeny automaticky.
 
-Pokud kontrola selže, potrubí se okamžitě zastaví a vyšle zprávu.
+Pokud kontrola selže, potrubí okamžitě zastaví a vypustí zprávu.
 
 ### Fáze 2 - Překladové země
 
-Jména zemí jsou držena v synchronizaci z katalogu () pouze pro čtení do slovníků lokalizace JSON.
+Názvy zemí jsou drženy v synchronizaci z katalogu () pouze pro čtení do slovníků lokalizace JSON.
 
 - Pokud je výchozí jazyk aplikace anglický, každé jméno země je uloženo jako bez překladu.
 - Je-li výchozí jazyk je jiný jazyk, anglický název země je nejprve přeložen do tohoto jazyka, a výsledek se stává záznam ve výchozím slovníku.
@@ -47,7 +47,7 @@ Služba porovnává současný výchozí lokalizační slovník se snímkem ulo�
 
 - **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
-- Ruční překlady mají vždy přednost. Pokud cílový slovník již obsahuje hodnotu klíče, zůstává tento záznam beze změny bez ohledu na to, co říká zdroj.
+- Ruční překlady mají vždy přednost. Pokud cílový slovník již obsahuje hodnotu pro klíč, tento záznam je ponechán beze změny bez ohledu na to, co zdroj říká.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
 - Pokud překlad pro určitý jazyk selže, služba se automaticky opakuje. Pouze přetrvávající chyby (např. nepodporovaný jazyk) způsobují přeskočení tohoto jazyka.
 - Po spuštění, aktuální výchozí slovník je uložen jako nový snímek pro další srovnání.
@@ -64,9 +64,9 @@ Služba prochází nakonfigurovanými kořeny dokumentace (výchozí:) a zpracov
 4. Pro každý cílový jazyk je příslušný soubor také kontrolován pro strukturální integritu.
 5. Jakýkoli cílový soubor, který chybí, má zastaralý hash, selže ověření struktury, nebo obsahuje nepřeložené bloky je fronta pro retranslation.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
-7. Úspěšně přeložené soubory jsou validovány pro strukturální parity se zdrojem (stejný počet položek, seznam položek, kódové bloky, blockcutes, odkazy, tučné / italické markery, a HTML tagy) předtím, než jsou zapsány na disk.
+7. Úspěšně přeložené soubory jsou validovány pro strukturální parity se zdrojem (stejný počet položek, seznam položek, kódové bloky, blockcutes, odkazy, tučné / italické markery, a HTML tagy) před tím, než jsou zapsány na disk.
 8. Pokud všechny cílové soubory pro zdroj uspějí, nový hash je uložen vedle zdroje. Pokud psaní vedle zdroje selže (např. v read- only nasazení), hash se vrátí do dočasného adresáře.
-9. Pokud některý cílový překlad selže při validaci, metadata označují tyto bloky jako nepřeložené, takže jsou znovu vyzkoušeny v příštím kole.
+9. Pokud některý cílový překlad selže při validaci, metadata označí tyto bloky jako nepřeložené, takže jsou znovu vyzkoušeny v příštím kole.
 
 ### Fáze 5 - StoringResults
 
@@ -79,7 +79,7 @@ Konsolidovaná je sestavena a zveřejněna. Zahrnuje:
 
 ## Obálka zprávy signalR
 
-Každý pokrok akce je dodán jako s těmito poli:
+Každý pokrok akce je dodán jako s následujícími poli:
 
 Pole
 |-------|------|-------------|
@@ -141,7 +141,7 @@ StageCompleted / StoringResults
 PipelineCompleted / StoringResults
 ```
 
-Pokud některá fáze selže, zbývající fáze jsou přeskočeny, zpráva je vypuštěna a nakonec zpráva ukončí běh.
+Pokud nějaká fáze selže, zbývající fáze jsou přeskočeny, zpráva je vypuštěna a nakonec zpráva ukončí běh.
 
 ## Logika přepracování překladu
 
@@ -149,13 +149,13 @@ Plynovod zajišťuje dvě úrovně odolnosti:
 
 ### stage- level retry (translationretryservice)
 
-- Pokud žádost o překlad selže po interních repokusech LibreTranslate, provede až 3 další stage-level opakování s 30-sekundovým zpožděním.
+- Pokud žádost o překlad selže po interních repokusech LibreTranslate, provede až 3 další stage-level retests s 30-sekundovým zpožděním.
 - Maskování paměťového nosiče: Jmenované jmenovatele () v textu jsou dočasně nahrazeny bezpečnými žetony () před překladem a poté obnoveny, čímž se zajistí správná gramatika v cílových jazycích.
 
 ### Potvrzení jazyka
 
 - Před překladem do cílového jazyka, služba ověřuje jazyk je podporován překlad serveru.
-- Nepodporované jazyky jsou přeskočeny s varováním, zabraňuje opakované neúspěšné pokusy.
+- Nepodporované jazyky jsou přeskočeny s varováním, aby se zabránilo opakované neúspěšné pokusy.
 
 ### Markdown block- level retry
 
@@ -171,11 +171,11 @@ Rozsah
 |-------|----------|
 1000- 1999
 2000- 2999
-3000- 3999
+Ostatní
 4000- 4999
 550- 5999
 
-Každá chyba ve zprávě nese identifikátor zdroje (jazykový kód, cesta k souboru nebo název fáze), chybový kód a lidsky čitelnou zprávu.
+Každá chyba ve zprávě obsahuje identifikátor zdroje (jazykový kód, cesta k souboru nebo název fáze), chybový kód a lidsky čitelnou zprávu.
 
 ## Živý překlad Přístrojová deska
 

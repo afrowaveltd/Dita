@@ -1,6 +1,6 @@
 ﻿# Pemegang Tempat Bernama Bernama di Lokalisasi
 
-Luadon Dita mendukung **named placeholders** dalam string lokalisasi, memungkinkan nilai dinamis untuk dimasukkan pada waktu jalan sambil melestarikan tata bahasa yang benar di seluruh bahasa.
+Luadon Dita mendukung **named placeholders** dalam string lokalisasi, memungkinkan nilai dinamis untuk disisipkan pada waktu jalan sambil melestarikan tata bahasa yang benar di seluruh bahasa.
 
 ## Sintaksis
 
@@ -17,7 +17,7 @@ Tidak seperti pemegang tempat kedudukan (, ), pemegang tempat bernama adalah **l
 
 ## Penyimpanan
 
-Pemegang tempat yang dinamakan floned memiliki dua sumber nilai:
+Pemegang tempat yang dinamai memiliki dua sumber nilai:
 
 ### 1. Nilai runtime (disarankan untuk data dinamis)
 
@@ -158,7 +158,7 @@ Ini memastikan bahwa:
 
 Secara otomatis, placeholder awet selama panggilan LibreTranslate. Konfigurasi tambahan tidak diperlukan.
 
-© The dan keduanya menggunakan layanan retry, sehingga semua kamus JSON terjemahan transparan dukungan bernama placeholders.
+Kekhanan dan keduanya menggunakan layanan retry, sehingga semua kamus JSON terjemahan transparan mendukung pemegang tempat bernama.
 
 ## Keserasian Kwarnas Mundur
 

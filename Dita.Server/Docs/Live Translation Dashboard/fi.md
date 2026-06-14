@@ -1,6 +1,6 @@
 ﻿# Live käännös Dashboard
 
-Live käännös Dashboard on admin sivu, joka tarjoaa reaaliaikaista näkyvyyttä automaattinen käännös putki. Se yhdistää SignalR-keskuksen ja näyttää kaikki putkistotapahtumat niiden ilmaantuessa.
+Live käännös Dashboard on admin sivu, joka tarjoaa reaaliaikaista näkyvyyttä automaattisen käännös putki. Se on yhteydessä SignalR-keskukseen ja näyttää kaikki putkistotapahtumat.
 
 ## URL
 
@@ -14,10 +14,10 @@ Live käännös Dashboard on admin sivu, joka tarjoaa reaaliaikaista näkyvyytt�
 
 Kaikki käännösputken SignalR-tapahtumat näytetään live-up-dating-taulussa:
 
-- **Sequence number** ..
-- ** Aikaleima ** Paikallinen tapahtuma-aika
+- **Sequence number**
+- **Aikaleima **
 - ** Suorita ID**
-- ** Tila** Putkijohtomerkki (CheckServers, TranslateCountries jne.)
+- ** Tila** Putkisto-vaihemerkki (CheckServers, TranslateCountries jne.)
 - **Tyyppi** Viestityyppimerkki (StageStarted, Progress, StageCompleted, jne.)
 - **Tieto ** Ihmisen luettavissa oleva kuvaus
 - **Details** — Full JSON payload of the event data
@@ -39,11 +39,11 @@ Tilamainos ylhäällä osoittaa:
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-Yhdistys käyttää automaattista uudelleenyhteyttä eksponentiaalisen backoff: 0s, 2s, 5s, 10s, 30s.
+Yhdistys käyttää automaattista uudelleenliitäntää eksponentiaaliseen backoffiin: 0s, 2s, 5s, 10s, 30s.
 
 ### Tarkastukset
 
-- ** Clear Feed** ... Poistaa kaikki näytetyt viestit ja nollaa laskurin
+- ** Clear Feed**
 - **Export JSON**
 - ** Viestilaskuri ** Näytä kaikki tässä istunnossa vastaanotetut tapahtumat
 
@@ -97,7 +97,7 @@ Varoitusmerkki
 
 ### Etusivu
 
-- Pure HTML/JS kanssa Bootstrap 5 muotoilu
+- Puhdasta HTML/JS:ää, jossa on Bootstrap 5 -tyyli
 - Käyttää Microsoft SignalR JavaScript -ohjelmakirjastoa (ladattu CDN:stä)
 - Tapahtumasyötteelle ei tarvita palvelimen puoleista renderöintiä
 
@@ -134,7 +134,7 @@ Kojelautaan suunnitellut parannukset:
 
 ### Dashboard näyttää "Ei voitu yhdistää"
 
-1. Varmista, että palvelin on käynnissä ja käytettävissä
+1. Varmista palvelin käynnissä ja käytettävissä
 2. Tarkista CORS-selainkonsoli tai verkkovirheet
 3. Vahvista
 4. Varmista, ettei mikään palomuuri estä WebSocket-yhteyksiä
@@ -142,12 +142,12 @@ Kojelautaan suunnitellut parannukset:
 ### Tapahtumat eivät näy
 
 1. Tarkista, että SignalR-näppäin täsmää palvelimen () ja asiakkaan () välillä
-2. Tarkista aikataulu
+2. Tarkista ajastin on käytössä
 3. Katso palvelimen lokit käännös putkessa virheitä
-4. Tarkista selainverkkovälilehti WebSocket-viesteistä
+4. Tarkista selainverkon välilehti WebSocket-viesteistä
 
 ### Viestit eivät toimi
 
-Kenttä takaa tilauksen yhdellä juoksulla. Jos viestit eivät toimi, se voi merkitä:
+Kenttä takaa tilauksen yhdellä juoksulla. Jos viestit eivät toimi oikein, ne voivat merkitä:
 - Useita putkisto kulkee päällekkäisiä (ei pitäisi tapahtua semafore lukko)
 - Selaimen renderointi ongelmia (yritä päivittää sivua)

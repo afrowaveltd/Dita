@@ -1,6 +1,6 @@
 ﻿# Genoemde Plaatshouders in Localization
 
-Dita ondersteunt **named placeholders** in lokalisatie strings, waardoor dynamische waarden kunnen worden ingevoegd op runtime met behoud van de juiste grammatica in verschillende talen.
+Dita ondersteunt **named placeholders** in localisatie strings, waardoor dynamische waarden kunnen worden ingevoegd op runtime met behoud van de juiste grammatica in verschillende talen.
 
 ## Syntaxis
 
@@ -21,7 +21,7 @@ Genoemde plaatshouders hebben twee waardenbronnen:
 
 ### 1. Runtime waarden (aanbevolen voor dynamische gegevens)
 
-Geef waarden direct door bij het ophalen van de gelokaliseerde string:
+Geef waarden direct door bij het ophalen van de gelokaliseerde tekenreeks:
 
 ```csharp
 // In a Razor page or controller
@@ -124,7 +124,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## Vertaalgedrag
 
-Wanneer de automatische vertaaldienst tekst tegenkomt met genoemde plaatshouders:
+Wanneer de automatische vertaaldienst tekst tegenkomt met de genoemde plaatshouders:
 
 1. **Voor vertaling**: Plaatshouders worden gemaskeerd met veilige tokens () om te voorkomen dat de vertaalmachine ze te wijzigen.
 2. **Tijdens de vertaling**: De vertaalmachine verwerkt alleen de vertaalbare tekst.
@@ -156,7 +156,7 @@ Dit garandeert dat:
 
 ## Integratie met automatische vertaling
 
-Tijdens LibreTranslate-gesprekken wordt het behoud van de plaatshouder automatisch behandeld. Er is geen extra configuratie nodig.
+De zorgt automatisch voor behoud van plaatshouder tijdens LibreTranslate oproepen. Er is geen extra configuratie nodig.
 
 De en beide maken gebruik van de retry service, dus alle JSON woordenboek vertalingen transparant ondersteunen benoemde plaatshouders.
 

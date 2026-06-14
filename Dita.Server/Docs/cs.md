@@ -2,11 +2,11 @@
 
 ## Přehled
 
-Tento dokument shrnuje všechny změny provedené na Dita automatické překladatelské služby, včetně architektura refaktoring, nové funkce, zlepšení pozorovatelnosti, a lokalizace vylepšení.
+Tento dokument shrnuje všechny změny provedené na Dita automatické překladatelské služby, včetně architektura refaktoring, nové funkce, zlepšení pozorovatelnosti a lokalizace vylepšení.
 
 ## Změny architektury
 
-### Refaktored BackendTranslationService
+### Refaktorovaný BackendTranslationService
 
 Monolitický se rozkládá na čtyři specializované služby koordinované lehkým orchestrátorem:
 
@@ -33,13 +33,13 @@ Monolitický se rozkládá na čtyři specializované služby koordinované lehk
 Nová admin stránka, která poskytuje skutečnou viditelnost do překladatelského potrubí:
 
 - Zobrazí všechny události SignalR, jak se objeví
-- Typ barevně kódované zprávy (modrá = spuštěna, zelená = dokončena, červená = chyba)
+- Typ barevné kódované zprávy (modrá = spuštěná, zelená = dokončena, červená = chyba)
 - Spojení status banner s auto- reconnect
 - Počitadlo zpráv a export do JSON
 
 ### Pojmenované paměťové nosiče
 
-Lokalizační systém nyní podporuje pojmenované stojany () pro lepší gramatiku v různých jazycích:
+Systém lokalizace nyní podporuje pojmenované nosiče () pro lepší gramatiku v různých jazycích:
 
 ```csharp
 // Usage in code
@@ -119,7 +119,7 @@ Uzel SignalR je zmapován pro připojení klientů.
 ### Stav zkoušky
 
 - **243/244 tests passing** (1 skipped due to concurrent file access in test environment)
-- Přidána nová zkušební pokrytí pro:
+- Nové zkušební pokrytí přidáno pro:
   - Funkce PlaceholderService
   - Organizace BackendTranslationService
   - Nosiče JsonStringLocalizer
@@ -134,7 +134,7 @@ Uzel SignalR je zmapován pro připojení klientů.
 
 - - Pipeline orchestrátor
 - - Překlady názvu země
-- - synchronizace slovníku JSON
+- - Synchronizace slovníku JSON
 - - Markdown překlad
 - - Vydávání zpráv SignalR
 - - Zopakujte logiku pomocí maskáče
@@ -142,14 +142,14 @@ Uzel SignalR je zmapován pro připojení klientů.
 - - Rozhraní služeb země
 - - Lokalizační servisní rozhraní
 - - Rozhraní služby dokumentů
-- - Orchestrační rozhraní (aktualizováno)
+- - Rozhraní orchestru (aktualizováno)
 - - Per- file translation metadata
 
 ### Aktualizované služby v
 
 - - Přidána jmenovaná podpora na místo
 - - Aktualizováno pro nový parametr
-- - Pojmenovaná správa míst
+- - Pojmenovaná správa místa
 - - Rozhraní Placeholder
 
 ### Nová admin stránka in
@@ -200,4 +200,4 @@ Plánované zlepšení:
 
 ## Kontakt
 
-Pro dotazy nebo otázky s překladatelskou službou se prosím podívejte na podrobnou dokumentaci v adresáři každého modulu nebo kontaktujte vývojový tým.
+Pro dotazy nebo otázky s překladatelskou službou se prosím podívejte do podrobné dokumentace v adresáři každého modulu nebo kontaktujte vývojový tým.

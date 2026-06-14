@@ -39,7 +39,7 @@ Statusstandardo ĉe la pintekspozicioj:
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-La ligo uzas aŭtomatan religon kun eksponenta dorsflanko: 0s, 2s, 5s, 10s, 30'oj.
+La ligo uzas aŭtomatan religon kun eksponenta dorso: 0s, 2s, 5s, 10s, 30s.
 
 ### Kontroloj
 
@@ -142,12 +142,12 @@ Planitaj plibonigoj por la dashboard:
 ### La okazaĵoj ne aperas
 
 1. Kontrolu ke la SignalR nabo URL matĉoj inter servilo () kaj kliento ()
-2. Verify la plandisto estas ebligita en
+2. Verify la horaro estas ebligita en
 3. Vidu servilregistrojn por traduko dukto eraroj
 4. Kontrolu retumilo Network-klapeto por WebSocket mesaĝoj
 
 ### Mesaĝoj estas el ordo
 
 La kampo garantias ordigi ene de ununura kuro. Se mesaĝoj aperas el ordo, ĝi povas indiki:
-- Multobla dukto kuras imbrikita (ne devus okazi pro semaforokluzo)
+- Multoblaj duktoj kuras imbrikante (ne devus okazi pro semaforokluzo)
 - Browser iganta temojn (try refreŝigante la paĝon)

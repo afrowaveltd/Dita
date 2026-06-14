@@ -122,7 +122,7 @@ Dita.Server/Pages/Admin/
 डैशबोर्ड के लिए योजनाबद्ध सुधार:
 
 - **Authentication** — Restrict access to users with the `Admin` role
-- **Filtering** — Filter events by stage, type, or run ID
+- **फ़िल्टर ** - चरण, प्रकार, या चलाने वाली ID द्वारा फ़िल्टर इवेंट
 - **Historical runs** — View completed runs from a database or log file
 - **Statistics** — Charts showing translation counts, error rates, and latency over time
 - ** मैनुअल ट्रिगर ** - बटन मैन्युअल रूप से विशिष्ट पाइपलाइन चरणों को शुरू करने के लिए
@@ -141,7 +141,7 @@ Dita.Server/Pages/Admin/
 
 ### घटनाओं दिखाई नहीं दे रहे हैं
 
-1. जांचें कि सिग्नलआर हब यूआरएल सर्वर () और क्लाइंट () के बीच मेल खाता है
+1. जाँच करें कि सिग्नलआर हब यूआरएल सर्वर () और क्लाइंट () के बीच मेल खाता है
 2. शेड्यूलर को सत्यापित करने में सक्षम है
 3. अनुवाद पाइपलाइन त्रुटियों के लिए सर्वर लॉग को देखें
 4. WebSocket संदेशों के लिए ब्राउज़र नेटवर्क टैब की जाँच करें

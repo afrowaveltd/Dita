@@ -158,9 +158,9 @@ Kjo siguron që:
 
 Ruajtja automatike e vendshënimit gjatë thirrjeve Libre Translate. Nuk nevojitet konfigurim shtesë.
 
-Shërbimi riprodhues dhe të dyja, kështu që të gjitha përkthimet e fjalorit JSON mbështeten në mënyrë transparente me emrin vendshënues.
+Shërbimi riprodhues dhe të dyja bashkë, kështu që të gjitha përkthimet e fjalorit JSON mbështeten në mënyrë transparente me emrin vendshënues.
 
-## Pajtueshmëri e kthyer mbrapsht
+## Përputhja prapa
 
 Kodi ekzistues duke përdorur vendshënues pozicionalë apo jo vendshënues vazhdon të punojë i pandryshuar:
 

@@ -8,20 +8,11 @@
   flex-direction: column;
   min-height: 760px;
   height: calc(100vh - var(--dita-nav-height, 60px) - var(--dita-footer-height, 60px) - (var(--dita-dashboard-shell-gap, 14px) * 2));
-  padding: clamp(14px, 1.35vw, 24px);
   color: var(--ts-text);
-  background:
-    linear-gradient(135deg, var(--ts-bg-accent) 0%, transparent 34%),
-    radial-gradient(circle at 86% 12%, var(--ts-bg-signal) 0%, transparent 28%),
-    var(--ts-bg);
-  border: 0;
-  border-radius: 0;
-  box-shadow: var(--ts-page-shadow);
   overflow: hidden;
 }
 
 .translation-dashboard-header,
-.translation-panel-heading,
 .translation-header-actions,
 .translation-filter-group,
 .translation-status-line,
@@ -49,15 +40,6 @@
   letter-spacing: 0;
 }
 
-.translation-eyebrow {
-  margin: 0 0 8px;
-  color: var(--ts-accent);
-  font-size: .76rem;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
 .translation-subtitle {
   max-width: 780px;
   margin: 8px 0 0;
@@ -68,41 +50,6 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
-}
-
-.translation-button,
-.translation-icon-button,
-.translation-filter {
-  min-height: 38px;
-  border: 1px solid var(--ts-control-border);
-  border-radius: 8px;
-  color: var(--ts-control-text);
-  background: var(--ts-control-bg);
-  font-weight: 700;
-  transition: transform .16s ease, border-color .16s ease, background-color .16s ease;
-}
-
-.translation-button {
-  padding: 0 14px;
-}
-
-.translation-icon-button {
-  width: 72px;
-  padding: 0 10px;
-}
-
-.translation-button:hover,
-.translation-icon-button:hover,
-.translation-filter:hover {
-  transform: translateY(-1px);
-  border-color: var(--ts-control-border-hover);
-  background: var(--ts-control-bg-hover);
-}
-
-.translation-button-primary {
-  color: var(--ts-primary-text);
-  border-color: var(--ts-primary);
-  background: var(--ts-primary);
 }
 
 .translation-hero-grid {
@@ -119,13 +66,6 @@
   display: grid;
   grid-template-columns: minmax(390px, .9fr) minmax(500px, 1.35fr);
   gap: 14px;
-}
-
-.translation-panel {
-  border: 1px solid var(--ts-panel-border);
-  border-radius: 12px;
-  background: var(--ts-panel);
-  box-shadow: var(--ts-panel-shadow);
 }
 
 .translation-status-panel {
@@ -229,8 +169,7 @@
 }
 
 .translation-compact-facts dt,
-.translation-metric-card span,
-.translation-metric-card small {
+.translation-compact-facts dd {
   color: var(--ts-muted);
   font-size: .78rem;
 }
@@ -241,51 +180,12 @@
   font-weight: 800;
 }
 
-.translation-metric-card {
-  display: grid;
-  align-content: space-between;
-  min-height: 132px;
-  padding: 18px;
-}
-
-.translation-metric-card strong {
-  color: var(--ts-heading);
-  font-size: 2.05rem;
-  line-height: 1;
-}
-
-.translation-danger-card strong {
-  color: var(--ts-danger);
-}
-
 .translation-stage-panel,
 .translation-activity-panel {
   display: flex;
   flex-direction: column;
   min-height: 0;
   padding: 18px;
-}
-
-.translation-panel-heading {
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.translation-panel-heading h2 {
-  margin: 0;
-  color: var(--ts-heading);
-  font-size: 1.05rem;
-  letter-spacing: 0;
-}
-
-.translation-pill {
-  padding: 7px 10px;
-  border-radius: 999px;
-  color: var(--ts-pill-text);
-  background: var(--ts-pill-bg);
-  font-size: .78rem;
-  font-weight: 800;
 }
 
 .translation-stage-list,
@@ -295,29 +195,6 @@
   min-height: 0;
   overflow: auto;
   padding-right: 3px;
-  scrollbar-color: transparent transparent;
-  scrollbar-width: thin;
-}
-
-.translation-stage-list:hover,
-.translation-event-list:hover {
-  scrollbar-color: var(--ts-scrollbar-thumb) transparent;
-}
-
-.translation-stage-list::-webkit-scrollbar,
-.translation-event-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.translation-stage-list::-webkit-scrollbar-thumb,
-.translation-event-list::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 999px;
-}
-
-.translation-stage-list:hover::-webkit-scrollbar-thumb,
-.translation-event-list:hover::-webkit-scrollbar-thumb {
-  background: var(--ts-scrollbar-thumb);
 }
 
 .translation-stage-list {
@@ -408,12 +285,6 @@
   color: var(--ts-control-text);
   background: var(--ts-control-bg);
   font-weight: 800;
-}
-
-.translation-filter {
-  min-height: 32px;
-  padding: 0 10px;
-  font-size: .78rem;
 }
 
 .translation-filter.is-active {
@@ -516,7 +387,7 @@
 @media (max-width: 1200px) {
   .translation-service-dashboard {
     height: auto;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--dita-nav-height, 60px) - var(--dita-footer-height, 60px));
     overflow: visible;
   }
 
@@ -535,12 +406,11 @@
 
 @media (max-width: 720px) {
   .translation-service-dashboard {
-    padding: 16px;
-    border-radius: 12px;
+    min-height: auto;
   }
 
   .translation-dashboard-header,
-  .translation-panel-heading {
+  .dita-panel-heading {
     align-items: flex-start;
     flex-direction: column;
   }

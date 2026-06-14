@@ -2,7 +2,7 @@
 
 ## Überblick
 
-Dieses Dokument fasst alle Änderungen an dem automatischen Übersetzungsdienst von Dita zusammen, einschließlich Architektur-Refactoring, neue Features, Beobachtungsverbesserungen und Lokalisierung Verbesserungen.
+Dieses Dokument fasst alle Änderungen an dem automatischen Übersetzungsdienst von Dita zusammen, einschließlich der Architektur-Refactoring, neue Features, Beobachtungsverbesserungen und Lokalisierung Verbesserungen.
 
 ## Architekturveränderungen
 
@@ -12,7 +12,7 @@ Die Monolithik wurde in vier spezialisierte Dienstleistungen zerlegt, die von ei
 
 - **BackendTranslationService** — Pipeline-Orchester (Servervalidierung, Bühnendelegation, Fehlerbehandlung)
 - **CountriesTranslationService** — Ländername Synchronisation (Englisch → Zielsprache)
-- **LocalizationTranslationService** — JSON Wörterbuch-Synchronisation (beigefügte/entfernte Schlüssel)
+- **LocalizationTranslationService** — JSON Wörterbuchsynchronisation (mitgelieferte/entfernte Schlüssel)
 - **DokumenteTranslationService** — Markdown-Dokumentationsübersetzung mit Block-Level-Tracking
 - **SignalRPublisher** — Echtzeit-Fortschrittsberichte über SignalR
 - **TranslationRetryService** — Bühnenretry mit Platzhalterbewahrung
@@ -52,7 +52,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 ```
 
 Eigenschaften:
-- Platzhalterwerte, die zur Laufzeit bereitgestellt oder gespeichert werden
+- Platzhalterwerte zur Laufzeit oder zur Speicherung in
 - Automatische Maskierung/Restaurierung während der Übersetzung, um Korruption zu verhindern
 - Rückwärtskompatibel mit bestehenden Platzhaltern
 
@@ -62,8 +62,8 @@ Markdown-Dateien werden inkrementell übersetzt:
 
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-Level-Tracking**: Tracks Übersetzungsstatus pro Block
-- **Selective Retry**: Nur gescheiterte Blöcke werden auf dem nächsten Lauf wiederversetzt
-- **Metadaten-Persistenz**: Übersetzungszustand überlebt Antrag neustarts
+- **Selective Retry**: Nur gescheiterte Blöcke werden auf dem nächsten Lauf wiedertranslatiert
+- **Metadata persistence**: Translation state survives application restarts
 
 ### verbesserte retry-logik
 
@@ -71,7 +71,7 @@ Drei Ebenen der Widerstandsfähigkeit:
 
 1. **HTTP retry** (LibreTranslateService): 5 Versuche mit exponentiellem Backoff (1s–5s)
 2. **State Retry** (TranslationRetryService): 3 weitere Versuche mit 30s Verzögerungen
-3. **Block-Retry** (DocumentsTranslationService): Versäumte Markdown-Blöcke auf dem nächsten Lauf
+3. **Block-Retry** (DocumentsTranslationService): Verfehlte Markdown-Blöcke auf dem nächsten Lauf
 
 ### signalgeber melden
 
@@ -160,7 +160,7 @@ Die SignalR-Hub ist für Client-Verbindungen abgebildet.
 ### Neue Dokumentation in
 
 - — Aktualisierte Pipelinedokumentation
-- — Leitfaden für den Platzhalter
+- — Leitfaden für die Platzhaltersysteme
 - — Dashboard Nutzungsanleitung
 - — Übersicht über die technische Architektur
 
@@ -172,7 +172,7 @@ Alle Änderungen sind additiv:
 - Positionsformatierung () funktioniert unverändert
 - Das bestehende JSON Wörterbuchformat ist unverändert
 - Vorhandene Markdown-Struktur ist unverändert
-- SignalR-Nachrichten verwenden dasselbe Format
+- SignalR-Nachrichten verwenden das gleiche Format
 
 ## Migrationspfad
 

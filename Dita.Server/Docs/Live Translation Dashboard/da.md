@@ -12,7 +12,7 @@ Live Oversættelse Dashboard er en admin side, der giver realtid synlighed i den
 
 ### Realtidshændelsesstrøm
 
-Alle signalR begivenheder fra oversættelsesledningen vises i en live- updating tabel:
+Alle signalR-begivenheder fra oversættelsen vises i en live- updating tabel:
 
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Timestamp** — Local time when the event was received
@@ -141,7 +141,7 @@ Planlagte forbedringer til instrumentbrættet:
 
 ### Begivenheder vises ikke
 
-1. Kontroller at signalR hubs URL matcher mellem server () og klient ()
+1. Kontroller at SignalR hubs URL matcher mellem server () og klient ()
 2. Verificér scheduler er aktiveret i
 3. Kig på serverlogfiler for oversættelsesrørledningsfejl
 4. Tjek browsernetværkets faneblad for WebSocket-beskeder

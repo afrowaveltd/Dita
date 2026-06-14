@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  margin-bottom: var(--dita-footer-height);
   color: var(--ts-text);
   background:
     linear-gradient(135deg, var(--ts-bg-accent) 0%, transparent 34%),
@@ -60,8 +60,8 @@ a:hover {
   height: var(--dita-nav-height);
   border-bottom: 1px solid var(--ts-nav-border);
   background: var(--ts-nav-bg);
-  backdrop-filter: blur(14px) saturate(1.4);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
   box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
   transition: background-color .3s ease, border-color .3s ease;
 }
@@ -171,6 +171,7 @@ a:hover {
     flex-direction: column;
     padding: 12px 20px;
     background: var(--ts-nav-bg);
+    -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--ts-nav-border);
     box-shadow: 0 8px 32px rgba(0, 0, 0, .16);
@@ -192,6 +193,10 @@ a:hover {
   padding: 28px 24px 40px;
 }
 
+.dita-main > main {
+  min-width: 0;
+}
+
 /* ── Footer ─────────────────────────────────────────────────── */
 
 .dita-footer {
@@ -205,10 +210,10 @@ a:hover {
   padding: 0 24px;
   border-top: 1px solid var(--ts-nav-border);
   background: var(--ts-footer-bg);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   font-size: .84rem;
   color: var(--ts-muted);
-  backdrop-filter: blur(14px);
   transition: background-color .3s ease, border-color .3s ease;
 }
 
@@ -226,6 +231,7 @@ a:hover {
   border: 1px solid var(--ts-panel-border);
   border-radius: 12px;
   background: var(--ts-panel);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: var(--ts-panel-shadow);
   padding: 24px;
@@ -234,6 +240,22 @@ a:hover {
 
 .dita-panel:hover {
   border-color: var(--ts-control-border-hover);
+}
+
+.dita-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dita-panel-heading h2,
+.dita-panel-heading h3 {
+  margin: 0;
+  color: var(--ts-heading);
+  font-size: 1.05rem;
+  letter-spacing: 0;
 }
 
 /* ── Buttons ────────────────────────────────────────────────── */
@@ -249,6 +271,7 @@ a:hover {
   color: var(--ts-control-text);
   font-weight: 700;
   font-size: .9rem;
+  text-decoration: none;
   cursor: pointer;
   transition: transform .16s ease, border-color .16s ease, background-color .16s ease;
 }
@@ -257,6 +280,7 @@ a:hover {
   transform: translateY(-1px);
   border-color: var(--ts-control-border-hover);
   background: var(--ts-control-bg-hover);
+  color: var(--ts-control-text);
 }
 
 .dita-btn-primary {
@@ -280,6 +304,12 @@ a:hover {
 .dita-btn-danger:hover {
   border-color: #e11d48;
   background: #e11d48;
+}
+
+.dita-btn-sm {
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: .78rem;
 }
 
 /* ── Headings ───────────────────────────────────────────────── */
@@ -424,6 +454,16 @@ pre code {
   max-width: 780px;
 }
 
+.dita-muted {
+  color: var(--ts-muted);
+}
+
+.dita-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
 /* ── Metric cards (dashboard-style) ──────────────────────────── */
 
 .dita-metric-card {
@@ -434,6 +474,7 @@ pre code {
   border: 1px solid var(--ts-panel-border);
   border-radius: 12px;
   background: var(--ts-panel);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: var(--ts-panel-shadow);
   transition: border-color .2s ease, background-color .3s ease;
@@ -467,6 +508,7 @@ pre code {
 
 .dita-pill {
   display: inline-flex;
+  align-items: center;
   padding: 6px 12px;
   border-radius: 999px;
   color: var(--ts-pill-text);
@@ -503,24 +545,25 @@ pre code {
 /* When the dashboard is active we keep the global chrome, but
    give the monitor the width and height it needs for FullHD use. */
 
-body:has(.translation-service-dashboard) {
+body.dita-dashboard-page {
   margin-bottom: var(--dita-footer-height);
   background: var(--ts-bg);
 }
 
-body:has(.translation-service-dashboard) .dita-main {
+body.dita-dashboard-page .dita-main {
   max-width: none;
   padding: var(--dita-dashboard-shell-gap) 18px;
 }
 
-body:has(.translation-service-dashboard) .dita-main > main {
+body.dita-dashboard-page .dita-main > main {
   min-height: calc(100vh - var(--dita-nav-height) - var(--dita-footer-height) - (var(--dita-dashboard-shell-gap) * 2));
 }
 
 html:dir(rtl) .dita-nav-links,
 html:dir(rtl) .dita-nav-actions,
 html:dir(rtl) .translation-header-actions,
-html:dir(rtl) .translation-stream-tools {
+html:dir(rtl) .translation-stream-tools,
+html:dir(rtl) .dita-panel-heading {
   direction: rtl;
 }
 

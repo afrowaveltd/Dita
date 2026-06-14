@@ -2,13 +2,13 @@
 
 ## Selayang Pandang
 
-Dokumen ini meringkaskan semua perubahan yang dibuat pada layanan penerjemahan otomatis Dita, termasuk pemfaktoran ulang arsitektur, fitur baru, perbaikan observabilitas, dan peningkatan lokalisasi.
+Dokumen ini meringkaskan semua perubahan yang dibuat ke layanan penerjemahan otomatis Dita, termasuk pemfaktoran ulang arsitektur, fitur baru, perbaikan observabilitas, dan peningkatan lokalisasi.
 
 ## Perubahan Arsitektur Seni Rupa
 
-### Penerjemahan Ujung Belakang yang Refabel
+### Penerjemahan Hujung Belakang yang Refactored
 
-Monolitik telah terurai menjadi empat layanan khusus yang dikoordinasikan oleh orkestrator ringan:
+Monolitik telah diurai menjadi empat layanan khusus yang dikoordinasikan oleh orkestrator ringan:
 
 - **BackendTranslationService** — Pipeline orchestrator (server validation, stage delegation, error handling)
 - **CountriesTranslationService** — Country name synchronization (English → target language)
@@ -30,11 +30,11 @@ Monolitik telah terurai menjadi empat layanan khusus yang dikoordinasikan oleh o
 
 **Location**: `/Admin/LiveTranslation`
 
-Halaman admin baru yang menyediakan visibilitas real-time ke dalam pipa terjemahan:
+Sebuah halaman admin baru yang menyediakan visibilitas real-time ke dalam pipa terjemahan:
 
 - Freivis menampilkan semua peristiwa SignalR seperti yang terjadi
 - Tipe pesan berkode warna (biru=dimulai, hijau=dilengkapi, merah=error)
-- Spanduk status sambungan-sendiri dengan koneksi-sendiri
+- Spanduk status sambungan dengan koneksi-sendiri
 - Penghitungan pesan dan ekspor ke JSON
 
 ### Pemegang Tempat yang Dinamakan Dinamakan
@@ -54,7 +54,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 Fitur:
 - Nilai placeholder disediakan pada waktu jalan atau disimpan pada
 - Pemasok/pencadanganan otomatis secara otomatis selama penerjemahan untuk mencegah korupsi
-- Kebelakangan yang kompatibel dengan pemegang tempat kedudukan yang sudah ada
+- Kebelakangan dengan pemegang tempat kedudukan yang sudah ada
 
 ### Terjemahan Tambahan
 
@@ -65,7 +65,7 @@ Berkas Markdown skyd diterjemahkan secara tokokan:
 - **Selective retry**: Only failed blocks are re-translated on the next run
 - **Metadata persistence**: Translation state survives application restarts
 
-### Logika Coba Lagi yang Dipertingkatkan Logik
+### Logika Coba Lagi yang Dipertingkatkan Logika
 
 Tiga tingkat ketahanan:
 
@@ -80,13 +80,13 @@ Real-time kemajuan pelaporan untuk semua operasi pipa:
 - Setiap panggung menerbitkan peristiwa
 - Kemajuan per-bahasa yang diterbitkan sebagai peristiwa
 - Peristiwa galat termasuk konteks terperinci (sumber, kode kesalahan, pesan)
-- Angka sekuens jaminan pemesanan dalam setiap run
+- Jumlah sekuens jaminan pemesanan dalam setiap run
 
 ## Perubahan Konfigurasi XAV
 
 ### appsettings.json
 
-Tidak ada perubahan. Konfigurasi yang ada terus bekerja:
+Tak ada perubahan. Konfigurasi yang ada terus bekerja:
 
 ```json
 {
@@ -132,12 +132,12 @@ Hub SignalR dipetakan untuk koneksi klien.
 
 ### Layanan Pelayanan di
 
-- Papeline - orkestrator
-- Terjemahan Bahasa Indonesia
+- Paip — orkestrator pipa
+- Terjemahan bahasa Jerman
 - Pensegerakan kamus JSON
 - Terjemahan terjemahan Markdown
 - Penerbitan pesan SignalR
-- Logika ulang dengan topeng pemegang tempat
+- Logika kembali dengan topeng pemegang tempat
 - Internet Penerbit
 - UNESCO
 - antarmuka layanan lokalisasi
@@ -172,11 +172,11 @@ Semua perubahan adalah aditif:
 - Pemformatan posisi () berfungsi tidak berubah
 - Format kamus JSON yang ada tidak berubah
 - Struktur Markdown yang ada tidak berubah
-- Pesan-pesan SignalR isyarat Isyarat Isyarat Isyarat je menggunakan format yang sama
+- Pesan-pesan SignalR isyarat Isyarat Isyarat Isyarat Isyarat je menggunakan format yang sama
 
 ## Path Migrasi
 
-Tidak perlu migrasi. Refacturing adalah internal:
+Tidak diperlukan migrasi. Refacturing adalah internal:
 
 1. Lama dipelihara sebagai referensi dan kemudian diganti
 2. Pendaftaran DI telah diperbarui untuk menggunakan antarmuka baru
@@ -188,7 +188,7 @@ Tidak perlu migrasi. Refacturing adalah internal:
 - **Faster incremental runs**: Only changed/failed Markdown blocks are re-translated
 - **Better visibility**: Real-time progress helps diagnose slow stages
 
-## Peningkatan Masa Depan
+## Perambahan Masa Depan
 
 Peningkatan direncanakan:
 

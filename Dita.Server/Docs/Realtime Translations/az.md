@@ -1,21 +1,21 @@
 ﻿# Real-time çeviri
 
-Bu səhifə avtomatik çeviri boru üçün canlı test giriş kimi var. Bu faktın hər hansı bir dəyişiklik bir növbəti, növbəti planlaşdırılmış runda bütün hedef dil faktorlarının re-translation.
+Bu səhifə avtomatik çeviri boru üçün canlı test giriş kimi var. Bu faktın hər hansı bir dəyişiklik bir növbəti, növbəti planlaşdırılmış runda bütün hedef dil fayllarının re-translation.
 
 ## Memarlıq
 
-Translation  pipeline  has  has  has  a  The  The  The  The  The  The  The  The  The  The  The  The
+Translation  pipeline  has  has  has  a  The  The  The  The  The  The  The  The  The  The  The  The  The
 
-- **BackendTranslationService ** — Orkestrates bütün boru, server validation, və deles sub-services iş.
+- **BackendTranslationService** — Orkestrates bütün boru, server validation, və deles sub-services iş.
 - **CountriesTranslationService ** — Sinkronize ölkələrindən xüsusiyyətlərindən xüsusiyyət adları.
 - **LocalizationTranslationService** - default JSON sözlərində əlavə / izləndirilməsi və onları hedef dillərdə çevirmək.
-- **DocumentsTranslationService** - bloq izləmə və metadata ilə Markdown məlumat faylları.
+- **DocumentsTranslationService** - bloq izləmə və metadata ilə Markdown məlumatları.
 
 Hər bir sub-service real vaxtda SignalR vasitəsilə özdən və hesabatların təqdim edir.
 
 ## Xidmət nədir
 
-Xidmət bir proqram işləyir və beş səyahət borusunun icra edilməsi: server validation, ölkə senkronizasyonu, JSON sözlər senkronizasyonu, Markdown fakültəsi və həyata davam edir. Hər bir məhsul SignalR üzrə real vaxt inkişafı təqdim edir, bu da bağlı müştərilər iş haqqında davam edə bilər.
+Xidmət bir proqram işləyir və beş səyahət borusunun icra edilməsi: server validation, ölkə senkronizasyonu, JSON sözlər senkronizasyonu, Markdown fakültəsi və həyata davam edir. Hər bir məhsul SignalR üzrə real-time inkişaf hadisələri yaymaq, bu da bağlı müştərilər iş davamları kimi davam edə bilər.
 
 ## Borular
 
@@ -31,46 +31,46 @@ Heç bir çeviri işi başlanğıcdan əvvəl, xidmət bütün prezidentlərin r
 
 Heç bir çek qaldırırsa, boru dəyişdirir və bir mesaj yayılır.
 
-### Stage 2 —  Translate
+### Stage - TranslateCountries
 
-Ümumileştirme JSON dictionaries daxil olmaqla yalnız kataloqdan () bir oxumaq kataloqda yerləşdirilir.
+Ümumileştirme JSON dictionaries daxil olmaqla yalnız kataloqdan () senkronize olunmuşdur.
 
 - İnformasiya default dili İngilis deyil, hər bir ölkə adı çeviri olmadan saxlanılır.
 - İngilis dili bir digər dil varsa, İngilis ölkə adı ilk o dili çevrilənir və nəticə default sözdə giriş olur.
 - After the default dictionary is updated, each missing country entry in every target language dictionary is translated and saved **immediately per language**.
-- Ətraflı girişlər dəyişdirilməsi olmadan saxlanılır.
-- Bir çeviri başarısız olursa, xidmət əvvəlki dildən əvvəl 30 ikinci gecikmə ilə 3 dəfə qəbul edilir.
+- Əvvəl-translated girişlər dəyişiklik olmadan saxlanılır.
+- Bir çeviri başarısız olursa, xidmət nömrəsindən sonra 30 ikinci gecikmə ilə 3 dəfə qəbul edilir.
 
 ### Kateqoriya 3 — TranslateJsonFiles
 
 Xidmət əvvəlki rundan saxlanılan bir snapshot ilə cari default lokalizasiya sözlərini karşılaştırır:
 
-- ** Added keys** — mövcud default mövcuddur, lakin snapshot-dan mövcuddur - artıq o qurmaq üçün bir sifariş girişi olmayan haqqında çevrilir.
-- **Removed keys** — dəyişdirilməsi həyata keçirilir, lakin cari default-dən yoxdur - hər bir hedef dil sözdən silinir.
-- Manual çevirilər həyata keçirilir. Bir hedef söz əvvəl əvvəl bir dəfə dəyişdirirsə, giriş məhsulun necə deyil ki, dəyişdirilməz.
+- ** Added keys** — cari default mövcuddur, lakin snapshot-dan mövcuddur - artıq o hansı bir sifariş var haqqında hər kəs dili çevrilmişdir.
+- **Removed keys** — çıxışlar həyata keçirilir, lakin cari default qeyd deyil - hər kəs dili sözdən silinir.
+- Manual çevirilər həyata keçirilir. Bir hedef söz əvvəl əvvəl bir dəfə varsa, giriş məhsulun necə deyil ki, dəyişdirilməz.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
 - Bir çeviri xüsusi dil üçün başarısız olursa, xidmət avtomatik retries. Yalnız davamlı məlumatlar (e.g., cavabsız dil) dilin atılması üçün əvvəl.
 - Başdan sonra, cari default sözlər bir sonraki müqayisə üçün yeni snapshot kimi qeyd edilir.
 
-Bütün dictionaries həmçinin həmçinin həmçinin qeyd edilib və insan oxumaqlıq üçün indented JSON.
+Bütün dictionaries həmişə həmçilər həyata keçirilir və insan oxumaqlıq üçün indented JSON.
 
 ### Kateqoriya 4 — TranslateMarkdownFiles
 
 Xidmət strukturu (default: ) və proseslər hər hansı bir məhsul resursiv:
 
 1. Əsas faylları oxuyur və SHA-256 hash işlənir.
-2. Yalnız başarısız bloklar yalnız başarısız bloklar **incremental re-translation** imkan verir, per-blok çeviri statusunda mövcud track.
+2. Yalnız başarısız bloklar **incremental re-translation** imkan verir, per-blok çeviri statusunda mövcud track.
 3. Yadda saxla.
 4. Hər bir hedef dil üçün, müxtəlif fayl də strukturu üçün nəzarət edilir.
-5. Heç bir hedef fayl, qeyd edilmiş bir hash var, qeyd strukturu təhlükəsizliyi var, və ya untranslated bloklar re-translation üçün sıralanır.
-6. ** Hər kəsmə dili təsdiq edilmiş və qüvvəl qəbul edilmişdir** - Çex uğurlu, lakin Fransız cavab, Çex fayl hala disk yazılıdır.
+5. Heç bir hedef fayl, qeyd edilmiş bir hash var, qeyd struktur təhlükəsizliyi var, və ya untranslated bloklar re-translation üçün sıralanır.
+6. ** Həmçinin hər hansı bir qadın çevrilənir və qüvvvəl qədər qəbul edilir** - Çex uğurlu, lakin Fransız qəbul, Çex faylları hala disk yazılıdır.
 7. Müxtəlif təhsil faylları məhsul ilə struktur parity üçün təsdiq edilir (eşit başlıqları, siyahısı, kod blokları, blokquotes, bağlantılar, güclü/italic markerlər, və HTML tags) disk yazılı.
 8. Bir məhsul üçün bütün hedef fayllar, yeni hash məhsulun yanında saxlanılır. məhsulun nömrəsindən sonra yazırsa (həmçinin yalnız yerləşdirilməsi üçün), hash müxtəlif seriyayaya geri düşür.
 9. Heç bir hər hansı bir tərcümə təqdim edilməzsa, metadata, bir nömrəsində yeniləndirilmişdir.
 
 ### məhsul 5 — saxlamaq
 
-Bir konsolide yığılmış və yayımlanmışdır. Bu daxildir:
+Yadda saxla Bu daxildir:
 
 - UTC run start və dəfə vaxtları tamamlamaq.
 - Yerlie JSON faylları saxlamaq, Markdown faylları qeyd, xüsusi faylları qeyd, və geri hash yazır.
@@ -86,7 +86,7 @@ Tarix
 Cari boru run üçün korrelasiya simvoliv
 Bir run daxili Monotonic counter, başlanğıc 1
 Saytın növü
-Əməliyyat məhsulları
+Mesajın tikintisi
 Oxunub:  the
 Yadda saxla
 Human-readable mövzu
@@ -149,8 +149,8 @@ Boru maşın iki səviyyəsini təsdiq edir:
 
 ### Konfrans-yerasiya retry (TranslationRetryService)
 
-- LibreTranslate'nin daxili retries-dən sonra bir əməkdaş istəyirsinizsə, 30-ikinci gecikmələrlə 3 əlavə səviyyə səviyyəti əlavə edilə bilər.
-- Yerləşdirici maska: Add yerholders () məhsulda təhlükəsiz heç vasitəsilə əvvvəl əvvvəl dəyişdirilir.
+- LibreTranslate'nin daxili retries-dən sonra bir əməkdaş istəyirsinizsə, 30-ikinci gecikmələrlə 3 əlavə səviyyəli retries qəbul edir.
+- Yer sahibi maska: Add yerholders () məhsulda təhlükəsiz heç vasitələr () vasitəsilə əvvəl və sonra qarşılaşdırılmış, hedef dillərin düzgün bilməsini təmin edir.
 
 ### Language
 
@@ -159,13 +159,13 @@ Boru maşın iki səviyyəsini təsdiq edir:
 
 ### Markdown blok-level retry
 
-- Markdown çevirilər blok-by-block (başa, paragraflar, siyahısı maddələri).
+- Markdown çeviriləri blok-by-block (başa, səhifə, siyahısı, siyahısı maddələr) keçirilib.
 - Bir müxtəlif blok çeviriciyə, metadata falated kimi qeyd edilir və bir sonraki boru run retried edilir.
-- Xidmət, hər hansı bir mövcud Markdown faylındakı fayllarda per-blok status.
+- Xidmət, hər hansı bir mövcud Markdown faylındakı fayllarda per-bloq statusu.
 
 ## Fayl kodları
 
-Fayllar birləşmiş ümumi qrup istifadə edilir:
+Fayllar birləşmiş enum qruplarından istifadə edilir:
 
 Axtarış
 |-------|----------|
@@ -175,22 +175,22 @@ Axtarış
 AZ1000
 5000–5999
 
-Heç bir hesabatda hər hansı bir məsləhət məqsədi (dil kodu, fayl yolu, və ya məhsul adı), səhifə kodu və insan hazırlıq mesajı.
+Heç bir hesabatda hər hansı bir məsləhət məqsədi (dil kodu, fayl yolu, və ya məhsul adı), səhv kodu və insan hazırlıq mesajı.
 
-## Domen azad deyil
+## Domen adı qeydiyyatdan keçir
 
 Server layihəsi, SignalR hub-a bağlanır və real vaxtda bütün boru məlumatlarını göstərir.
 
 - Bütün hadisələrin canlı-updating masasını göstərir.
-- Color-coded sıralar: məhsullar üçün mavi, tamamlamaq üçün yaşıl, qırmızı.
+- Color-coded sıralar: məhsullar üçün mavi, tamamlanması üçün yaşıl, qırmızı.
 - JSON-a bütün mesajları qiymətləndirmək və ixtisaslaşdırmaq.
-- Əlaqə azaldırsa üstat backoff ilə Auto-reconnects.
+- Bağlantı azaldırsa üstat backoff ilə Auto-reconnects.
 
 ## Dizayn prinsləri
 
 - **Modularity**: Hər bir çeviri məsləhəti təhlükəsizlik və testability üçün öz xidmətdə izole edilir.
 - **Incremental persistence**: Dictionaries and Markdown files are saved per-language immediately after translation, reducing memory pressure and providing earlier feedback.
 - **Resilience**: Birden çox retry səviyyəsi (HTTP, məhsul, blok) səyahətin boru səviyyəsini blok etmir.
-- ** Dövlət monitor**: Per-file metadata () və hash faylları aşağıdakı işlərində səhifə effektiv iş göstərir.
+- ** Dövlət monitor**: Per-file metadata () və hash faylları sonra çalışırıqlı inkişaf edir.
 - **Real-time görünürlük**: monitorinq və debugging üçün SignalR haqqında hər əsas məlumat verilir.
 - **Manual komponentlər avtomatik əlavələr üzərində əvvvəllik edir.**

@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## Süntaks
 
-Kohatäitjad kasutavad lokkis trakside süntaksit JSON sõnastiku väärtustes:
+Kohatäitjad kasutavad JSONi sõnastiku väärtustes lokkis trakside süntaksit:
 
 ```json
 {
@@ -52,7 +52,7 @@ Salvestatud väärtused toimivad ** vaikeväärtustena ** ja neid tühistavad k�
 
 ## API viide
 
-### JsonStringLocalizeri indekseerijaName
+### JsonStringLocalizer indexerName
 
 ```csharp
 // Without placeholders (backward compatible)
@@ -100,7 +100,7 @@ public interface IPlaceholderService
 }
 ```
 
-### Laiendamismeetodid
+### Laiendusmeetodid
 
 Mugavuse huvides töötades :
 

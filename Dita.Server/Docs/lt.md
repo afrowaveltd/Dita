@@ -2,13 +2,13 @@
 
 ## Comment
 
-Šiame dokumente apibendrinami visi pakeitimai, padaryti "Dita" automatinio vertimo paslaugos, įskaitant architektūros reaktoriaus, naujų funkcijų, stebimumo gerinimo, ir lokalizacijos patobulinimai.
+Šiame dokumente apibendrinami visi pakeitimai, padaryti į Dita automatinio vertimo paslaugos, įskaitant architektūros reaktoriaus, naujų funkcijų, stebimumo gerinimo, ir lokalizacijos patobulinimai.
 
 ## Architektūros pokyčiai
 
 ### Name
 
-Monolitinis buvo suskaidytas į keturias specializuotas paslaugas, koordinuojamas lengvo orkestro:
+Monolitinis skaidomas į keturias specializuotas paslaugas, koordinuojamas lengvo orkestro:
 
 - **BackendTranslationService** — Pipeline orchestrator (server validation, stage delegation, error handling)
 - **CountriesTranslationService** — Country name synchronization (English → target language)
@@ -65,7 +65,7 @@ Savybės:
 - **Selective retry**: Only failed blocks are re-translated on the next run
 - **Metadata persistence**: Translation state survives application restarts
 
-### Patobulintas atnaujinimo žurnalas
+### Patobulintas atnaujinimo loginis
 
 Tris atsparumo lygius:
 
@@ -86,7 +86,7 @@ Visų vamzdynų operacijų pažangos ataskaitoms:
 
 ### appsettings.json
 
-Nekeisti. Egzistuojanti konfigūracija toliau veikia:
+Nekeisti. Esama konfigūracija toliau veikia:
 
 ```json
 {
@@ -139,8 +139,8 @@ SignalR centras sudarytas klientų ryšiams.
 - - SignalR pranešimų leidyba
 - - Kartojama logika su placebu
 - - Leidėjo sąsaja
-- Šalies paslaugų sąsaja
-- Lokalizacijos paslaugos sąsaja
+- - Šalies paslaugų sąsaja
+- - Lokalizacijos paslaugos sąsaja
 - - Dokumentų aptarnavimo sąsaja
 - - Orkestro sąsaja (atnaujinta)
 - - Pe- file vertimo metaduomenys
@@ -171,7 +171,7 @@ III PRIEDAS
 - NAME OF TRANSLATORS
 - Padėties formatavimas () darbai nepasikeitė
 - NAME OF TRANSLATORS
-- @ info: tooltip
+- @ info: whatsthis
 - SignalR pranešimai naudoja tą patį formatą
 
 ## Migracijos kelias

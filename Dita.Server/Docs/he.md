@@ -2,7 +2,7 @@
 
 ## סקירה
 
-מסמך זה מסכם את כל השינויים שנעשו בשירות התרגום האוטומטי של Dita, כולל אדריכלות המספקת, תכונות חדשות, שיפורים observability ושיפורים ההכללה.
+מסמך זה מסכם את כל השינויים שבוצעו בשירות התרגום האוטומטי של Dita, כולל אדריכלות המספקת, תכונות חדשות, שיפורים observability ושיפורים ההכללה.
 
 ## אדריכלות שינויים
 
@@ -33,7 +33,7 @@
 דף ניהול חדש המספק חשיפה בזמן אמת לתוך צינור התרגום:
 
 - מציג את כל האירועים של אותות כפי שהם מתרחשים
-- סוגי הודעות קודקוד צבע (כחול = מוקרן, ירוק = שלם, אדום=טרור)
+- סוגי הודעות מקודמות בצבע (כחול = מוקרן, ירוק = שלם, אדום=טרור)
 - המונחים: Auto-reconnect
 - הודעות נגד ויצוא ל-JSON
 
@@ -53,7 +53,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 תכונות:
 - ערכי בעלי מקומות הניתנים בזמן ריצה או מאוחסנים ב
-- מסיכה אוטומטית / עצירות במהלך התרגום כדי למנוע שחיתות
+- מסכה אוטומטית / רדיפה במהלך התרגום כדי למנוע שחיתות
 - Backward תואם את בעלי המיקום הקיימים
 
 ### תרגום מובנה
@@ -73,7 +73,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 2. **Stage retry** (TranslationRetryService): 3 additional attempts with 30s delays
 3. **Block retry** (Documents Translationion Service): נכשל בלוקים מחדש בריצה הבאה
 
-### דוח SignalR
+### דיווח SignalR
 
 דיווח על התקדמות בזמן אמת לכל פעולות הצנרת:
 
@@ -134,7 +134,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 - תגית: Pipeline Orchestrator
 - שם המדינה
-- ג'ייסון מילון סינכרוניזציה
+- JSON Dictionary synSyncization
 - תרגום מובנה
 - הודעה מיידית
 - לוגיקה חוזרת עם מסיכה
@@ -168,8 +168,8 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 כל השינויים הם תוספת:
 
-- קוד מקומי קיים () עובד ללא שינוי
-- עיצוב מיקום () עובד ללא שינוי
+- קוד ההקצאה קיים () עובד ללא שינוי
+- פורמט מיקום () עובד ללא שינוי
 - פורמט מילון JSON קיים ללא שינוי
 - המבנה הקיים ללא שינוי
 - הודעות SignalR משתמשות באותו פורמט
@@ -184,8 +184,8 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 
 ## שיפור ביצועים
 
-- ** שימוש בזיכרון **: קבצים ניצלו באופן מיידי במקום להחזיק את כולם בזיכרון
-- **התמריץ של ה-Faster פועל**: רק שינוי / failed Blos re-translated
+- ** שימוש בזיכרון ** קבצים שנשמרו באופן מיידי במקום להחזיק את כולם בזיכרון
+- **האקר הגדל רץ**: רק שינוי / failed Blos re-translated
 - **Better visibility**: Real-time progress helps diagnose slow stages
 
 ## שיפורים עתידיים

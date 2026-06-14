@@ -1,6 +1,6 @@
 ﻿# লাইভ অনুবাদ ড্যাশবোর্ড
 
-লাইভ অনুবাদ বোর্ড একটি প্রশাসক পাতা যা স্বয়ংক্রিয় অনুবাদের পাইপে সত্যিকারের সময় প্রদর্শন করে থাকে। এটা সিগন্যালআর হাবের সাথে সংযোগ করে আর সব পাইপলাইন ইভেন্ট দেখায়।.
+লাইভ অনুবাদ বোর্ড একটি প্রশাসক পাতা যা স্বয়ংক্রিয় অনুবাদের পাইপে বাস্তব সময় প্রদর্শন করে থাকে। এটা সিগন্যালআর হাবের সাথে সংযোগ করে আর সব পাইপলাইন ইভেন্ট দেখায়।.
 
 ## ইউ- আর- এল
 
@@ -17,7 +17,7 @@
 - **Sequence number** — Monotonic counter within each pipeline run
 - **Tetpt** — অনুষ্ঠান গ্রহণ করার সময় স্থানীয় সময়
 - **Run ID** — Shortened GUID for correlation
-- **Sttut** - পাইপলাইন ব্যাজ (Comples, অনুবাদ, ইত্যাদি)
+- **Stut** - পাইপলাইন ব্যাজ (Comples, অনুবাদ, ইত্যাদি)
 - **Type** — Message type badge (StageStarted, Progress, StageCompleted, etc.)
 - ****s-কিছু বোধগম্য নয়
 - **Con** - ইভেন্টের সম্পূর্ণ মূল্য
@@ -39,12 +39,12 @@
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-সংযোগগুলি Shulis দ্বারা স্বয়ংক্রিয় আবার সংযোগ ব্যবহার করা হয়: 0, 2, 2, ৫, ১০, ৩০.
+সংযোগগুলি SalutLOPL-র সাথে স্বয়ংক্রিয় পুনরায় সংযোগ করে: 0, 2, 5, 10, 30.
 
 ### নিয়ন্ত্রণ
 
 - **Clear Feed** — Removes all displayed messages and resets the counter
-- ** JSON** - সকল বার্তা বিশ্লেষণের জন্য JSON ফাইল হিসাবে গ্রহণ করা হবে
+- ** JSON** - সব বার্তা বিশ্লেষণের জন্য JSON ফাইল হিসাবে গ্রহণ করা হয়
 - **Message counter** — Shows total number of events received in this session
 
 ## ক্লাস
@@ -75,7 +75,7 @@ interface LocalizationHubMessage {
 
 ### ইভেন্টের ধরন
 
-ড্যাশবোর্ড- এর সকল মান:
+ড্যাশবোর্ড দ্বারা সব মান চিহ্নিত করা হয়:
 
 ধরন
 |------|---------|
@@ -97,7 +97,7 @@ interface LocalizationHubMessage {
 
 ### সম্মুখপ্রান্ত
 
-- বুটস্ট্র্যাপ ৫- এর মাধ্যমে বিশুদ্ধ HTML/jS টুল
+- বুটস্ট্র্যাপ ৫- এর মাধ্যমে বিশুদ্ধ HTML/jS
 - মাইক্রোসফট সিগন্যাল আউটপুট জাভাস্ক্রীপ্ট ক্লায়েন্ট (ডিএন.এন থেকে লোড করা হয়)
 - ইভেন্টের ফিডের জন্য কোনো সার্ভার উপস্থিত নেই
 
@@ -125,7 +125,7 @@ Dita.Server/Pages/Admin/
 - **Fing** — মঞ্চ, ধরন, সঞ্চালন অথবা পরিচালনা করুন
 - **Historical runs** — View completed runs from a database or log file
 - **Statistics** — Charts showing translation counts, error rates, and latency over time
-- **-ম্যান দ্বারা স্বয়ং ধার্য বিশেষ পাইপলাইন আরম্ভ করার উদ্দেশ্যে **
+- **Manual triggers** — Buttons to manually start specific pipeline stages
 - **Configuration** — Edit `AutomaticTranslationSettings` directly from the dashboard
 - **Language management** — View and edit supported languages
 - **Dictionary preview** — Browse and search localization dictionaries
@@ -148,6 +148,6 @@ Dita.Server/Pages/Admin/
 
 ### বার্তা তালিকা
 
-মাঠের মধ্যে একটা এককের আদেশ আছে। বার্তা উদ্ধার করা হচ্ছে, এর থেকে বার্তা প্রাপ্ত হয়েছে:
+মাঠের মধ্যে একটা এককের আদেশ আছে। পরিচিত ব্যক্তি থেকে বার্তা প্রাপ্ত হয়েছে:
 - একাধিক পাইপলাইন চালিত করে (ডিম্যাপহোয়ার লক রাখার সময় এটি সম্ভব নয়)
 - ব্রাউজারের মূল সমস্যা (ছবি সতেজ করার উদ্দেশ্যে)

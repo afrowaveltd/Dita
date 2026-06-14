@@ -1,4 +1,4 @@
-﻿# Resumo de Ŝanĝoj al la Aŭtomata Translation Servo
+﻿# Resumo de Ŝanĝoj al la Aŭtomata Traduko-Servo
 
 ## Superrigardo
 
@@ -32,7 +32,7 @@ La monolita estis malkonstruita en kvar specialigitajn servojn kunordigitajn far
 
 Nova admin paĝo kiu disponigas realtempan videblecon en la tradukon dukto:
 
-- Apartigas ĉiujn SignalR-okazaĵojn kiam ili okazas
+- Montras ĉiujn SignalR-okazaĵojn kiam ili okazas
 - Koloro-koditaj mesaĝspecoj (bluaj ekkomencitaj, verdaj kompletigitaj, ruĝa tero)
 - Ligo statusstandardo kun aŭto-religo
 - Mesaĝo kontraŭ kaj eksportado al JSON
@@ -126,7 +126,7 @@ La SignalR-nabo estas mapita ĉe por klientligoj.
 
 ### Konataj Limigoj
 
-- testo estas transsaltita kiam kurante enen paralela ĉar multoblaj testkazoj dividas la saman dosieron. Ĝi pasas kiam ĝi kuras en izoliteco.
+- testo estas translokita kiam kurante en paralela ĉar multoblaj testkazoj dividas la saman dosieron. Ĝi pasas kiam ĝi kuras en izoliteco.
 
 ## Nova dosierstrukturo
 
@@ -134,7 +134,7 @@ La SignalR-nabo estas mapita ĉe por klientligoj.
 
 - Pipeline orkestrotor
 - Landa nomo traduko
-- JSON-vortaro sinkronigado
+- JSON-vorta sinkronigado
 - Markdown traduko
 - SignalR-mesaĝo
 - Retry logiko kun lokulo maskanta

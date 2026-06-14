@@ -2,7 +2,7 @@
 
 ## Összefoglaló
 
-Ez a dokumentum összefoglalja a Dita automatikus fordítási szolgáltatás valamennyi változását, beleértve az architektúrákat, az új funkciókat, a megfigyelhetőségi fejlesztéseket és a lokalizációs fejlesztéseket.
+Ez a dokumentum összefoglalja a Dita automatikus fordítási szolgáltatás minden változását, beleértve az architektúrákat, az új funkciókat, a megfigyelhetőségi fejlesztéseket és a lokalizációs fejlesztéseket.
 
 ## Építészeti változások
 
@@ -32,7 +32,7 @@ A monolitikum négy speciális szolgáltatássá bomlott, melyeket egy könnyűs
 
 Egy új adminisztrációs oldal, amely valós idejű láthatóságot biztosít a fordítóvezetékben:
 
-- Megjeleníti az összes SignalR eseményt, ahogy azok előfordulnak
+- Megjeleníti az összes SignalR eseményt
 - Színezett kódolt üzenettípusok (kék = indítás, zöld = befejezés, piros = hiba)
 - Csatlakozási állapot banner auto- reconnect
 - Üzenetszámláló és exportálás JSON-ba
@@ -78,7 +78,7 @@ Három szintű ellenálló képesség:
 Az összes csővezeték-üzemeltetésre vonatkozó valós idejű helyzetjelentés:
 
 - Minden szakasz közzéteszi az eseményeket
-- Rendezvényként publikált nyelvi haladás
+- A nyelvi előmenetelt eseményként teszik közzé
 - A hibaesemények közé tartozik a részletes háttér (forrás, hibakód, üzenet)
 - A szekvencia számok garantálják a rendelést minden egyes menetben
 
@@ -126,7 +126,7 @@ A SignalR csomópontot feltérképezték az ügyfélkapcsolatokra.
 
 ### Ismert korlátozások
 
-- a vizsgálat kimarad, ha párhuzamosan fut, mert több vizsgálati eset ugyanazt a fájlt használja. Elmúlik, ha egyedül fut.
+- a teszt kimarad, ha párhuzamosan fut, mert több vizsgálati eset ugyanazt a fájlt használja. Elmúlik, ha egyedül fut.
 
 ## Új fájlszerkezet
 
@@ -162,7 +162,7 @@ A SignalR csomópontot feltérképezték az ügyfélkapcsolatokra.
 - - Frissített csővezeték dokumentáció
 - - Helyettesítő rendszer útmutató
 - - Dashboard használati útmutató
-- - Műszaki architektúra áttekintés
+- - Technikai architektúra áttekintés
 
 ## Hátrameneti összeegyeztethetőség
 
@@ -178,7 +178,7 @@ Minden módosítás adalékanyag:
 
 Nincs szükség migrációra. A kritika belső:
 
-1. A régi maradt, mint egy hivatkozás, majd felváltotta
+1. A régi maradt, mint egy referencia, majd felváltotta
 2. A DI regisztrációkat frissítették az új interfészek használatához
 3. Minden meglévő fogyasztó nem lát változást
 
@@ -200,4 +200,4 @@ Tervezett fejlesztések:
 
 ## Kapcsolat
 
-A fordítási szolgáltatással kapcsolatos kérdésekért vagy kérdésekért kérjük, olvassa el az egyes modulok könyvtárában található részletes dokumentációt, vagy lépjen kapcsolatba a fejlesztési csoporttal.
+A fordítási szolgáltatással kapcsolatos kérdésekért vagy kérdésekért kérjük, olvassa el az egyes modulok könyvtárának részletes dokumentációját, vagy lépjen kapcsolatba a fejlesztési csoporttal.

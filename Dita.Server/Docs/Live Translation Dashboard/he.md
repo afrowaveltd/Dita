@@ -73,7 +73,7 @@ interface LocalizationHubMessage {
 }
 ```
 
-### אירועים
+### סוגי אירועים
 
 לוח המחוונים מטפל בכל הערכים:
 
@@ -98,10 +98,10 @@ interface LocalizationHubMessage {
 ### החזית
 
 - HTML/JS עם Bootstrap 5
-- שימוש ב- Microsoft SignalR JavaScript Customer Library (מטען מ- CDN)
+- השתמש ב- Microsoft SignalR JavaScript Customer Library (מטען מ- CDN)
 - אין הוראות בצד השרת הנדרש להזנת האירוע
 
-### מבנה עמוד
+### מבנה Page
 
 ```
 Dita.Server/Pages/Admin/
@@ -125,9 +125,9 @@ Dita.Server/Pages/Admin/
 - **Filtering** — Filter events by stage, type, or run ID
 - ** ריצות היסטוריות** - תצוגה הושלמה פועל ממסד נתונים או קובץ יומן
 - **Statistics** - תרשימים המציגים ספירות תרגום, שיעורי שגיאה, ושקיפות לאורך זמן
-- **Manual triggers** — Buttons to manually start specific pipeline stages
+- ** גורמים מנליים** - Buttons כדי להתחיל באופן ידני שלבים ספציפיים של צינורות
 - **Configuration** - עריכה ישירות מן המחוונים
-- **Language management** — View and edit supported languages
+- ** ניהול לבנגואז** - View and Edit Languages
 - ** תצוגה מקדימה ** - Browse and Search Localization dictionaries
 
 ## פתרון בעיות
@@ -148,6 +148,6 @@ Dita.Server/Pages/Admin/
 
 ### הודעות הן מתוך סדר
 
-התחום מבטיח להזמין בתוך ריצה אחת. אם הודעות מופיעות מתוך סדר, זה עשוי להצביע:
+השדה מבטיח להזמין בתוך ריצה אחת. אם הודעות מופיעות מתוך סדר, זה עשוי להצביע:
 - מספר רב של צינורות חפיפה (לא צריך לקרות בגלל מנעול סלמר)
 - דפדפנים (נסו מרענן את הדף)

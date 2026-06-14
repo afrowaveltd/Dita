@@ -141,7 +141,7 @@ Išversta į čekų kalbą:
 Galutinis rezultatas:
 
 Taip užtikrinama, kad:
-- Vietų turėtojai niekada nėra išversti arba sugadintas
+- Vietų laikikliai niekada neverčiami arba sugadinti
 - Tikslinės kalbos gramatika gali pertvarkyti aplinkinį tekstą laisvai
 - Tuos pačius šablonus teisinga naudoti visomis kalbomis
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Pavadintas "placeholder API" yra adityvinis - tai nesuardo esamo naudojimo.
+Pavadintas placeholder API yra priedas - tai ne nutraukti esamą naudojimą.

@@ -149,7 +149,7 @@ Això assegura que:
 
 1. **Usa noms descriptius ** És millor que o
 2. **Keep placeholders minimal**: Too many placeholders make translation harder
-3. **Documents esperats ** Comentaris al traductor d'ajuda JSON
+3. **Document expected types**: Comments in the JSON file help translators understand context
 4. **Prefer runtime values**: For truly dynamic data (user names, counts, dates), pass values at runtime
 5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
 6. **Validate placeholders**: Use `ExtractPlaceholders()` to verify all expected placeholders are provided
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-L' API de marcadors de substitució s' afegeix initiu no trenca l' ús existent.
+L' API de posició de nom és additiu libno es trenca l' ús existent.

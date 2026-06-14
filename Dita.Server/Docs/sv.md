@@ -39,7 +39,7 @@ En ny administratörssida som ger realtidssynlighet i översättningsledningen:
 
 ### Namngivna platshållare
 
-Lokaliseringssystemet stöder nu namngivna platser () för förbättrad grammatikalitet på olika språk:
+Lokaliseringssystemet stöder nu platshållare () för förbättrad grammatikalitet på olika språk:
 
 ```csharp
 // Usage in code
@@ -126,7 +126,7 @@ SignalR-navet kartläggs för klientanslutningar.
 
 ### Kända begränsningar
 
-- testet hoppas parallellt eftersom flera testinstanser delar samma fil. Det passerar när man kör i isolering.
+- testet hoppas över när du kör parallellt eftersom flera testinstanser delar samma fil. Det passerar när man kör i isolering.
 
 ## Ny filstruktur
 
@@ -150,7 +150,7 @@ SignalR-navet kartläggs för klientanslutningar.
 - Tillsatt namngiven placeholder support
 - Uppdaterad för ny parameter
 - Namngivna platsholder management
-- Placeholder Interface
+- Placeholder interface
 
 ### Ny Admin Page i
 

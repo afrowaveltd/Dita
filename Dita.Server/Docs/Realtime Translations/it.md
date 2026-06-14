@@ -9,7 +9,7 @@ La pipeline di traduzione è stata ristrutturata in un'architettura modulare con
 - **BackendTranslationService** — Orchestra l'intera pipeline, gestisce la validazione del server e i delegati lavorano a sotto-servizi.
 - **CountriesTranslationService** — Sincronizza i nomi dei paesi da in dizionari per lingua.
 - **LocalizationTranslationService** — Rileva i tasti aggiunti / rimossi nel dizionario JSON predefinito e li traduce in lingue di destinazione.
-- **DocumentsTranslationService** — Traduci i file di documentazione Markdown con tracciamento per blocco e metadati.
+- **DocumentsTranslationService** — Traduci i file di documentazione Markdown con monitoraggio per blocco e metadati.
 
 Ogni sotto-servizio opera in modo indipendente e riporta i progressi attraverso SignalR in tempo reale.
 
@@ -62,18 +62,18 @@ Il servizio segue le radici della documentazione configurate (default: ) e tratt
 2. Un file accanto alle tracce di origine per lingua, per blocco di stato di traduzione, consentendo ** ritraslazione accidentale** di solo blocchi falliti.
 3. L'hash memorizzato dall'esecuzione precedente (kept in un file accanto al file sorgente, o in una posizione di fallback temporanea) è confrontato con l'hash corrente.
 4. Per ogni lingua di destinazione, il file corrispondente viene anche controllato per l'integrità strutturale.
-5. Qualsiasi file di destinazione mancante, ha un hash obsoleto, non riesce la validazione della struttura, o contiene blocchi non traslati è in coda per la ritraslazione.
+5. Qualsiasi file di destinazione mancante, ha un hash obsoleto, non riesce la validazione della struttura, o contiene blocchi non tradotti è in coda per la ritraslazione.
 6. **Ogni lingua di destinazione è tradotta e salvata in modo indipendente** — se ceco riesce ma francese non riesce, il file ceco è ancora scritto su disco.
-7. I file tradotti con successo sono convalidati per la parità strutturale con la sorgente (conti delle voci uguali, elementi di elenco, blocchi di codice, blockquotes, link, marcatori in grassetto/italico e tag HTML) prima che siano scritti su disco.
+7. I file tradotti con successo sono convalidati per la parità strutturale con la fonte (equale conteggio delle voci, elementi di elenco, blocchi di codice, blockquotes, link, marcatori in grassetto/italico e tag HTML) prima che siano scritti su disco.
 8. Se tutti i file di destinazione per una fonte riescono, il nuovo hash viene memorizzato accanto alla fonte. Se la scrittura accanto alla fonte fallisce (ad esempio nelle distribuzioni di sola lettura), l'hash rientra nella directory temporanea.
-9. Se una traduzione di destinazione non riesce a convalidare, i metadati contrassegnano quei blocchi come non tradotti in modo che vengano riattivati sul prossimo run.
+9. Se una traduzione di destinazione non riesce a convalidare, i metadati contrassegnano quei blocchi come non traslati in modo che vengano riattivati sul prossimo run.
 
 ### Fase 5 — StoringResults
 
 Un consolidato viene assemblato e pubblicato. Esso comprende:
 
 - UTC run start e timestamp di completamento.
-- Conti di file locali salvati JSON, salvato file Markdown, file hash salvati, e fallback hash scrive.
+- Conti di file locali salvati JSON, salvato file Markdown, file hash salvati, e errori di errore scrive.
 - Eventuali errori di archiviazione raccolti durante l'esecuzione.
 - Statistiche di traduzione per lingua (conto tradotto, conteggio saltato, conteggio errori).
 
@@ -86,8 +86,8 @@ Campo
 Identificatore di correlazione per l'esecuzione corrente della pipeline
 Contatore monotonico in esecuzione, a partire da 1
 Tipo semantico del messaggio
-Pipeline stage il messaggio appartiene a
-Ora UTC quando il messaggio è stato emesso
+Pipeline stadio il messaggio appartiene a
+UTC tempo quando il messaggio è stato emesso
 Se il messaggio rappresenta una condizione di errore
 Riepilogo leggibile dall'uomo
 Pagamenti specifici per la fase (oggetto di rapporto o null)
@@ -149,7 +149,7 @@ La pipeline implementa due livelli di resilienza:
 
 ### Rettifica a livello di stadio (TranslationRetryService)
 
-- Se una richiesta di traduzione fallisce dopo i retries interni di LibreTranslate, l'esecuzione di fino a 3 ulteriori retries stage-level con ritardi di 30 secondi.
+- Se una richiesta di traduzione fallisce dopo le ripetizioni interne di LibreTranslate, l'esecuzione di fino a 3 ulteriori retries stage-level con ritardi di 30 secondi.
 - Mascheramento dei segnaposto: i segnaposto nominati () nel testo sono temporaneamente sostituiti con gettoni sicuri () prima della traduzione e poi ripristinati, garantendo una corretta grammatica nelle lingue di destinazione.
 
 ### Validazione della lingua

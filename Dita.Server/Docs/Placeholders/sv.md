@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## Syntax
 
-Placeholders använder curly-brace syntax inuti JSON ordbok värden:
+Placeholders använder den lockiga syntaxen i JSON-ordboksvärden:
 
 ```json
 {
@@ -48,7 +48,7 @@ Hanterar en fil i katalogen:
 }
 ```
 
-Lagrade värden fungerar som ** standarder** och är överdrivna av runtime-värden.
+Lagrade värden fungerar som ** standarder** och är överbelagda av runtime-värden.
 
 ## API referens
 
@@ -150,7 +150,7 @@ Detta säkerställer att:
 1. **Use descriptive names**: `{userName}` is better than `{0}` or `{name}`
 2. **Keep placeholders minimal**: Too many placeholders make translation harder
 3. **Document expected types**: Comments in the JSON file help translators understand context
-4. **Prefer runtime values**: För verkligt dynamiska data (användarnamn, räknas, datum), passvärden vid drifttid
+4. **Prefer runtime values**: För verkligt dynamiska data (användarnamn, räknas, datum), passvärden vid runtime
 5. **Use stored values for defaults**: For configuration that rarely changes (app name, support email)
 6. **Validate placeholders**: Använd för att verifiera alla förväntade platshållare tillhandahålls
 

@@ -2,7 +2,7 @@
 
 Detta dokument finns som en levande testingång för den automatiska översättningsledningen. Alla ändringar i denna fil utlöser återöversättning av alla målspråksfiler på nästa schemalagda körning.
 
-## Arkitektöversikt
+## Arkitekturöversikt
 
 Översättningsledningen har omstrukturerats till en modulär arkitektur med fyra specialiserade undertjänster som samordnas av en lätt orkestrator:
 
@@ -48,7 +48,7 @@ Tjänsten jämför den nuvarande standardlokaliseringsordboken med en ögonblick
 - **Lägg till nycklar** - poster som finns i den nuvarande standarden men frånvarande från ögonblicksbilden - översätts till varje målspråk som inte redan har en manuell post för den nyckeln.
 - ** Ta bort nycklar** – poster som finns i ögonblicksbilden men frånvarande från den nuvarande standarden – raderas från varje målspråksordbok.
 - Manuella översättningar prioriterar alltid. Om en målordbok redan innehåller ett värde för en nyckel, lämnas den posten oförändrad oavsett vad källan säger.
-- ** Varje målspråksordbok sparas omedelbart efter att översättningarna är färdiga**, snarare än att vänta på att alla språk ska avslutas.
+- **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
 - Om en översättning misslyckas för ett visst språk, returnerar tjänsten automatiskt. Endast ihållande fel (t.ex. ostödda språk) gör att språket hoppas över.
 - Efter körningen sparas den nuvarande standardordboken som den nya ögonblicksbilden för nästa jämförelse.
 
@@ -56,7 +56,7 @@ Alla ordböcker lagras alltid med alfabetiskt sorterade nycklar och indragna JSO
 
 ### Steg 4 - TranslateMarkdownFiles
 
-Tjänsten går de konfigurerade dokumentationsrötterna (standard:) och bearbetar varje källfil återkommande:
+Tjänsten går de konfigurerade dokumentationsrötterna (standard:) och behandlar varje källfil återkommande:
 
 1. Källans filinnehåll läses och en SHA-256 hash beräknas.
 2. En fil bredvid källspår per språk, per block översättningsstatus, vilket möjliggör ** stegvis återöversättning** av endast misslyckade block.
@@ -87,7 +87,7 @@ Korrelationsidentifierare för den aktuella rörledningen
 Monotonic räknare inom en körning, börjar vid 1
 Semantisk typ av meddelande
 Pipeline scenen meddelandet tillhör
-UTC-tid när meddelandet avges
+UTC-tid när meddelandet släpptes
 Om meddelandet representerar ett feltillstånd
 Mänsklig läsbar sammanfattning
 Stegspecifik nyttolast (rapportera objekt eller null)
@@ -100,7 +100,7 @@ Värde
 1
 2
 3
-4
+4.4 4
 5.5
 6
 
@@ -112,7 +112,7 @@ Värde
 1
 2
 3
-4
+4.4 4
 5.5
 
 ### Typiskt meddelandeflöde
@@ -147,14 +147,14 @@ Om något skede misslyckas, de återstående stadierna hoppas, ett meddelande av
 
 Rörledningen genomför två nivåer av motståndskraft:
 
-### Stegnivå retry (TranslationRetryService)
+### Steg-nivå retry (TranslationRetryService)
 
 - Om en översättningsbegäran misslyckas efter LibreTranslates interna retries, utför upp till 3 ytterligare steg-nivå retries med 30 sekunders förseningar.
 - Placeholder masking: Namngivna platshållare () i text ersätts tillfälligt med säkra tokens () före översättning och återställs efteråt, vilket säkerställer korrekt grammatik i målspråk.
 
 ### Språkvalidering
 
-- Innan du översätter till ett målspråk kontrollerar tjänsten språket stöds av översättningsservern.
+- Innan du översätter till ett målspråk verifieras språket av översättningsservern.
 - Osupporterade språk hoppas med en varning, vilket förhindrar upprepade misslyckade försök.
 
 ### Markdown block-nivå retry
@@ -183,8 +183,8 @@ Server-projektet innehåller en administratörssida som ansluter till SignalR-na
 
 - Visar anslutningsstatus, meddelanderäkning och en live-updating tabell över alla händelser.
 - Färgkodade rader: blå för scenstart, grön för slutförande, röd för fel.
-- Stöder att rensa fodret och exportera alla meddelanden till JSON.
-- Auto-återansluter med exponentiell backoff om anslutningen sjunker.
+- Stöder clearing av fodret och exporterar alla meddelanden till JSON.
+- Auto återansluter med exponentiell backoff om anslutningen sjunker.
 
 ## Designprinciper
 

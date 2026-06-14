@@ -102,7 +102,7 @@ public interface IPlaceholderService
 
 ### Métodos de extensión
 
-Por comodidade ao traballar con:
+Para comodidade cando se traballa con:
 
 ```csharp
 public static class StringLocalizerExtensions
@@ -141,7 +141,7 @@ Traducido ao checo:
 Resultado final:
 
 Isto asegura que:
-- Os autores nunca foron traducidos ou corrompidos
+- Os propietarios nunca foron traducidos ou corrompidos
 - A gramática da lingua obxectivo pode reorganizar libremente o texto que o rodea
 - O mesmo modelo funciona correctamente en todos os idiomas
 

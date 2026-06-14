@@ -15,7 +15,7 @@ Live Translation Dashboard - бул автоматтык котормо түтү
 Котормо түтүктөрүндөгү бардык SignalR окуялары жандуу жаңыртуу таблицасында көрсөтүлгөн:
 
 - **Sequence number** — Monotonic counter within each pipeline run
-- ** Убакыттын өтүшү** Иш-чара кабыл алынган жергиликтүү убакыт
+- **Timestamp** — Local time when the event was received
 - **Run ID** — Shortened GUID for correlation
 - **Stage** — Pipeline stage badge (CheckServers, TranslateCountries, etc.)
 - **Type** — Message type badge (StageStarted, Progress, StageCompleted, etc.)

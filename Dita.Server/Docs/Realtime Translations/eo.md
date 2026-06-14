@@ -15,7 +15,7 @@ La traduko dukto estis restrukturita en modulan arkitekturon kun kvar specialeca
 
 ## Kion la servo faras
 
-La servo kuras en horaro kaj efektivigas kvin-fazan dukton: servila validumado, landosinkronigo, JSON-vorta sinkronigado, Markdown dosiertraduko, kaj persistante la rezultojn. Ĉiu stadio elsendas strukturitajn realtempajn progresojn super SignalR tiel ke ligitaj klientoj povas sekvi antaŭen kiel laborenspezoj.
+La servo kuras sur horaron kaj efektivigas kvin-fazan dukton: servila validumado, landosinkronigo, JSON-vorta sinkronigado, Markdown dosiertraduko, kaj persistante la rezultojn. Ĉiu stadio elsendas strukturitajn realtempajn progresojn super SignalR tiel ke ligitaj klientoj povas sekvi kune kiel laborenspezoj.
 
 ## Duliniaj stadioj
 
@@ -60,11 +60,11 @@ La servo piediras la formitan dokumentarradikojn (defaŭlto: ) kaj prilaboras ĉ
 
 1. La fonta dosierenhavo estas legita kaj SHA-256 hah estas komputita.
 2. Paĝo plej proksime al la fonttrakoj per-lingvo, per-bloka traduko statuso, ebliga  **incremental re-traduko ** de nur malsukcesaj blokoj.
-3. La stokita hah de la antaŭa kuro (konservita en dosiero plej proksime al la fontdosiero, aŭ en provizora senrezigna loko) estas komparita kun la nuna hash.
+3. La stokita hah de la antaŭa kuro (konservita en dosiero plej proksime al la fontdosiero, aŭ en provizora senrezigna loko) estas komparita kun la nuna hah.
 4. Por ĉiu cellingvo, la ekvivalenta dosiero ankaŭ estas kontrolita por struktura integreco.
 5. Ĉiu celdosiero kiu maltrafas, havas malmodernan hah, malsukcesas strukturan validadon, aŭ enhavas netradukitajn blokojn estas ripetitaj por re-traduko.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
-7. Sukcese tradukitaj dosieroj estas konfirmitaj por struktura egaleco kun la fonto (egalaj titoloj, listeroj, kodblokoj, blokocitoj, ligiloj, aŭdacaj/itaj signoj, kaj HTML-etikedoj) antaŭ ol ili estas skribitaj al disko.
+7. Sukcesaj tradukitaj dosieroj estas konfirmitaj por struktura egaleco kun la fonto (egalaj titoloj, listeroj, kodblokoj, blokocitoj, ligiloj, aŭdacaj/itaj signoj, kaj HTML-etikedoj) antaŭ ol ili estas skribitaj al disko.
 8. Se ĉiuj celdosieroj por fonto sukcesas, la nova hah estas stokita plej proksime al la fonto. Se skribo plej proksime al la fonto malsukcesas (ekzemple en leg-restriktitaj deplojoj), la hah falas reen al la provizora adresaro.
 9. Se ĉiu celtraduko malsukcesas validumadon, la metadatenoj markas tiujn blokojn kiel netradukitaj tiel ili estas retried sur la venonta kuro.
 
@@ -175,7 +175,7 @@ Montaro
 4000-4999
 5000-5999
 
-Ĉiu eraro en raporto portas la fontidentigilon (lingva kodo, dosierpado, aŭ artistan nomon), la erarkodon, kaj hom-legeblan mesaĝon.
+Ĉiu eraro en raporto portas la fontidentigilon (lingvan kodon, dosierpadon, aŭ artistan nomon), la erarkodon, kaj hom-legeblan mesaĝon.
 
 ## Traduko de Dashboard
 

@@ -137,7 +137,7 @@ Il mozzo SignalR è mappato per le connessioni client.
 - — Sincronizzazione del dizionario JSON
 - — Traduzione di Markdown
 - — Pubblicazione di messaggi SignalR
-- — Promuovere la logica con la maschera del segnaposto
+- — Recuperare la logica con la maschera del segnaposto
 - — Interfaccia editoriale
 - — Interfaccia di servizio di paese
 - — Interfaccia di servizio di localizzazione
@@ -171,7 +171,7 @@ Tutti i cambiamenti sono additivi:
 - Il codice di localizzazione esistente () funziona invariato
 - Formattazione posizionale () funziona invariata
 - Il formato del dizionario JSON esistente è invariato
-- La struttura di Markdown esistente è invariata
+- La struttura esistente di Markdown è invariata
 - I messaggi SignalR usano lo stesso formato
 
 ## Percorso di migrazione
@@ -185,15 +185,15 @@ Nessuna migrazione richiesta. Il refactoring è interno:
 ## Miglioramenti delle prestazioni
 
 - ** Utilizzo della memoria ridotta ** File salvati per lingua immediatamente invece di tenere tutti in memoria
-- ** Correzioni incrementali più veloci ** Solo i blocchi Markdown modificati/falled sono ritraslati
+- ** Correzioni incrementali veloci ** Solo i blocchi Markdown modificati/falled sono ritraslati
 - ** Migliore visibilità ** Il progresso in tempo reale aiuta a diagnosticare le fasi lente
 
 ## Miglioramenti futuri
 
 Miglioramenti pianificati:
 
-1. **AI fine-tuning** — Rassegna di traduzione automatica per frasi > 5 parole
-2. ** Autenticazione di amministratore** — Limitare le pagine di amministrazione agli utenti autorizzati
+1. ** AI fine-tuning** — Rassegna di traduzione automatica per frasi > 5 parole
+2. **Aautenticazione di amministratore** — Limitare le pagine di amministrazione agli utenti autorizzati
 3. **Dictionary editor** — Web UI per la gestione delle chiavi di localizzazione
 4. **Statistiche di traduzione** — Grafico che mostra i conti di traduzione e i tassi di errore nel tempo
 5. **Custom placeholder syntax** — Supporto per formati placeholder alternativi

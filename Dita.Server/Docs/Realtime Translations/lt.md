@@ -21,13 +21,13 @@ PaslaugA veikia tvarkaraštyje ir vykdo dešimtojo etapo vamzdyną: serverio pat
 
 ### 1 etapas - Kontroliniai serveriai
 
-Prieš pradedant bet kokį vertimo darbą, tarnyba patikrina, kad visos išankstinės sąlygos yra įvykdytos:
+Prieš pradedant vertimus, tarnyba patikrina, ar visos išankstinės sąlygos yra įvykdytos:
 
 - Konfigūracijos sekcija turi būti ir galiojanti.
 - Lybreplayer serveris turi atsakyti per priimtiną laiką.
 - Kalbų sąrašas prieinamas vertimų serverį.
-- Konstrukcinė numatytoji kalba turi būti tame sąraše.
-- Trūksta locale JSON failų bet palaikomai kalbai sukurti automatiškai.
+- III PRIEDAS.
+- Trūksta locale JSON failų bet kuriai palaikomai kalbai sukurti automatiškai.
 
 @ info: tooltip.
 
@@ -38,12 +38,12 @@ Prieš pradedant bet kokį vertimo darbą, tarnyba patikrina, kad visos išankst
 - NAME OF TRANSLATORS.
 - NAME OF TRANSLATORS.
 - After the default dictionary is updated, each missing country entry in every target language dictionary is translated and saved **immediately per language**.
-- Already-translated įrašai yra saugomi be pakeitimų.
+- Already- translated įrašai yra saugomi be pakeitimų.
 - @ info: whatsthis.
 
 ### 3 etapas - TranslateJsonFilms
 
-PaslaugA lygina dabartinį numatytąjį lokalizacijos žodyną su iš ankstesnio kurso saugomu vaizdo įrašu:
+PaslaugA lygina dabartinį numatytąjį lokalizavimo žodyną su iš ankstesnio kurso saugomu fotografija:
 
 - **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
@@ -52,20 +52,20 @@ PaslaugA lygina dabartinį numatytąjį lokalizacijos žodyną su iš ankstesnio
 - @ info: whatsthis Trūksta tik nuolatinių klaidų (pvz., nepalaikomos kalbos).
 - NAME OF TRANSLATORS.
 
-All dictionary shall always be stoved with abėcėlės rikiuotas raktus ir intended JSON for human insibility.
+All dictionaries visad yra saugomi su abėcėlės rūšiuojami raktai ir intended JSON už žmogaus suprantamumą.
 
-### 4 etapas - TranslateMarkdownFilms
+### 4 etapas - TranslateMarkdownFilds
 
 PaslaugA eina sukonfigūruotas dokumentacijos šaknis (numatytoji:) ir apdoroja kiekvieną šaltinio failą rekursyviai:
 
 1. Šaltinio failo turinys yra perskaitomas ir SHA-256 hash yra apskaičiuojamas.
 2. A `.translation-meta.json` file next to the source tracks per-language, per-block translation status, enabling **incremental re-translation** of only failed blocks.
 3. Saugomas maišos nuo ankstesnio paleisti (saugomi failo šalia pradinio failo, arba laikinai atsarginė vieta) yra lyginamas su dabartiniu maišos.
-4. Taipogi kiekvienos tikslinės kalbos byla taip pat tikrinama dėl struktūrinio vientisumo.
+4. Trūkstamas kiekvienos tikslinės kalbos struktūrinis vientisumas.
 5. NAME OF TRANSLATORS.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
-7. Sėkmingai išverstos bylos yra patvirtintos struktūrinį paritetą su šaltiniu (vienodas antraščių skaičius, sąrašo elementai, kodų blokai, blockcitatos, nuorodos, paryškinti / kursyvu žymekliai, ir HTML žymos), prieš juos rašant į diską.
-8. NAME OF TRANSLATORS @ info: status.
+7. Sėkmingai išversti failai yra patvirtinti struktūrinį paritetą su šaltiniu (vienodas antraščių skaičius, sąrašo elementai, kodų blokai, blockcitatos, nuorodos, paryškinti / kursyvu žymekliai, ir HTML žymės), kol jie yra įrašyti į diską.
+8. NAME OF TRANSLATORS @ info: whatsthis.
 9. NAME OF TRANSLATORS.
 
 ### 5 etapas - Storingrezultatai
@@ -74,7 +74,7 @@ Surinktas ir paskelbtas konsoliduotas dokumentas. Joms priklauso:
 
 - UTC paleisti pradžios ir užbaigimo laiko žymos.
 - NAME OF TRANSLATORS.
-- Renkant duomenis aptiktos bet kurios duomenų saugojimo klaidos.
+- Renkamos visos duomenų saugojimo klaidos.
 - Transliavimo per kalbą statistika (išverstas skaičius, praleistas skaičius, klaidų skaičius).
 
 ## SignalR pranešimo paketas
@@ -90,7 +90,7 @@ Vamzdyno etapas pranešimas priklauso
 UTC laikas, kai pranešimas buvo išsiųstas
 NAME OF TRANSLATORS
 Humanitarinė santrauka
-Konkretaus etapo naudingoji apkrova (pranešimo objektas arba null)
+Konkretaus etapo naudingoji apkrova (pranešimo objektas arba nulis)
 
 ### Laiško tipai
 
@@ -147,14 +147,14 @@ PipelineCompleted / StoringResults
 
 Vamzdynu užtikrinamas dviejų lygių atsparumas:
 
-### Pratęstas etapas (TranslationRetryService)
+### Ekskursija (TranslationRetryService)
 
 - @ info: whatsthis.
-- Placeholder maskavimo: Pavadintas placebas () tekste yra laikinai pakeisti saugiais žetonais () prieš vertimą ir atkurtas po to, užtikrinant teisingą gramatikos tikslinių kalbų.
+- Placeholder maskavimo: Pavadintas placebas () tekste yra laikinai pakeisti saugiais žetonais () prieš vertimą ir atstatytas po to, užtikrinant teisingą gramatikos tikslinių kalbų.
 
 ### Kalbos patvirtinimas
 
-- Prieš verčiant į tikslinę kalbą, tarnyba patikrina kalbą, kurią palaiko vertimo serveris.
+- Prieš verčiant į tikslinę kalbą, tarnyba patikrina, ar kalbą palaiko vertimo serveris.
 - Nekoordinuotos kalbos praleidžiamos įspėjimu, užkertant kelią pakartotiniams nepavykusiems bandymams.
 
 ### Comment
@@ -175,16 +175,16 @@ Intervalas
 4000- 4999
 5000- 5999
 
-Kiekviena pranešimo klaida turi šaltinio identifikatorių (kalbos kodą, failo kelią arba scenos pavadinimą), klaidos kodą ir žmogaus nuskaitomą pranešimą.
+Kiekviena klaida ataskaitoje turi šaltinio identifikatorių (kalbos kodą, failo kelią arba scenos pavadinimą), klaidos kodą ir žmogaus skaitomą pranešimą.
 
 ## Name
 
-Serverio projektas apima admin puslapį, kuris jungia su SionalR centras ir rodo visus vamzdynų įvykius realiu laiku.
+Serverio projektas apima admin puslapį, kuris jungia su SionalR mazgas ir rodo visus vamzdynų įvykius realiu laiku.
 
-- Rodo ryšio būseną, pranešimų skaičių ir visų įvykių gyvybės atnaujinimo lentelę.
+- Rodo ryšio būseną, žinučių skaičių ir visų įvykių gyvybės atnaujinimo lentelę.
 - Spalvotos eilutės: mėlynos scenos pradžios, žalios - pabaigos, raudonos - klaidų.
 - NAME OF TRANSLATORS.
-- Automat- reconnections su eksponentinis atgal, jei ryšys nukrenta.
+- Automat- reconnections su eksponentine atsitraukimo, jei ryšys nukrenta.
 
 ## Konstrukcijos principai
 

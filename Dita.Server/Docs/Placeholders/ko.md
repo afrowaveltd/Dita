@@ -1,6 +1,6 @@
 ﻿# Localization에 있는 Named Placeholders
 
-Dita support **named placeholder** in localization string, 언어의 올바른 문법을 보존하면서 런타임에 삽입되는 동적 값을 허용한다.
+Dita는 로컬라이제이션 문자열에 있는 **named placeholders**를 지원하며, 언어의 올바른 문법을 보존하면서 런타임에 삽입될 동적 값을 허용한다.
 
 ## 옵션 정보
 
@@ -127,8 +127,8 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 자동 번역 서비스가 name placeholders와 텍스트를 만날 때:
 
 1. **번역은 **: placeholders are masked with safe token () 번역 엔진을 수정하여.
-2. ** 번역 중 **: 번역 엔진은 번역 가능한 텍스트만 처리합니다.
-3. **번역 후 **: Original placeholder name ()는 올바른 위치에 복원됩니다.
+2. **번역 중 **: 번역 엔진은 번역 가능한 텍스트만 처리합니다.
+3. **번역 후 **: Original placeholder name ()은 올바른 위치에 복원됩니다.
 
 ### Example
 
@@ -140,7 +140,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 최종 결과:
 
-이것은 그것을 지킵니다:
+이 보증:
 - 주주는 결코 번역하거나 손상되지 않습니다
 - Target-language 문법은 주변 텍스트를 자유롭게 배열할 수 있습니다
 - 같은 템플릿은 모든 언어로 올바르게 작동합니다
@@ -150,7 +150,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 1. ** descriptive name 사용 **: 보다 나거나
 2. ** 최소 주주 **: Too many placeholders 만들기 번역 harder
 3. **Document 예상 유형 **: JSON 파일에 대한 의견은 번역자를 이해합니다
-4. **Prefer 런타임 값**: 진정한 동적 데이터 (사용자 이름, 수, 날짜), 런타임에 값을 전달
+4. **Prefer 런타임 값**: 진정한 동적 데이터 (사용자 이름, 수, 날짜)의 경우, 실행 시간에 값을 전달합니다
 5. **기본값 사용**: 거의 변화하는 구성 (app name, support email)
 6. **일부 주주 **: 모든 예상된 주주를 확인하기 위한 사용
 
@@ -158,7 +158,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 자동으로 LibreTranslate 통화 중 placeholder 보존을 처리합니다. 추가 구성이 필요하지 않습니다.
 
-그리고 둘 다 retry 서비스를 사용 하 여, 그래서 모든 JSON 사전 번역 투명 하 게는 placeholders.
+그리고 둘 다 retry 서비스를 사용 하 여, 그래서 모든 JSON 사전 번역 투명 하 게 위주인 이름 지원.
 
 ## Backward 호환성
 

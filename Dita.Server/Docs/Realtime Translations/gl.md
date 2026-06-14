@@ -24,7 +24,7 @@ O servizo funciona nun horario e executa un oleoduto de cinco etapas: validació
 Antes de iniciar calquera traballo de tradución, o servizo verifica que todas as condicións previas están satisfeitas
 
 - A sección de configuración debe estar presente e válida.
-- O servidor debe responder dentro dunha latencia aceptable.
+- O servidor LibreTranslate debe responder cunha latencia aceptable.
 - A lista de idiomas dispoñibles no servidor de tradución.
 - O idioma predeterminado debe estar presente nesta lista.
 - Os ficheiros JSON que faltan para calquera idioma compatible créanse automaticamente.
@@ -36,7 +36,7 @@ Se falla algunha comprobación, o oleoduto detense inmediatamente e emítese unh
 Os nomes dos países mantéñense sincronicamente desde un catálogo de só lectura () ata os dicionarios JSON.
 
 - Se o idioma por defecto da aplicación é o inglés, cada nome do país almacénase sen tradución.
-- Se a lingua por defecto é calquera outra lingua, primeiro se traduce o nome do país nesa lingua, e o resultado convértese na entrada do dicionario por defecto.
+- Se a lingua por defecto é calquera outra lingua, primeiro se traduce o nome do país a esa lingua, e o resultado convértese na entrada do dicionario por defecto.
 - After the default dictionary is updated, each missing country entry in every target language dictionary is translated and saved **immediately per language**.
 - As entradas xa traducidas son conservadas sen modificacións.
 - Se unha tradución falla, o servizo repítese ata tres veces con atrasos de 30 segundos antes de pasar á seguinte lingua.
@@ -66,7 +66,7 @@ O servizo percorre as raíces da documentación configurada (default:) e procesa
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
 7. Os ficheiros traducidos con éxito son validados para a paridade estrutural coa fonte (contas de cabeceira iguais, artigos de lista, bloques de código, citas de bloqueo, ligazóns, marcadores audaces e etiquetas HTML) antes de que sexan escritos en disco.
 8. Se todos os ficheiros de destino para un éxito fonte, o novo hash almacénase xunto á fonte. Se escribir xunto á fonte falla (por exemplo, nas implementacións de só lectura), o hash volve ao directorio temporal.
-9. Se calquera tradución de destino falla de validación, os metadatos marcan eses bloques como non traducidos, polo que son recuperados na seguinte carreira.
+9. Se calquera tradución de destino falla de validación, os metadatos marcan eses bloques como non traducidas, polo que son retribuidos na seguinte carreira.
 
 ### Fase 5 - Resultados
 
@@ -75,7 +75,7 @@ Un libro consolidado está editado e publicado. Inclúe:
 - UTC hora de inicio e finalización.
 - Contadores de arquivos JSON gardados, arquivos Markdown gardados, hash gardados e hash escribir.
 - Erros de almacenamento recollidos durante a execución.
-- Estatísticas de tradución por lingua (conteo traducido, conta de patróns, conta de erro).
+- Estatísticas de tradución por lingua (conteo traducido, conta saltada, conta de erro).
 
 ## Mensaxe de SignalR
 

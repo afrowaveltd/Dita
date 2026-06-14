@@ -20,7 +20,7 @@ Todos os eventos SignalR do oleoduto de tradución móstranse nunha táboa de ac
 - **Stage** — Pipeline stage badge (CheckServers, TranslateCountries, etc.)
 - **Type** — Message type badge (StageStarted, Progress, StageCompleted, etc.)
 - ** Mensaxe** - descrición lexible por humanos
-- **Detalles**: Carga completa dos datos do evento
+- **Detalles**: Carga completa de datos do evento
 
 ### Color codificación
 
@@ -39,7 +39,7 @@ Unha bandeira de estado nos principais espectáculos:
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-A conexión utiliza unha reconecta automática con backup exponencial: 0s, 2s, 5s, 10s, 30s.
+A conexión usa unha reconecta automática con backup exponencial: 0s, 2s, 5s, 10s, 30s.
 
 ### Control
 
@@ -113,7 +113,7 @@ Dita.Server/Pages/Admin/
 
 1. Inicio » Dita Aplicación do servidor
 2. Navegar para
-3. Corrixir unha tradución (xa sexa para o programador ou chamar a API)
+3. Cortar unha tradución (ou esperar polo programador ou chamar a API)
 4. Os eventos aparecen en tempo real
 5. Use o botón Export para capturar unha traza completa para depurar
 

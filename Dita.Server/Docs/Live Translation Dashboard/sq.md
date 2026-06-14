@@ -1,6 +1,6 @@
-﻿# përkthim i drejtpërdrejtë
+﻿# live
 
-The Live Translation Dashboard është një faqe admin që siguron shikim real në tubacionin automatik të përkthimit. Ajo lidhet me shpërndarësin e sinjalit dhe shfaq të gjitha ngjarjet e tubacionit ndërsa ato ndodhin.
+The Live Translation Dashboard është një faqe admin që ofron shikim real në tubacionin automatik të përkthimit. Ajo lidhet me shpërndarësin e sinjalit dhe shfaq të gjitha veprimtaritë e tubacionit ndërsa ato ndodhin.
 
 ## URL
 
@@ -101,7 +101,7 @@ Distinktivi i paralajmërimit
 - Microsoft Sinjal JavaScript Library (nga CDN)
 - Nuk është i nevojshëm përkthimi në server për mesazhin
 
-### Struktura e faqes
+### Faqja
 
 ```
 Dita.Server/Pages/Admin/
@@ -111,7 +111,7 @@ Dita.Server/Pages/Admin/
 
 ## Përdorimi gjatë zhvillimit
 
-1. Fillo me Ditën. Aplikativi i serverit
+1. Fillo me ditën. Aplikativi i serverit
 2. Navigate për
 3. A
 4. Shiko ngjarjet që shfaqen në kohë reale

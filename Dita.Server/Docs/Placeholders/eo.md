@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## Sintakso
 
-Lokuloj uzas la kurb-brance-sintakson ene de JSON-vortaj valoroj:
+Lokuloj uzas la kurb-brancsintakson ene de JSON-vortaro valoroj:
 
 ```json
 {
@@ -156,7 +156,7 @@ Tio certigas tion:
 
 ## Integriĝo kun aŭtomata traduko
 
-La aŭtomate pritraktas lokulan konservadon dum LibreTranslate vokas. Neniu alia agordo estas necesa.
+La aŭtomate pritraktas lokulan konservadon dum LibreTranslate vokas. Neniu kroma konfiguracio estas necesa.
 
 La kaj ambaŭ uzas la reenkondukservon, tiel ke ĉiuj JSON-vortartradukoj travideble apogas nomitajn lokposedantoj.
 

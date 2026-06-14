@@ -1,6 +1,6 @@
 ﻿# Përkthime në kohë reale
 
-Ky dokument ekziston si një provë e drejtpërdrejtë për tubacionin automatik të përkthimit. Çdo ndryshim në këtë file shkakton rikthimin e të gjithë skedarëve të gjuhës së synuar në drejtimin e caktuar në vazhdim.
+Ky dokument ekziston si një provë e drejtpërdrejtë për tubacionin automatik të përkthimit. Çdo ndryshim në këtë file shkakton ripërkthimin e të gjithë skedarëve të gjuhës së synuar në drejtimin e caktuar në vazhdim.
 
 ## Pasqyrë arkitekture
 
@@ -15,7 +15,7 @@ Tubacioni i përkthimit është ristrukturuar në një arkitekturë moderne me k
 
 ## Çfarë bën shërbimi
 
-Shërbimi funksionon në një program dhe ekzekuton një tubacion pesë-faqesh: përfundimin e server-it, sinkronizimin e vendeve, sinkronizimin e fjalorëve JSON, përkthimin e skedarëve Markundown, dhe këmbënguljen e rezultateve. Çdo fazë lëshon ngjarje të strukturuara të përparimit në kohë reale mbi SinjalR në mënyrë që klientët e lidhur të mund të ndjekin së bashku ndërsa të ardhurat e punës.
+Shërbimi funksionon në një program dhe ekzekuton një tubacion pesë-faqesh: përfundimin e server-it, sinkronizimin e vendeve, sinkronizimin e fjalorëve JSON, përkthimin e skedarëve Markundown, dhe vazhdimin e rezultateve. Çdo fazë lëshon ngjarje të strukturuara të përparimit në kohë reale mbi SinjalR në mënyrë që klientët e lidhur të mund të ndjekin së bashku ndërsa të ardhurat e punës.
 
 ## Fazat e tubacionit
 
@@ -36,23 +36,23 @@ Nëse ndonjë kontroll dështon, tubacioni ndalon menjëherë dhe lëshon një m
 Emrat e vendeve mbahen në sinkronizim nga një katalog në vetëm lexim () në fjalorët JSON.
 
 - Nëse gjuha e prezgjedhur e programit është anglisht, çdo emër i vendit ruhet si pa përkthim.
-- Nëse gjuha e paracaktuar është ndonjë gjuhë tjetër, emri i vendit anglez përkthehet së pari në atë gjuhë dhe rezultati bëhet hyrja në fjalorin e paracaktuar.
+- Nëse gjuha e paracaktuar është ndonjë gjuhë tjetër, emri i vendit anglez përkthehet fillimisht në atë gjuhë dhe rezultati bëhet hyrja në fjalorin e paracaktuar.
 - After the default dictionary is updated, each missing country entry in every target language dictionary is translated and saved **immediately per language**.
 - Zë ra tashmë të transformuar janë ruajtur pa modifikim.
 - Nëse një përkthim dështon, shërbimi kthehet deri në 3 herë me vonesa 30 sekonda para se të transferohet në gjuhën tjetër.
 
 ### Faza 3 Përkthe skedarët Jason
 
-Shërbimi krahason fjalorin e paracaktuar të lokalizimit me një skanim të ruajtur nga funksioni i mëparshëm:
+Shërbimi krahason fjalorin aktual të përcaktimit me një skanim të ruajtur nga funksioni i mëparshëm:
 
 - **Added keys** — entries present in the current default but absent from the snapshot — are translated into every target language that does not already have a manual entry for that key.
 - **Removed keys** — entries present in the snapshot but absent from the current default — are deleted from every target language dictionary.
-- Përkthimet manuale gjithmonë kanë përparësi. Nëse një fjalor i synuar tashmë përmban një vlerë për një kyç, kjo hyrje mbetet e pandryshuar pavarësisht nga ajo që thotë burimi.
+- Përkthimet manuale gjithmonë kanë përparësi. Nëse një fjalor i synuar përmban tashmë një vlerë për një kyç, kjo hyrje mbetet e pandryshuar pavarësisht nga ajo që thotë burimi.
 - **Each target language dictionary is saved immediately after its translations complete**, rather than waiting for all languages to finish.
 - Nëse një përkthim dështon në një gjuhë specifike, shërbimi kthehet automatikisht. Vetëm gabime të vazhdueshme (p.sh., gjuhë e pasuportuar) shkaktojnë që kjo gjuhë të anashkalohet.
-- Pas ekzekutimit, fjalori aktual i prezgjedhur ruhet si fotografia e re për krahasimin në vazhdim.
+- Pas nisjes, fjalori aktual i prezgjedhur ruhet si fotografia e re për krahasimin në vazhdim.
 
-Të gjithë fjalorët ruhen gjithmonë me çelësa të organizuar alfabetik dhe me JSON të identifikuar për të qenë i lexueshëm nga njeriu.
+Të gjithë fjalorët ruhen gjithmonë me çelësa të organizuar alfabetik dhe JSON të identifikuar për të qenë të lexueshëm nga njeriu.
 
 ### Faza 4 Përkthe file
 
@@ -60,15 +60,15 @@ Shërbimi ecën sipas rrënjëve të konfiguruara të dokumentimit (e paracaktua
 
 1. Përmbajtja e file-it burim është lexuar dhe është llogaritur një hashh SHA-256.
 2. A `.translation-meta.json` file next to the source tracks per-language, per-block translation status, enabling **incremental re-translation** of only failed blocks.
-3. Hash i regjistruar nga funksioni i mëparshëm (i mbajtur në një file në vazhdim me file burues, ose në një pozicion të përkohshëm prapavijë) është krahasuar me hash-in aktual.
+3. Hash i regjistruar nga funksioni i mëparshëm (i mbajtur në një file në vazhdim të file burim, ose në një pozicion të përkohshëm prapavijë) është krahasuar me hash-in aktual.
 4. Për çdo gjuhë, file korrespondues kontrollohet gjithashtu për integritet strukturor.
 5. Çdo file që mungon, ka një hash të vjetëruar, dështon në verifikimin e strukturës, ose përmban blloqe të papërkthyera është renditur në rradhë për ripërkthim.
 6. **Each target language is translated and saved independently** — if Czech succeeds but French fails, the Czech file is still written to disk.
-7. File të përkthyer me sukses janë të vlefshëm për paritet strukturor me burimin (numërimet e barabarta në krye, elementët e listës, blloqet e kodit, blloqet, lidhjet, shënuesit e guximshëm/italik, dhe etiketat HTML) para se të shkruhen në disk.
+7. Dosjet e përkthyera me sukses janë të vlefshme për paritet strukturor me burimin (numërimet e barabarta në krye, elementët e listës, blloqet e kodit, blloqet, lidhjet, shënuesit e guximshëm/itale, dhe etiketat HTML) para se të shkruhen në disk.
 8. Nëse të gjithë objektivët për një burim të suksesshëm, hash i ri ruhet pranë burimit. Nëse shkrimi pranë burimit dështon (për shembull në vendosjet vetëm në lexim), hash bie përsëri në directory e përkohshme.
-9. Nëse ndonjë përkthim objektiv dështon në vlefshmëri, metadata i shënon këto blloqe si të papërkthyera në mënyrë që të ripërsëriten në drejtimin tjetër.
+9. Nëse ndonjë përkthim objektiv dështon në vleftësim, metadata i shënon këto blloqe si të papërkthyera në mënyrë që të ripërsëriten në drejtimin tjetër.
 
-### Faza e 5 - të, duke magazinuar prova
+### Faza e 5 - të, fitore
 
 Një konsolidim është mbledhur dhe botuar. Përfshin:
 
@@ -141,7 +141,7 @@ StageCompleted / StoringResults
 PipelineCompleted / StoringResults
 ```
 
-Nëse ndonjë fazë dështon, fazat e mbetura anashkalohen, një mesazh lëshohet dhe përfundimisht një mesazh mbyllet.
+Nëse ndonjë fazë dështon, fazat e mbetura anashkalohen, një mesazh lëshohet dhe së fundi një mesazh mbyllet.
 
 ## Përkthimi
 
@@ -149,7 +149,7 @@ Tubacioni zbaton dy nivele elasticiteti:
 
 ### Faza
 
-- Në qoftë se një kërkesë përkthimi dështon pas retiteve të brendshme të Libre Translate, ajo kryen deri në 3 rite të tjera me vonesa 30 sekondashe.
+- Në qoftë se një kërkesë përkthimi dështon pas retiteve të brendshme të Libre Translate, ajo kryen deri në 3 rite të tjera me vonesa 30 sekondash.
 - Mashtruesi i vendeve: Vendshënuesit e emëruar () në tekst zëvendësohen përkohësisht me shenja të sigurta () para përkthimit dhe rivendosjes më pas, duke siguruar gramatikën e saktë në gjuhët e synuara.
 
 ### Emri i gjuhës
@@ -161,7 +161,7 @@ Tubacioni zbaton dy nivele elasticiteti:
 
 - Përkthimet e shënuara janë kryer bllok me blloqe (headings, paragrafët, elementët e listës).
 - Në qoftë se një bllok individual dështon në përkthim, ai është shënuar si i papërkthyer në dosjen metadata dhe ripërsëritur në rrjedhën tjetër të tubacionit.
-- Gjurmët e shërbimit për-gjuhë, gjendja për-bllok në skedarë pranë çdo file burim Markud.
+- Gjurmët e shërbimit për-gjuhë, gjendja për-bllok në skedarët pranë çdo file burim Markud.
 
 ## Gabim
 
@@ -175,9 +175,9 @@ Interval
 4000499
 5000599
 
-Çdo gabim në raport përmban burimin e identifikuar (kodi i gjuhës, shtegu i file ose emri i skenës), kodi i gabimit, dhe një mesazh të lexueshëm nga njeriu.
+Çdo gabim në raport përmban burimin e identifikuar (kodi i gjuhës, shtegu i file ose emri i skenës), kodi i gabimit dhe një mesazh të lexueshëm nga njeriu.
 
-## përkthim i drejtpërdrejtë
+## live
 
 Projekti i serverit përfshin një faqe admin në të cilën lidhet me shpërndarësin e sinjalit dhe shfaq të gjitha ngjarjet e tubacionit në kohë reale.
 

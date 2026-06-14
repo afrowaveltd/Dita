@@ -2,11 +2,11 @@
 
 ## Przegląd
 
-Niniejszy dokument podsumowuje wszystkie zmiany wprowadzone do usługi tłumaczenia automatycznego Dita, w tym refakturowanie architektury, nowe funkcje, poprawę widoczności i ulepszenie lokalizacji.
+Niniejszy dokument podsumowuje wszystkie zmiany wprowadzone do usługi tłumaczenia automatycznego Dita, w tym refakturowanie architektury, nowe funkcje, poprawę obserwacji oraz ulepszenie lokalizacji.
 
 ## Zmiany architektury
 
-### refakturowane usługi translacyjne
+### refakturowana usługa translacji oparć
 
 Monolit został podzielony na cztery specjalistyczne usługi koordynowane przez lekki orchestrator:
 
@@ -30,7 +30,7 @@ Monolit został podzielony na cztery specjalistyczne usługi koordynowane przez 
 
 **Location**: `/Admin/LiveTranslation`
 
-Nowa strona admin, która zapewnia real- time widoczność do rurociągu tłumaczenia:
+Nowa strona administracyjna, która zapewnia real- time widoczność w rurociągu tłumaczeniowym:
 
 - Wyświetla wszystkie zdarzenia SignalR w miarę ich występowania
 - Kolorowe typy wiadomości (niebieski = rozpoczęty, zielony = zakończony, czerwony = błąd)
@@ -126,7 +126,7 @@ Głowica SignalR jest przyporządkowana do połączeń z klientami.
 
 ### Znane ograniczenia
 
-- test jest pomijany podczas równoległego uruchamiania, ponieważ wiele instancji testowych dzieli ten sam plik. Przechodzi, gdy biegnie w izolacji.
+- test jest pomijany podczas pracy równoległej, ponieważ wiele instancji testowych dzieli ten sam plik. Przechodzi, gdy biegnie w izolacji.
 
 ## Nowa struktura pliku
 
@@ -137,7 +137,7 @@ Głowica SignalR jest przyporządkowana do połączeń z klientami.
 - - Synchronizacja słownika JSON
 - - Tłumaczenie Markdown
 - - Wydawnictwo wiadomości SignalR
-- - Retry logika z maskowania uchwytu
+- - Retry logika z maskowaniem uchwytu
 - - Interfejs wydawcy
 - - Interfejs usług krajowych
 - - Interfejs usług lokalizacyjnych
@@ -192,7 +192,7 @@ Migracja nie jest wymagana. Refaktoring jest wewnętrzny:
 
 Planowane ulepszenia:
 
-1. * * * AI fine- tuning * * * - Przegląd tłumaczenia maszynowego frazy > 5 słów
+1. * * * AI fine- tuning * * * - Przegląd tłumaczenia maszynowego zwrotów > 5 słów
 2. **Admin authentication** — Restrict admin pages to authorized users
 3. **Dictionary editor** — Web UI for managing localization keys
 4. **Translation statistics** — Charts showing translation counts and error rates over time
@@ -200,4 +200,4 @@ Planowane ulepszenia:
 
 ## Kontakt
 
-W przypadku pytań lub problemów związanych z tłumaczeniem prosimy zapoznać się ze szczegółową dokumentacją w katalogu każdego modułu lub skontaktować się z zespołem ds. rozwoju.
+W przypadku pytań lub problemów z serwisem tłumaczeniowym należy zapoznać się ze szczegółową dokumentacją w katalogu każdego modułu lub skontaktować się z zespołem ds. rozwoju.

@@ -1,6 +1,6 @@
 ﻿# Živý překlad Přístrojová deska
 
-Přístrojová deska Live Translation je admin stránka, která zajišťuje viditelnost v reálném čase do automatického překladu potrubí. Připojí se k náboji SignalR a zobrazí všechny události plynovodu, jak k nim dochází.
+Přístrojová deska Live Translation je admin stránka, která poskytuje skutečnou viditelnost do automatického překladu potrubí. Připojí se k náboji SignalR a zobrazí všechny události plynovodu, jak k nim dochází.
 
 ## URL
 
@@ -39,7 +39,7 @@ Status banner na vrcholu ukazuje:
 - **Reconnecting** — Connection lost, attempting to reconnect
 - **Disconnected** — Connection closed
 
-Spojení využívá automatické spojení s exponenciálním zpětným pásmem: 0s, 2s, 5s, 10s, 30s.
+Spojení používá automatické opětovné spojení s exponenciálním zpětným pásmem: 0s, 2s, 5s, 10s, 30s.
 
 ### Kontroly
 
@@ -98,8 +98,8 @@ Výstražný odznak
 ### Hranice
 
 - Čisté HTML / JS s Bootstrap 5 styling
-- Používá knihovnu klienta Microsoft SignalR JavaScript (načteno z CDN)
-- Žádné serverboční vykreslování nutné pro událost krmiva
+- Používá knihovnu Microsoft SignalR JavaScript klient (načteno z CDN)
+- Žádné serverboard vykreslování potřebné pro událost krmiva
 
 ### Struktura stránky
 
@@ -115,7 +115,7 @@ Dita.Server/Pages/Admin/
 2. Přejít na
 3. Spustit překlad běh (buď čekat na plánovač nebo volat API)
 4. Sledovat události se objeví v reálném čase
-5. Pomocí tlačítka Export můžete zachytit celou stopu pro ladění
+5. Pomocí tlačítka Export zachytíte plnou stopu pro ladění
 
 ## Budoucí zlepšení
 

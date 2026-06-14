@@ -4,7 +4,7 @@ Ang Data ay sumusuporta sa **named placeholders** sa localization stranses, na n
 
 ## kabutihan
 
-Ginagamit ng mga may - ari ng lugar ang curly-bace contraction sa loob ng diksyunaryong JSON:
+Ginagamit ng mga may - ari ng lugar ang curly-bace conclusion sa loob ng diksyunaryong JSON:
 
 ```json
 {
@@ -19,7 +19,7 @@ Hindi tulad ng mga positional placeholder (, ), na pinangalanang placeholders ay
 
 Ang mga may - ari ng lugar ay may dalawang pinagmumulan ng mga pamantayan:
 
-### 1. Tumatakbo ng mga halaga ng panahon (isinaayos para sa dynamic data)
+### 1. Tumatakbo sa mga halaga ng panahon (isinaayos para sa dynamic data)
 
 Pasahin nang tuwiran ang mga pamantayan kapag kinukuha ang lokal na tali:
 
@@ -126,7 +126,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 Nang ang automatic translation service ay makasalubong ng pangalang placeholders:
 
-1. ** Bago isalin**: Ang mga may-ari ng lugar ay nakabalatkayo na may ligtas na mga token () upang hindi mabago ng transaksyon engine ang mga ito.
+1. ** Bago isalin**: Ang mga may-ari ng lugar ay nakabalatkayo na may ligtas na mga token () upang hindi mabago ng transaksyon engine.
 2. **During translation**: The translation engine processes only the translatable text.
 3. ** Pagkatapos ng pagsasalin**: Ang mga orihinal na placeholder na pangalan () ay ibinalik sa kanilang mga tamang posisyon.
 
@@ -143,7 +143,7 @@ Huling resulta:
 Tinitiyak nito:
 - Ang mga may - ari ng lugar ay hindi kailanman isinasalin o sinisira
 - Maaaring malayang baguhin ng balarila ng Target-wika ang nakapaligid na teksto
-- Ang gayunding template ay wastong gumagana sa lahat ng wika
+- Ang gayunding template ay gumagana nang tama sa lahat ng wika
 
 ## Pinakamahuhusay na kaugalian
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Ang pangalang placeholder API ay additive — hindi nito sinisira ang umiiral na gamit.
+Ang pinangalanang placeholder API ay aditibo — hindi nito napuputol ang umiiral na gamit.

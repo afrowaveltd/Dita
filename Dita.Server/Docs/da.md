@@ -54,7 +54,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 Funktioner:
 - Placeholderværdier ved driftstid eller opbevaret i
 - Automatisk maskering / restaurering under oversættelse for at forhindre korruption
-- Tilbage kompatibel med eksisterende positioneringspladsholdere
+- Baglæns kompatibel med eksisterende positioneringspladsholdere
 
 ### Incremental oversættelse
 
@@ -122,7 +122,7 @@ SignalR-hubben er kortlagt for kundeforbindelser.
 - Ny testdækning tilføjet for:
   - Funktionen PlaceholderService
   - BackendTranslationService-orkester
-  - JsonStringLocalizer pladsholder indeksering
+  - JsonStringLocalizer pladsholder indekserer
 
 ### Kendte begrænsninger
 
@@ -137,12 +137,12 @@ SignalR-hubben er kortlagt for kundeforbindelser.
 - - JSON ordbog synkronisering
 - - Markering oversættelse
 - - SignalR meddelelse udgivelse
-- - Prøv igen logik med pladsholder maskering
+- - Prøv igen logik med pladskortlægning
 - - Publisher interface
 - - Land service interface
-- - Lokaliseringstjeneste interface
+- - Lokalisering service interface
 - - Document Service interface
-- - Orchestrator interface (opdateret)
+- - Orkestrator interface (opdateret)
 - - Per- fil oversættelse metadata
 
 ### Opdateret service i
@@ -176,7 +176,7 @@ Alle ændringer er additive:
 
 ## Migrationsvej
 
-Ingen migration påkrævet. Refaktoren er intern:
+Ingen migration påkrævet. Refactoring er intern:
 
 1. Gammel blev bevaret som reference og derefter erstattet
 2. DI registreringer blev opdateret til at bruge nye grænseflader

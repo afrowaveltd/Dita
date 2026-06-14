@@ -2,19 +2,19 @@
 
 ## 제품정보
 
-이 문서는 건축 복원, 새로운 기능, 관측성 개선 및 현지화 향상을 포함한 Dita 자동 번역 서비스로 모든 변경 사항을 요약합니다.
+이 문서는 건축 재공장, 새로운 기능, 관측성 개선 및 현지화 향상을 포함한 Dita 자동 번역 서비스로 모든 변경 사항을 요약합니다.
 
 ## 건축 변화
 
 ### Refactored BackendTranslation서비스
 
-Monolithic는 경량 관현관에 의해 협조된 4개의 전문화한 서비스로 decomposed되었습니다:
+Monolithic는 가벼운 관현관에 의해 협조된 4개의 전문화한 서비스로 decomposed되었습니다:
 
 - **BackendTranslationService** - Pipeline Orchestrator (서버 검증, 단계 위임, 오류 처리)
 - **CountriesTranslationService** - 국가 이름 동기화 (영어 → 대상 언어)
 - **LocalizationTranslationService** - JSON 사전 동기화 (added/removed 키)
 - **DocumentsTranslationService** - Block-level 추적으로 Markdown 문서 번역
-- **SignalRPublisher ** - SignalR을 통해 실시간 진행 보고
+- **SignalRPublisher** - SignalR을 통해 실시간 진행 보고
 - **TranslationRetryService** - 주주 보전을 통한 단계 수준 리트리
 
 ### Benefits
@@ -61,7 +61,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 Markdown 파일은 incrementally 번역됩니다
 
 - **Per-language 저축 **: 각 대상 언어는 번역 후 즉시 저장되며, 메모리 압력 감소
-- **Block-level tracking**: 블록 당 번역 상태를 추적
+- **Block-level tracking**: 블록당 번역 상태를 추적
 - **선택적인 리트리**: 실패한 블록은 다음 실행에 다시 번역됩니다
 - **Metadata persistence **: 번역 상태는 응용 프로그램을 다시 시작
 
@@ -118,7 +118,7 @@ SignalR 허브는 클라이언트 연결을 위해 맵핑됩니다.
 
 ### 시험 상태
 
-- ** 24 / 24 / 24 시험 합격 ** (1 테스트 환경에서 동시 파일 액세스로 건너 뛰기)
+- **243/244 테스트 통과 ** (1 테스트 환경에서 동시 파일 액세스로 건너 뛰기)
 - 추가되는 새로운 시험 적용:
   - PlaceholderService 기능
   - BackendTranslation서비스 오케스트라
@@ -178,14 +178,14 @@ SignalR 허브는 클라이언트 연결을 위해 맵핑됩니다.
 
 관련 기사 refactoring는 내부입니다:
 
-1. 이전은 참조로 보존 된 다음 대체
+1. 이전은 참고로 보존 된 다음 대체
 2. DI 등록은 새로운 인터페이스를 사용하도록 업데이트되었습니다
 3. 모든 기존 소비자는 변경하지 않습니다
 
 ## 성능 향상
 
-- ** 메모리 사용**: 메모리에서 모든 것을 유지 대신 언어에 저장된 파일
-- **꽃 증가 **: 변경 / 실패 Markdown 블록은 다시 번역
+- ** 메모리 사용**: 메모리에서 모든 것을 유지 대신 한 언어에 저장된 파일
+- **꽃 증가 **: 변경된 / 실패 Markdown 블록은 다시 번역
 - ** 더 나은 가시성 **: 실시간 진행은 느린 단계 진단
 
 ## 미래 향상
@@ -196,7 +196,7 @@ SignalR 허브는 클라이언트 연결을 위해 맵핑됩니다.
 2. **Admin 인증** - 공인된 사용자에게 관리 페이지 제한
 3. **Dictionary Editor** - 로컬라이제이션 키 관리를위한 웹 UI
 4. **Translation 통계 ** - 번역 수와 오류율을 보여주는 차트
-5. **Custom placeholder syntax** - 교체주자 형식 지원
+5. **Custom placeholder syntax** — 교체주자 형식 지원
 
 ## 제품정보
 

@@ -2,7 +2,7 @@
 
 ## Amharc ar gach eolas
 
-Déanann an doiciméad seo achoimre ar na hathruithe go léir a rinneadh ar an tseirbhís aistriúcháin uathoibríoch Dita, lena n-áirítear athfhreagras ailtireachta, gnéithe nua, feabhsuithe inbhraiteachta, agus feabhsuithe logánaithe.
+Déanann an doiciméad seo achoimre ar na hathruithe go léir a rinneadh ar an tseirbhís aistriúcháin uathoibríoch Dita, lena n-áirítear athfhachtóir ailtireachta, gnéithe nua, feabhsuithe inbhraiteachta, agus feabhsuithe logánaithe.
 
 ## Ailtireacht Athruithe
 
@@ -14,7 +14,7 @@ Rinneadh an monailiteach a dhianscaoileadh i gceithre sheirbhís speisialaithe a
 - ** Seirbhís Aistrithe ** - Sioncrónú ainm Tír (Béarla → sprioctheanga)
 - ** Seirbhís Aistrithe Íoslaghdaithe ** - Sioncrónú Foclóra JSON (eochairfhocail bhreise / aistrithe)
 - **DocumentsTranslationService** — tiontú doiciméadú Markdown le rianú leibhéal bloc
-- **SignalRPublisher ** - Tuairisciú ar dhul chun cinn fíor-ama trí SignalR
+- **SignalRPublisher ** - Tuairisciú chun cinn fíor-ama trí SignalR
 - **AistriúchánRetryService** — Atriail ar leibhéal na Céime le caomhnú na sealbhóirí áite
 
 ### An bhfuil a fhios agat na buntáistí a bhaineann..
@@ -65,11 +65,11 @@ Comhaid Markdown aistrithe incriminteach:
 - ** Fiosrúchán roghnach **: Níl ach bloic theip ath-aistrithe ar an chéad reáchtáil eile
 - ** Fanacht sonraí **: Atosaigh an t-iarratas a mhaireann stát aistriúcháin
 
-### Scríbhneoir Feabhsaithe
+### Amharc ar gach eolas
 
 Trí leibhéal athléimneachta:
 
-1. ** Fiosrúchán HTTP ** (Seirbhís Ríomhphoist): 5 iarrachtaí le cúlú exponential (1s–5s)
+1. ** HTTP retry ** (LibreTranslateService): 5 iarrachtaí le backoff exponential (1s–5s)
 2. ** Stóráil ** (Seirbhís Aistrithe): 3 iarrachtaí breise le 30 moill
 3. **Glasáil ** (Seirbhís Aistrithe Doiciméid): Failed Markdown blocks retried ar an chéad reáchtáil eile
 
@@ -86,7 +86,7 @@ Tuairisciú dul chun cinn fíor-ama do gach oibríocht píblíne:
 
 ### appsettings.json
 
-Gan athruithe a bhriseadh. Leanann an chumraíocht atá ann cheana ag obair:
+Uimh athruithe a bhriseadh. Leanann an chumraíocht atá ann cheana ag obair:
 
 ```json
 {
@@ -105,12 +105,12 @@ Gan athruithe a bhriseadh. Leanann an chumraíocht atá ann cheana ag obair:
 
 Cláraithe i:
 
-- / Baile
+- / m
 - `TranslationRetryService`
-- / Baile
-- / Baile
-- / Baile
-- / Baile
+- / m
+- / m
+- / m
+- / m
 
 Tá an mol SignalR mapáilte ag do naisc chliaint.
 
@@ -176,7 +176,7 @@ Tá gach athrú breiseán:
 
 ## Imirce Conair
 
-Níl aon imirce ag teastáil. Is é an fhrithsheasmhacht inmheánach:
+Níl aon imirce ag teastáil. Tá an t-athfhachtóir inmheánach:
 
 1. Caomhnaíodh Sean mar thagairt agus ansin in ionad
 2. Rinneadh clárú DI a nuashonrú chun comhéadan nua a úsáid
@@ -185,7 +185,7 @@ Níl aon imirce ag teastáil. Is é an fhrithsheasmhacht inmheánach:
 ## Amharc ar gach eolas
 
 - ** Úsáid chuimhne laghdaithe **: Comhaid shábháil in aghaidh an-teanga láithreach in ionad a shealbhú go léir i gcuimhne
-- ** Ritheann incriminteach tubaiste **: Níl ach athrú / fabraic Markdown bloic ath-aistrithe
+- ** Ritheann incriminteach tubaiste **: Níl ach bloic athraithe / tolgtha Markdown ath-aistrithe
 - ** infheictheacht níos fearr **: Cuidíonn dul chun cinn fíor-ama céimeanna mall a dhiagnose
 
 ## Feabhsúcháin sa Todhchaí
@@ -194,9 +194,9 @@ Feabhsuithe pleanáilte:
 
 1. **AI fine-tuning** — Post-machine translation review for phrases > 5 words
 2. **Admin fíordheimhnithe ** - Leathanaigh admin srianta d'úsáideoirí údaraithe
-3. ** Eagarthóir Béarla ** - Chomhéadain Gréasáin chun eochracha logánaithe a bhainistiú
+3. ** Eagarthóir grafach ** - Chomhéadain Gréasáin chun eochracha logánaithe a bhainistiú
 4. ** Staidreamh aistriúcháin ** — Cairteanna a léiríonn comhaireamh aistriúcháin agus rátaí earráide le himeacht ama
-5. **Fiontar na sealbhóirí áite Saincheaptha ** — Tacaíocht le haghaidh formáidí malartacha do shealbhóirí áite
+5. **Fiontar na sealbhóirí áite Saincheaptha ** - Tacaíocht le haghaidh formáidí malartacha do shealbhóirí áite
 
 ## Déan teagmháil linn
 

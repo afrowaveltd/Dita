@@ -33,8 +33,8 @@ Monolitike është dekompozuar në katër shërbime të specializuara të koordi
 Një faqe e re admin që ofron dukshmëri në kohë reale në tubacionin e përkthimit:
 
 - Shfaq të gjithë ngjarjet e Sinjalit kur ndodhin
-- Llojet e mesazheve të koduara me ngjyrë (fotër=filluar, e gjelbër=e plotë, e kuqe=error)
-- Lidhja me file automatike
+- Llojet e mesazheve të koduara me ngjyrë (foot=filluar, e gjelbër=e plotë, e kuqe=error)
+- Lidhja me file auto- lidhur
 - Mesazhi
 
 ### Mikpritës të emëruar
@@ -58,7 +58,7 @@ Veçoritë:
 
 ### Përkthimi i brendshëm
 
-Në rritje:
+Dosjet e shënuara janë përkthyer në rritje:
 
 - **Per-language saving**: Each target language is saved immediately after translation, reducing memory pressure
 - **Block-level tracking**: `.translation-meta.json` tracks translation status per block
@@ -164,12 +164,12 @@ Qendra e Sinjalit është e pajisur për lidhjet e klientëve.
 - ⇩ Udhëzues përdorimi i Dashboard
 - Pamje e arkitekturës teknike
 
-## Kompatibiliteti
+## Compatibiliteti
 
 Të gjitha ndryshimet janë shtesë:
 
 - Kodi aktual () funksionon i pandryshuar
-- Rregullimi i pozicionit () funksionon i pandryshuar
+- Formati () i pozicionit
 - Formati ekzistues i fjalorit JSON është i pandryshuar
 - Struktura ekzistuese e shënimit është e pandryshuar
 - Sinjale
@@ -200,4 +200,4 @@ Përmirësimet e planifikuara:
 
 ## Kontakti
 
-Për pyetje ose për çështje me shërbimin e përkthimit, ju lutemi t'i referoheni dokumentacionit të hollësishëm në directory e çdo moduli ose të kontaktoni ekipin e zhvillimit.
+Për pyetje ose për çështje me shërbimin e përkthimit, ju lutemi t'i referoheni dokumentacionit të hollësishëm të directory së çdo moduli ose të kontaktoni ekipin e zhvillimit.

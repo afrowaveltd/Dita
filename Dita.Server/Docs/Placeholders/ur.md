@@ -4,7 +4,7 @@ Dita supports **named placeholders** in localization strings, allowing dynamic v
 
 ## فائلز
 
-Placellers Carrely-brace scons in Jamous Dictionary اقدار:
+Placellers scarely-brace scons in Jamous Dictionary اقدار:
 
 ```json
 {
@@ -124,7 +124,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## ترجمہ
 
-جبکہ خودکار ترجمہ سروس کے نام سے متن کے ساتھ ملتا ہے:
+جبکہ خودکار ترجمہ سروس کے نام سے متن متن سے ملتا ہے:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
@@ -156,9 +156,9 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## خودکار ترجمہ سے انکار
 
-لیبریٹریل کال کرنے کے دوران خودکار کنٹرولز محفوظ رکھتی ہیں۔ اضافی وضع کی ضرورت نہیں ہے۔.
+لیبر ٹریسلیٹ کال کرنے کے دوران خودکار کنٹرولز محفوظ رکھتی ہیں۔ اضافی وضع کی ضرورت نہیں ہے۔.
 
-اِس طرح اُن کی مدد کرنے کے لیے اُن کے پاس زیادہ وقت نہیں تھا ۔.
+اِس لیے تمام جِلدوں کا ترجمہ کرنے والوں کی مدد سے کِیا جاتا ہے ۔.
 
 ## واپسی کا سامان
 

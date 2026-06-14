@@ -1,4 +1,4 @@
-﻿# ডিসপ্লের নাম:
+﻿# নাম:% 1
 
 Dita supports **named placeholders** in localization strings, allowing dynamic values to be inserted at runtime while preserving correct grammar across languages.
 
@@ -35,7 +35,7 @@ var message = Localizer["WelcomeMessage", new Dictionary<string, string>
 // Result: "Hello John, you have 5 new messages"
 ```
 
-### ২. সংরক্ষিত মান সংরক্ষণ করা হবে (সেমি-স্ট্যাটিক কনফিগারেশন)
+### 2. Stored values (for semi-static configuration)
 
 ডিরেক্টরির মধ্যে ফাইল পরিচালনার সুবিধা উপস্থিত রয়েছে:
 
@@ -102,7 +102,7 @@ public interface IPlaceholderService
 
 ### এক্সটেনশন
 
-যারা স ্ বচ ্ ছলতায় ও অভাবের সময় ব ্ যয় করে
+শপথ তাদের , যারা সকল কর ্ মনির ্ বাহ করে , কেয়ামত অবশ ্ যই হবে ।
 
 ```csharp
 public static class StringLocalizerExtensions
@@ -124,7 +124,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 ## অনুবাদের আচরণ
 
-স্বয়ংক্রিয় অনুবাদ সার্ভিস যখন placessএর সঙ্গে লেখা থাকে:
+সি. পি. এল. - র স্বয়ংক্রিয় অনুবাদ সার্ভিস যখন placessএর সঙ্গে লেখা চিহ্নিত করে:
 
 1. **Before translation**: Placeholders are masked with safe tokens (`___PH_0___`) to prevent the translation engine from modifying them.
 2. **During translation**: The translation engine processes only the translatable text.
@@ -136,7 +136,7 @@ var text = Localizer.WithPlaceholders("WelcomeMessage", new Dictionary<string, s
 
 অনুবাদ করার জন্য প্রস্তুত:
 
-চেক- এ অনুবাদক:
+অনুবাদক:
 
 চূড়ান্ত ফলাফল:
 
@@ -170,4 +170,4 @@ var text = localizer["Hello"];
 var formatted = localizer["Value is {0}", 42];
 ```
 
-Part API দ্বারা চিহ্নিত মান বর্তমানে উপস্থিত রয়েছে — এটি ব্যবহার করা হচ্ছে না।.
+Part API দ্বারা উল্লেখ করা হয়েছে — এটি ব্যবহার করা হচ্ছে না ।.

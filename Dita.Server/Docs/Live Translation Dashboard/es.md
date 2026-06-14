@@ -20,7 +20,7 @@ Todos los eventos SignalR de la traducción se muestran en una tabla de actualiz
 - **Estadio** — Insignia de etapa de tubería (CheckServers, TranslateCountries, etc.)
 - **Tipo** — Tipo de mensaje insignia (StageStarted, Progress, StageCompleted, etc.)
 - ** Mensaje** - Descripción legible por el hombre
-- **detalles** — carga útil json completa de los datos del evento
+- **Detalles** — Full JSON payload of the event data
 
 ### Codificación de color
 
@@ -33,8 +33,8 @@ Blanco (por defecto)
 
 ### Estado de conexión
 
-Una bandera de estado en la parte superior muestra:
-- **Connecting** - Establecer la conexión de SignalR
+Un estandarte de estado en la parte superior muestra:
+- **conexión**: establecimiento de la conexión de señalización
 - **Connected** - Recibir eventos normalmente
 - **Reconexión** - Conexión perdida, intentando reconectarse
 - ** Desconectado** - Conexión cerrada
@@ -125,7 +125,7 @@ Mejoras previstas para el tablero:
 - **Filtering** — Filtrar eventos por escenario, tipo o ID de ejecución
 - **Cosas históricas** — Vista completadas corre desde una base de datos o un archivo de registro
 - **Estadística** — Gráficos que muestran conteos de traducción, tasas de error y latencia con el tiempo
-- **Manual dispara** - Botones para iniciar manualmente etapas específicas de tuberías
+- **Manual dispara** — Botones para iniciar manualmente etapas específicas de tuberías
 - **Configuración** — Editar directamente desde el tablero
 - ** Gestión de idiomas** — Ver y editar idiomas compatibles
 - **Dictionary preview** — Browse and search localization dictionaries
@@ -139,7 +139,7 @@ Mejoras previstas para el tablero:
 3. La confirmación está presente
 4. Asegúrese de que ningún firewall está bloqueando las conexiones WebSocket
 
-### Los acontecimientos no aparecen
+### Los eventos no aparecen
 
 1. Comprueba que la URL del hub de SignalR coincide entre el servidor () y el cliente ()
 2. Verificar el programador está habilitado en
